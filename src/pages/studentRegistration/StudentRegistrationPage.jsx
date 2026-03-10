@@ -1,6 +1,6 @@
-import "./studentRegistration.css";
-import Footer from "../components/Footer";
-import Navbar from "../components/Navbar";
+import StudentRegistration from "./studentRegistration.css";
+import Footer from "../../components/Footer";
+import Navbar from "../../components/Navbar";
 
 const fieldBaseClass =
   "w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-lg text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
@@ -39,8 +39,8 @@ export default function StudentRegistrationPage() {
                   Join the TESDA Student Portal
                 </h1>
                 <p className="mt-8 max-w-md text-lg leading-9 text-white/90 sm:text-[1.7rem] sm:leading-[3.2rem]">
-                  Access world-class technical education and skills
-                  development programs across the Philippines.
+                  Access world-class technical education and skills development
+                  programs across the Philippines.
                 </p>
               </div>
 
@@ -49,10 +49,10 @@ export default function StudentRegistrationPage() {
 
             <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
               <div className="mx-auto max-w-3xl">
-                <h2 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">
                   Student Registration
                 </h2>
-                <p className="mt-4 text-lg text-slate-500 sm:text-[1.45rem]">
+                <p className="mt-4 text-lg text-slate-500 sm:text-[1.2rem]">
                   Please fill out all the fields below to create your account.
                 </p>
 
@@ -147,7 +147,10 @@ export default function StudentRegistrationPage() {
 
                   <p className="text-center text-lg text-slate-600">
                     Already have an account?{" "}
-                    <a href="#" className="font-semibold text-blue-700 hover:text-blue-800">
+                    <a
+                      href="#"
+                      className="font-semibold text-blue-700 hover:text-blue-800"
+                    >
                       Login here
                     </a>
                   </p>
