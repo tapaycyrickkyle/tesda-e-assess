@@ -1,4 +1,4 @@
-const navItems = ["Home", "Courses", "About"];
+const navItems = ["Home", "About", "Programs"];
 
 function MortarboardIcon() {
   return (
@@ -11,12 +11,11 @@ function MortarboardIcon() {
     </svg>
   );
 }
-
 import React from "react";
 
 const Navbar = () => {
   return (
-    <header className="border-b border-slate-200 bg-white/95 backdrop-blur">
+    <header className="border-b border-slate-200 bg-white/95 backdrop-blur fixed z-9999 w-full">
       <div className="flex w-full items-center justify-between px-2 py-4 md:px-10 lg:px-20">
         <div className="flex items-center gap-3 text-blue-700">
           <MortarboardIcon />
@@ -33,8 +32,8 @@ const Navbar = () => {
           ))}
         </nav>
 
-        <button className="rounded-2xl bg-blue-700 px-9 py-3 text-xl font-semibold text-white shadow-sm transition hover:bg-blue-800">
-          Login
+        <button className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800">
+          Apply Now
         </button>
       </div>
     </header>
