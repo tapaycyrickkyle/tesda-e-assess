@@ -1,13 +1,13 @@
 import React from "react";
-import StudentRegistrationPage from "./pages/studentRegistration/StudentRegistrationPage";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import LandingPage from "./pages/landing/LandingPage";
 
 const App = () => {
   return (
     <>
       <Navbar />
-      <StudentRegistrationPage />
+      <LandingPage />
       <Footer />
     </>
   );
