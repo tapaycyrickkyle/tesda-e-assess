@@ -1,0 +1,33 @@
+.registration-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.registration-pattern::before,
+.registration-pattern::after {
+  content: "";
+  position: absolute;
+  width: 7.75rem;
+  height: 7.75rem;
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.registration-pattern::before {
+  right: 6.5rem;
+  bottom: 5rem;
+  box-shadow:
+    9.75rem 0 0 rgba(255, 255, 255, 0.11),
+    0 9.75rem 0 rgba(255, 255, 255, 0.11),
+    9.75rem 9.75rem 0 rgba(255, 255, 255, 0.11);
+}
+
+.registration-pattern::after {
+  right: -3.25rem;
+  bottom: -3.25rem;
+  background: rgba(255, 255, 255, 0.08);
+}
