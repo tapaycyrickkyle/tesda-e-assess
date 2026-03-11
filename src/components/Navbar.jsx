@@ -1,4 +1,11 @@
-const navItems = ["Home", "About", "Programs"];
+import React, { useEffect, useState } from "react";
+
+const navItems = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Programs", href: "#programs" },
+  { label: "Staff", href: "#staff" },
+];
 
 function MortarboardIcon() {
   return (
@@ -11,9 +18,43 @@ function MortarboardIcon() {
     </svg>
   );
 }
-import React from "react";
 
 const Navbar = () => {
+  const [activeSection, setActiveSection] = useState("home");
+
+  useEffect(() => {
+    const sectionIds = navItems.map((item) => item.href.replace("#", ""));
+
+    const updateActiveSection = () => {
+      const scrollPosition = window.scrollY + 140;
+      let currentSection = sectionIds[0];
+
+      for (const id of sectionIds) {
+        const section = document.getElementById(id);
+        if (!section) continue;
+
+        const top = section.offsetTop;
+        const bottom = top + section.offsetHeight;
+
+        if (scrollPosition >= top && scrollPosition < bottom) {
+          currentSection = id;
+          break;
+        }
+
+        if (scrollPosition >= top) {
+          currentSection = id;
+        }
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+
+    return () => window.removeEventListener("scroll", updateActiveSection);
+  }, []);
+
   return (
     <header className="border-b border-slate-200 bg-white/95 backdrop-blur fixed z-9999 w-full">
       <div className="flex w-full items-center justify-between px-2 py-4 md:px-10 lg:px-20">
@@ -26,15 +67,26 @@ const Navbar = () => {
 
         <nav className="hidden items-center gap-8 text-[1.2rem] font-medium text-slate-700 md:flex">
           {navItems.map((item) => (
-            <a key={item} href="#" className="transition hover:text-blue-700">
-              {item}
+            <a
+              key={item.label}
+              href={item.href}
+              className={`transition hover:text-blue-700 ${
+                activeSection === item.href.replace("#", "")
+                  ? "font-semibold text-blue-700"
+                  : ""
+              }`}
+            >
+              {item.label}
             </a>
           ))}
         </nav>
 
-        <button className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800">
+        <a
+          href="#programs"
+          className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800"
+        >
           Apply Now
-        </button>
+        </a>
       </div>
     </header>
   );

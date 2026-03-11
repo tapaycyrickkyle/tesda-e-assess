@@ -133,7 +133,7 @@ function ServiceIcon({ type }) {
 
   if (type === "shield") {
     return (
-      <svg aria-hidden="true" viewBox="0 0 24 24" className={baseClass}>
+      <svg aria-hidden="true" viewBox="0 0 25 25" className={baseClass}>
         <path d="M12 2.5 4.5 5.2v5.83c0 4.3 2.7 8.2 6.76 9.8a2.03 2.03 0 0 0 1.48 0c4.06-1.6 6.76-5.5 6.76-9.8V5.2L12 2.5Zm-.9 12.25-2.7-2.7 1.05-1.05 1.65 1.66 3.45-3.45 1.05 1.05-4.5 4.5Z" />
       </svg>
     );
@@ -165,7 +165,7 @@ function ServiceIcon({ type }) {
 const LandingPage = () => {
   return (
     <main className="bg-[#f3f4f6] text-slate-900 pt-20 sm:pt-25 lg:pt-30">
-      <section className="border-b border-slate-200">
+      <section id="home" className="scroll-mt-28 border-b border-slate-200">
         <div className="mx-auto w-full max-w-[1280px] px-6 pb-16 pt-14 md:px-12 lg:px-16 lg:pb-24">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
             <div>
@@ -224,7 +224,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section>
+      <section id="about" className="scroll-mt-28">
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="text-center">
             <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
@@ -257,7 +257,10 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="border-y border-slate-200 bg-[#f8fafc]">
+      <section
+        id="programs"
+        className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
+      >
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -319,7 +322,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section>
+      <section id="staff" className="scroll-mt-28">
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="text-center">
             <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
