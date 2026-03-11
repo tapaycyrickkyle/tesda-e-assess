@@ -168,11 +168,11 @@ const TeacherDashboardPage = () => {
       <main className="mx-auto mb-14 w-full max-w-screen-2xl flex-1 px-4 py-8 sm:px-3">
         <div className="mb-5 mt-4 text-start">
           <Link
-            to="/login"
+            to="/registration-type"
             className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-700"
           >
             <span aria-hidden="true">&larr;</span>
-            Back to Login
+            Back to Registration Page
           </Link>
         </div>
 
