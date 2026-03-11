@@ -86,7 +86,7 @@ const Navbar = () => {
           to="/registration-type"
           className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800"
         >
-          Apply Now
+          Login
         </Link>
       </div>
     </header>

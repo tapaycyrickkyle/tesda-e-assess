@@ -171,198 +171,200 @@ const LandingPage = () => {
       <Navbar />
       <main className="bg-[#f3f4f6] text-slate-900 pt-20 sm:pt-25 lg:pt-30">
         <section id="home" className="scroll-mt-28 border-b border-slate-200">
-        <div className="mx-auto w-full max-w-[1280px] px-6 pb-16 pt-14 md:px-12 lg:px-16 lg:pb-24">
-          <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.11em] text-blue-700">
-                <GearIcon />
-                Government Certified Education
-              </span>
+          <div className="mx-auto w-full max-w-[1280px] px-6 pb-16 pt-14 md:px-12 lg:px-16 lg:pb-24">
+            <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
+              <div>
+                <span className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.11em] text-blue-700">
+                  <GearIcon />
+                  Government Certified Education
+                </span>
 
-              <h1 className="mt-8 max-w-xl text-5xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
-                Empowering Skills for a{" "}
-                <span className="text-blue-700">Better Future</span>
-              </h1>
+                <h1 className="mt-8 max-w-xl text-5xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
+                  Empowering Skills for a{" "}
+                  <span className="text-blue-700">Better Future</span>
+                </h1>
 
-              <p className="mt-7 max-w-xl text-[18px] leading-8 text-slate-600">
-                The Technical Education and Skills Development Authority (TESDA)
-                provides direction, policies, programs and standards towards
-                quality technical education and skills development.
-              </p>
+                <p className="mt-7 max-w-xl text-[18px] leading-8 text-slate-600">
+                  The Technical Education and Skills Development Authority
+                  (TESDA) provides direction, policies, programs and standards
+                  towards quality technical education and skills development.
+                </p>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link
-                  to="/registration-type"
-                  className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800"
-                >
-                  Apply Now
-                </Link>
-                <button className="rounded-xl border border-slate-300 bg-white px-8 py-4 text-[1.2rem] font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
-                  Learn More
-                </button>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="overflow-hidden rounded-2xl border-[3px] border-white shadow-[0_18px_35px_rgba(15,23,42,0.16)]">
-                <img
-                  src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
-                  alt="Industrial training equipment"
-                  className="h-[360px] w-full object-cover lg:h-[390px]"
-                />
+                <div className="mt-10 flex flex-wrap items-center gap-4">
+                  <Link
+                    to="/registration-type"
+                    className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800"
+                  >
+                    Login
+                  </Link>
+                  <button className="cursor-pointer rounded-xl border border-slate-300 bg-white px-8 py-4 text-[1.2rem] font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
+                    Learn More
+                  </button>
+                </div>
               </div>
 
-              <div className="absolute -bottom-7 left-8 rounded-2xl bg-white px-6 py-5 shadow-[0_14px_28px_rgba(15,23,42,0.15)]">
-                <div className="flex items-center gap-4">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
-                    <SparkIcon />
-                  </span>
-                  <div>
-                    <p className="text-3xl font-bold leading-none text-blue-700">
-                      1M+
-                    </p>
-                    <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
-                      Certified Graduates
-                    </p>
+              <div className="relative">
+                <div className="overflow-hidden rounded-2xl border-[3px] border-white shadow-[0_18px_35px_rgba(15,23,42,0.16)]">
+                  <img
+                    src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
+                    alt="Industrial training equipment"
+                    className="h-[360px] w-full object-cover lg:h-[390px]"
+                  />
+                </div>
+
+                <div className="absolute -bottom-7 left-8 rounded-2xl bg-white px-6 py-5 shadow-[0_14px_28px_rgba(15,23,42,0.15)]">
+                  <div className="flex items-center gap-4">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
+                      <SparkIcon />
+                    </span>
+                    <div>
+                      <p className="text-3xl font-bold leading-none text-blue-700">
+                        1M+
+                      </p>
+                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                        Certified Graduates
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         </section>
 
         <section id="about" className="scroll-mt-28">
-        <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
-          <div className="text-center">
-            <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
-              About TESDA
-            </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-[16px] leading-7 text-slate-500">
-              We are committed to providing accessible and high-quality
-              technical education across the nation.
-            </p>
-          </div>
+          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+            <div className="text-center">
+              <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+                About TESDA
+              </h2>
+              <p className="mx-auto mt-4 max-w-3xl text-[16px] leading-7 text-slate-500">
+                We are committed to providing accessible and high-quality
+                technical education across the nation.
+              </p>
+            </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {serviceCards.map((card) => (
-              <article
-                key={card.title}
-                className="rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_8px_20px_rgba(15,23,42,0.03)]"
-              >
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-                  <ServiceIcon type={card.icon} />
-                </span>
-                <h3 className="mt-7 text-[22px] font-semibold text-slate-900">
-                  {card.title}
-                </h3>
-                <p className="mt-4 text-[15px] leading-7 text-slate-500">
-                  {card.description}
-                </p>
-              </article>
-            ))}
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+              {serviceCards.map((card) => (
+                <article
+                  key={card.title}
+                  className="rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_8px_20px_rgba(15,23,42,0.03)]"
+                >
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                    <ServiceIcon type={card.icon} />
+                  </span>
+                  <h3 className="mt-7 text-[22px] font-semibold text-slate-900">
+                    {card.title}
+                  </h3>
+                  <p className="mt-4 text-[15px] leading-7 text-slate-500">
+                    {card.description}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
         </section>
 
         <section
           id="programs"
           className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
         >
-        <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
-                Flagship Programs
-              </h2>
-              <p className="mt-3 text-[16px] leading-7 text-slate-500">
-                Explore our most sought-after technical-vocational courses.
-              </p>
+          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+                  Flagship Programs
+                </h2>
+                <p className="mt-3 text-[16px] leading-7 text-slate-500">
+                  Explore our most sought-after technical-vocational courses.
+                </p>
+              </div>
+
+              <a
+                href="#"
+                className="inline-flex items-center gap-2 text-[15px] font-semibold text-blue-700 transition hover:text-blue-800"
+              >
+                View all programs
+                <span aria-hidden="true">&rarr;</span>
+              </a>
             </div>
 
-            <a
-              href="#"
-              className="inline-flex items-center gap-2 text-[15px] font-semibold text-blue-700 transition hover:text-blue-800"
-            >
-              View all programs
-              <span aria-hidden="true">&rarr;</span>
-            </a>
-          </div>
-
-          <div className="mt-11 grid gap-7 lg:grid-cols-3">
-            {programCards.map((program) => (
-              <article
-                key={program.title}
-                className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.05)]"
-              >
-                <img
-                  src={program.image}
-                  alt={program.title}
-                  className="h-[205px] w-full object-cover"
-                />
-                <div className="flex flex-1 flex-col p-6">
-                  <p
-                    className={`text-[10px] font-bold uppercase tracking-[0.18em] ${program.color}`}
-                  >
-                    {program.tag}
-                  </p>
-                  <h3 className="mt-4 text-[31px] font-semibold leading-tight text-slate-900">
-                    {program.title}
-                  </h3>
-                  <p className="mt-4 text-[15px] leading-7 text-slate-500">
-                    {program.description}
-                  </p>
-                  <div className="mt-auto pt-7 flex flex-col gap-2 text-[13px] sm:flex-row sm:items-center sm:justify-between sm:text-[14px]">
-                    <span className="font-medium text-slate-400">
-                      {program.duration}
-                    </span>
-                    <a
-                      href="#"
-                      className="self-start font-semibold text-blue-700 transition hover:text-blue-800 sm:self-auto"
+            <div className="mt-11 grid gap-7 lg:grid-cols-3">
+              {programCards.map((program) => (
+                <article
+                  key={program.title}
+                  className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_20px_rgba(15,23,42,0.05)]"
+                >
+                  <img
+                    src={program.image}
+                    alt={program.title}
+                    className="h-[205px] w-full object-cover"
+                  />
+                  <div className="flex flex-1 flex-col p-6">
+                    <p
+                      className={`text-[10px] font-bold uppercase tracking-[0.18em] ${program.color}`}
                     >
-                      Apply Now
-                    </a>
+                      {program.tag}
+                    </p>
+                    <h3 className="mt-4 text-[31px] font-semibold leading-tight text-slate-900">
+                      {program.title}
+                    </h3>
+                    <p className="mt-4 text-[15px] leading-7 text-slate-500">
+                      {program.description}
+                    </p>
+                    <div className="mt-auto pt-7 flex flex-col gap-2 text-[13px] sm:flex-row sm:items-center sm:justify-between sm:text-[14px]">
+                      <span className="font-medium text-slate-400">
+                        {program.duration}
+                      </span>
+                      <a
+                        href="#"
+                        className="self-start font-semibold text-blue-700 transition hover:text-blue-800 sm:self-auto"
+                      >
+                        Apply Now
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
         </section>
 
         <section id="staff" className="scroll-mt-28">
-        <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
-          <div className="text-center">
-            <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
-              Leadership & Staff
-            </h2>
-            <p className="mx-auto mt-4 max-w-4xl text-[16px] leading-7 text-slate-500">
-              The dedicated professionals steering the future of technical
-              education in the Philippines.
-            </p>
-          </div>
+          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+            <div className="text-center">
+              <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+                Leadership & Staff
+              </h2>
+              <p className="mx-auto mt-4 max-w-4xl text-[16px] leading-7 text-slate-500">
+                The dedicated professionals steering the future of technical
+                education in the Philippines.
+              </p>
+            </div>
 
-          <div className="mt-13 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {staffMembers.map((member) => (
-              <article key={member.name} className="text-center">
-                <div className="mx-auto h-[156px] w-[156px] overflow-hidden rounded-full border-[3px] border-white shadow-[0_8px_20px_rgba(15,23,42,0.15)]">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <p className="mt-5 text-[17px] text-slate-900">{member.role}</p>
-                <p className="mt-1 text-[15px] font-semibold uppercase tracking-[0.05em] text-blue-800">
-                  {member.name}
-                </p>
-                <p className="mt-1 text-[13px] text-slate-500">
-                  {member.office}
-                </p>
-              </article>
-            ))}
+            <div className="mt-13 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+              {staffMembers.map((member) => (
+                <article key={member.name} className="text-center">
+                  <div className="mx-auto h-[156px] w-[156px] overflow-hidden rounded-full border-[3px] border-white shadow-[0_8px_20px_rgba(15,23,42,0.15)]">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <p className="mt-5 text-[17px] text-slate-900">
+                    {member.role}
+                  </p>
+                  <p className="mt-1 text-[15px] font-semibold uppercase tracking-[0.05em] text-blue-800">
+                    {member.name}
+                  </p>
+                  <p className="mt-1 text-[13px] text-slate-500">
+                    {member.office}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
-        </div>
         </section>
       </main>
       <Footer />
