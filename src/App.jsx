@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/landing/LandingPage";
+import LoginPage from "./pages/login/LoginPage";
 import RegistrationTypePage from "./pages/registrationType/RegistrationTypePage";
 import StudentRegistration from "./pages/studentRegistration/StudentRegistrationPage";
 
@@ -9,6 +10,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/landing" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/registration-type" element={<RegistrationTypePage />} />
       <Route path="/applicant-registration" element={<StudentRegistration />} />
       <Route path="*" element={<Navigate to="/" replace />} />
