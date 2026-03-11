@@ -57,8 +57,8 @@ const Navbar = () => {
   }, []);
 
   return (
-    <header className="border-b border-slate-200 bg-white/95 backdrop-blur fixed z-9999 w-full">
-      <div className="flex w-full items-center justify-between px-2 py-4 md:px-10 lg:px-20">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 md:px-10">
         <div className="flex items-center gap-3 text-blue-700">
           <MortarboardIcon />
           <span className="text-[1.8rem] font-bold tracking-tight">
@@ -66,7 +66,7 @@ const Navbar = () => {
           </span>
         </div>
 
-        <nav className="hidden items-center gap-8 text-[1.2rem] font-medium text-slate-700 md:flex">
+        <nav className="flex flex-wrap items-center gap-4 text-[1rem] font-medium text-slate-700 sm:gap-6 sm:text-[1.1rem] md:gap-8 md:text-[1.2rem]">
           {navItems.map((item) => (
             <a
               key={item.label}
@@ -84,7 +84,7 @@ const Navbar = () => {
 
         <Link
           to="/login"
-          className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800"
+          className="rounded-xl bg-blue-700 px-6 py-3 text-[1rem] font-semibold text-white shadow-sm transition hover:bg-blue-800 sm:px-8 sm:py-4 sm:text-[1.2rem]"
         >
           Login
         </Link>
