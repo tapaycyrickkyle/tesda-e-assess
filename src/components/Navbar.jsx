@@ -12,21 +12,19 @@ function MortarboardIcon() {
   );
 }
 
-const RegistrationTypeNavbar = () => {
+const Navbar = () => {
   return (
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex w-full max-w-[1360px] items-center justify-between px-6 py-4 md:px-10">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-3 text-blue-700">
-            <MortarboardIcon />
-            <span className="text-[1.8rem] font-bold tracking-tight">
-              TESDA E-Assess
-            </span>
-          </div>
+        <div className="flex items-center gap-3 text-blue-700">
+          <MortarboardIcon />
+          <span className="text-[1.8rem] font-bold tracking-tight">
+            TESDA E-Assess
+          </span>
         </div>
       </div>
     </header>
   );
 };
 
-export default RegistrationTypeNavbar;
+export default Navbar;

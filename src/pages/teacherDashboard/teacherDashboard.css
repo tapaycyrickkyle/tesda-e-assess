@@ -1,0 +1,76 @@
+.teacher-portal-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.teacher-portal-pattern {
+  background: rgba(255, 255, 255, 0.08);
+  clip-path: polygon(
+    10% 92%,
+    10% 84%,
+    25% 84%,
+    25% 44%,
+    36% 44%,
+    36% 84%,
+    46% 84%,
+    46% 44%,
+    57% 44%,
+    57% 84%,
+    67% 84%,
+    67% 44%,
+    78% 44%,
+    78% 84%,
+    92% 84%,
+    92% 92%,
+    10% 92%,
+    10% 30%,
+    50% 8%,
+    92% 30%,
+    92% 40%,
+    10% 40%
+  );
+  opacity: 0.7;
+}
+
+.teacher-portal-pattern::before,
+.teacher-portal-pattern::after {
+  content: "";
+  position: absolute;
+}
+
+.teacher-portal-pattern::before {
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 25%,
+      rgba(37, 99, 235, 0.36) 25% 36%,
+      transparent 36% 46%,
+      rgba(37, 99, 235, 0.36) 46% 57%,
+      transparent 57% 67%,
+      rgba(37, 99, 235, 0.36) 67% 78%,
+      transparent 78%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0 44%,
+      rgba(37, 99, 235, 0.3) 44% 84%,
+      transparent 84%
+    );
+  clip-path: polygon(22% 44%, 81% 44%, 81% 84%, 22% 84%);
+}
+
+.teacher-portal-pattern::after {
+  inset: 0;
+  background: rgba(37, 99, 235, 0.34);
+  clip-path: polygon(10% 88%, 92% 88%, 92% 97%, 10% 97%);
+}
+
+.teacher-field::placeholder {
+  color: #64748b;
+}

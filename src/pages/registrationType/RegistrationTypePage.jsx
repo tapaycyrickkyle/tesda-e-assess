@@ -47,7 +47,7 @@ const RegistrationTypePage = () => {
           </div>
 
           <div className="mt-14 grid gap-7 lg:grid-cols-2">
-            <Link to="/" className={cardClassName}>
+            <Link to="/teacher-registration" className={cardClassName}>
               <span className="inline-flex h-17 w-17 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
                 <TeacherIcon />
               </span>
