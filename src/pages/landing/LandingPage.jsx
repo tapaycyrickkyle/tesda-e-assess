@@ -169,35 +169,35 @@ const LandingPage = () => {
   return (
     <>
       <Navbar />
-      <main className="bg-[#f3f4f6] text-slate-900 pt-20 sm:pt-25 lg:pt-30">
+      <main className="bg-[#f3f4f6] pt-32 text-slate-900 sm:pt-28 lg:pt-30">
         <section id="home" className="scroll-mt-28 border-b border-slate-200">
-          <div className="mx-auto w-full max-w-[1280px] px-6 pb-16 pt-14 md:px-12 lg:px-16 lg:pb-24">
+          <div className="mx-auto w-full max-w-[1280px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 md:px-12 lg:px-16 lg:pb-24">
             <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.11em] text-blue-700">
+                <span className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-blue-700 sm:px-4 sm:py-2 sm:text-[11px]">
                   <GearIcon />
                   Government Certified Education
                 </span>
 
-                <h1 className="mt-8 max-w-xl text-5xl font-bold leading-[1.05] tracking-tight text-slate-900 md:text-6xl">
+                <h1 className="mt-6 max-w-xl text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:mt-8 sm:text-5xl md:text-6xl">
                   Empowering Skills for a{" "}
                   <span className="text-blue-700">Better Future</span>
                 </h1>
 
-                <p className="mt-7 max-w-xl text-[18px] leading-8 text-slate-600">
+                <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:mt-7 sm:text-[18px] sm:leading-8">
                   The Technical Education and Skills Development Authority
                   (TESDA) provides direction, policies, programs and standards
                   towards quality technical education and skills development.
                 </p>
 
-                <div className="mt-10 flex flex-wrap items-center gap-4">
+                <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4">
                   <Link
                     to="/login"
-                    className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800"
+                    className="w-full rounded-xl bg-blue-700 px-8 py-3 text-center text-base font-semibold text-white transition hover:bg-blue-800 sm:w-auto sm:py-4 sm:text-[1.2rem]"
                   >
                     Login
                   </Link>
-                  <button className="cursor-pointer rounded-xl border border-slate-300 bg-white px-8 py-4 text-[1.2rem] font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
+                  <button className="cursor-pointer w-full rounded-xl border border-slate-300 bg-white px-8 py-3 text-base font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 sm:w-auto sm:py-4 sm:text-[1.2rem]">
                     Learn More
                   </button>
                 </div>
@@ -208,11 +208,11 @@ const LandingPage = () => {
                   <img
                     src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80"
                     alt="Industrial training equipment"
-                    className="h-[360px] w-full object-cover lg:h-[390px]"
+                    className="h-60 w-full object-cover sm:h-[320px] lg:h-[390px]"
                   />
                 </div>
 
-                <div className="absolute -bottom-7 left-8 rounded-2xl bg-white px-6 py-5 shadow-[0_14px_28px_rgba(15,23,42,0.15)]">
+                <div className="absolute -bottom-6 left-4 rounded-2xl bg-white px-5 py-4 shadow-[0_14px_28px_rgba(15,23,42,0.15)] sm:-bottom-7 sm:left-8 sm:px-6 sm:py-5">
                   <div className="flex items-center gap-4">
                     <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700">
                       <SparkIcon />
@@ -233,9 +233,9 @@ const LandingPage = () => {
         </section>
 
         <section id="about" className="scroll-mt-28">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
             <div className="text-center">
-              <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
                 About TESDA
               </h2>
               <p className="mx-auto mt-4 max-w-3xl text-[16px] leading-7 text-slate-500">
@@ -269,10 +269,10 @@ const LandingPage = () => {
           id="programs"
           className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
         >
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+                <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
                   Flagship Programs
                 </h2>
                 <p className="mt-3 text-[16px] leading-7 text-slate-500">
@@ -306,7 +306,7 @@ const LandingPage = () => {
                     >
                       {program.tag}
                     </p>
-                    <h3 className="mt-4 text-[31px] font-semibold leading-tight text-slate-900">
+                    <h3 className="mt-4 text-2xl font-semibold leading-tight text-slate-900 sm:text-[31px]">
                       {program.title}
                     </h3>
                     <p className="mt-4 text-[15px] leading-7 text-slate-500">
@@ -331,9 +331,9 @@ const LandingPage = () => {
         </section>
 
         <section id="staff" className="scroll-mt-28">
-          <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
+          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
             <div className="text-center">
-              <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
+              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
                 Leadership & Staff
               </h2>
               <p className="mx-auto mt-4 max-w-4xl text-[16px] leading-7 text-slate-500">
@@ -345,7 +345,7 @@ const LandingPage = () => {
             <div className="mt-13 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
               {staffMembers.map((member) => (
                 <article key={member.name} className="text-center">
-                  <div className="mx-auto h-[156px] w-[156px] overflow-hidden rounded-full border-[3px] border-white shadow-[0_8px_20px_rgba(15,23,42,0.15)]">
+                  <div className="mx-auto h-[132px] w-[132px] overflow-hidden rounded-full border-[3px] border-white shadow-[0_8px_20px_rgba(15,23,42,0.15)] sm:h-[156px] sm:w-[156px]">
                     <img
                       src={member.image}
                       alt={member.name}

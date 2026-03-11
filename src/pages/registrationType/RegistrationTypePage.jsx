@@ -28,53 +28,53 @@ function ApplicantIcon() {
 }
 
 const cardClassName =
-  "group rounded-2xl border border-slate-300 bg-white p-8 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)]";
+  "group rounded-2xl border border-slate-300 bg-white p-6 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)] sm:p-8";
 
 const RegistrationTypePage = () => {
   return (
     <div className="min-h-screen bg-[#f3f5f7]">
       <Navbar />
-      <main className="px-6 py-20 md:px-10">
+      <main className="px-4 py-12 sm:px-6 sm:py-16 md:px-10 md:py-20">
         <div className="mx-auto w-full max-w-[980px]">
           <div className="text-center">
-            <h1 className="text-[44px] font-bold tracking-tight text-slate-900 md:text-[3rem]">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-[3rem]">
               Choose Registration Type
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-8 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-[17px] sm:leading-8">
               Please select how you want to register to access our specialized
               tools and resources.
             </p>
           </div>
 
-          <div className="mt-14 grid gap-7 lg:grid-cols-2">
+          <div className="mt-10 grid gap-6 sm:mt-12 lg:mt-14 lg:grid-cols-2">
             <Link to="/teacher-registration" className={cardClassName}>
-              <span className="inline-flex h-17 w-17 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 sm:h-17 sm:w-17">
                 <TeacherIcon />
               </span>
-              <h2 className="mt-8 text-[17px] font-semibold tracking-tight text-slate-900 md:text-[2.3rem]">
+              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2.3rem]">
                 Register as Teacher
               </h2>
-              <p className="mt-6 text-[17px] leading-9 text-slate-600">
+              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-[17px] sm:leading-9">
                 Create an account as a teacher to manage assessments, create
                 evaluation metrics, and view applicant records.
               </p>
-              <p className="mt-7 text-[17px] font-semibold text-blue-700 group-hover:text-blue-800">
+              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-[17px]">
                 Get started as an Educator
               </p>
             </Link>
 
             <Link to="/applicant-registration" className={cardClassName}>
-              <span className="inline-flex h-17 w-17 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 sm:h-17 sm:w-17">
                 <ApplicantIcon />
               </span>
-              <h2 className="mt-8 text-[37px] font-semibold tracking-tight text-slate-900 md:text-[2.3rem]">
+              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2.3rem]">
                 Register as Applicant
               </h2>
-              <p className="mt-6 text-[17px] leading-9 text-slate-600">
+              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-[17px] sm:leading-9">
                 Create an account as an applicant to apply for assessments,
                 track your application status, and download certificates.
               </p>
-              <p className="mt-7 text-[17px] font-semibold text-blue-700 group-hover:text-blue-800">
+              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-[17px]">
                 Get started as an Applicant
               </p>
             </Link>

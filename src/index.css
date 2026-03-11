@@ -2,12 +2,19 @@
 @import "tailwindcss";
 
 html {
-  font-size: 12px;
+  font-size: 14px;
   scroll-behavior: smooth;
 }
 
 body {
   font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 button,
@@ -15,4 +22,11 @@ input,
 select,
 textarea {
   font-family: inherit;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
 }
