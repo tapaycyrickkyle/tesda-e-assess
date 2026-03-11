@@ -1,5 +1,8 @@
 import React from "react";
 import "./studentRegistration.css";
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const fieldBaseClass =
   "w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-lg text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
@@ -24,7 +27,17 @@ function UserCircleIcon() {
 const StudentRegistrationPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-slate-100 text-slate-900">
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-10 sm:px-3 lg:px-3 lg:py-14">
+      <Navbar />
+      <main className="mx-auto mb-14 w-full max-w-7xl flex-1 px-4 py-10 sm:px-3 lg:px-3 lg:py-8">
+        <div className="mt-12 mb-5 text-start">
+          <Link
+            to="/registration-type"
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-400"
+          >
+            <span aria-hidden="true">&larr;</span>
+            Back to Registration Type
+          </Link>
+        </div>
         <section className="overflow-hidden rounded-[30px] bg-white shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
           <div className="grid min-h-[760px] lg:grid-cols-[0.82fr_1.18fr]">
             <aside className="registration-panel relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-blue-700 px-8 py-10 text-white sm:px-12 sm:py-14 lg:min-h-full lg:px-14 lg:py-16">
@@ -157,6 +170,7 @@ const StudentRegistrationPage = () => {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 };
