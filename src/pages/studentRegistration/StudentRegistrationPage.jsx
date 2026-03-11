@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
 const fieldBaseClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-lg text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
+  "w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-xl text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
 
 function UserCircleIcon() {
   return (
@@ -28,11 +28,11 @@ const StudentRegistrationPage = () => {
   return (
     <div className="flex min-h-screen flex-col bg-slate-100 text-slate-900">
       <Navbar />
-      <main className="mx-auto mb-14 w-full max-w-7xl flex-1 px-4 py-10 sm:px-3 lg:px-3 lg:py-8">
-        <div className="mt-12 mb-5 text-start">
+      <main className="mx-auto mb-14 w-full max-w-screen-2xl flex-1 px-4 py-8 sm:px-3">
+        <div className="mt-4 mb-5 text-start">
           <Link
             to="/registration-type"
-            className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-400"
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-700"
           >
             <span aria-hidden="true">&larr;</span>
             Back to Registration Type
@@ -68,7 +68,7 @@ const StudentRegistrationPage = () => {
 
                 <form className="mt-12 space-y-6">
                   <label className="block">
-                    <span className="mb-3 block text-lg font-semibold text-slate-700">
+                    <span className="mb-3 block text-xl font-semibold text-slate-700">
                       Full Name
                     </span>
                     <input
@@ -80,7 +80,7 @@ const StudentRegistrationPage = () => {
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="block">
-                      <span className="mb-3 block text-lg font-semibold text-slate-700">
+                      <span className="mb-3 block text-xl font-semibold text-slate-700">
                         Email Address
                       </span>
                       <input
@@ -91,7 +91,7 @@ const StudentRegistrationPage = () => {
                     </label>
 
                     <label className="block">
-                      <span className="mb-3 block text-lg font-semibold text-slate-700">
+                      <span className="mb-3 block text-xl font-semibold text-slate-700">
                         Contact Number
                       </span>
                       <input
@@ -103,7 +103,7 @@ const StudentRegistrationPage = () => {
                   </div>
 
                   <label className="block">
-                    <span className="mb-3 block text-lg font-semibold text-slate-700">
+                    <span className="mb-3 block text-xl font-semibold text-slate-700">
                       Residential Address
                     </span>
                     <input
@@ -114,7 +114,7 @@ const StudentRegistrationPage = () => {
                   </label>
 
                   <label className="block">
-                    <span className="mb-3 block text-lg font-semibold text-slate-700">
+                    <span className="mb-3 block text-xl font-semibold text-slate-700">
                       Last School Attended
                     </span>
                     <input
@@ -126,7 +126,7 @@ const StudentRegistrationPage = () => {
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="block">
-                      <span className="mb-3 block text-lg font-semibold text-slate-700">
+                      <span className="mb-3 block text-xl font-semibold text-slate-700">
                         Password
                       </span>
                       <input
@@ -137,7 +137,7 @@ const StudentRegistrationPage = () => {
                     </label>
 
                     <label className="block">
-                      <span className="mb-3 block text-lg font-semibold text-slate-700">
+                      <span className="mb-3 block text-xl font-semibold text-slate-700">
                         Confirm Password
                       </span>
                       <input
@@ -157,12 +157,12 @@ const StudentRegistrationPage = () => {
 
                   <p className="text-center text-lg text-slate-600">
                     Already have an account?{" "}
-                    <a
-                      href="#"
+                    <Link
+                      to="/login"
                       className="font-semibold text-blue-700 hover:text-blue-800"
                     >
                       Login here
-                    </a>
+                    </Link>
                   </p>
                 </form>
               </div>
