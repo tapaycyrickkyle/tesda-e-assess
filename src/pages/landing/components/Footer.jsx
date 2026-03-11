@@ -4,7 +4,7 @@ import "./footer.css";
 const Footer = () => {
   return (
     <footer className="bg-[#071733] text-slate-200">
-      <div className="mx-auto w-full max-w-[1280px] px-6 py-14 md:px-12 lg:px-16">
+      <div className="mx-auto w-full max-w-[1280px] px-4 py-10 sm:px-6 sm:py-12 md:px-12 lg:px-16 lg:py-14">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_1fr]">
           <div>
             <div className="flex items-center gap-3 text-white">
@@ -137,7 +137,7 @@ const Footer = () => {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 text-[12px] text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <p>&copy; 2024 TESDA. An official website of the Philippine Government.</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <a href="#" className="transition hover:text-slate-200">
               Privacy Policy
             </a>

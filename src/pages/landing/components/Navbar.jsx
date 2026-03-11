@@ -58,15 +58,15 @@ const Navbar = () => {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-[1360px] flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 md:px-10">
+      <div className="mx-auto flex w-full max-w-[1360px] flex-col items-start gap-3 px-4 py-3 sm:px-6 md:flex-row md:items-center md:justify-between md:gap-4 md:px-10 md:py-4">
         <div className="flex items-center gap-3 text-blue-700">
           <MortarboardIcon />
-          <span className="text-[1.8rem] font-bold tracking-tight">
+          <span className="text-[1.25rem] font-bold tracking-tight sm:text-[1.5rem] md:text-[1.6rem] lg:text-[1.8rem]">
             TESDA E-Assess
           </span>
         </div>
 
-        <nav className="flex flex-wrap items-center gap-4 text-[1rem] font-medium text-slate-700 sm:gap-6 sm:text-[1.1rem] md:gap-8 md:text-[1.2rem]">
+        <nav className="flex w-full flex-wrap items-center gap-3 text-[0.95rem] font-medium text-slate-700 sm:gap-5 sm:text-[1rem] md:w-auto md:gap-8 md:text-[1.1rem]">
           {navItems.map((item) => (
             <a
               key={item.label}
@@ -84,7 +84,7 @@ const Navbar = () => {
 
         <Link
           to="/login"
-          className="rounded-xl bg-blue-700 px-6 py-3 text-[1rem] font-semibold text-white shadow-sm transition hover:bg-blue-800 sm:px-8 sm:py-4 sm:text-[1.2rem]"
+          className="w-full rounded-xl bg-blue-700 px-5 py-2.5 text-center text-[0.95rem] font-semibold text-white shadow-sm transition hover:bg-blue-800 sm:w-auto sm:px-7 sm:py-3 sm:text-[1.05rem] md:px-8 md:py-4 md:text-[1.2rem]"
         >
           Login
         </Link>
