@@ -1,6 +1,7 @@
 import React from "react";
-import RegistrationTypeNavbar from "./components/RegistrationTypeNavbar";
-import RegistrationTypeFooter from "./components/RegistrationTypeFooter";
+import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 function TeacherIcon() {
   return (
@@ -27,16 +28,16 @@ function ApplicantIcon() {
 }
 
 const cardClassName =
-  "group rounded-2xl border border-slate-300 bg-white p-8 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)]";
+  "group rounded-2xl border border-slate-300 bg-white p-8 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)]";
 
 const RegistrationTypePage = () => {
   return (
     <div className="min-h-screen bg-[#f3f5f7]">
-      <RegistrationTypeNavbar />
+      <Navbar />
       <main className="px-6 py-20 md:px-10">
         <div className="mx-auto w-full max-w-[980px]">
           <div className="text-center">
-            <h1 className="text-[44px] font-bold tracking-tight text-slate-900 md:text-[4rem]">
+            <h1 className="text-[44px] font-bold tracking-tight text-slate-900 md:text-[3rem]">
               Choose Registration Type
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-8 text-slate-600">
@@ -46,7 +47,7 @@ const RegistrationTypePage = () => {
           </div>
 
           <div className="mt-14 grid gap-7 lg:grid-cols-2">
-            <a href="#" className={cardClassName}>
+            <Link to="/" className={cardClassName}>
               <span className="inline-flex h-17 w-17 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
                 <TeacherIcon />
               </span>
@@ -60,9 +61,9 @@ const RegistrationTypePage = () => {
               <p className="mt-7 text-[17px] font-semibold text-blue-700 group-hover:text-blue-800">
                 Get started as an Educator
               </p>
-            </a>
+            </Link>
 
-            <a href="#" className={cardClassName}>
+            <Link to="/applicant-registration" className={cardClassName}>
               <span className="inline-flex h-17 w-17 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
                 <ApplicantIcon />
               </span>
@@ -76,21 +77,21 @@ const RegistrationTypePage = () => {
               <p className="mt-7 text-[17px] font-semibold text-blue-700 group-hover:text-blue-800">
                 Get started as an Applicant
               </p>
-            </a>
+            </Link>
           </div>
 
           <div className="mt-12 text-center">
-            <a
-              href="#"
-              className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-slate-800"
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-400"
             >
               <span aria-hidden="true">&larr;</span>
-              Back to Login
-            </a>
+              Back to Home
+            </Link>
           </div>
         </div>
       </main>
-      <RegistrationTypeFooter />
+      <Footer />
     </div>
   );
 };

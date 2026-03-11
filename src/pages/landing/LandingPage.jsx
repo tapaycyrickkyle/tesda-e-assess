@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -190,9 +191,12 @@ const LandingPage = () => {
               </p>
 
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <button className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800">
+                <Link
+                  to="/registration-type"
+                  className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800"
+                >
                   Apply Now
-                </button>
+                </Link>
                 <button className="rounded-xl border border-slate-300 bg-white px-8 py-4 text-[1.2rem] font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50">
                   Learn More
                 </button>
