@@ -1,11 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Programs", href: "#programs" },
-  { label: "Staff", href: "#staff" },
-];
+import React from "react";
 
 function MortarboardIcon() {
   return (
@@ -19,77 +12,21 @@ function MortarboardIcon() {
   );
 }
 
-const Navbar = () => {
-  const [activeSection, setActiveSection] = useState("home");
-
-  useEffect(() => {
-    const sectionIds = navItems.map((item) => item.href.replace("#", ""));
-
-    const updateActiveSection = () => {
-      const scrollPosition = window.scrollY + 140;
-      let currentSection = sectionIds[0];
-
-      for (const id of sectionIds) {
-        const section = document.getElementById(id);
-        if (!section) continue;
-
-        const top = section.offsetTop;
-        const bottom = top + section.offsetHeight;
-
-        if (scrollPosition >= top && scrollPosition < bottom) {
-          currentSection = id;
-          break;
-        }
-
-        if (scrollPosition >= top) {
-          currentSection = id;
-        }
-      }
-
-      setActiveSection(currentSection);
-    };
-
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-
-    return () => window.removeEventListener("scroll", updateActiveSection);
-  }, []);
-
+const RegistrationTypeNavbar = () => {
   return (
-    <header className="border-b border-slate-200 bg-white/95 backdrop-blur fixed z-9999 w-full">
-      <div className="flex w-full items-center justify-between px-2 py-4 md:px-10 lg:px-20">
-        <div className="flex items-center gap-3 text-blue-700">
-          <MortarboardIcon />
-          <span className="text-[1.8rem] font-bold tracking-tight">
-            TESDA E-Assess
-          </span>
+    <header className="border-b border-slate-200 bg-white">
+      <div className="mx-auto flex w-full max-w-[1360px] items-center justify-between px-6 py-4 md:px-10">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 text-blue-700">
+            <MortarboardIcon />
+            <span className="text-[1.8rem] font-bold tracking-tight">
+              TESDA E-Assess
+            </span>
+          </div>
         </div>
-
-        <nav className="hidden items-center gap-8 text-[1.2rem] font-medium text-slate-700 md:flex">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`transition hover:text-blue-700 ${
-                activeSection === item.href.replace("#", "")
-                  ? "font-semibold text-blue-700"
-                  : ""
-              }`}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <a
-          href="#programs"
-          className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white shadow-sm transition hover:bg-blue-800"
-        >
-          Apply Now
-        </a>
       </div>
     </header>
   );
 };
 
-export default Navbar;
+export default RegistrationTypeNavbar;

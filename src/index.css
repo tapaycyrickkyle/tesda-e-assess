@@ -9,3 +9,10 @@ html {
 body {
   font-family: "Poppins", sans-serif;
 }
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
