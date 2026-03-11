@@ -5,93 +5,7 @@ import Footer from "../../components/Footer";
 import "./teacherDashboard.css";
 
 const fieldBaseClass =
-  "teacher-field w-full rounded-xl border border-slate-200 bg-white pl-14 pr-5 py-4 text-xl text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
-
-function UserIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M12 12.5a4.25 4.25 0 1 0 0-8.5 4.25 4.25 0 0 0 0 8.5Zm0 2.25c-4.3 0-7.5 2.21-7.5 5.25 0 .41.34.75.75.75h13.5a.75.75 0 0 0 .75-.75c0-3.04-3.2-5.25-7.5-5.25Z" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M4.25 5.5A2.25 2.25 0 0 0 2 7.75v8.5a2.25 2.25 0 0 0 2.25 2.25h15.5A2.25 2.25 0 0 0 22 16.25v-8.5A2.25 2.25 0 0 0 19.75 5.5H4.25Zm-.53 2.1 7.82 5.45a.75.75 0 0 0 .92 0l7.82-5.45v8.65a.75.75 0 0 1-.75.75H4.25a.75.75 0 0 1-.75-.75V7.6Z" />
-    </svg>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M7 2.75A2.25 2.25 0 0 0 4.75 5v14A2.25 2.25 0 0 0 7 21.25h10A2.25 2.25 0 0 0 19.25 19V5A2.25 2.25 0 0 0 17 2.75H7ZM12 18.5a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
-    </svg>
-  );
-}
-
-function BuildingIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M5 3.75A1.75 1.75 0 0 0 3.25 5.5v13A1.75 1.75 0 0 0 5 20.25h14a1.75 1.75 0 0 0 1.75-1.75V9.4a1.75 1.75 0 0 0-.57-1.29l-4.4-4.15a1.75 1.75 0 0 0-1.2-.46H5Zm1.5 2h6v4h4.75v9H6.5v-13Zm1.5 2.5v1.5h2v-1.5H8Zm0 3v1.5h2v-1.5H8Zm0 3v1.5h2v-1.5H8Zm4-6v1.5h2v-1.5h-2Zm0 3v1.5h2v-1.5h-2Zm0 3v1.5h2v-1.5h-2Z" />
-    </svg>
-  );
-}
-
-function DepartmentIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M11.47 3.34a.75.75 0 0 1 1.06 0l4.13 4.13a.75.75 0 0 1-.53 1.28h-2.38v3.5h3.5a.75.75 0 0 1 .75.75v4.75a.75.75 0 0 1-.75.75h-4.75a.75.75 0 0 1-.75-.75v-3.5h-3.5v3.5a.75.75 0 0 1-.75.75H4.75a.75.75 0 0 1-.75-.75V13a.75.75 0 0 1 .75-.75h3.5v-3.5H5.87a.75.75 0 0 1-.53-1.28l4.13-4.13a.75.75 0 0 1 1.06 0l.94.94.94-.94Z" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M12 2.75A4.75 4.75 0 0 0 7.25 7.5v2H6A2.25 2.25 0 0 0 3.75 11.75v8.5A2.25 2.25 0 0 0 6 22.5h12a2.25 2.25 0 0 0 2.25-2.25v-8.5A2.25 2.25 0 0 0 18 9.5h-1.25v-2A4.75 4.75 0 0 0 12 2.75Zm-3.25 6.5v-1.75a3.25 3.25 0 1 1 6.5 0v1.75h-6.5Z" />
-    </svg>
-  );
-}
-
-function RefreshLockIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-current"
-    >
-      <path d="M12.75 3a.75.75 0 0 1 0 1.5 6.75 6.75 0 1 0 6.12 9.6.75.75 0 0 1 1.37.6A8.25 8.25 0 1 1 12.75 3Z" />
-      <path d="M13 7.25A2.75 2.75 0 0 0 10.25 10v1H9.5A1.75 1.75 0 0 0 7.75 12.75v4.5A1.75 1.75 0 0 0 9.5 19h7a1.75 1.75 0 0 0 1.75-1.75v-4.5A1.75 1.75 0 0 0 16.5 11h-.75v-1A2.75 2.75 0 0 0 13 7.25Zm-1.25 3A1.25 1.25 0 1 1 14.25 10v1h-2.5v-1Z" />
-      <path d="M18.33 3.39a.75.75 0 0 1 1.06.07l1.73 1.98a.75.75 0 0 1-.07 1.06l-1.97 1.73a.75.75 0 1 1-.99-1.13l.61-.53h-2.95a.75.75 0 0 1 0-1.5h2.95l-.44-.5a.75.75 0 0 1 .07-1.06Z" />
-    </svg>
-  );
-}
+  "teacher-field w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-xl text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200";
 
 function ChevronDownIcon() {
   return (
@@ -145,18 +59,13 @@ function TeacherCircleIcon() {
   );
 }
 
-function FieldShell({ label, icon, children }) {
+function FieldShell({ label, children }) {
   return (
     <label className="block">
       <span className="mb-3 block text-xl font-semibold text-slate-700">
         {label}
       </span>
-      <div className="relative">
-        <span className="teacher-field-icon pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-          {icon}
-        </span>
-        {children}
-      </div>
+      {children}
     </label>
   );
 }
@@ -205,7 +114,7 @@ const TeacherDashboardPage = () => {
                 </p>
 
                 <form className="mt-12 space-y-6">
-                  <FieldShell label="Full Name" icon={<UserIcon />}>
+                  <FieldShell label="Full Name">
                     <input
                       type="text"
                       placeholder="Dela Cruz, Juan A."
@@ -214,7 +123,7 @@ const TeacherDashboardPage = () => {
                   </FieldShell>
 
                   <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="Email Address" icon={<MailIcon />}>
+                    <FieldShell label="Email Address">
                       <input
                         type="email"
                         placeholder="instructor@school.edu.ph"
@@ -222,7 +131,7 @@ const TeacherDashboardPage = () => {
                       />
                     </FieldShell>
 
-                    <FieldShell label="Contact Number" icon={<PhoneIcon />}>
+                    <FieldShell label="Contact Number">
                       <input
                         type="tel"
                         placeholder="0917 XXX XXXX"
@@ -232,7 +141,7 @@ const TeacherDashboardPage = () => {
                   </div>
 
                   <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="School Name" icon={<BuildingIcon />}>
+                    <FieldShell label="School Name">
                       <input
                         type="text"
                         placeholder="TESDA Technology Center"
@@ -240,7 +149,7 @@ const TeacherDashboardPage = () => {
                       />
                     </FieldShell>
 
-                    <FieldShell label="Department" icon={<DepartmentIcon />}>
+                    <FieldShell label="Department">
                       <div className="relative">
                         <select
                           defaultValue=""
@@ -262,7 +171,7 @@ const TeacherDashboardPage = () => {
                   </div>
 
                   <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="Password" icon={<LockIcon />}>
+                    <FieldShell label="Password">
                       <input
                         type="password"
                         placeholder="........"
@@ -270,10 +179,7 @@ const TeacherDashboardPage = () => {
                       />
                     </FieldShell>
 
-                    <FieldShell
-                      label="Confirm Password"
-                      icon={<RefreshLockIcon />}
-                    >
+                    <FieldShell label="Confirm Password">
                       <input
                         type="password"
                         placeholder="........"
