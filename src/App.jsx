@@ -1,15 +1,16 @@
 import React from "react";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/landing/LandingPage";
+import RegistrationTypePage from "./pages/registrationType/RegistrationTypePage";
 
 const App = () => {
   return (
-    <>
-      <Navbar />
-      <LandingPage />
-      <Footer />
-    </>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/landing" element={<LandingPage />} />
+      <Route path="/registration-type" element={<RegistrationTypePage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 };
 

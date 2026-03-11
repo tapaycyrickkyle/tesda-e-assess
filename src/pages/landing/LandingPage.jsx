@@ -1,4 +1,6 @@
 import React from "react";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const serviceCards = [
   {
@@ -164,8 +166,10 @@ function ServiceIcon({ type }) {
 
 const LandingPage = () => {
   return (
-    <main className="bg-[#f3f4f6] text-slate-900 pt-20 sm:pt-25 lg:pt-30">
-      <section id="home" className="scroll-mt-28 border-b border-slate-200">
+    <>
+      <Navbar />
+      <main className="bg-[#f3f4f6] text-slate-900 pt-20 sm:pt-25 lg:pt-30">
+        <section id="home" className="scroll-mt-28 border-b border-slate-200">
         <div className="mx-auto w-full max-w-[1280px] px-6 pb-16 pt-14 md:px-12 lg:px-16 lg:pb-24">
           <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
             <div>
@@ -222,9 +226,9 @@ const LandingPage = () => {
             </div>
           </div>
         </div>
-      </section>
+        </section>
 
-      <section id="about" className="scroll-mt-28">
+        <section id="about" className="scroll-mt-28">
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="text-center">
             <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
@@ -255,12 +259,12 @@ const LandingPage = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      <section
-        id="programs"
-        className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
-      >
+        <section
+          id="programs"
+          className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
+        >
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -320,9 +324,9 @@ const LandingPage = () => {
             ))}
           </div>
         </div>
-      </section>
+        </section>
 
-      <section id="staff" className="scroll-mt-28">
+        <section id="staff" className="scroll-mt-28">
         <div className="mx-auto w-full max-w-[1280px] px-6 py-18 md:px-12 lg:px-16">
           <div className="text-center">
             <h2 className="text-[44px] font-bold tracking-tight text-slate-900">
@@ -355,8 +359,10 @@ const LandingPage = () => {
             ))}
           </div>
         </div>
-      </section>
-    </main>
+        </section>
+      </main>
+      <Footer />
+    </>
   );
 };
 
