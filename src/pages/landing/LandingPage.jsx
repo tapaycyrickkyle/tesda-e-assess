@@ -192,7 +192,7 @@ const LandingPage = () => {
 
                 <div className="mt-10 flex flex-wrap items-center gap-4">
                   <Link
-                    to="/registration-type"
+                    to="/login"
                     className="rounded-xl bg-blue-700 px-8 py-4 text-[1.2rem] font-semibold text-white transition hover:bg-blue-800"
                   >
                     Login

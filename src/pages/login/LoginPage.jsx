@@ -1,5 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import "../studentRegistration/studentRegistration.css";
 
 function ShieldIcon() {
   return (
@@ -18,101 +21,96 @@ const fieldBaseClass =
 
 const LoginPage = () => {
   return (
-    <main className=" bg-slate-100 min-h-screen py-20">
-      <div className="grid lg:grid-cols-2 max-w-screen-2xl mx-auto">
-        <section className="relative hidden overflow-hidden bg-[#1f72c8] lg:block rounded-l-2xl">
-          <div className="absolute -left-28 -top-28 h-72 w-72 rounded-full bg-white/10" />
-          <div className="absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-white/10" />
-          <div className="relative mx-auto flex h-full max-w-[690px] flex-col px-12 py-16">
-            <h1 className="mt-12 max-w-[560px] text-[3rem] font-bold leading-[1.04] tracking-tight text-white">
-              Empowering Filipinos through Technical Excellence
-            </h1>
-            <p className="mt-8 max-w-[560px] text-[1.3rem] leading-10 text-blue-100">
-              Welcome to the unified TESDA online portal. Access your vocational
-              training, manage certifications, and stay updated with the latest
-              industry skills.
-            </p>
-            <div className="relative mt-12 overflow-hidden rounded-2xl border border-white/20 bg-[#6fb1f2]">
-              <img
-                src="https://images.unsplash.com/photo-1581092334651-ddf26d9a09d0?auto=format&fit=crop&w=1400&q=80"
-                alt="Technical training scene"
-                className="h-[440px] w-full object-cover opacity-80"
-              />
-              <div className="absolute bottom-6 left-6 flex items-center gap-3 text-white">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+    <div className="flex min-h-screen flex-col bg-slate-100 text-slate-900">
+      <Navbar />
+      <main className="mx-auto mb-14 w-full max-w-screen-2xl flex-1 px-4 py-8 sm:px-3">
+        <div className="mx-auto mt-4 mb-5 w-full max-w-6xl text-start">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-700"
+          >
+            <span aria-hidden="true">&larr;</span>
+            Back to Home
+          </Link>
+        </div>
+        <section className="mx-auto max-w-6xl overflow-hidden rounded-[30px] bg-white shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
+          <div className="grid min-h-[680px] lg:grid-cols-[0.82fr_1.18fr]">
+            <aside className="registration-panel relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-blue-700 px-8 py-10 text-white sm:px-12 sm:py-14 lg:min-h-full lg:px-14 lg:py-16">
+              <div>
+                <div className="mb-14 flex justify-center rounded-full border border-white/20 bg-white/10 p-2">
                   <ShieldIcon />
-                </span>
-                <div>
-                  <p className="text-[28px] font-semibold leading-tight">
-                    Secure Access
-                  </p>
-                  <p className="text-[14px] text-blue-100">
-                    Official Government System
-                  </p>
                 </div>
+                <h1 className="text-4xl text-center font-bold leading-tight sm:text-5xl">
+                  Welcome Back
+                </h1>
+                <p className="mt-8 max-w-md text-sm leading-2 text-white/90 sm:text-[1.2rem] sm:leading-[2rem]">
+                  Log in to your TESDA account to access your vocational
+                  training, certifications, and learning resources.
+                </p>
+              </div>
+              <div className="registration-pattern pointer-events-none absolute bottom-0 right-0 h-72 w-72 sm:h-80 sm:w-80" />
+            </aside>
+
+            <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
+              <div className="mx-auto max-w-3xl">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-4xl">
+                  Login
+                </h2>
+                <p className="mt-4 text-lg text-slate-500 sm:text-[1.2rem]">
+                  Log in to your account to continue your learning journey.
+                </p>
+                <form className="mt-12 space-y-6">
+                  <label className="block">
+                    <span className="mb-3 block text-xl font-semibold text-slate-700">
+                      Email Address
+                    </span>
+                    <input
+                      type="email"
+                      placeholder="juan@example.com"
+                      className={fieldBaseClass}
+                    />
+                  </label>
+                  <div className="flex items-center justify-between">
+                    <span className="block text-xl font-semibold text-slate-700">
+                      Password
+                    </span>
+                    <a
+                      href="#"
+                      className="text-lg font-medium text-blue-700 hover:text-blue-800"
+                    >
+                      Forgot password?
+                    </a>
+                  </div>
+                  <label className="block">
+                    <input
+                      type="password"
+                      placeholder="Password"
+                      className={fieldBaseClass}
+                    />
+                  </label>
+                  <button
+                    type="submit"
+                    className="mt-4 w-full rounded-2xl bg-blue-700 px-6 py-5 text-xl font-bold text-white transition hover:bg-blue-800"
+                  >
+                    Login
+                  </button>
+                </form>
+                <p className="mt-6 text-center text-lg text-slate-600">
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    to="/registration-type"
+                    className="font-semibold text-blue-700 hover:text-blue-800"
+                  >
+                    Register now
+                  </Link>
+                </p>
               </div>
             </div>
           </div>
         </section>
-        <section className="flex bg-white flex-col px-6 pt-24 md:px-17 rounded-r-2xl">
-          <div className="w-full max-w-[620px]">
-            <h2 className="text-[3rem] font-bold tracking-tight text-slate-900">
-              LOGIN
-            </h2>
-            <p className="text-xl leading-8 text-slate-500">
-              Log in to your account to continue your learning journey.
-            </p>
-            <form className="mt-10">
-              <label className="block">
-                <span className="mb-3 block text-xl font-semibold text-slate-700">
-                  Email Address
-                </span>
-                <input
-                  type="email"
-                  placeholder="juan@example.com"
-                  className={fieldBaseClass}
-                />
-              </label>
-              <div className="mt-6 flex items-center justify-between">
-                <span className="mb-3 block text-xl font-semibold text-slate-700">
-                  Password
-                </span>
-                <a
-                  href="#"
-                  className="text-lg font-medium text-blue-700 hover:text-blue-800"
-                >
-                  Forgot password?
-                </a>
-              </div>
-              <label className="block">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  className={fieldBaseClass}
-                />
-              </label>
-              <button
-                type="submit"
-                className="cursor-pointer mt-8 h-16 w-full items-center justify-center gap-3 rounded-xl bg-blue-700 text-xl font-semibold text-white transition hover:bg-blue-800"
-              >
-                login
-              </button>
-            </form>
-            <div className="border-t border-slate-200 pt-10 text-center">
-              <p className="text-xl text-slate-600">
-                Don&apos;t have an account?{" "}
-                <Link
-                  to="/registration-type"
-                  className="font-semibold text-blue-700 hover:text-blue-800"
-                >
-                  Register now
-                </Link>
-              </p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </div>
   );
 };
 
