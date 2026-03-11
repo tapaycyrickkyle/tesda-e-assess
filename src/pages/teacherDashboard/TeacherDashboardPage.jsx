@@ -172,7 +172,7 @@ const TeacherDashboardPage = () => {
             className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-700"
           >
             <span aria-hidden="true">&larr;</span>
-            Back to Registration Page
+            Back to Registration Type
           </Link>
         </div>
 
