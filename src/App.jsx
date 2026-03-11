@@ -1,13 +1,13 @@
 import React from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import LandingPage from "./pages/landing/LandingPage";
+import TeacherDashboardPage from "./pages/teacherDashboard/TeacherDashboardPage";
 
 const App = () => {
   return (
     <>
       <Navbar />
-      <LandingPage />
+      <TeacherDashboardPage />
       <Footer />
     </>
   );
