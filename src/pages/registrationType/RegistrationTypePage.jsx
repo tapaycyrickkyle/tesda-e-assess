@@ -37,7 +37,7 @@ const RegistrationTypePage = () => {
       <main className="page-content">
         <div className="mx-auto w-full max-w-5xl">
           <div className="text-center">
-            <h1 className="page-title md:text-[3rem]">
+            <h1 className="page-title md:text-[2.5rem]">
               Choose Registration Type
             </h1>
             <p className="page-description mx-auto max-w-2xl sm:text-[17px] sm:leading-8">
@@ -51,14 +51,14 @@ const RegistrationTypePage = () => {
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 sm:h-17 sm:w-17">
                 <TeacherIcon />
               </span>
-              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2.3rem]">
+              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2rem]">
                 Register as Teacher
               </h2>
-              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-[17px] sm:leading-9">
+              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-base sm:leading-8">
                 Create an account as a teacher to manage assessments, create
                 evaluation metrics, and view applicant records.
               </p>
-              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-[17px]">
+              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-base">
                 Get started as an Educator
               </p>
             </Link>
@@ -67,14 +67,14 @@ const RegistrationTypePage = () => {
               <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 sm:h-17 sm:w-17">
                 <ApplicantIcon />
               </span>
-              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2.3rem]">
+              <h2 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:mt-8 sm:text-[2rem]">
                 Register as Applicant
               </h2>
-              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-[17px] sm:leading-9">
+              <p className="mt-4 text-base leading-7 text-slate-600 sm:mt-6 sm:text-base sm:leading-8">
                 Create an account as an applicant to apply for assessments,
                 track your application status, and download certificates.
               </p>
-              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-[17px]">
+              <p className="mt-6 text-base font-semibold text-blue-700 group-hover:text-blue-800 sm:mt-7 sm:text-base">
                 Get started as an Applicant
               </p>
             </Link>

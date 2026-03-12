@@ -22,6 +22,8 @@ function UserCircleIcon() {
 }
 
 const StudentRegistrationPage = () => {
+  const inputClassName = "ui-input border-slate-200 bg-slate-100";
+
   return (
     <div className="app-shell">
       <Navbar />
@@ -71,7 +73,7 @@ const StudentRegistrationPage = () => {
                     <input
                       type="text"
                       placeholder="Juan Dela Cruz"
-                      className="ui-input"
+                      className={inputClassName}
                     />
                   </label>
 
@@ -83,7 +85,7 @@ const StudentRegistrationPage = () => {
                       <input
                         type="email"
                         placeholder="juan@example.com"
-                        className="ui-input"
+                        className={inputClassName}
                       />
                     </label>
 
@@ -94,7 +96,7 @@ const StudentRegistrationPage = () => {
                       <input
                         type="tel"
                         placeholder="0917XXXXXXX"
-                        className="ui-input"
+                        className={inputClassName}
                       />
                     </label>
                   </div>
@@ -106,7 +108,7 @@ const StudentRegistrationPage = () => {
                     <input
                       type="text"
                       placeholder="House No., Street, Brgy, City, Province"
-                      className="ui-input"
+                      className={inputClassName}
                     />
                   </label>
 
@@ -117,7 +119,7 @@ const StudentRegistrationPage = () => {
                     <input
                       type="text"
                       placeholder="Name of School / Training Center"
-                      className="ui-input"
+                      className={inputClassName}
                     />
                   </label>
 
@@ -129,7 +131,7 @@ const StudentRegistrationPage = () => {
                       <input
                         type="password"
                         placeholder="Password"
-                        className="ui-input"
+                        className={inputClassName}
                       />
                     </label>
 
@@ -140,7 +142,7 @@ const StudentRegistrationPage = () => {
                       <input
                         type="password"
                         placeholder="Password"
-                        className="ui-input"
+                        className={inputClassName}
                       />
                     </label>
                   </div>

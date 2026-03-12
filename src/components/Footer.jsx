@@ -26,7 +26,7 @@ const Footer = () => {
             </a>
           </div>
 
-          <p>&copy; 2024 TESDA Assessment. All rights reserved.</p>
+          <p>&copy; 2026 TESDA Assessment. All rights reserved.</p>
         </div>
       </div>
     </footer>

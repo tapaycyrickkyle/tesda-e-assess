@@ -5,6 +5,7 @@ import LoginPage from "./pages/login/LoginPage";
 import RegistrationTypePage from "./pages/registrationType/RegistrationTypePage";
 import StudentRegistrationPage from "./pages/studentRegistration/StudentRegistrationPage";
 import TeacherDashboardPage from "./pages/teacherDashboard/TeacherDashboardPage";
+import SecretaryDashboardPage from "./pages/secretaryDashboard/SecretaryDashboardPage";
 
 const App = () => {
   return (
@@ -20,6 +21,10 @@ const App = () => {
       <Route
         path="/teacher-registration"
         element={<TeacherDashboardPage />}
+      />
+      <Route
+        path="/secretary-dashboard"
+        element={<SecretaryDashboardPage />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import "./teacherDashboard.css";
 
-const fieldBaseClass = "teacher-field ui-input";
+const fieldBaseClass = "teacher-field ui-input border-slate-200 bg-slate-100";
 
 function ChevronDownIcon() {
   return (
