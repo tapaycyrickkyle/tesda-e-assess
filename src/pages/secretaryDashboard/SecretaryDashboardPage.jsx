@@ -242,15 +242,7 @@ const SecretaryDashboardPage = () => {
         <SecretaryDashboardHeader />
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          <section>
-            <h1 className="page-title">Application Management</h1>
-            <p className="page-description">
-              Review and manage incoming vocational scholarship applications for
-              the current semester.
-            </p>
-          </section>
-
-          <section className="ui-card mt-6 overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
+          <section className="ui-card overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 pt-2 sm:px-6">
               <div className="flex w-full items-center gap-1 overflow-x-auto whitespace-nowrap sm:w-auto">
                 {tabs.map((tab) => (
