@@ -1,239 +1,222 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import "./teacherDashboard.css";
+import TeacherDashboardHeader from "./TeacherDashboardHeader";
+import TeacherDashboardSidebar from "./TeacherDashboardSidebar";
 
-const fieldBaseClass = "teacher-field ui-input border-slate-200 bg-slate-100";
+const applicants = [
+  { initials: "JC", name: "Juan Dela Cruz", course: "Automotive Servicing NC II" },
+  { initials: "MS", name: "Maria Santos", course: "Computer Systems Servicing" },
+  { initials: "RG", name: "Ricardo Gomez", course: "Electrical Installation" },
+  { initials: "AL", name: "Ana Lopez", course: "Health Care Services NC II" },
+  { initials: "FB", name: "Ferdinand Bautista", course: "Welding (SMAW) NC II" },
+];
 
-function ChevronDownIcon() {
+function FilterIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-5 w-5 fill-none stroke-current"
-    >
-      <path
-        d="m6 9 6 6 6-6"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+      <path d="M3 5h18v2H3V5Zm3 6h12v2H6v-2Zm4 6h4v2h-4v-2Z" />
     </svg>
   );
 }
 
-function CheckUserIcon() {
+function DownloadIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-6 w-6 fill-none stroke-current"
-    >
-      <path
-        d="M17.5 21a5.5 5.5 0 0 0-11 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm4 8 2 2 4-4"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current">
+      <path d="M12 4v10m0 0 3.5-3.5M12 14l-3.5-3.5M5 18.5h14" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function TeacherCircleIcon() {
+function ViewIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-14 w-14 text-white/90"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
-    >
-      <circle cx="12" cy="7.75" r="3.25" />
-      <path d="M5.2 19c1.5-2.9 4.1-4.35 6.8-4.35s5.3 1.45 6.8 4.35" />
-      <path d="m4 10 8-4 8 4-8 4-8-4Z" />
-      <path d="M19 11.5V16" />
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current">
+      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" strokeWidth="1.8" strokeLinejoin="round" />
+      <circle cx="12" cy="12" r="2.8" strokeWidth="1.8" />
     </svg>
   );
 }
 
-function FieldShell({ label, children }) {
+function UploadIcon() {
   return (
-    <label className="block">
-      <span className="form-label">
-        {label}
-      </span>
-      {children}
-    </label>
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 fill-none stroke-current">
+      <path d="m12 16.5 0-9m0 0 3 3m-3-3-3 3M4.5 15.5v2a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronLeftIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current">
+      <path d="m15 6-6 6 6 6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-none stroke-current">
+      <path d="m9 6 6 6-6 6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
   );
 }
 
 const TeacherDashboardPage = () => {
   return (
-    <div className="app-shell">
-      <Navbar />
-      <main className="page-content mb-12">
-        <div className="mb-6 mt-1 text-start">
-          <Link
-            to="/registration-type"
-            className="back-link"
-          >
-            <span aria-hidden="true">&larr;</span>
-            Back to Registration Type
-          </Link>
-        </div>
+    <div className="min-h-screen bg-slate-100 text-slate-900 lg:grid lg:grid-cols-[300px_1fr]">
+      <TeacherDashboardSidebar />
 
-        <section className="ui-card mx-auto overflow-hidden rounded-[30px] p-0 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
-          <div className="grid lg:min-h-[760px] lg:grid-cols-[0.82fr_1.18fr]">
-            <aside className="teacher-portal-panel relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-blue-700 px-8 py-10 text-white sm:px-12 sm:py-14 lg:min-h-full lg:px-14 lg:py-16">
+      <div className="min-w-0">
+        <TeacherDashboardHeader />
+
+        <main className="px-4 py-6 sm:px-6 lg:px-8">
+          <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h1 className="page-title">Assigned Applicants</h1>
+              <p className="mt-2 text-base text-slate-500">
+                Review and verify applicant documentation for National
+                Certification.
+              </p>
+            </div>
+
+            <article className="ui-card rounded-2xl border border-slate-200 p-5 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+                Total Assigned
+              </p>
+              <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                124
+              </p>
+            </article>
+          </section>
+
+          <section className="ui-card mt-6 overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
+            <div className="flex flex-col gap-4 border-b border-slate-200 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
-                <div className="mb-14 flex justify-center rounded-full border border-white/20 bg-white/10 p-2">
-                  <TeacherCircleIcon />
-                </div>
-                <h1 className="text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                  Teach with TESDA
-                </h1>
-                <p className="mt-8 max-w-md text-sm leading-relaxed text-white/90 sm:text-[1.2rem] sm:leading-[2rem]">
-                  Join thousands of TVET trainers across the Philippines.
-                  Digitalizing vocational education for a brighter future.
+                <h2 className="text-xl font-bold tracking-tight text-slate-900">
+                  Applicant Registry
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  Manage applicant records and review submitted requirements.
                 </p>
               </div>
 
-              <div className="teacher-portal-pattern pointer-events-none absolute bottom-0 right-0 h-72 w-72 sm:h-80 sm:w-80" />
-            </aside>
-
-            <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
-              <div className="mx-auto max-w-3xl">
-                <h2 className="page-title text-slate-800">
-                  Teacher Registration
-                </h2>
-                <p className="page-description sm:text-[1.1rem]">
-                  Please fill out all the fields below to create your account.
-                </p>
-
-                <form className="mt-12 space-y-6">
-                  <FieldShell label="Full Name">
-                    <input
-                      type="text"
-                      placeholder="Dela Cruz, Juan A."
-                      className={fieldBaseClass}
-                    />
-                  </FieldShell>
-
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="Email Address">
-                      <input
-                        type="email"
-                        placeholder="instructor@school.edu.ph"
-                        className={fieldBaseClass}
-                      />
-                    </FieldShell>
-
-                    <FieldShell label="Contact Number">
-                      <input
-                        type="tel"
-                        placeholder="0917 XXX XXXX"
-                        className={fieldBaseClass}
-                      />
-                    </FieldShell>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="School Name">
-                      <input
-                        type="text"
-                        placeholder="TESDA Technology Center"
-                        className={fieldBaseClass}
-                      />
-                    </FieldShell>
-
-                    <FieldShell label="Department">
-                      <div className="relative">
-                        <select
-                          defaultValue=""
-                          className={`${fieldBaseClass} appearance-none text-slate-950`}
-                        >
-                          <option value="" disabled>
-                            Select Department
-                          </option>
-                          <option>Automotive</option>
-                          <option>Hospitality</option>
-                          <option>ICT</option>
-                          <option>Construction</option>
-                        </select>
-                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-500">
-                          <ChevronDownIcon />
-                        </span>
-                      </div>
-                    </FieldShell>
-                  </div>
-
-                  <div className="grid gap-6 md:grid-cols-2">
-                    <FieldShell label="Password">
-                      <input
-                        type="password"
-                        placeholder="........"
-                        className={fieldBaseClass}
-                      />
-                    </FieldShell>
-
-                    <FieldShell label="Confirm Password">
-                      <input
-                        type="password"
-                        placeholder="........"
-                        className={fieldBaseClass}
-                      />
-                    </FieldShell>
-                  </div>
-
-                  <label className="flex items-start gap-4 text-sm text-slate-600 sm:text-base">
-                    <input
-                      type="checkbox"
-                      className="mt-1 h-5 w-5 rounded border border-slate-300 text-blue-700 accent-blue-700"
-                    />
-                    <span>
-                      I agree to the TESDA{" "}
-                      <a
-                        href="#"
-                        className="text-blue-700 transition hover:text-blue-800"
-                      >
-                        Terms of Service
-                      </a>{" "}
-                      and{" "}
-                      <a
-                        href="#"
-                        className="text-blue-700 transition hover:text-blue-800"
-                      >
-                        Privacy Policy.
-                      </a>
-                    </span>
-                  </label>
-
-                  <button
-                    type="submit"
-                    className="ui-btn-primary mt-4 flex w-full items-center justify-center gap-3 py-3 text-lg sm:py-4"
-                  >
-                    <CheckUserIcon />
-                    Complete Registration
-                  </button>
-
-                  <p className="text-center text-sm text-slate-600 sm:text-base">
-                    Already have an instructor account?{" "}
-                    <Link
-                      to="/login"
-                      className="font-semibold text-blue-700 transition hover:text-blue-800"
-                    >
-                      Login here
-                    </Link>
-                  </p>
-                </form>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  <FilterIcon />
+                  Filters
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                >
+                  <DownloadIcon />
+                  Export List
+                </button>
               </div>
             </div>
-          </div>
-        </section>
-      </main>
-      <Footer />
+
+            <div className="overflow-x-auto">
+              <table className="min-w-[780px] w-full border-collapse text-left">
+                <thead>
+                  <tr>
+                    <th className="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      Applicant Name
+                    </th>
+                    <th className="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      Course
+                    </th>
+                    <th className="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+                      Documents
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm">
+                  {applicants.map((item) => (
+                    <tr key={item.name} className="transition hover:bg-slate-50/70">
+                      <td className="border-b border-slate-200 px-6 py-4 font-medium text-slate-900">
+                        <div className="flex items-center gap-3">
+                          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                            {item.initials}
+                          </span>
+                          <span>{item.name}</span>
+                        </div>
+                      </td>
+                      <td className="border-b border-slate-200 px-6 py-4 text-slate-700">
+                        {item.course}
+                      </td>
+                      <td className="border-b border-slate-200 px-6 py-4">
+                        <button
+                          type="button"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 transition hover:underline"
+                        >
+                          <ViewIcon />
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <p className="text-sm text-slate-500">
+                Showing 1 to 5 of 124 applicants
+              </p>
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-300"
+                >
+                  <ChevronLeftIcon />
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-blue-600 text-sm font-semibold text-white"
+                >
+                  1
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  2
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  3
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-9 items-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
+                >
+                  25
+                </button>
+                <button
+                  type="button"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50"
+                >
+                  <ChevronRightIcon />
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section className="mt-6 flex justify-end">
+            <button
+              type="button"
+              className="ui-btn-primary inline-flex items-center gap-2 px-7 py-3 text-base"
+            >
+              <UploadIcon />
+              Submit All Applicants to TESDA
+            </button>
+          </section>
+        </main>
+      </div>
     </div>
   );
 };
