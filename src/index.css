@@ -2,12 +2,14 @@
 @import "tailwindcss";
 
 html {
-  font-size: 14px;
+  font-size: 15px;
   scroll-behavior: smooth;
 }
 
 body {
   font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
   overflow-x: hidden;
 }
 
@@ -22,6 +24,15 @@ input,
 select,
 textarea {
   font-family: inherit;
+}
+
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  cursor: pointer;
 }
 
 img,
@@ -65,11 +76,11 @@ canvas {
   }
 
   .ui-btn-primary {
-    @apply rounded-lg bg-blue-600 px-6 py-2 font-semibold text-white transition hover:bg-blue-700;
+    @apply rounded-lg bg-blue-600 px-6 py-2 text-base font-semibold text-white transition hover:bg-blue-700;
   }
 
   .ui-btn-secondary {
-    @apply rounded-lg border border-slate-300 bg-white px-6 py-2 font-semibold text-slate-700 transition hover:bg-slate-50;
+    @apply rounded-lg border border-slate-300 bg-white px-6 py-2 text-base font-semibold text-slate-700 transition hover:bg-slate-50;
   }
 
   .ui-card {

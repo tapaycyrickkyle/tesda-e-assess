@@ -17,6 +17,8 @@ function ShieldIcon() {
 }
 
 const LoginPage = () => {
+  const inputClassName = "ui-input border-slate-200 bg-slate-100";
+
   return (
     <div className="app-shell">
       <Navbar />
@@ -64,7 +66,7 @@ const LoginPage = () => {
                     <input
                       type="email"
                       placeholder="juan@example.com"
-                      className="ui-input"
+                      className={inputClassName}
                     />
                   </label>
                   <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
@@ -82,7 +84,7 @@ const LoginPage = () => {
                     <input
                       type="password"
                       placeholder="Password"
-                      className="ui-input"
+                      className={inputClassName}
                     />
                   </label>
                   <button
