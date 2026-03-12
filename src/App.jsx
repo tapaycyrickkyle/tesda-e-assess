@@ -5,6 +5,7 @@ import LoginPage from "./pages/login/LoginPage";
 import RegistrationTypePage from "./pages/registrationType/RegistrationTypePage";
 import StudentRegistrationPage from "./pages/studentRegistration/StudentRegistrationPage";
 import TeacherDashboardPage from "./pages/teacherDashboard/TeacherDashboardPage";
+import TeacherRegistrationPage from "./pages/teacherRegistration/TeacherRegistrationPage";
 import SecretaryDashboardPage from "./pages/secretaryDashboard/SecretaryDashboardPage";
 import StudentDashboardPage from "./pages/studentDashboard/StudentDashboardPage";
 import DirectorDashboardPage from "./pages/directorDashboard/DirectorDashboardPage";
@@ -21,7 +22,7 @@ const App = () => {
         path="/applicant-registration"
         element={<StudentRegistrationPage />}
       />
-      <Route path="/teacher-registration" element={<TeacherDashboardPage />} />
+      <Route path="/teacher-registration" element={<TeacherRegistrationPage />} />
       <Route path="/teacher-dashboard" element={<TeacherDashboardPage />} />
       <Route
         path="/teacher"
