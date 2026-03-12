@@ -7,6 +7,8 @@ import StudentRegistrationPage from "./pages/studentRegistration/StudentRegistra
 import TeacherDashboardPage from "./pages/teacherDashboard/TeacherDashboardPage";
 import SecretaryDashboardPage from "./pages/secretaryDashboard/SecretaryDashboardPage";
 import StudentDashboardPage from "./pages/studentDashboard/StudentDashboardPage";
+import DirectorDashboardPage from "./pages/directorDashboard/DirectorDashboardPage";
+import AssessmentCenterDashboardPage from "./pages/assessmentCenterDashboard/AssessmentCenterDashboardPage";
 
 const App = () => {
   return (
@@ -24,6 +26,19 @@ const App = () => {
       <Route
         path="/secretary"
         element={<Navigate to="/secretary-dashboard" replace />}
+      />
+      <Route path="/director-dashboard" element={<DirectorDashboardPage />} />
+      <Route
+        path="/director"
+        element={<Navigate to="/director-dashboard" replace />}
+      />
+      <Route
+        path="/assessment-center-dashboard"
+        element={<AssessmentCenterDashboardPage />}
+      />
+      <Route
+        path="/assessment-center"
+        element={<Navigate to="/assessment-center-dashboard" replace />}
       />
       <Route path="/student-dashboard" element={<StudentDashboardPage />} />
       <Route

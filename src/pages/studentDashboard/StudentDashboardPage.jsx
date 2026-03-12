@@ -119,15 +119,7 @@ const StudentDashboardPage = () => {
         <StudentDashboardHeader />
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          <section>
-            <h1 className="page-title">Student Dashboard</h1>
-            <p className="page-description">
-              Manage your application details and track your certification
-              progress.
-            </p>
-          </section>
-
-          <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <StudentDashboardStatsCard
               title="Application Progress"
               value="60%"
