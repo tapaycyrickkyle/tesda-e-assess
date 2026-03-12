@@ -224,18 +224,6 @@ function FilterIcon() {
   );
 }
 
-function ArrowRightIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-4 w-4 fill-current"
-    >
-      <path d="M13.2 5.2 12 6.4l4.6 4.6H4v1.7h12.6L12 17.3l1.2 1.2 6.7-6.7-6.7-6.6Z" />
-    </svg>
-  );
-}
-
 const SecretaryDashboardPage = () => {
   const [selectedSchool, setSelectedSchool] = React.useState(null);
   const [expandedTeacher, setExpandedTeacher] = React.useState(null);
@@ -330,16 +318,6 @@ const SecretaryDashboardPage = () => {
               <p>Showing {schoolsWithTeachers.length} schools with applicants</p>
             </div>
           </section>
-
-          <div className="mt-6 flex justify-end">
-            <button
-              type="button"
-              className="ui-btn-primary inline-flex w-full items-center justify-center gap-2 px-6 py-3 sm:w-auto"
-            >
-              <ArrowRightIcon />
-              Forward to Director
-            </button>
-          </div>
         </main>
       </div>
 

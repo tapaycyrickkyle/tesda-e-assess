@@ -80,7 +80,7 @@ const StudentDashboardSidebar = () => {
           </span>
           <div>
             <p className="text-xl font-bold tracking-tight text-slate-900">
-              TESDA Portal
+              TESDA E-Assess
             </p>
             <p className="text-base text-slate-500">Student Dashboard</p>
           </div>

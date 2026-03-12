@@ -120,7 +120,7 @@ const StudentDashboardPage = () => {
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
           <section>
-            <h1 className="page-title">Student Dashboard</h1>
+            <h1 className="page-title">Application Form</h1>
             <p className="page-description">
               Manage your application details and track your certification
               progress.
