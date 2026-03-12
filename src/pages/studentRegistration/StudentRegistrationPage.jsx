@@ -4,9 +4,6 @@ import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
-const fieldBaseClass =
-  "w-full rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-base text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 sm:py-4 sm:text-lg";
-
 function UserCircleIcon() {
   return (
     <svg
@@ -26,19 +23,19 @@ function UserCircleIcon() {
 
 const StudentRegistrationPage = () => {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-100 text-slate-900">
+    <div className="app-shell">
       <Navbar />
-      <main className="mx-auto mb-14 w-full max-w-screen-2xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto mt-4 mb-5 w-full max-w-6xl text-start">
+      <main className="page-content mb-12">
+        <div className="mb-6 text-start">
           <Link
             to="/registration-type"
-            className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-700"
+            className="back-link"
           >
             <span aria-hidden="true">&larr;</span>
             Back to Registration Type
           </Link>
         </div>
-        <section className="mx-auto max-w-6xl overflow-hidden rounded-[30px] bg-white shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
+        <section className="ui-card mx-auto overflow-hidden rounded-[30px] p-0 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
           <div className="grid lg:min-h-[760px] lg:grid-cols-[0.82fr_1.18fr]">
             <aside className="registration-panel relative flex min-h-[320px] flex-col justify-between overflow-hidden bg-blue-700 px-8 py-10 text-white sm:px-12 sm:py-14 lg:min-h-full lg:px-14 lg:py-16">
               <div>
@@ -48,7 +45,7 @@ const StudentRegistrationPage = () => {
                 <h1 className="text-center text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
                   Join TESDA
                 </h1>
-                <p className="mt-8 max-w-md text-sm leading-2 text-white/90 sm:text-[1.2rem] sm:leading-[2rem]">
+                <p className="mt-8 max-w-md text-sm leading-relaxed text-white/90 sm:text-[1.2rem] sm:leading-[2rem]">
                   Access world-class technical education and skills development
                   programs across the Philippines.
                 </p>
@@ -59,103 +56,103 @@ const StudentRegistrationPage = () => {
 
             <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
               <div className="mx-auto max-w-3xl">
-                <h2 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-4xl">
+                <h2 className="page-title text-slate-800">
                   Student Registration
                 </h2>
-                <p className="mt-4 text-base text-slate-500 sm:text-[1.2rem]">
+                <p className="page-description sm:text-[1.1rem]">
                   Please fill out all the fields below to create your account.
                 </p>
 
                 <form className="mt-12 space-y-6">
                   <label className="block">
-                    <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                    <span className="form-label">
                       Full Name
                     </span>
                     <input
                       type="text"
                       placeholder="Juan Dela Cruz"
-                      className={fieldBaseClass}
+                      className="ui-input"
                     />
                   </label>
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="block">
-                      <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                      <span className="form-label">
                         Email Address
                       </span>
                       <input
                         type="email"
                         placeholder="juan@example.com"
-                        className={fieldBaseClass}
+                        className="ui-input"
                       />
                     </label>
 
                     <label className="block">
-                      <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                      <span className="form-label">
                         Contact Number
                       </span>
                       <input
                         type="tel"
                         placeholder="0917XXXXXXX"
-                        className={fieldBaseClass}
+                        className="ui-input"
                       />
                     </label>
                   </div>
 
                   <label className="block">
-                    <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                    <span className="form-label">
                       Residential Address
                     </span>
                     <input
                       type="text"
                       placeholder="House No., Street, Brgy, City, Province"
-                      className={fieldBaseClass}
+                      className="ui-input"
                     />
                   </label>
 
                   <label className="block">
-                    <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                    <span className="form-label">
                       Last School Attended
                     </span>
                     <input
                       type="text"
                       placeholder="Name of School / Training Center"
-                      className={fieldBaseClass}
+                      className="ui-input"
                     />
                   </label>
 
                   <div className="grid gap-6 md:grid-cols-2">
                     <label className="block">
-                      <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                      <span className="form-label">
                         Password
                       </span>
                       <input
                         type="password"
                         placeholder="Password"
-                        className={fieldBaseClass}
+                        className="ui-input"
                       />
                     </label>
 
                     <label className="block">
-                      <span className="mb-3 block text-base font-semibold text-slate-700 sm:text-lg">
+                      <span className="form-label">
                         Confirm Password
                       </span>
                       <input
                         type="password"
                         placeholder="Password"
-                        className={fieldBaseClass}
+                        className="ui-input"
                       />
                     </label>
                   </div>
 
                   <button
                     type="submit"
-                    className="mt-4 w-full rounded-2xl bg-blue-700 px-6 py-4 text-lg font-bold text-white transition hover:bg-blue-800 sm:py-5 sm:text-xl"
+                    className="ui-btn-primary mt-4 w-full py-3 text-lg sm:py-4"
                   >
                     Complete Registration
                   </button>
 
-                  <p className="text-center text-base text-slate-600 sm:text-lg">
+                  <p className="text-center text-sm text-slate-600 sm:text-base">
                     Already have an account?{" "}
                     <Link
                       to="/login"
