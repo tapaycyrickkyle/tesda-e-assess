@@ -245,12 +245,7 @@ const DirectorDashboardPage = () => {
         <DirectorDashboardHeader />
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          <section>
-            <h1 className="page-title">Director Dashboard</h1>
-            <p className="page-description">Monitor applicants, assign assessment centers, and review reports across all programs.</p>
-          </section>
-
-          <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {statCards.map((card) => (
               <StatCard key={card.id} title={card.title} value={card.value} badge={card.badge} badgeClass={card.badgeClass} />
             ))}
