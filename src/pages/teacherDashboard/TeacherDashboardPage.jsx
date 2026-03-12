@@ -68,26 +68,7 @@ const TeacherDashboardPage = () => {
         <TeacherDashboardHeader />
 
         <main className="px-4 py-6 sm:px-6 lg:px-8">
-          <section className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="page-title">Assigned Applicants</h1>
-              <p className="mt-2 text-base text-slate-500">
-                Review and verify applicant documentation for National
-                Certification.
-              </p>
-            </div>
-
-            <article className="ui-card rounded-2xl border border-slate-200 p-5 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
-              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
-                Total Assigned
-              </p>
-              <p className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-                124
-              </p>
-            </article>
-          </section>
-
-          <section className="ui-card mt-6 overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
+          <section className="ui-card overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
             <div className="flex flex-col gap-4 border-b border-slate-200 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <h2 className="text-xl font-bold tracking-tight text-slate-900">
