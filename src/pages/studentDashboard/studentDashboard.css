@@ -1,0 +1,191 @@
+@reference "../../index.css";
+
+.student-dashboard-layout {
+  @apply flex min-h-screen bg-[#f4f6f8];
+}
+
+.student-dashboard-sidebar {
+  @apply relative w-full max-w-[360px] border-r border-slate-200 bg-[#f8fafc] px-0 py-0 text-slate-700;
+}
+
+.student-dashboard-sidebar::before {
+  @apply absolute inset-y-0 right-0 w-px bg-slate-200;
+  content: "";
+}
+
+.student-dashboard-brand {
+  @apply flex items-center gap-4 border-b border-slate-200 px-7 py-8;
+}
+
+.student-dashboard-brand-icon {
+  @apply inline-flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600 text-white;
+}
+
+.student-dashboard-nav-item {
+  @apply relative flex w-full items-center gap-4 px-8 py-4 text-left text-[15px] font-medium text-slate-600 transition hover:bg-slate-100 hover:text-blue-700;
+}
+
+.student-dashboard-nav-item.is-active {
+  @apply bg-slate-100 font-semibold text-blue-700;
+}
+
+.student-dashboard-nav-item.is-active::after {
+  @apply absolute inset-y-0 right-0 w-1 bg-blue-600;
+  content: "";
+}
+
+.student-dashboard-logout {
+  @apply mx-8 mb-10 mt-auto flex items-center gap-3 border-0 bg-transparent px-0 py-0 text-[15px] font-medium text-red-500 transition hover:text-red-600;
+}
+
+.student-dashboard-content {
+  @apply flex-1 px-10 py-10;
+}
+
+.student-dashboard-header {
+  @apply flex flex-col gap-6 pb-8 lg:flex-row lg:items-start lg:justify-between;
+}
+
+.student-dashboard-profile {
+  @apply flex items-center gap-4 self-start sm:self-auto;
+}
+
+.student-dashboard-profile-copy {
+  @apply text-right;
+}
+
+.student-dashboard-avatar {
+  @apply inline-flex h-15 w-15 items-center justify-center rounded-full border border-blue-200 bg-blue-100 text-blue-600;
+}
+
+.student-dashboard-stats-grid {
+  @apply grid gap-7 lg:grid-cols-3;
+}
+
+.student-dashboard-stat-card {
+  @apply rounded-[18px] border border-slate-200 bg-white px-8 py-7 shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+}
+
+.student-dashboard-stat-title {
+  @apply text-[0.9rem] font-semibold uppercase tracking-[0.12em] text-slate-500;
+}
+
+.student-dashboard-stat-icon {
+  @apply inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500;
+}
+
+.student-dashboard-stat-value {
+  @apply text-[1rem] font-semibold text-slate-950 sm:text-[1.1rem];
+}
+
+.student-dashboard-stat-value.is-progress {
+  @apply text-[2.65rem] font-bold leading-none text-blue-600;
+}
+
+.student-dashboard-stat-value.is-status {
+  @apply max-w-[12rem] text-[1rem] font-semibold leading-9 text-[#d97706] sm:text-[1.05rem];
+}
+
+.student-dashboard-progress-track {
+  @apply h-2.5 max-w-[120px] overflow-hidden rounded-full bg-slate-200;
+}
+
+.student-dashboard-progress-fill {
+  @apply block h-full rounded-full bg-blue-600;
+}
+
+.student-dashboard-inline-status-dot {
+  @apply h-4 w-4 rounded-full bg-[#f59e0b];
+}
+
+.student-dashboard-panel {
+  @apply mt-12 overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)];
+}
+
+.student-dashboard-tabs {
+  @apply flex flex-wrap gap-10 border-b border-slate-200 px-8 pt-10;
+}
+
+.student-dashboard-tab {
+  @apply -mb-px border-b-[3px] border-transparent px-0 pb-5 text-[1rem] font-medium text-slate-500 transition hover:text-blue-700;
+}
+
+.student-dashboard-tab.is-active {
+  @apply border-blue-600 font-semibold text-blue-700;
+}
+
+.student-dashboard-form-grid {
+  @apply grid gap-x-7 gap-y-8 px-8 py-12 md:grid-cols-2;
+}
+
+.student-dashboard-field-label {
+  @apply mb-3 block text-[0.95rem] font-semibold text-slate-800;
+}
+
+.student-dashboard-field {
+  @apply flex min-h-[62px] items-center justify-between gap-3 rounded-[12px] border border-slate-200 bg-[#f8fafc] px-4 text-[1rem] text-slate-900;
+}
+
+.student-dashboard-field.is-select {
+  @apply pr-3;
+}
+
+.student-dashboard-field-icon {
+  @apply shrink-0 text-slate-500;
+}
+
+.student-dashboard-empty-state {
+  @apply mx-8 my-10 rounded-[16px] border border-dashed border-slate-200 bg-slate-50 px-5 py-8;
+}
+
+.student-dashboard-upload-box {
+  @apply flex min-h-[260px] flex-col items-center justify-center rounded-[18px] border-2 border-dashed border-slate-200 bg-[#fbfcfe] p-8 text-center transition hover:border-blue-200;
+}
+
+.student-dashboard-upload-content {
+  @apply flex flex-col items-center;
+}
+
+.student-dashboard-upload-icon {
+  @apply mb-5 text-slate-400;
+}
+
+.student-dashboard-upload-button {
+  @apply mt-6 inline-flex min-w-[144px] items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-[0.95rem] font-semibold text-slate-900 transition hover:border-blue-300;
+}
+
+.student-dashboard-actions {
+  @apply mt-10 flex flex-col gap-4 border-t border-slate-200 px-8 py-7 sm:flex-row sm:justify-end;
+}
+
+.student-dashboard-action-button {
+  @apply rounded-xl px-8 py-4 text-[1rem] font-semibold transition;
+}
+
+.student-dashboard-action-button.is-secondary {
+  @apply border border-slate-300 bg-white text-slate-700 hover:bg-slate-50;
+}
+
+.student-dashboard-action-button.is-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+@media (max-width: 1023px) {
+  .student-dashboard-layout {
+    @apply flex-col;
+  }
+
+  .student-dashboard-sidebar {
+    @apply max-w-none;
+  }
+
+  .student-dashboard-content {
+    @apply px-5 py-7 sm:px-6;
+  }
+
+  .student-dashboard-tabs,
+  .student-dashboard-form-grid,
+  .student-dashboard-actions {
+    @apply px-5;
+  }
+}
