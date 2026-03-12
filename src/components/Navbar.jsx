@@ -25,7 +25,6 @@ const Navbar = ({ links = defaultLinks, ctaLabel = "Login", ctaTo = "/login", fi
 
   useEffect(() => {
     if (!hasHashLinks) {
-      setActiveSection("");
       return;
     }
 
