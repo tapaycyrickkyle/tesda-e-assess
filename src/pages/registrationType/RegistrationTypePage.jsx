@@ -28,19 +28,19 @@ function ApplicantIcon() {
 }
 
 const cardClassName =
-  "group rounded-2xl border border-slate-300 bg-white p-6 shadow-[0_2px_6px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)] sm:p-8";
+  "ui-card group rounded-2xl border border-slate-300 transition hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-[0_14px_30px_rgba(30,64,175,0.08)] sm:p-8";
 
 const RegistrationTypePage = () => {
   return (
-    <div className="min-h-screen bg-[#f3f5f7]">
+    <div className="app-shell">
       <Navbar />
-      <main className="px-4 py-12 sm:px-6 sm:py-16 md:px-10 md:py-20">
-        <div className="mx-auto w-full max-w-[980px]">
+      <main className="page-content">
+        <div className="mx-auto w-full max-w-5xl">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-[3rem]">
+            <h1 className="page-title md:text-[3rem]">
               Choose Registration Type
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-[17px] sm:leading-8">
+            <p className="page-description mx-auto max-w-2xl sm:text-[17px] sm:leading-8">
               Please select how you want to register to access our specialized
               tools and resources.
             </p>
@@ -83,7 +83,7 @@ const RegistrationTypePage = () => {
           <div className="mt-12 text-center">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-[15px] font-medium text-slate-600 transition hover:text-blue-400"
+              className="back-link"
             >
               <span aria-hidden="true">&larr;</span>
               Back to Home

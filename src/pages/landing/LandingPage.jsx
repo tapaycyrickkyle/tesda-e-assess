@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const serviceCards = [
   {
@@ -94,6 +94,13 @@ const staffMembers = [
   },
 ];
 
+const landingNavItems = [
+  { label: "Home", href: "#home" },
+  { label: "About", href: "#about" },
+  { label: "Programs", href: "#programs" },
+  { label: "Staff", href: "#staff" },
+];
+
 function GearIcon() {
   return (
     <svg
@@ -168,10 +175,10 @@ function ServiceIcon({ type }) {
 const LandingPage = () => {
   return (
     <>
-      <Navbar />
-      <main className="bg-[#f3f4f6] pt-32 text-slate-900 sm:pt-28 lg:pt-30">
+      <Navbar links={landingNavItems} fixed />
+      <main className="bg-slate-100 pt-28 text-slate-900">
         <section id="home" className="scroll-mt-28 border-b border-slate-200">
-          <div className="mx-auto w-full max-w-[1280px] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 md:px-12 lg:px-16 lg:pb-24">
+          <div className="page-container py-16">
             <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.02fr]">
               <div>
                 <span className="inline-flex items-center gap-2 rounded-full bg-[#dbeafe] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] text-blue-700 sm:px-4 sm:py-2 sm:text-[11px]">
@@ -179,12 +186,12 @@ const LandingPage = () => {
                   Government Certified Education
                 </span>
 
-                <h1 className="mt-6 max-w-xl text-4xl font-bold leading-[1.05] tracking-tight text-slate-900 sm:mt-8 sm:text-5xl md:text-6xl">
+                <h1 className="page-title mt-6 max-w-xl !text-4xl leading-[1.05] sm:mt-8 sm:!text-5xl md:!text-6xl">
                   Empowering Skills for a{" "}
                   <span className="text-blue-700">Better Future</span>
                 </h1>
 
-                <p className="mt-6 max-w-xl text-base leading-7 text-slate-600 sm:mt-7 sm:text-[18px] sm:leading-8">
+                <p className="page-description mt-6 max-w-xl sm:mt-7 sm:text-[18px] sm:leading-8">
                   The Technical Education and Skills Development Authority
                   (TESDA) provides direction, policies, programs and standards
                   towards quality technical education and skills development.
@@ -193,11 +200,11 @@ const LandingPage = () => {
                 <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4">
                   <Link
                     to="/login"
-                    className="w-full rounded-xl bg-blue-700 px-8 py-3 text-center text-base font-semibold text-white transition hover:bg-blue-800 sm:w-auto sm:py-4 sm:text-[1.2rem]"
+                    className="ui-btn-primary w-full px-8 py-3 text-center text-base sm:w-auto sm:py-4 sm:text-[1.1rem]"
                   >
                     Login
                   </Link>
-                  <button className="cursor-pointer w-full rounded-xl border border-slate-300 bg-white px-8 py-3 text-base font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 sm:w-auto sm:py-4 sm:text-[1.2rem]">
+                  <button className="ui-btn-secondary w-full cursor-pointer px-8 py-3 text-base sm:w-auto sm:py-4 sm:text-[1.1rem]">
                     Learn More
                   </button>
                 </div>
@@ -233,12 +240,12 @@ const LandingPage = () => {
         </section>
 
         <section id="about" className="scroll-mt-28">
-          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
+          <div className="page-container py-16">
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
+              <h2 className="page-title">
                 About TESDA
               </h2>
-              <p className="mx-auto mt-4 max-w-3xl text-[16px] leading-7 text-slate-500">
+              <p className="page-description mx-auto max-w-3xl text-[16px]">
                 We are committed to providing accessible and high-quality
                 technical education across the nation.
               </p>
@@ -248,7 +255,7 @@ const LandingPage = () => {
               {serviceCards.map((card) => (
                 <article
                   key={card.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-7 shadow-[0_8px_20px_rgba(15,23,42,0.03)]"
+                  className="ui-card rounded-2xl border border-slate-200 p-7 shadow-[0_8px_20px_rgba(15,23,42,0.03)]"
                 >
                   <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                     <ServiceIcon type={card.icon} />
@@ -269,13 +276,13 @@ const LandingPage = () => {
           id="programs"
           className="scroll-mt-28 border-y border-slate-200 bg-[#f8fafc]"
         >
-          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
+          <div className="page-container py-16">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
-                <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
+                <h2 className="page-title">
                   Flagship Programs
                 </h2>
-                <p className="mt-3 text-[16px] leading-7 text-slate-500">
+                <p className="page-description mt-3 text-[16px]">
                   Explore our most sought-after technical-vocational courses.
                 </p>
               </div>
@@ -331,12 +338,12 @@ const LandingPage = () => {
         </section>
 
         <section id="staff" className="scroll-mt-28">
-          <div className="mx-auto w-full max-w-[1280px] px-4 py-14 sm:px-6 sm:py-18 md:px-12 lg:px-16">
+          <div className="page-container py-16">
             <div className="text-center">
-              <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-[44px]">
+              <h2 className="page-title">
                 Leadership & Staff
               </h2>
-              <p className="mx-auto mt-4 max-w-4xl text-[16px] leading-7 text-slate-500">
+              <p className="page-description mx-auto max-w-4xl text-[16px]">
                 The dedicated professionals steering the future of technical
                 education in the Philippines.
               </p>
