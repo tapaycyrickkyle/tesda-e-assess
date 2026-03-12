@@ -72,46 +72,59 @@ function MortarboardIcon() {
 
 const StudentDashboardSidebar = () => {
   return (
-    <aside className="student-dashboard-sidebar flex min-h-full flex-col">
-      <div className="student-dashboard-brand">
-        <span className="student-dashboard-brand-icon">
-          <MortarboardIcon />
-        </span>
-        <div>
-          <p className="text-[2rem] font-bold tracking-tight text-blue-700">
-            TESDA
-          </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
-            Skills Development
-          </p>
+    <aside className="border-b border-slate-200 bg-white p-4 lg:min-h-screen lg:border-b-0 lg:border-r">
+      <div className="flex h-full flex-col">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white">
+            <MortarboardIcon />
+          </span>
+          <div>
+            <p className="text-xl font-bold tracking-tight text-slate-900">
+              TESDA Portal
+            </p>
+            <p className="text-base text-slate-500">Student Dashboard</p>
+          </div>
+        </div>
+
+        <nav className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+          <button
+            type="button"
+            className="flex items-center gap-3 rounded-lg bg-blue-100 px-4 py-3 text-left text-base font-medium text-blue-700 transition"
+          >
+            <span className="text-blue-700">
+              <FormIcon />
+            </span>
+            <span>Application Form</span>
+          </button>
+
+          <button
+            type="button"
+            className="flex items-center gap-3 rounded-lg px-4 py-3 text-left text-base font-medium text-slate-700 transition hover:bg-slate-100"
+          >
+            <span className="text-slate-500">
+              <StatusIcon />
+            </span>
+            <span>Application Status</span>
+          </button>
+        </nav>
+
+        <div className="mt-8 flex items-center gap-3 border-t border-slate-200 pt-5 lg:mt-auto">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-700">
+            A
+          </span>
+          <div>
+            <p className="text-base font-semibold text-slate-900">Alex Rivera</p>
+            <p className="text-sm text-slate-500">Learner Account</p>
+          </div>
+          <button
+            type="button"
+            className="ml-auto inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-red-600"
+            aria-label="Logout"
+          >
+            <LogoutIcon />
+          </button>
         </div>
       </div>
-
-      <nav className="mt-7 space-y-1.5">
-        <button
-          type="button"
-          className="student-dashboard-nav-item is-active"
-        >
-          <FormIcon />
-          <span>Application Form</span>
-        </button>
-
-        <button
-          type="button"
-          className="student-dashboard-nav-item"
-        >
-          <StatusIcon />
-          <span>Application Status</span>
-        </button>
-      </nav>
-
-      <button
-        type="button"
-        className="student-dashboard-logout mt-auto"
-      >
-        <LogoutIcon />
-        <span>Logout</span>
-      </button>
     </aside>
   );
 };

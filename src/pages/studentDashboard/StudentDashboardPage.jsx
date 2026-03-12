@@ -3,7 +3,6 @@ import StudentDashboardHeader from "./StudentDashboardHeader";
 import StudentDashboardSidebar from "./StudentDashboardSidebar";
 import StudentDashboardStatsCard from "./StudentDashboardStatsCard";
 import StudentDashboardUploadBox from "./StudentDashboardUploadBox";
-import "./studentDashboard.css";
 
 const tabs = ["Personal", "Address", "Education", "Contact"];
 
@@ -89,19 +88,19 @@ function DashboardField({
   label,
   value,
   icon,
-  type = "input",
+  type = "input"
 }) {
   return (
     <label className="block">
-      <span className="student-dashboard-field-label">
-        {label}
-      </span>
-      <div className={`student-dashboard-field ${type === "select" ? "is-select" : ""}`}>
+      <span className="form-label mb-2 text-sm sm:text-sm">{label}</span>
+      <div
+        className={`ui-input flex min-h-11 items-center justify-between gap-3 border-slate-200 bg-slate-100 ${
+          type === "select" ? "pr-3" : ""
+        }`}
+      >
         <span className="truncate">{value}</span>
         {icon ? (
-          <span className="student-dashboard-field-icon">
-            {icon}
-          </span>
+          <span className="shrink-0 text-slate-500">{icon}</span>
         ) : null}
       </div>
     </label>
@@ -113,14 +112,22 @@ const StudentDashboardPage = () => {
   const activeContent = tabCopy[activeTab];
 
   return (
-    <div className="app-shell">
-      <main className="student-dashboard-layout">
-        <StudentDashboardSidebar />
+    <div className="min-h-screen bg-slate-100 text-slate-900 lg:grid lg:grid-cols-[300px_1fr]">
+      <StudentDashboardSidebar />
 
-        <section className="student-dashboard-content">
-          <StudentDashboardHeader />
+      <div className="min-w-0">
+        <StudentDashboardHeader />
 
-          <div className="student-dashboard-stats-grid">
+        <main className="px-4 py-6 sm:px-6 lg:px-8">
+          <section>
+            <h1 className="page-title">Student Dashboard</h1>
+            <p className="page-description">
+              Manage your application details and track your certification
+              progress.
+            </p>
+          </section>
+
+          <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <StudentDashboardStatsCard
               title="Application Progress"
               value="60%"
@@ -136,17 +143,21 @@ const StudentDashboardPage = () => {
               value="Waiting for Teacher Review"
               status
             />
-          </div>
+          </section>
 
-          <section className="student-dashboard-panel">
-            <div className="student-dashboard-tabs" role="tablist">
+          <section className="ui-card mt-6 overflow-hidden rounded-2xl border border-slate-200 p-0 shadow-[0_8px_20px_rgba(15,23,42,0.05)]">
+            <div className="flex w-full items-center gap-1 overflow-x-auto border-b border-slate-200 px-4 pt-2 whitespace-nowrap sm:px-6">
               {tabs.map((tab) => (
                 <button
                   key={tab}
                   type="button"
                   role="tab"
                   aria-selected={activeTab === tab}
-                  className={`student-dashboard-tab ${activeTab === tab ? "is-active" : ""}`}
+                  className={`border-b-2 px-3 py-3 text-base font-medium transition ${
+                    activeTab === tab
+                      ? "border-blue-600 text-blue-700"
+                      : "border-transparent text-slate-500 hover:text-slate-700"
+                  }`}
                   onClick={() => setActiveTab(tab)}
                 >
                   {tab}
@@ -155,7 +166,7 @@ const StudentDashboardPage = () => {
             </div>
 
             {activeContent.fields ? (
-              <div className="student-dashboard-form-grid">
+              <div className="grid gap-5 px-4 py-6 sm:px-6 md:grid-cols-2">
                 <DashboardField
                   label="Full Name"
                   value="Alex Rivera"
@@ -179,23 +190,24 @@ const StudentDashboardPage = () => {
                 />
               </div>
             ) : (
-              <div className="student-dashboard-empty-state mt-8">
+              <div className="mx-4 my-6 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 py-8 sm:mx-6">
                 <p className="text-base leading-7 text-slate-600">
                   {activeContent.message}
                 </p>
               </div>
             )}
 
-            <div className="mt-10">
+            <div className="border-t border-slate-200 px-4 py-6 sm:px-6">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <h2 className="text-[1.05rem] font-bold tracking-tight text-slate-950 sm:text-[1.1rem]">
-                    Supporting Documents
-                  </h2>
+                  <h2 className="section-title !text-xl">Supporting Documents</h2>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Upload the required files to continue your application.
+                  </p>
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-5 lg:grid-cols-2">
+              <div className="mt-5 grid gap-4 lg:grid-cols-2">
                 <StudentDashboardUploadBox
                   title="Government Issued ID"
                   description="Upload a clear photo or PDF (Max 5MB)"
@@ -209,23 +221,17 @@ const StudentDashboardPage = () => {
               </div>
             </div>
 
-            <div className="student-dashboard-actions">
-              <button
-                type="button"
-                className="student-dashboard-action-button is-secondary"
-              >
+            <div className="flex flex-col gap-3 border-t border-slate-200 px-4 py-4 sm:flex-row sm:justify-end sm:px-6">
+              <button type="button" className="ui-btn-secondary">
                 Save Draft
               </button>
-              <button
-                type="button"
-                className="student-dashboard-action-button is-primary"
-              >
+              <button type="button" className="ui-btn-primary">
                 Submit Application
               </button>
             </div>
           </section>
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

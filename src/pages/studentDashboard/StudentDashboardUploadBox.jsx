@@ -31,22 +31,18 @@ function UploadIcon() {
 
 const StudentDashboardUploadBox = ({ title, description, buttonLabel }) => {
   return (
-    <div className="student-dashboard-upload-box">
-      <div className="student-dashboard-upload-content">
-        <span className="student-dashboard-upload-icon">
+    <div className="flex min-h-[220px] flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+      <div className="flex flex-col items-center">
+        <span className="mb-4 text-slate-400">
           <UploadIcon />
         </span>
-        <p className="text-base font-semibold text-slate-900">
-          {title}
-        </p>
-        <p className="mt-2 text-sm leading-6 text-slate-500">
-          {description}
-        </p>
+        <p className="text-base font-semibold text-slate-900">{title}</p>
+        <p className="mt-2 text-sm leading-6 text-slate-500">{description}</p>
       </div>
 
       <button
         type="button"
-        className="student-dashboard-upload-button"
+        className="ui-btn-secondary mt-5"
       >
         <span>{buttonLabel}</span>
       </button>

@@ -6,6 +6,7 @@ import RegistrationTypePage from "./pages/registrationType/RegistrationTypePage"
 import StudentRegistrationPage from "./pages/studentRegistration/StudentRegistrationPage";
 import TeacherDashboardPage from "./pages/teacherDashboard/TeacherDashboardPage";
 import SecretaryDashboardPage from "./pages/secretaryDashboard/SecretaryDashboardPage";
+import StudentDashboardPage from "./pages/studentDashboard/StudentDashboardPage";
 
 const App = () => {
   return (
@@ -18,13 +19,20 @@ const App = () => {
         path="/applicant-registration"
         element={<StudentRegistrationPage />}
       />
+      <Route path="/teacher-registration" element={<TeacherDashboardPage />} />
+      <Route path="/secretary-dashboard" element={<SecretaryDashboardPage />} />
       <Route
-        path="/teacher-registration"
-        element={<TeacherDashboardPage />}
+        path="/secretary"
+        element={<Navigate to="/secretary-dashboard" replace />}
+      />
+      <Route path="/student-dashboard" element={<StudentDashboardPage />} />
+      <Route
+        path="/student"
+        element={<Navigate to="/student-dashboard" replace />}
       />
       <Route
-        path="/secretary-dashboard"
-        element={<SecretaryDashboardPage />}
+        path="/applicant-dashboard"
+        element={<Navigate to="/student-dashboard" replace />}
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
