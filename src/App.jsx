@@ -22,6 +22,11 @@ const App = () => {
         element={<StudentRegistrationPage />}
       />
       <Route path="/teacher-registration" element={<TeacherDashboardPage />} />
+      <Route path="/teacher-dashboard" element={<TeacherDashboardPage />} />
+      <Route
+        path="/teacher"
+        element={<Navigate to="/teacher-dashboard" replace />}
+      />
       <Route path="/secretary-dashboard" element={<SecretaryDashboardPage />} />
       <Route
         path="/secretary"
