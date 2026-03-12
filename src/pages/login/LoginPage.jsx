@@ -21,7 +21,7 @@ const LoginPage = () => {
     <div className="app-shell">
       <Navbar />
       <main className="page-content mb-12">
-        <div className="mb-6 text-start">
+        <div className="mx-auto mb-6 max-w-5xl text-start">
           <Link
             to="/"
             className="back-link"
