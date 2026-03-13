@@ -413,7 +413,7 @@ const SecretaryDashboardPage = () => {
                       <div className="mt-3 flex justify-end">
                         <button
                           type="button"
-                          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                          className="rounded-lg bg-[#29903B] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#227A32]"
                         >
                           Approve All Applicants
                         </button>
