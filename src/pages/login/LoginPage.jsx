@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import "../studentRegistration/studentRegistration.css";
+import tesdaLogoText from "../../assets/TESDA_Logo_official-removebg-preview.png";
 
 function ShieldIcon() {
   return (
@@ -47,9 +48,12 @@ const LoginPage = () => {
                   training, certifications, and learning resources.
                 </p>
               </div>
-              <div className="registration-pattern pointer-events-none absolute bottom-0 right-0 h-72 w-72 sm:h-80 sm:w-80" />
+              <img
+                src={tesdaLogoText}
+                alt="TESDA Logo"
+                className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 object-contain opacity-20 sm:h-80 sm:w-80"
+              />
             </aside>
-
             <div className="px-7 py-9 sm:px-9 sm:py-10 lg:px-11 lg:py-12">
               <div className="mx-auto max-w-3xl">
                 <h2 className="page-title text-slate-800">

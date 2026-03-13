@@ -3,6 +3,7 @@ import "./studentRegistration.css";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import tesdaLogo from "../../assets/TESDA_Logo_official-removebg-preview.png";
 
 function UserCircleIcon() {
   return (
@@ -52,8 +53,11 @@ const StudentRegistrationPage = () => {
                   programs across the Philippines.
                 </p>
               </div>
-
-              <div className="registration-pattern pointer-events-none absolute bottom-0 right-0 h-72 w-72 sm:h-80 sm:w-80" />
+              <img
+                src={tesdaLogo}
+                alt="TESDA Logo"
+                className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 object-contain opacity-20 sm:h-80 sm:w-80"
+              />
             </aside>
 
             <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
