@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import tesdaLogoText from "../assets/TESDA_Logo_official-removebg-preview.png";
 
-function MortarboardIcon() {
+function TesdaIcon() {
   return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-8 w-8 fill-current"
-    >
-      <path d="M12 3 1.5 8.25 12 13.5l8.63-4.31v5.96H22V8.25L12 3Zm-6.75 8.49V15c0 2.14 3.2 3.75 6.75 3.75s6.75-1.61 6.75-3.75v-3.51L12 14.86l-6.75-3.37Z" />
-    </svg>
+    <img
+      src={tesdaLogoText}
+      alt="TESDA Logo"
+      className="h-8 w-8 object-contain"
+    />
   );
 }
 
@@ -67,7 +66,7 @@ const Navbar = ({ links = defaultLinks, ctaLabel = "Login", ctaTo = "/login", fi
     <header className={headerClassName}>
       <div className="page-container flex flex-col gap-3 py-4 md:flex-row md:items-center md:justify-between">
         <Link to="/" className="flex items-center gap-3 text-blue-700">
-          <MortarboardIcon />
+          <TesdaIcon />
           <span className="text-2xl font-bold tracking-tight">TESDA E-Assess</span>
         </Link>
 
