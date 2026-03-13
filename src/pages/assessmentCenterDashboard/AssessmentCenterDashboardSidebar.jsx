@@ -1,4 +1,5 @@
 import React from "react";
+import tesdaLogo from "../../assets/toppng.com-deped-logo-tesda-logo-624x621.png";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", active: true },
@@ -7,12 +8,8 @@ const navItems = [
   { id: "export", label: "Export Data" },
 ];
 
-function SchoolIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-6 w-6 fill-current">
-      <path d="M12 3 1.5 8.25 12 13.5l8.63-4.31v5.96H22V8.25L12 3Zm-6.75 8.49V15c0 2.14 3.2 3.75 6.75 3.75s6.75-1.61 6.75-3.75v-3.51L12 14.86l-6.75-3.37Z" />
-    </svg>
-  );
+function TesdaIcon() {
+  return <img src={tesdaLogo} alt="TESDA Logo" className="h-8 w-8 object-contain" />;
 }
 
 function GridIcon() {
@@ -73,8 +70,8 @@ const AssessmentCenterDashboardSidebar = () => {
     <aside className="border-b border-slate-200 bg-white p-4 lg:min-h-screen lg:border-b-0 lg:border-r">
       <div className="flex h-full flex-col">
         <div className="flex items-center gap-3">
-          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white">
-            <SchoolIcon />
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full text-white">
+            <TesdaIcon />
           </span>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">TESDA E-Assess</h1>
