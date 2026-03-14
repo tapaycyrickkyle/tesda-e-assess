@@ -1,5 +1,5 @@
 import React from "react";
-import tesdaLogoText from "../assets/TESDA_Logo_official-removebg-preview.png";
+import tesdaLogo from "../assets/toppng.com-deped-logo-tesda-logo-624x621.png";
 
 const Footer = () => {
   return (
@@ -9,12 +9,12 @@ const Footer = () => {
           <div className="flex items-center gap-3">
             <span className="inline-flex h-9 w-9 items-center justify-center text-white">
               <img
-                  src={tesdaLogoText}
-                  alt="TESDA Logo"
-                  className="h-full w-full object-contain"
-                />
+                src={tesdaLogo}
+                alt="TESDA Logo"
+                className="h-full w-full object-contain"
+              />
             </span>
-            <span className="font-semibold text-slate-700">TESDA Assessment System</span>
+            <span className="font-semibold text-slate-700">TESDA E-Assess</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-4">

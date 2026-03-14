@@ -51,11 +51,17 @@ const TeacherRegistrationPage = () => {
                   Digitalizing vocational education for a brighter future.
                 </p>
               </div>
-              <img
-                src={tesdaLogoText}
-                alt="TESDA Logo"
-                className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 object-contain opacity-20 sm:h-80 sm:w-80"
-              />
+              <div className="pointer-events-none absolute bottom-0 right-0 flex justify-end overflow-hidden">
+                <img
+                  src={tesdaLogoText}
+                  alt="TESDA Logo"
+                  className="h-auto w-full max-w-[220px] translate-x-[34%] translate-y-[22%] object-contain opacity-45 sm:max-w-[250px]"
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(33%) sepia(82%) saturate(1781%) hue-rotate(219deg) brightness(101%) contrast(102%)",
+                  }}
+                />
+              </div>
             </aside>
             <div className="px-7 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
               <div className="mx-auto max-w-3xl">
