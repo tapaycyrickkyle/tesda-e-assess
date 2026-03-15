@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import tesdaLogoText from "../assets/TESDA_Logo_official-removebg-preview.png";
+import tesdaLogo from "../assets/toppng.com-deped-logo-tesda-logo-624x621.png";
 
 function TesdaIcon() {
   return (
     <img
-      src={tesdaLogoText}
+      src={tesdaLogo}
       alt="TESDA Logo"
       className="h-8 w-8 object-contain"
     />

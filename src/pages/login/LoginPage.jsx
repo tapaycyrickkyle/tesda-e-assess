@@ -36,7 +36,7 @@ const LoginPage = () => {
         <section className="ui-card mx-auto max-w-5xl overflow-hidden rounded-[30px] p-0 shadow-[0_20px_55px_rgba(15,23,42,0.12)]">
           <div className="grid lg:min-h-[560px] lg:grid-cols-[0.88fr_1.12fr]">
             <aside className="registration-panel relative flex min-h-[280px] flex-col justify-between overflow-hidden bg-blue-700 px-8 py-9 text-white sm:px-10 sm:py-11 lg:min-h-full lg:px-12 lg:py-12">
-              <div>
+              <div className="relative z-10">
                 <div className="mb-14 flex justify-center rounded-full border border-white/20 bg-white/10 p-2">
                   <ShieldIcon />
                 </div>
@@ -48,11 +48,17 @@ const LoginPage = () => {
                   training, certifications, and learning resources.
                 </p>
               </div>
-              <img
-                src={tesdaLogoText}
-                alt="TESDA Logo"
-                className="pointer-events-none absolute bottom-0 right-0 h-72 w-72 object-contain opacity-20 sm:h-80 sm:w-80"
-              />
+              <div className="pointer-events-none absolute bottom-0 right-0 z-0 flex justify-end overflow-hidden">
+                <img
+                  src={tesdaLogoText}
+                  alt="TESDA Logo"
+                  className="h-auto w-full max-w-[220px] translate-x-[34%] translate-y-[22%] object-contain opacity-45 sm:max-w-[250px]"
+                  style={{
+                    filter:
+                      "brightness(0) saturate(100%) invert(33%) sepia(82%) saturate(1781%) hue-rotate(219deg) brightness(101%) contrast(102%)",
+                  }}
+                />
+              </div>
             </aside>
             <div className="px-7 py-9 sm:px-9 sm:py-10 lg:px-11 lg:py-12">
               <div className="mx-auto max-w-3xl">
