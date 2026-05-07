@@ -47,7 +47,7 @@ export default function Home() {
                 <label className="text-[14px] font-semibold leading-[1.2] text-[#1a1c1c]" htmlFor="password">
                   Password
                 </label>
-                <Link className="text-[14px] font-semibold leading-[1.5] text-[#002576] hover:underline" href="#">
+                <Link className="cursor-pointer text-[14px] font-semibold leading-[1.5] text-[#002576] hover:underline" href="#">
                   Forgot password?
                 </Link>
               </div>
@@ -68,7 +68,7 @@ export default function Home() {
                 />
                 <button
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[#747685] transition-colors hover:text-[#1a1c1c]"
+                  className="absolute inset-y-0 right-0 flex w-10 cursor-pointer items-center justify-center text-[#747685] transition-colors hover:text-[#1a1c1c]"
                   onClick={() => setShowPassword((value) => !value)}
                   type="button"
                 >
@@ -81,7 +81,7 @@ export default function Home() {
             </div>
 
             <button
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#002576] py-4 text-[16px] font-semibold leading-none tracking-[0.02em] text-white shadow-sm transition-all hover:bg-[#0038a8] hover:shadow-md active:scale-[0.98]"
+              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#002576] py-4 text-[16px] font-semibold leading-none tracking-[0.02em] text-white shadow-sm transition-all hover:bg-[#0038a8] hover:shadow-md active:scale-[0.98]"
               type="submit"
             >
               Login
@@ -95,14 +95,14 @@ export default function Home() {
 
             <div className="grid grid-cols-1 gap-2">
               <button
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
                 type="button"
               >
                 <i aria-hidden="true" className="fa-solid fa-user-plus text-[13px]" />
                 Sign Up as Applicant
               </button>
               <button
-                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
                 type="button"
               >
                 <i aria-hidden="true" className="fa-solid fa-chalkboard-user text-[13px]" />
@@ -118,15 +118,15 @@ export default function Home() {
             (c) 2024 TESDA E-Forms Portal. All rights reserved.
           </p>
           <div className="flex items-center justify-center gap-4 text-[12px] font-medium text-[#5d5f5f]">
-            <Link className="transition-colors hover:text-[#002576]" href="#">
+            <Link className="cursor-pointer transition-colors hover:text-[#002576]" href="#">
               Privacy Policy
             </Link>
             <span className="h-1 w-1 rounded-full bg-[#c4c5d5]" />
-            <Link className="transition-colors hover:text-[#002576]" href="#">
+            <Link className="cursor-pointer transition-colors hover:text-[#002576]" href="#">
               Terms of Service
             </Link>
             <span className="h-1 w-1 rounded-full bg-[#c4c5d5]" />
-            <Link className="transition-colors hover:text-[#002576]" href="#">
+            <Link className="cursor-pointer transition-colors hover:text-[#002576]" href="#">
               Support
             </Link>
           </div>
