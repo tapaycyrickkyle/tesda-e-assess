@@ -15,25 +15,7 @@ export default function ApplicantSignUpPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f8f9ff] text-[#0b1c30]">
-      <header className="fixed left-0 top-0 z-50 flex h-16 w-full items-center justify-between border-b border-[#c4c5d5] bg-white px-4 shadow-sm sm:px-6">
-        <Link className="flex min-w-0 items-center gap-3" href="/">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#0038a8]">
-            <i aria-hidden="true" className="fa-solid fa-building-columns text-[17px] text-white" />
-          </span>
-          <span className="truncate text-[20px] font-bold leading-[1.25] text-[#002576] sm:text-[24px]">
-            TESDA E-Assess
-          </span>
-        </Link>
-
-        <Link
-          className="text-[13px] font-semibold leading-[1.4] text-[#444653] transition-colors hover:text-[#002576] sm:text-[14px]"
-          href="#"
-        >
-          Help Center
-        </Link>
-      </header>
-
-      <main className="flex flex-1 items-center justify-center px-4 pb-10 pt-24 sm:px-6 lg:pb-12">
+      <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-12">
         <section className="grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-xl border border-[#c4c5d5] bg-white shadow-[0_20px_45px_rgba(9,18,33,0.10)] md:grid-cols-12">
           <aside className="relative overflow-hidden bg-[#002576] p-6 text-white sm:p-8 md:col-span-5 lg:p-10">
             <div className="relative z-10 flex h-full flex-col justify-between gap-10">

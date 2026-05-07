@@ -148,9 +148,9 @@ export default function Home() {
                 <i aria-hidden="true" className="fa-solid fa-user-plus text-[13px]" />
                 Sign Up as Applicant
               </Link>
-              <button
+              <Link
+                href="/teacher-type"
                 className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
-                type="button"
               >
                 <i aria-hidden="true" className="fa-solid fa-chalkboard-user text-[13px]" />
                 Sign Up as Teacher

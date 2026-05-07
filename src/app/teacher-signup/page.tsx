@@ -3,24 +3,7 @@
 export default function TeacherSignUpPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#f8f9ff] text-[#0b1c30]">
-      <header className="fixed top-0 left-0 z-50 flex h-16 w-full items-center justify-between border-b border-[#c4c5d5] bg-white px-6 shadow-sm">
-        <div className="flex items-center gap-1">
-          <span className="text-2xl font-bold text-[#002576]">TESDA E-Assess</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link className="text-sm text-[#444653] transition-colors hover:text-[#002576]" href="#">
-            Help Center
-          </Link>
-          <Link
-            className="rounded-lg bg-[#002576] px-6 py-2 text-sm font-medium text-white transition active:scale-95"
-            href="/"
-          >
-            Login
-          </Link>
-        </div>
-      </header>
-
-      <main className="flex flex-1 items-center justify-center px-6 pb-8 pt-24">
+      <main className="flex flex-1 items-center justify-center px-6 py-8">
         <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-[#c4c5d5] bg-white shadow-[0_4px_20px_rgba(0,56,168,0.05)] md:flex-row">
           <div className="relative hidden overflow-hidden bg-[#002576] p-8 md:flex md:w-5/12 md:flex-col md:justify-between">
             <div className="relative z-10">
