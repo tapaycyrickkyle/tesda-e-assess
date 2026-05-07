@@ -154,7 +154,7 @@ export default function Home() {
               >
                 <i aria-hidden="true" className="fa-solid fa-chalkboard-user text-[13px]" />
                 Sign Up as Teacher
-              </button>
+              </Link>
             </div>
           </form>
 
