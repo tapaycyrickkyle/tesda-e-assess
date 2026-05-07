@@ -141,13 +141,13 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 gap-2">
-              <button
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
-                type="button"
+              <Link
+                href="/sign-up/applicant"
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
               >
                 <i aria-hidden="true" className="fa-solid fa-user-plus text-[13px]" />
                 Sign Up as Applicant
-              </button>
+              </Link>
               <button
                 className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
                 type="button"
