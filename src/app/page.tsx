@@ -1,103 +1,140 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#f8f9ff] px-6 py-8 text-[#0b1c30]">
-      <main className="z-10 flex w-full max-w-[1440px] items-center justify-center">
-        <div className="flex w-full max-w-[480px] flex-col items-center">
-          <div className="mb-8 text-center">
-            <div className="mb-4 flex justify-center">
-              <img
-                alt="TESDA Logo"
-                className="h-20 w-auto"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuArr0IweZLfXmW1GgA5XMXA-MHCknmJhPdz76BRJdHURCjQZS3Rzd8NV_pNDEGZdPF4zYB_c60JC-GvS2BpI7o0h0b9rIQzPHXRYINSphPCG0NW7CRUhO9o-Gqzka6mga9Qwzx0kx2yiwNgnhG1rwcqasZh34RMTezt2PfhUCB5aYCIMcO2CISqpanHt4J5Wo7rKP70JY61Aj5DH_HWi6VtPsnq8jmMvcopIsNJ53Y4NvnRYO3Gpe9ewTe4m6ofeP2xjFseWLMaN7Y"
-              />
+    <div className="relative flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top,#ffffff_0%,#f3f4f6_55%,#eceff3_100%)] px-4 py-6 text-[#1a1c1c] sm:px-6">
+      <main className="z-10 flex w-full max-w-[440px] flex-col items-center">
+        <div className="mb-8 text-center sm:mb-10">
+          <h1 className="mb-1 text-[32px] font-bold leading-[1.2] tracking-[-0.02em] text-[#002576]">
+            TESDA E-Forms
+          </h1>
+          <p className="mx-auto max-w-[320px] text-[14px] leading-[1.5] text-[#5d5f5f]">
+            Application Form System for TESDA Eastern Samar Provincial Office
+          </p>
+        </div>
+
+        <div className="w-full rounded-xl border border-[#c4c5d5] bg-white p-6 shadow-[0_20px_45px_rgba(9,18,33,0.12)] sm:p-8">
+          <form action="#" className="space-y-6" method="POST">
+            <div className="flex flex-col gap-2">
+              <label className="text-[14px] font-semibold leading-[1.2] text-[#1a1c1c]" htmlFor="username">
+                Email or Username
+              </label>
+              <div className="group relative">
+                <span className="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center">
+                  <i
+                    aria-hidden="true"
+                    className="fa-solid fa-user text-[14px] leading-none text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                  />
+                </span>
+                <input
+                  className="w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] py-3 pl-10 pr-4 text-[16px] leading-[1.5] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
+                  id="username"
+                  name="username"
+                  placeholder="Enter your credentials"
+                  required
+                  type="text"
+                />
+              </div>
             </div>
-            <h1 className="mb-1 text-3xl font-bold tracking-tight text-[#002576]">
-              TESDA E-Assess
-            </h1>
-            <p className="mx-auto max-w-[320px] text-sm text-[#444653]">
-              TESDA Eastern Samar Provincial Office Assessment Application and
-              Processing System
-            </p>
-          </div>
 
-          <div className="w-full rounded-lg border border-[#c4c5d5] bg-white p-8 shadow-[0_4px_20px_rgba(0,56,168,0.05)]">
-            <form className="space-y-6">
-              <div className="space-y-1">
-                <label className="text-sm font-medium text-[#0b1c30]" htmlFor="email">
-                  Email Address
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[14px] font-semibold leading-[1.2] text-[#1a1c1c]" htmlFor="password">
+                  Password
                 </label>
-                <input
-                  className="w-full rounded border border-[#747685] bg-[#f8f9ff] px-4 py-2 text-base outline-none transition focus:border-[#002576] focus:ring-1 focus:ring-[#002576]"
-                  id="email"
-                  placeholder="name@example.com"
-                  type="email"
-                />
+                <Link className="text-[14px] font-semibold leading-[1.5] text-[#002576] hover:underline" href="#">
+                  Forgot password?
+                </Link>
               </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-[#0b1c30]" htmlFor="password">
-                    Password
-                  </label>
-                  <Link className="text-xs font-semibold text-[#002576] hover:underline" href="#">
-                    Forgot Password?
-                  </Link>
-                </div>
+              <div className="group relative">
+                <span className="pointer-events-none absolute inset-y-0 left-0 flex w-10 items-center justify-center">
+                  <i
+                    aria-hidden="true"
+                    className="fa-solid fa-lock text-[14px] leading-none text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                  />
+                </span>
                 <input
-                  className="w-full rounded border border-[#747685] bg-[#f8f9ff] px-4 py-2 text-base outline-none transition focus:border-[#002576] focus:ring-1 focus:ring-[#002576]"
+                  className="w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] py-3 pl-10 pr-10 text-[16px] leading-[1.5] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
                   id="password"
+                  name="password"
                   placeholder="********"
-                  type="password"
+                  required
+                  type={showPassword ? "text" : "password"}
                 />
+                <button
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-[#747685] transition-colors hover:text-[#1a1c1c]"
+                  onClick={() => setShowPassword((value) => !value)}
+                  type="button"
+                >
+                  <i
+                    aria-hidden="true"
+                    className={`fa-solid ${showPassword ? "fa-eye-slash" : "fa-eye"} text-[14px] leading-none`}
+                  />
+                </button>
               </div>
+            </div>
 
-              <button
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-3 font-bold text-white transition hover:opacity-90 active:scale-[0.98]"
-                type="submit"
-              >
-                Login
-              </button>
-            </form>
+            <button
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#002576] py-4 text-[16px] font-semibold leading-none tracking-[0.02em] text-white shadow-sm transition-all hover:bg-[#0038a8] hover:shadow-md active:scale-[0.98]"
+              type="submit"
+            >
+              Login
+            </button>
 
-            <div className="relative my-8">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-[#c4c5d5]" />
-              </div>
-              <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-4 text-[#444653]">Don&apos;t have an account?</span>
-              </div>
+            <div className="pt-1">
+              <p className="mb-2 text-center text-[13px] leading-[1.4] text-[#5d5f5f]">
+                Don&apos;t have an account?
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-2">
-              <button className="w-full rounded-lg border border-[#002576] py-2.5 font-bold text-[#002576] transition hover:bg-[#e5eeff]">
+              <button
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-user-plus text-[13px]" />
                 Sign Up as Applicant
               </button>
-              <button className="w-full rounded-lg border border-[#5d5f5f] py-2.5 font-bold text-[#444653] transition hover:bg-[#e5eeff]">
+              <button
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-[#c4c5d5] bg-white py-3 text-[14px] font-semibold text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-chalkboard-user text-[13px]" />
                 Sign Up as Teacher
               </button>
             </div>
-          </div>
+          </form>
 
-          <div className="mt-8 flex flex-col gap-1 text-center">
-            <p className="text-xs text-[#444653]">(c) 2024 TESDA Eastern Samar Provincial Office</p>
-            <div className="flex items-center justify-center gap-4">
-              <Link className="text-xs text-[#444653] transition hover:text-[#002576]" href="#">
-                Privacy Policy
-              </Link>
-              <span className="h-1 w-1 rounded-full bg-[#747685]" />
-              <Link className="text-xs text-[#444653] transition hover:text-[#002576]" href="#">
-                Help Center
-              </Link>
-            </div>
+        </div>
+
+        <div className="mt-8 space-y-1 text-center opacity-70">
+          <p className="text-[14px] leading-[1.5] text-[#444653]">
+            (c) 2024 TESDA E-Forms Portal. All rights reserved.
+          </p>
+          <div className="flex items-center justify-center gap-4 text-[12px] font-medium text-[#5d5f5f]">
+            <Link className="transition-colors hover:text-[#002576]" href="#">
+              Privacy Policy
+            </Link>
+            <span className="h-1 w-1 rounded-full bg-[#c4c5d5]" />
+            <Link className="transition-colors hover:text-[#002576]" href="#">
+              Terms of Service
+            </Link>
+            <span className="h-1 w-1 rounded-full bg-[#c4c5d5]" />
+            <Link className="transition-colors hover:text-[#002576]" href="#">
+              Support
+            </Link>
           </div>
         </div>
       </main>
 
-      <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden">
-        <div className="absolute -left-1/4 -top-1/4 h-1/2 w-1/2 rounded-full bg-[#d3e4fe] opacity-40 blur-[120px]" />
-        <div className="absolute -bottom-1/4 -right-1/4 h-1/2 w-1/2 rounded-full bg-[#dce9ff] opacity-40 blur-[120px]" />
+      <div className="pointer-events-none fixed bottom-0 right-0 p-12 opacity-[0.03]">
+        <i aria-hidden="true" className="fa-solid fa-building-columns text-[220px] leading-none text-[#1a1c1c]" />
       </div>
     </div>
   );
