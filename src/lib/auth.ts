@@ -1,0 +1,13 @@
+export const SESSION_COOKIE_NAME = "tesda_session";
+
+export function getSupabaseEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+
+  return { url, anonKey };
+}
+
+export function isSupabaseConfigured() {
+  const { url, anonKey } = getSupabaseEnv();
+  return Boolean(url && anonKey);
+}
