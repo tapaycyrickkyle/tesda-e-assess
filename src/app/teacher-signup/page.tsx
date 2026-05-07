@@ -2,10 +2,15 @@
 
 export default function TeacherSignUpPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8f9ff] text-[#0b1c30]">
-      <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-12">
-        <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-[#c4c5d5] bg-white shadow-[0_4px_20px_rgba(0,56,168,0.05)] md:flex-row">
-          <div className="relative hidden overflow-hidden bg-[#002576] p-8 md:flex md:w-5/12 md:flex-col md:justify-between">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a2f7a] px-4 pt-6 text-[#0b1c30] sm:px-6">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.54))]" />
+      <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
+        <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.28)] backdrop-blur-sm md:flex-row">
+          <div className="relative hidden overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-8 text-white md:flex md:w-5/12 md:flex-col md:justify-between">
             <div className="relative z-10">
               <div className="mb-8">
                 <svg
@@ -24,16 +29,16 @@ export default function TeacherSignUpPage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-4 text-[32px] font-bold leading-[1.2] text-white sm:text-[36px]">
+              <h1 className="auth-hero-title mb-4 text-white sm:text-[2.25rem]">
                 Empower the Future of Skills.
               </h1>
-              <p className="text-base leading-[1.65] text-[#96adff] sm:text-[17px]">
+              <p className="auth-hero-copy text-[#c7d7ff] sm:text-[1.0625rem]">
                 Join our network of certified assessors and educators in streamlining the
                 technical-vocational assessment process across the Philippines.
               </p>
             </div>
-            <div className="relative z-10 mt-8 rounded-lg border border-[#b6c4ff]/20 bg-[#0038a8] p-6">
-              <p className="text-sm italic text-[#96adff]">
+            <div className="relative z-10 mt-8 rounded-lg border border-white/18 bg-white/10 p-6 backdrop-blur-sm">
+              <p className="auth-help-text italic text-[#e2ebff]">
                 &quot;Our mission is to ensure every trainee is assessed with integrity and precision,
                 providing a clear pathway to professional certification.&quot;
               </p>
@@ -46,19 +51,18 @@ export default function TeacherSignUpPage() {
                 backgroundSize: "24px 24px",
               }}
             />
-            <img
-              alt="Teacher background"
-              className="absolute bottom-0 right-0 h-1/2 w-full object-cover opacity-30 mix-blend-overlay"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC373Sln8s-qJ3eeYjeh3qSsXCAZa0KTLaTx_l-lHKmLGJc5oCWog1o7XFQ3jUIu6jCIfgLOAhxpZ278gOdvgU7B9Orucysz0ZD1VJHXSHnbBwX21R6LzZbWoxX7g87RHlrG1EeGSY2frW-EATjeYL48i5ILoc-0-gNO8T_64SSXyPTMHV3nfqzBmzwCWx_DCoMmRA5wBcDiOogSFFSr6b5SnFXwFiwD9B0K2SGwl_QcoV3lVYaENFooWZ00mf-rZBpsLLtSvueaug"
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center opacity-22 mix-blend-screen"
             />
           </div>
 
-          <div className="max-h-[870px] w-full overflow-y-auto p-8 md:w-7/12">
+          <div className="max-h-[870px] w-full overflow-y-auto bg-white/92 p-8 md:w-7/12">
             <div className="mb-8">
-              <h2 className="mb-2 text-[28px] font-semibold leading-[1.25] text-[#002576] sm:text-[30px]">
+              <h2 className="auth-panel-title mb-2 text-[#002576] sm:text-[1.875rem]">
                 Teacher Sign Up
               </h2>
-              <p className="text-[15px] leading-[1.5] text-[#444653]">
+              <p className="auth-panel-copy text-[#444653]">
                 Create your professional account to begin managing assessments.
               </p>
             </div>
@@ -162,7 +166,7 @@ export default function TeacherSignUpPage() {
                       strokeWidth="1.8"
                     />
                   </svg>
-                  <span className="text-[15px]">Upload PRC ID or Teacher&apos;s School ID</span>
+                  <span className="auth-panel-copy">Upload PRC ID or Teacher&apos;s School ID</span>
                   <span className="text-xs text-[#747685]">Supported: PDF, JPG, PNG (Max 5MB)</span>
                   <input className="hidden" type="file" />
                 </label>
@@ -178,13 +182,13 @@ export default function TeacherSignUpPage() {
 
               <div className="space-y-4 pt-4">
                 <button
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] p-4 text-[15px] font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
+                className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] p-4 text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
                   type="submit"
                 >
                   Create Teacher Account
                 </button>
                 <div className="text-center">
-                  <p className="text-base text-[#444653]">
+                  <p className="auth-panel-copy text-[#444653]">
                     Already have an account?{" "}
                     <Link className="font-bold text-[#002576] hover:underline" href="/">
                       Login
@@ -197,20 +201,9 @@ export default function TeacherSignUpPage() {
         </div>
       </main>
 
-      <footer className="mt-auto flex flex-col items-center justify-between gap-4 border-t border-[#c4c5d5] bg-white px-6 py-6 md:flex-row">
-        <div className="flex items-center gap-2 opacity-60">
-          <span className="text-xs text-[#0b1c30]">(c) 2024 TESDA E-Assess Eastern Samar Office. All rights reserved.</span>
-        </div>
-        <div className="flex gap-6">
-          <Link className="text-xs text-[#444653] transition-colors hover:text-[#002576]" href="#">
-            Privacy Policy
-          </Link>
-          <Link className="text-xs text-[#444653] transition-colors hover:text-[#002576]" href="#">
-            Terms of Service
-          </Link>
-          <Link className="text-xs text-[#444653] transition-colors hover:text-[#002576]" href="#">
-            Help Center
-          </Link>
+      <footer className="relative z-10 mt-auto -mx-4 border-t border-white/15 bg-[#07245f]/78 px-6 py-6 backdrop-blur-sm sm:-mx-6">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-center text-center">
+          <span className="auth-footer-copy text-[#d9e7ff]">(c) 2024 TESDA E-Assess Eastern Samar Office. All rights reserved.</span>
         </div>
       </footer>
     </div>

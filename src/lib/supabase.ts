@@ -1,7 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import { getSupabaseEnv } from "@/lib/auth";
+import { getSupabaseEnv, getSupabaseRoleLookupConfig, normalizeUserRole, type UserRole } from "@/lib/auth";
 
-export function createSupabaseServerClient() {
+function createBaseSupabaseClient(accessToken?: string) {
   const { url, anonKey } = getSupabaseEnv();
 
   if (!url || !anonKey) {
@@ -13,5 +13,47 @@ export function createSupabaseServerClient() {
       persistSession: false,
       autoRefreshToken: false,
     },
+    global: accessToken
+      ? {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      : undefined,
   });
+}
+
+export function createSupabaseServerClient() {
+  return createBaseSupabaseClient();
+}
+
+export function createSupabaseAccessTokenClient(accessToken: string) {
+  return createBaseSupabaseClient(accessToken);
+}
+
+export async function getUserRoleFromRoleTable(email: string, accessToken?: string): Promise<UserRole> {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!normalizedEmail) {
+    return "unknown";
+  }
+
+  const { tableName, emailColumn, roleColumn } = getSupabaseRoleLookupConfig();
+  const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from(tableName)
+    .select(roleColumn)
+    .eq(emailColumn, normalizedEmail)
+    .maybeSingle();
+
+  if (error || !data) {
+    return "unknown";
+  }
+
+  if (typeof data !== "object" || Array.isArray(data)) {
+    return "unknown";
+  }
+
+  const rawRole = (data as Record<string, unknown>)[roleColumn];
+  return typeof rawRole === "string" ? normalizeUserRole(rawRole) : "unknown";
 }
