@@ -16,3 +16,79 @@ body {
   color: var(--foreground);
   font-family: var(--font-poppins), "Poppins", sans-serif;
 }
+
+@layer components {
+  .auth-hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .auth-hero-copy {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .auth-panel-title {
+    font-size: 1.875rem;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+
+  .auth-panel-copy {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .auth-label {
+    font-size: 0.875rem;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+
+  .auth-help-text {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  .auth-input {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .auth-button {
+    font-size: 0.9375rem;
+    line-height: 1;
+    font-weight: 600;
+  }
+
+  .auth-pill {
+    font-size: 0.875rem;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  .auth-footer-copy {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+}
+
+a,
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+select,
+summary {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}

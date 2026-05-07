@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -14,36 +13,41 @@ export default function ApplicantSignUpPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f8f9ff] text-[#0b1c30]">
-      <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-12">
-        <section className="grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-xl border border-[#c4c5d5] bg-white shadow-[0_20px_45px_rgba(9,18,33,0.10)] md:grid-cols-12">
-          <aside className="relative overflow-hidden bg-[#002576] p-6 text-white sm:p-8 md:col-span-5 lg:p-10">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a2f7a] px-4 pt-6 text-[#0b1c30] sm:px-6">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.84),rgba(0,56,168,0.54))]" />
+      <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
+        <section className="grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
+          <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-6 text-white sm:p-8 md:col-span-5 lg:p-10">
             <div className="relative z-10 flex h-full flex-col justify-between gap-10">
               <div>
-                <h1 className="mb-4 text-[32px] font-bold leading-[1.2] sm:text-[36px]">
+                <h1 className="auth-hero-title mb-4 sm:text-[2.25rem]">
                   Empowering Your Career
                 </h1>
-                <p className="mb-8 text-[16px] leading-[1.65] text-[#b6c4ff] sm:text-[17px]">
+                <p className="auth-hero-copy mb-8 text-[#c7d7ff] sm:text-[1.0625rem]">
                   Register today to access specialized competency assessments and advance your professional journey
                   with TESDA certification.
                 </p>
 
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
-                    <i aria-hidden="true" className="fa-solid fa-circle-check mt-1 text-[18px] text-[#b6c4ff]" />
+                    <i aria-hidden="true" className="fa-solid fa-circle-check mt-1 text-[18px] text-[#dce7ff]" />
                     <div>
-                      <h2 className="text-[14px] font-bold leading-[1.3]">Official Certification</h2>
-                      <p className="mt-1 text-[13px] leading-[1.5] text-white/80">
+                      <h2 className="auth-label">Official Certification</h2>
+                      <p className="auth-help-text mt-1 text-white/80">
                         Recognized standards for technical excellence and professional readiness.
                       </p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">
-                    <i aria-hidden="true" className="fa-solid fa-gauge-high mt-1 text-[18px] text-[#b6c4ff]" />
+                    <i aria-hidden="true" className="fa-solid fa-gauge-high mt-1 text-[18px] text-[#dce7ff]" />
                     <div>
-                      <h2 className="text-[14px] font-bold leading-[1.3]">Efficient Process</h2>
-                      <p className="mt-1 text-[13px] leading-[1.5] text-white/80">
+                      <h2 className="auth-label">Efficient Process</h2>
+                      <p className="auth-help-text mt-1 text-white/80">
                         Streamlined application details for assessment processing and monitoring.
                       </p>
                     </div>
@@ -51,24 +55,28 @@ export default function ApplicantSignUpPage() {
                 </div>
               </div>
 
-              <div className="rounded-lg border border-white/20 bg-white/10 p-4">
-                <p className="text-[13px] font-medium italic leading-[1.5] text-white/90">
+              <div className="rounded-lg border border-white/20 bg-white/10 p-4 backdrop-blur-sm">
+                <p className="auth-help-text italic text-white/90">
                   &quot;The E-Assess platform made my application easier to prepare and track.&quot;
                 </p>
-                <p className="mt-2 text-[12px] font-bold leading-[1.4] text-white">Maria C., Applicant</p>
+                <p className="mt-2 text-xs font-bold leading-[1.4] text-white">Maria C., Applicant</p>
               </div>
             </div>
 
             <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-[#0038a8] opacity-50" />
             <div className="absolute -left-10 top-10 h-40 w-40 rounded-full bg-[#96adff] opacity-20 blur-3xl" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center opacity-18 mix-blend-screen"
+            />
           </aside>
 
-          <div className="p-6 sm:p-8 md:col-span-7 lg:p-12">
+          <div className="bg-white/92 p-6 sm:p-8 md:col-span-7 lg:p-12">
             <div className="mb-8">
-              <h2 className="mb-2 text-[28px] font-semibold leading-[1.25] text-[#002576] sm:text-[30px]">
+              <h2 className="auth-panel-title mb-2 text-[#002576] sm:text-[1.875rem]">
                 Create Applicant Account
               </h2>
-              <p className="text-[15px] leading-[1.5] text-[#444653]">
+              <p className="auth-panel-copy text-[#444653]">
                 Fill in your details to start your assessment journey.
               </p>
             </div>
@@ -76,7 +84,7 @@ export default function ApplicantSignUpPage() {
             <form action="#" className="space-y-6" method="POST">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
-                  <label className={labelClass} htmlFor="full-name">
+                  <label className={`${labelClass} auth-label`} htmlFor="full-name">
                     Full Name
                   </label>
                   <input
@@ -90,7 +98,7 @@ export default function ApplicantSignUpPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className={labelClass} htmlFor="email">
+                  <label className={`${labelClass} auth-label`} htmlFor="email">
                     Email Address
                   </label>
                   <input
@@ -127,7 +135,7 @@ export default function ApplicantSignUpPage() {
                     Contact Number
                   </label>
                   <div className="flex">
-                    <span className="flex items-center justify-center rounded-l-lg border border-r-0 border-[#c4c5d5] bg-[#e5eeff] px-3 text-[13px] font-semibold text-[#444653]">
+                    <span className="auth-help-text flex items-center justify-center rounded-l-lg border border-r-0 border-[#c4c5d5] bg-[#e5eeff] px-3 font-semibold text-[#444653]">
                       +63
                     </span>
                     <input
@@ -192,7 +200,7 @@ export default function ApplicantSignUpPage() {
                   required
                   type="checkbox"
                 />
-                <label className="text-[12px] font-semibold leading-[1.45] text-[#444653]" htmlFor="terms">
+                <label className="auth-help-text font-semibold text-[#444653]" htmlFor="terms">
                   I agree to the{" "}
                   <Link className="text-[#002576] hover:underline" href="#">
                     Terms of Service
@@ -206,14 +214,14 @@ export default function ApplicantSignUpPage() {
               </div>
 
               <button
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-4 text-[15px] font-semibold leading-none text-white shadow-sm transition-all hover:bg-[#002576] hover:shadow-md active:scale-[0.98]"
+                className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-4 text-white shadow-sm transition-all hover:bg-[#002576] hover:shadow-md active:scale-[0.98]"
                 type="submit"
               >
-                <i aria-hidden="true" className="fa-solid fa-user-plus text-[14px]" />
+                <i aria-hidden="true" className="fa-solid fa-user-plus text-sm" />
                 Create Applicant Account
               </button>
 
-              <p className="text-center text-[14px] font-semibold leading-[1.5] text-[#444653]">
+              <p className="auth-label text-center text-[#444653]">
                 Already have an account?{" "}
                 <Link className="font-bold text-[#002576] hover:underline" href="/">
                   Login
@@ -224,31 +232,9 @@ export default function ApplicantSignUpPage() {
         </section>
       </main>
 
-      <footer className="border-t border-[#c4c5d5] bg-[#e5eeff] px-4 py-6 sm:px-6">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-4 md:flex-row">
-          <div className="flex flex-col items-center gap-3 text-center sm:flex-row sm:text-left">
-            <Image
-              alt="TESDA Philippines"
-              className="h-8 w-auto opacity-75 grayscale"
-              height={32}
-              src="/tesda-logo.png"
-              width={32}
-            />
-            <span className="text-[12px] font-semibold leading-[1.4] text-[#444653]">
-              (c) 2024 Technical Education and Skills Development Authority. All rights reserved.
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            <Link className="text-[12px] font-semibold text-[#444653] transition-colors hover:text-[#002576]" href="#">
-              Privacy Statement
-            </Link>
-            <Link className="text-[12px] font-semibold text-[#444653] transition-colors hover:text-[#002576]" href="#">
-              Accessibility
-            </Link>
-            <Link className="text-[12px] font-semibold text-[#444653] transition-colors hover:text-[#002576]" href="#">
-              Contact Us
-            </Link>
-          </div>
+      <footer className="relative z-10 mt-auto -mx-4 border-t border-white/15 bg-[#07245f]/78 px-6 py-6 backdrop-blur-sm sm:-mx-6">
+        <div className="mx-auto flex max-w-[1440px] items-center justify-center text-center">
+          <span className="auth-footer-copy text-[#d9e7ff]">(c) 2024 TESDA E-Assess Eastern Samar Office. All rights reserved.</span>
         </div>
       </footer>
     </div>
