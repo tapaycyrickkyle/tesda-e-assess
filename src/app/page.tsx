@@ -74,9 +74,12 @@ export default function Home() {
               <button className="w-full rounded-lg border border-[#002576] py-2.5 font-bold text-[#002576] transition hover:bg-[#e5eeff]">
                 Sign Up as Applicant
               </button>
-              <button className="w-full rounded-lg border border-[#5d5f5f] py-2.5 font-bold text-[#444653] transition hover:bg-[#e5eeff]">
+              <Link
+                className="block w-full rounded-lg border border-[#5d5f5f] py-2.5 text-center font-bold text-[#444653] transition hover:bg-[#e5eeff]"
+                href="/teacher-type"
+              >
                 Sign Up as Teacher
-              </button>
+              </Link>
             </div>
           </div>
 
