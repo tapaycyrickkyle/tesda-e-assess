@@ -3,7 +3,7 @@
 export default function TeacherSignUpPage() {
   return (
     <div className="flex min-h-screen flex-col bg-[#f8f9ff] text-[#0b1c30]">
-      <main className="flex flex-1 items-center justify-center px-6 py-8">
+      <main className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:py-12">
         <div className="flex w-full max-w-[1100px] flex-col overflow-hidden rounded-xl border border-[#c4c5d5] bg-white shadow-[0_4px_20px_rgba(0,56,168,0.05)] md:flex-row">
           <div className="relative hidden overflow-hidden bg-[#002576] p-8 md:flex md:w-5/12 md:flex-col md:justify-between">
             <div className="relative z-10">
@@ -24,8 +24,10 @@ export default function TeacherSignUpPage() {
                   />
                 </svg>
               </div>
-              <h1 className="mb-4 text-4xl font-bold text-white">Empower the Future of Skills.</h1>
-              <p className="text-lg text-[#96adff]">
+              <h1 className="mb-4 text-[32px] font-bold leading-[1.2] text-white sm:text-[36px]">
+                Empower the Future of Skills.
+              </h1>
+              <p className="text-base leading-[1.65] text-[#96adff] sm:text-[17px]">
                 Join our network of certified assessors and educators in streamlining the
                 technical-vocational assessment process across the Philippines.
               </p>
@@ -53,8 +55,10 @@ export default function TeacherSignUpPage() {
 
           <div className="max-h-[870px] w-full overflow-y-auto p-8 md:w-7/12">
             <div className="mb-8">
-              <h2 className="mb-1 text-3xl font-semibold text-[#002576]">Teacher Sign Up</h2>
-              <p className="text-base text-[#444653]">
+              <h2 className="mb-2 text-[28px] font-semibold leading-[1.25] text-[#002576] sm:text-[30px]">
+                Teacher Sign Up
+              </h2>
+              <p className="text-[15px] leading-[1.5] text-[#444653]">
                 Create your professional account to begin managing assessments.
               </p>
             </div>
@@ -158,7 +162,7 @@ export default function TeacherSignUpPage() {
                       strokeWidth="1.8"
                     />
                   </svg>
-                  <span className="text-base">Upload PRC ID or Teacher&apos;s School ID</span>
+                  <span className="text-[15px]">Upload PRC ID or Teacher&apos;s School ID</span>
                   <span className="text-xs text-[#747685]">Supported: PDF, JPG, PNG (Max 5MB)</span>
                   <input className="hidden" type="file" />
                 </label>
@@ -174,7 +178,7 @@ export default function TeacherSignUpPage() {
 
               <div className="space-y-4 pt-4">
                 <button
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] p-4 text-xl font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] p-4 text-[15px] font-semibold text-white shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
                   type="submit"
                 >
                   Create Teacher Account
