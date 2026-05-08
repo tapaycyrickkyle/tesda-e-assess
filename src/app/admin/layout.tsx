@@ -3,11 +3,8 @@ import { requireUserRole } from "@/lib/server-auth";
 
 const adminSidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: "fa-solid fa-chart-pie", href: "/admin/dashboard" },
-  { key: "applications", label: "Applications", icon: "fa-regular fa-file-lines", href: "/admin/applications" },
-  { key: "verification", label: "Verification", icon: "fa-solid fa-user-check", href: "/admin/verification" },
-  { key: "evaluations", label: "Evaluations", icon: "fa-regular fa-star", href: "/admin/evaluations" },
-  { key: "reports", label: "Reports", icon: "fa-solid fa-chart-line", href: "/admin/reports" },
-  { key: "settings", label: "System Settings", icon: "fa-solid fa-sliders", href: "/admin/settings" },
+  { key: "applicants", label: "Applicants", icon: "fa-solid fa-users", href: "/admin/applicants" },
+  { key: "teacher-approvals", label: "Teacher Approvals", icon: "fa-solid fa-user-check", href: "/admin/teacher-approvals" },
 ];
 
 export default async function AdminLayout({
