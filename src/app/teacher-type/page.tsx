@@ -1,8 +1,9 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 function BuildingPublicIcon() {
   return (
-    <svg aria-hidden className="h-10 w-10" fill="none" viewBox="0 0 24 24">
+    <svg aria-hidden className="h-8 w-8" fill="none" viewBox="0 0 24 24">
       <path
         d="M4 20h16M6 20V7h12v13M9 10h1M9 13h1M9 16h1M12 10h1M12 13h1M12 16h1M15 10h1M15 13h1M15 16h1"
         stroke="currentColor"
@@ -16,7 +17,7 @@ function BuildingPublicIcon() {
 
 function BuildingPrivateIcon() {
   return (
-    <svg aria-hidden className="h-10 w-10" fill="none" viewBox="0 0 24 24">
+    <svg aria-hidden className="h-8 w-8" fill="none" viewBox="0 0 24 24">
       <path
         d="M4 20h16M7 20V5h10v15M10 8h1M10 11h1M10 14h1M13 8h1M13 11h1M13 14h1"
         stroke="currentColor"
@@ -28,6 +29,46 @@ function BuildingPrivateIcon() {
   );
 }
 
+type TeacherTypeCardProps = {
+  description: string;
+  href: string;
+  icon: ReactNode;
+  title: string;
+};
+
+function TeacherTypeCard({
+  description,
+  href,
+  icon,
+  title,
+}: TeacherTypeCardProps) {
+  return (
+    <Link
+      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md"
+      href={href}
+    >
+      <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
+      <div className="absolute right-4 top-4 rounded-full bg-[#eef3ff] px-2.5 py-1 text-[11px] font-bold text-[#3056c4] transition group-hover:bg-[#dfe9ff]">
+        Select
+      </div>
+
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#eff4ff] text-[#002576] transition group-hover:bg-[#dfe9ff]">
+        {icon}
+      </div>
+
+      <div className="mt-4">
+        <h2 className="text-[26px] font-bold leading-[1.2] text-[#0038a8]">{title}</h2>
+        <p className="mt-2 max-w-[30ch] text-[14px] leading-[1.6] text-[#5d5f5f]">{description}</p>
+      </div>
+
+      <div className="mt-5 inline-flex items-center gap-2 text-[14px] font-bold text-[#002576]">
+        <span>Continue</span>
+        <i aria-hidden="true" className="fa-solid fa-arrow-right text-[11px] transition group-hover:translate-x-0.5" />
+      </div>
+    </Link>
+  );
+}
+
 export default function TeacherTypePage() {
   return (
     <main className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a2f7a] text-[#0b1c30]">
@@ -35,59 +76,47 @@ export default function TeacherTypePage() {
         aria-hidden="true"
         className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
       />
-      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.84),rgba(0,56,168,0.54))]" />
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-4 pt-12 sm:px-6">
-        <h1 className="auth-hero-title mb-2 text-center text-white sm:text-[3rem]">
-          Choose Teacher Type
-        </h1>
-        <p className="auth-hero-copy mx-auto mb-10 max-w-2xl text-center text-[#d9e7ff] sm:text-[1.125rem]">
-          Please select your institutional affiliation to customize your assessment dashboard and
-          streamline your verification process.
-        </p>
+      <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.58))]" />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1080px] flex-1 flex-col px-4 py-8 sm:px-6 lg:py-10">
+        <div className="mb-8">
           <Link
-            className="group relative flex min-h-[320px] flex-col items-center rounded-2xl border border-white/35 bg-white/14 p-8 text-center shadow-[0_18px_45px_rgba(4,15,37,0.24)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/55 hover:bg-white/20 hover:shadow-[0_22px_55px_rgba(4,15,37,0.30)]"
-            href="/teacher-signup"
-          >
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/18 text-white ring-1 ring-white/20">
-              <BuildingPublicIcon />
-            </div>
-            <h2 className="mb-3 text-3xl font-bold text-white">Public Teacher</h2>
-            <p className="mb-6 text-base leading-[1.6] text-[#e2ebff]">
-              Instructors employed by government-funded institutions and public schools.
-            </p>
-            <div className="auth-pill mt-auto rounded-full border border-white/20 bg-white/16 px-4 py-2 text-white">
-              Requires PRC ID verification
-            </div>
-          </Link>
-
-          <Link
-            className="group relative flex min-h-[320px] flex-col items-center rounded-2xl border border-white/35 bg-white/14 p-8 text-center shadow-[0_18px_45px_rgba(4,15,37,0.24)] backdrop-blur-md transition hover:-translate-y-1 hover:border-white/55 hover:bg-white/20 hover:shadow-[0_22px_55px_rgba(4,15,37,0.30)]"
-            href="/teacher-signup"
-          >
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-white/18 text-white ring-1 ring-white/20">
-              <BuildingPrivateIcon />
-            </div>
-            <h2 className="mb-3 text-3xl font-bold text-white">Private Teacher</h2>
-            <p className="mb-6 text-base leading-[1.6] text-[#e2ebff]">
-              Instructors serving in private academic institutions or technical training centers.
-            </p>
-            <div className="auth-pill mt-auto rounded-full border border-white/20 bg-white/16 px-4 py-2 text-white">
-              Requires School ID verification
-            </div>
-          </Link>
-        </div>
-
-        <div className="mt-8 mb-12 text-center">
-          <Link
-            className="auth-label inline-flex items-center rounded-full border border-white/25 bg-white/14 px-4 py-2 text-white shadow-[0_12px_30px_rgba(4,15,37,0.18)] backdrop-blur-sm transition hover:bg-white/22"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-[#ffffff14] px-4 py-2 text-[14px] font-bold text-white transition hover:bg-[#ffffff22]"
             href="/"
           >
-            <i aria-hidden="true" className="fa-solid fa-arrow-left mr-1" />
+            <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
             Back to Login
           </Link>
         </div>
+
+        <section className="flex flex-1 items-center justify-center">
+          <div className="flex w-full flex-col items-center">
+            <div className="mx-auto max-w-xl text-center">
+              <h1 className="text-[2rem] font-bold leading-[1.1] text-white">
+                Choose Teacher Type
+              </h1>
+              <p className="mt-2 text-[15px] leading-[1.6] text-[#d9e7ff]">
+                Select the affiliation that matches your institution.
+              </p>
+            </div>
+
+            <div className="mx-auto mt-6 grid w-full max-w-[920px] grid-cols-1 gap-5 lg:grid-cols-2">
+              <TeacherTypeCard
+                description="For TESDA centers, public schools, and government-funded institutions."
+                href="/teacher-signup"
+                icon={<BuildingPublicIcon />}
+                title="Public Teacher"
+              />
+
+              <TeacherTypeCard
+                description="For private schools, academic institutions, and technical training centers."
+                href="/teacher-signup"
+                icon={<BuildingPrivateIcon />}
+                title="Private Teacher"
+              />
+            </div>
+          </div>
+        </section>
       </div>
 
       <footer className="relative z-10 w-full border-t border-white/15 bg-[#07245f]/78 px-6 py-6 backdrop-blur-sm">

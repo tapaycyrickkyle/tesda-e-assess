@@ -152,17 +152,15 @@ export default function TeacherRoomDetailClient({
   return (
     <main className="min-h-screen px-4 pb-8 pt-6 sm:px-6 lg:ml-64 lg:px-8">
       <div className="mx-auto max-w-[1440px]">
-        <nav className="mb-6 flex flex-wrap items-center gap-2 text-[13px] font-medium text-[#747685]">
-          <Link className="transition hover:text-[#002576]" href="/teacher/dashboard">
-            Dashboard
+        <div className="mb-4">
+          <Link
+            className="inline-flex items-center gap-2 rounded-lg border border-[#c9d7f5] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-sm transition hover:bg-[#f8fbff]"
+            href="/teacher/room"
+          >
+            <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
+            Back to Rooms
           </Link>
-          <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
-          <Link className="transition hover:text-[#002576]" href="/teacher/room">
-            Rooms
-          </Link>
-          <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
-          <span className="font-bold text-[#002576]">{room.name}</span>
-        </nav>
+        </div>
 
         <section className="mb-8 rounded-2xl border border-[#c4c5d5] bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -225,19 +223,18 @@ export default function TeacherRoomDetailClient({
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-[#c4c5d5] bg-white shadow-sm">
-          <div className="flex items-center justify-between border-b border-[#c4c5d5] bg-[#eff4ff] px-6 py-4">
-            <div>
-              <h2 className="text-[1.125rem] font-bold text-[#0b1c30]">Joined Applicants</h2>
-              <p className="mt-1 text-[13px] text-[#747685]">{joinedApplicantLabel}</p>
+        <section className="overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white shadow-sm">
+          <div className="border-b border-[#c4c5d5] bg-[#eff4ff] px-6 py-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-[1.25rem] font-bold text-[#0b1c30]">Joined Applicants</h2>
+                <p className="mt-1 text-[13px] text-[#747685]">{joinedApplicantLabel}</p>
+              </div>
+              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-[#002576] shadow-sm">
+                <i aria-hidden="true" className="fa-solid fa-users text-[11px]" />
+                {members.length} Registered
+              </div>
             </div>
-            <Link
-              className="inline-flex items-center gap-2 rounded-lg border border-[#c9d7f5] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-sm transition hover:bg-[#f8fbff]"
-              href="/teacher/room"
-            >
-              <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
-              Back to Rooms
-            </Link>
           </div>
 
           {members.length === 0 ? (
@@ -245,51 +242,30 @@ export default function TeacherRoomDetailClient({
               No applicants have joined this room yet.
             </div>
           ) : (
-            <div className="overflow-x-auto px-4 py-4 sm:px-5">
-              <table className="min-w-full border-separate border-spacing-0 text-left">
-                <thead>
-                  <tr>
-                    <th className="rounded-l-xl border border-[#d9e3f7] border-r-0 bg-[#f8fbff] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#5d5f5f]">
-                      Applicant
-                    </th>
-                    <th className="border-y border-[#d9e3f7] bg-[#f8fbff] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#5d5f5f]">
-                      Name
-                    </th>
-                    <th className="rounded-r-xl border border-[#d9e3f7] border-l-0 bg-[#f8fbff] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#5d5f5f]">
-                      Joined At
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {members.map((member) => (
-                    <tr key={member.id}>
-                      <td className="border-b border-[#eef2fb] px-5 py-4 align-top transition hover:bg-[#fbfcff]">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#e8f0ff] text-[13px] font-bold text-[#002576]">
-                            {getInitials(formatApplicantName(member.applicant_email))}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate text-[14px] font-semibold text-[#0b1c30]">{member.applicant_email}</p>
-                            <p className="mt-0.5 text-[12px] text-[#747685]">Registered applicant email</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="border-b border-[#eef2fb] px-5 py-4 align-top transition hover:bg-[#fbfcff]">
-                        <div className="pt-1">
-                          <p className="text-[14px] font-semibold text-[#24364c]">{formatApplicantName(member.applicant_email)}</p>
-                          <p className="mt-0.5 text-[12px] text-[#747685]">Display name</p>
-                        </div>
-                      </td>
-                      <td className="border-b border-[#eef2fb] px-5 py-4 align-top transition hover:bg-[#fbfcff]">
-                        <div className="pt-1">
-                          <p className="text-[14px] font-semibold text-[#24364c]">{formatJoinedAt(member.joined_at)}</p>
-                          <p className="mt-0.5 text-[12px] text-[#747685]">Date joined</p>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-4 sm:p-5">
+              {members.map((member) => (
+                <article
+                  key={member.id}
+                  className="border-b border-[#eef2fb] py-4 last:border-b-0"
+                >
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#e8f0ff] text-[13px] font-bold text-[#002576]">
+                        {getInitials(formatApplicantName(member.applicant_email))}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-[15px] font-bold text-[#0b1c30]">{formatApplicantName(member.applicant_email)}</p>
+                        <p className="mt-0.5 truncate text-[13px] text-[#5d5f5f]">{member.applicant_email}</p>
+                      </div>
+                    </div>
+
+                    <div className="md:pl-4 md:text-right">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Joined At</p>
+                      <p className="mt-1 text-[14px] font-semibold text-[#24364c]">{formatJoinedAt(member.joined_at)}</p>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>

@@ -146,48 +146,57 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
           {sortedRooms.map((room) => (
             <article
               key={room.id}
-              className="relative overflow-hidden rounded-2xl border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm"
+              className="relative overflow-hidden rounded-2xl border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div>
-                  <h2 className="max-w-[220px] text-[18px] font-bold leading-[1.25] text-[#24364c]">{room.name}</h2>
-                  <span className="mt-3 inline-flex rounded-full bg-[#eef3ff] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#3056c4]">
+
+              <div className="mb-5 flex flex-col items-center text-center">
+                <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#eff4ff] text-[#002576]">
+                  <i aria-hidden="true" className="fa-solid fa-door-open text-[16px]" />
+                </div>
+                <div className="w-full">
+                  <h2 className="mx-auto max-w-[220px] text-[18px] font-bold leading-[1.25] text-[#24364c]">{room.name}</h2>
+                  <span className="mx-auto mt-3 inline-flex rounded-full bg-[#eef3ff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#3056c4]">
                     {room.qualification}
+                  </span>
+                </div>
+                <span
+                  className={`mt-4 inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${
+                    room.is_active ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#dfe0e0] text-[#616363]"
+                  }`}
+                >
+                  {room.is_active ? "Active Room" : "Inactive Room"}
+                </span>
+              </div>
+
+              <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+                <div className="flex items-center justify-between gap-3 border-b border-[#d9e3f7] pb-3">
+                  <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
+                    <i aria-hidden="true" className="fa-solid fa-hashtag text-[14px] text-[#5d5f5f]" />
+                    Room Code
+                  </span>
+                  <span className="rounded-md bg-white px-3 py-1 font-mono text-[13px] font-bold tracking-[0.14em] text-[#002576]">
+                    {room.join_code}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-3">
+                  <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
+                    <i aria-hidden="true" className="fa-solid fa-users text-[14px] text-[#5d5f5f]" />
+                    Applicants
+                  </span>
+                  <span className="rounded-full bg-white px-3 py-1 text-[13px] font-bold text-[#24364c]">
+                    {room.member_count ?? 0} registered
                   </span>
                 </div>
               </div>
 
-              <div className="space-y-3 text-[14px] text-[#5d5f5f]">
-                <div className="flex items-center gap-3">
-                  <i aria-hidden="true" className="fa-solid fa-hashtag text-[15px] text-[#5d5f5f]" />
-                  <p>
-                    <span className="font-semibold">Room Code:</span> <span className="font-bold text-[#24364c]">{room.join_code}</span>
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <i aria-hidden="true" className="fa-solid fa-users text-[15px] text-[#5d5f5f]" />
-                  <p>
-                    <span className="font-bold text-[#24364c]">{room.member_count ?? 0}</span> Applicants registered
-                  </p>
-                </div>
-              </div>
-
-              {(room.member_count ?? 0) > 0 ? (
-                <div className="mt-5 flex items-center">
-                  <div className="flex -space-x-2">
-                    {buildMemberBubbles(room.member_count ?? 0).map((bubble) => (
-                      <AvatarBubble key={bubble.key} label={bubble.label} muted={bubble.muted} />
-                    ))}
-                  </div>
-                </div>
-              ) : null}
-
               <Link
-                className="mt-6 flex items-center justify-center rounded-xl bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
+                className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
                 href={`/teacher/room/${room.id}`}
               >
-                View Applicants
+                <span>View Applicants</span>
+                <i aria-hidden="true" className="fa-solid fa-arrow-right text-[12px]" />
               </Link>
             </article>
           ))}
@@ -377,43 +386,4 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
       ) : null}
     </main>
   );
-}
-
-function AvatarBubble({ label, muted }: { label: string; muted?: boolean }) {
-  return (
-    <span
-      className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold ${
-        muted ? "bg-[#eef3ff] text-[#3056c4]" : "bg-[#d9e7ff] text-[#002576]"
-      }`}
-    >
-      {label}
-    </span>
-  );
-}
-
-function buildMemberBubbles(memberCount: number) {
-  if (memberCount <= 0) {
-    return [{ key: "empty", label: "0", muted: true }];
-  }
-
-  const bubbles = [];
-  const visibleCount = Math.min(memberCount, 2);
-
-  for (let index = 0; index < visibleCount; index += 1) {
-    bubbles.push({
-      key: `member-${index + 1}`,
-      label: String(index + 1),
-      muted: false,
-    });
-  }
-
-  if (memberCount > 2) {
-    bubbles.push({
-      key: "extra",
-      label: `+${memberCount - 2}`,
-      muted: true,
-    });
-  }
-
-  return bubbles;
 }
