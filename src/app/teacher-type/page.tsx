@@ -57,7 +57,7 @@ function TeacherTypeCard({
       </div>
 
       <div className="mt-4">
-        <h2 className="text-[26px] font-bold leading-[1.2] text-[#0038a8]">{title}</h2>
+        <h2 className="text-[30px] font-bold leading-[1.15] text-[#0038a8] sm:text-[34px]">{title}</h2>
         <p className="mt-2 max-w-[30ch] text-[14px] leading-[1.6] text-[#5d5f5f]">{description}</p>
       </div>
 
@@ -78,8 +78,8 @@ export default function TeacherTypePage() {
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.58))]" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1080px] flex-1 flex-col px-4 py-8 sm:px-6 lg:py-10">
-        <div className="mb-8">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1080px] flex-1 flex-col px-4 pt-6 pb-8 sm:px-6 lg:pt-8 lg:pb-10">
+        <div className="mb-5">
           <Link
             className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-[#ffffff14] px-4 py-2 text-[14px] font-bold text-white transition hover:bg-[#ffffff22]"
             href="/"
@@ -89,7 +89,7 @@ export default function TeacherTypePage() {
           </Link>
         </div>
 
-        <section className="flex flex-1 items-center justify-center">
+        <section className="flex flex-1 items-start justify-center">
           <div className="flex w-full flex-col items-center">
             <div className="mx-auto max-w-xl text-center">
               <h1 className="text-[2rem] font-bold leading-[1.1] text-white">
@@ -100,7 +100,7 @@ export default function TeacherTypePage() {
               </p>
             </div>
 
-            <div className="mx-auto mt-6 grid w-full max-w-[920px] grid-cols-1 gap-5 lg:grid-cols-2">
+            <div className="mx-auto mt-5 grid w-full max-w-[920px] grid-cols-1 gap-5 lg:grid-cols-2">
               <TeacherTypeCard
                 description="For TESDA centers, public schools, and government-funded institutions."
                 href="/teacher-signup"
