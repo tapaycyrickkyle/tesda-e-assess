@@ -74,19 +74,6 @@ const applicants = [
   },
 ];
 
-const notes = [
-  {
-    title: "Ana Magpale",
-    time: "10:45 AM",
-    body: "Competency in kitchen safety demonstrated well. Practical module 3 pending for review of temperature logs.",
-  },
-  {
-    title: "System Alert",
-    time: "Yesterday",
-    body: "3 assessment results from last week require final electronic signature to be dispatched to central office.",
-  },
-];
-
 const announcements = [
   {
     title: "New NC III Standards",
@@ -104,7 +91,7 @@ export default function TeacherDashboardPage() {
       <div className="mx-auto max-w-[1440px]">
         <section className="mb-8 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <h1 className="text-[2rem] font-bold leading-[1.15] text-[#0b1c30] sm:text-[2.25rem]">Welcome, Maria Clara</h1>
+            <h1 className="text-[2rem] font-bold leading-[1.15] text-[#002576] sm:text-[2.25rem]">Welcome, Maria Clara</h1>
             <p className="mt-2 text-[15px] leading-[1.6] text-[#444653] sm:text-[1.0625rem]">
               Here is your assessment overview for today, October 24, 2023.
             </p>
@@ -204,32 +191,6 @@ export default function TeacherDashboardPage() {
           </div>
 
           <div className="space-y-8">
-            <aside className="overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white shadow-sm">
-              <div className="border-b border-[#c4c5d5] bg-[#eff4ff] px-6 py-4">
-                <h2 className="text-[1.125rem] font-bold text-[#0b1c30]">Evaluation Notes</h2>
-              </div>
-              <div className="p-6">
-                <div className="space-y-4">
-                  {notes.map((note) => (
-                    <article key={`${note.title}-${note.time}`} className="rounded-xl border border-[#c4c5d5] bg-[#f8f9ff] p-4">
-                      <div className="mb-2 flex items-center justify-between gap-3">
-                        <p className="text-[14px] font-bold text-[#002576]">{note.title}</p>
-                        <span className="text-[11px] text-[#747685]">{note.time}</span>
-                      </div>
-                      <p className="text-[14px] leading-[1.55] text-[#0b1c30]">{note.body}</p>
-                    </article>
-                  ))}
-                </div>
-
-                <button
-                  className="mt-4 w-full rounded-xl border border-[#002576] py-2.5 text-[14px] font-bold text-[#002576] transition hover:bg-[#dce1ff]"
-                  type="button"
-                >
-                  Add New Note
-                </button>
-              </div>
-            </aside>
-
             <aside className="relative overflow-hidden rounded-2xl bg-[#002576] text-white shadow-lg">
               <div className="relative z-10 p-6">
                 <div className="mb-4 flex items-center gap-2">

@@ -174,13 +174,13 @@ export default function StudentDashboardPage() {
                 <QuickAction icon="fa-eye" label="View Application" />
                 <QuickAction icon="fa-upload" label="Upload Files" />
                 <QuickAction icon="fa-calendar-days" label="Check Schedule" />
-                <QuickAction href="/applicant/join-room" icon="fa-right-to-bracket" label="Join Room" />
+                <QuickAction href="/applicant/room" icon="fa-right-to-bracket" label="Join Room" />
               </div>
 
               <article className={cardClass}>
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="text-[24px] font-semibold text-[#0b1c30]">My Joined Rooms</h3>
-                  <Link className="text-[13px] font-bold text-[#002576] hover:underline" href="/applicant/join-room">
+                  <Link className="text-[13px] font-bold text-[#002576] hover:underline" href="/applicant/room">
                     Join Another
                   </Link>
                 </div>

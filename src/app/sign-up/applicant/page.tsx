@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 const fieldClass =
-  "w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[15px] leading-[1.5] text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]";
+  "w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] px-4 py-3 text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]";
 
-const labelClass = "text-[14px] font-semibold leading-[1.25] text-[#1a1c1c]";
+const labelClass = "auth-label text-[#1a1c1c]";
 
 export default function ApplicantSignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,8 +20,8 @@ export default function ApplicantSignUpPage() {
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.84),rgba(0,56,168,0.54))]" />
       <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
-        <section className="grid w-full max-w-[1000px] grid-cols-1 overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
-          <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-6 text-white sm:p-8 md:col-span-5 lg:p-10">
+        <section className="grid w-full max-w-[1120px] grid-cols-1 overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
+          <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-6 text-white sm:p-8 md:col-span-4 lg:p-10">
             <div className="relative z-10 flex h-full flex-col justify-between gap-10">
               <div>
                 <h1 className="auth-hero-title mb-4 sm:text-[2.25rem]">
@@ -71,8 +71,11 @@ export default function ApplicantSignUpPage() {
             />
           </aside>
 
-          <div className="bg-white/92 p-6 sm:p-8 md:col-span-7 lg:p-12">
+          <div className="bg-white/92 p-6 sm:p-8 md:col-span-8 lg:p-12">
             <div className="mb-8">
+              <span className="inline-flex rounded-full bg-[#eef3ff] px-3 py-1 text-[12px] font-bold text-[#3056c4]">
+                Applicant Registration
+              </span>
               <h2 className="auth-panel-title mb-2 text-[#002576] sm:text-[1.875rem]">
                 Create Applicant Account
               </h2>
@@ -82,143 +85,122 @@ export default function ApplicantSignUpPage() {
             </div>
 
             <form action="#" className="space-y-6" method="POST">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="flex flex-col gap-2">
-                  <label className={`${labelClass} auth-label`} htmlFor="full-name">
-                    Full Name
-                  </label>
-                  <input
-                    className={fieldClass}
-                    id="full-name"
-                    name="fullName"
-                    placeholder="Juan Dela Cruz"
-                    required
-                    type="text"
-                  />
+              <section className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-5">
+                <div className="mb-4">
+                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Basic Information</h3>
+                  <p className="mt-1 text-[13px] text-[#5d5f5f]">Provide your primary contact details for application updates.</p>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className={`${labelClass} auth-label`} htmlFor="email">
-                    Email Address
-                  </label>
-                  <input
-                    className={fieldClass}
-                    id="email"
-                    name="email"
-                    placeholder="juan.dc@email.com"
-                    required
-                    type="email"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <PasswordField
-                  id="password"
-                  label="Password"
-                  name="password"
-                  show={showPassword}
-                  toggle={() => setShowPassword((value) => !value)}
-                />
-                <PasswordField
-                  id="confirm-password"
-                  label="Confirm Password"
-                  name="confirmPassword"
-                  show={showConfirmPassword}
-                  toggle={() => setShowConfirmPassword((value) => !value)}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="flex flex-col gap-2">
-                  <label className={labelClass} htmlFor="contact-number">
-                    Contact Number
-                  </label>
-                  <div className="flex">
-                    <span className="auth-help-text flex items-center justify-center rounded-l-lg border border-r-0 border-[#c4c5d5] bg-[#e5eeff] px-3 font-semibold text-[#444653]">
-                      +63
-                    </span>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="first-name">
+                      First Name
+                    </label>
                     <input
-                      className="w-full rounded-r-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[15px] leading-[1.5] text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
-                      id="contact-number"
-                      name="contactNumber"
-                      placeholder="912 345 6789"
+                      className={fieldClass}
+                      id="first-name"
+                      name="firstName"
+                      placeholder="Juan"
                       required
-                      type="tel"
+                      type="text"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="surname">
+                      Surname
+                    </label>
+                    <input
+                      className={fieldClass}
+                      id="surname"
+                      name="surname"
+                      placeholder="Dela Cruz"
+                      required
+                      type="text"
                     />
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className={labelClass} htmlFor="qualification">
-                    Desired Qualification
-                  </label>
-                  <div className="relative">
-                    <select
-                      className={`${fieldClass} appearance-none pr-10`}
-                      defaultValue=""
-                      id="qualification"
-                      name="qualification"
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="middle-name">
+                      Middle Name
+                    </label>
+                    <input
+                      className={fieldClass}
+                      id="middle-name"
+                      name="middleName"
+                      placeholder="Santos"
+                      type="text"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="contact-number">
+                      Contact Number
+                    </label>
+                    <div className="flex">
+                      <span className="auth-help-text flex items-center justify-center rounded-l-lg border border-r-0 border-[#c4c5d5] bg-[#e5eeff] px-3 font-semibold text-[#444653]">
+                        +63
+                      </span>
+                      <input
+                        className="w-full rounded-r-lg border border-[#c4c5d5] bg-[#f9f9f9] px-4 py-3 text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
+                        id="contact-number"
+                        name="contactNumber"
+                        placeholder="912 345 6789"
+                        required
+                        type="tel"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex flex-col gap-2">
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="email">
+                      Email Address
+                    </label>
+                    <input
+                      className={fieldClass}
+                      id="email"
+                      name="email"
+                      placeholder="juan.dc@email.com"
                       required
-                    >
-                      <option disabled value="">
-                        Select an assessment
-                      </option>
-                      <option>Information Technology NC III</option>
-                      <option>Cookery NC II</option>
-                      <option>Electrical Installation Maintenance NC II</option>
-                      <option>Visual Graphic Design NC III</option>
-                      <option>Shielded Metal Arc Welding NC I</option>
-                    </select>
-                    <i
-                      aria-hidden="true"
-                      className="fa-solid fa-chevron-down pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[12px] text-[#747685]"
+                      type="email"
                     />
                   </div>
                 </div>
-              </div>
+              </section>
 
-              <div className="flex flex-col gap-2">
-                <label className={labelClass} htmlFor="address">
-                  Home Address
-                </label>
-                <textarea
-                  className={`${fieldClass} min-h-20 resize-none`}
-                  id="address"
-                  name="address"
-                  placeholder="Street, Barangay, City/Municipality, Province"
-                  required
-                  rows={2}
-                />
-              </div>
+              <section className="rounded-xl border border-[#d9e3f7] bg-white p-5">
+                <div className="mb-4">
+                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Account Security</h3>
+                  <p className="mt-1 text-[13px] text-[#5d5f5f]">Create a secure password for your application account.</p>
+                </div>
 
-              <div className="flex items-start gap-3">
-                <input
-                  className="mt-0.5 h-4 w-4 rounded border-[#c4c5d5] text-[#002576] focus:ring-[#3056c4]"
-                  id="terms"
-                  name="terms"
-                  required
-                  type="checkbox"
-                />
-                <label className="auth-help-text font-semibold text-[#444653]" htmlFor="terms">
-                  I agree to the{" "}
-                  <Link className="text-[#002576] hover:underline" href="#">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link className="text-[#002576] hover:underline" href="#">
-                    Privacy Policy
-                  </Link>
-                  .
-                </label>
-              </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <PasswordField
+                    id="password"
+                    label="Password"
+                    name="password"
+                    show={showPassword}
+                    toggle={() => setShowPassword((value) => !value)}
+                  />
+                  <PasswordField
+                    id="confirm-password"
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    show={showConfirmPassword}
+                    toggle={() => setShowConfirmPassword((value) => !value)}
+                  />
+                </div>
+              </section>
 
               <button
                 className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-4 text-white shadow-sm transition-all hover:bg-[#002576] hover:shadow-md active:scale-[0.98]"
                 type="submit"
               >
-                <i aria-hidden="true" className="fa-solid fa-user-plus text-sm" />
-                Create Applicant Account
+                Create Account
               </button>
 
               <p className="auth-label text-center text-[#444653]">
@@ -274,7 +256,7 @@ function PasswordField({
           onClick={toggle}
           type="button"
         >
-          <i aria-hidden="true" className={`fa-solid ${show ? "fa-eye-slash" : "fa-eye"} text-[14px]`} />
+          <i aria-hidden="true" className={`fa-solid ${show ? "fa-eye-slash" : "fa-eye"} text-sm`} />
         </button>
       </div>
     </div>
