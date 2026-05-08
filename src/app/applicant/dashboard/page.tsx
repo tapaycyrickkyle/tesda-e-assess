@@ -1,10 +1,65 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const cardClass = "rounded-xl border border-[#c4c5d5] bg-white p-5 shadow-sm";
 
+type JoinedRoomMembership = {
+  id: string;
+  joined_at: string;
+  rooms:
+    | {
+        id: string;
+        name: string;
+        qualification: string;
+        join_code: string;
+        is_active: boolean;
+        created_at: string;
+      }
+    | null;
+};
+
 export default function StudentDashboardPage() {
+  const [joinedRooms, setJoinedRooms] = useState<JoinedRoomMembership[]>([]);
+  const [joinedRoomsError, setJoinedRoomsError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadJoinedRooms() {
+      try {
+        const response = await fetch("/api/applicant/rooms");
+        const payload = (await response.json()) as {
+          success: boolean;
+          message?: string;
+          memberships?: JoinedRoomMembership[];
+        };
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!response.ok || !payload.success) {
+          setJoinedRoomsError(payload.message ?? "Unable to load joined rooms.");
+          return;
+        }
+
+        setJoinedRooms(payload.memberships ?? []);
+      } catch {
+        if (!cancelled) {
+          setJoinedRoomsError("Unable to load joined rooms right now.");
+        }
+      }
+    }
+
+    void loadJoinedRooms();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <main className="px-4 pb-8 pt-8 sm:px-6 lg:ml-64 lg:px-8">
       <div className="mx-auto max-w-[1440px]">
@@ -119,8 +174,61 @@ export default function StudentDashboardPage() {
                 <QuickAction icon="fa-eye" label="View Application" />
                 <QuickAction icon="fa-upload" label="Upload Files" />
                 <QuickAction icon="fa-calendar-days" label="Check Schedule" />
-                <QuickAction icon="fa-headset" label="Get Support" />
+                <QuickAction href="/applicant/join-room" icon="fa-right-to-bracket" label="Join Room" />
               </div>
+
+              <article className={cardClass}>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-[24px] font-semibold text-[#0b1c30]">My Joined Rooms</h3>
+                  <Link className="text-[13px] font-bold text-[#002576] hover:underline" href="/applicant/join-room">
+                    Join Another
+                  </Link>
+                </div>
+
+                {joinedRoomsError ? <p className="text-[14px] text-[#8a1f1f]">{joinedRoomsError}</p> : null}
+
+                {!joinedRoomsError && joinedRooms.length === 0 ? (
+                  <p className="text-[14px] leading-[1.6] text-[#444653]">
+                    You have not joined any room yet. Use a teacher-provided code to join your assessment room.
+                  </p>
+                ) : null}
+
+                <div className="space-y-3">
+                  {joinedRooms.map((membership) =>
+                    membership.rooms ? (
+                      <div key={membership.id} className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-[15px] font-bold text-[#0b1c30]">{membership.rooms.name}</p>
+                            <p className="mt-1 text-[14px] text-[#444653]">{membership.rooms.qualification}</p>
+                          </div>
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                              membership.rooms.is_active ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#dfe0e0] text-[#616363]"
+                            }`}
+                          >
+                            {membership.rooms.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </div>
+                        <div className="mt-3 flex items-center justify-between gap-3">
+                          <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
+                          <span className="rounded-md bg-white px-3 py-1 font-mono text-[13px] font-bold tracking-[0.14em] text-[#002576]">
+                            {membership.rooms.join_code}
+                          </span>
+                        </div>
+                        <div className="mt-3 flex justify-end">
+                          <Link
+                            className="text-[13px] font-bold text-[#002576] hover:underline"
+                            href={`/applicant/rooms/${membership.rooms.id}`}
+                          >
+                            Open Room
+                          </Link>
+                        </div>
+                      </div>
+                    ) : null,
+                  )}
+                </div>
+              </article>
             </div>
 
             <aside className={cardClass}>
@@ -224,7 +332,19 @@ function ProgressRow({
   );
 }
 
-function QuickAction({ icon, label }: { icon: string; label: string }) {
+function QuickAction({ icon, label, href }: { icon: string; label: string; href?: string }) {
+  if (href) {
+    return (
+      <Link
+        className="group flex flex-col items-center justify-center rounded-xl border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
+        href={href}
+      >
+        <i aria-hidden="true" className={`fa-solid ${icon} mb-2 text-[16px] transition group-hover:scale-110`} />
+        <span className="text-[13px] font-semibold">{label}</span>
+      </Link>
+    );
+  }
+
   return (
     <button
       className="group flex flex-col items-center justify-center rounded-xl border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
