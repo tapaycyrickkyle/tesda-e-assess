@@ -42,6 +42,7 @@ You are a senior software engineer working on this project.
 - Avoid introducing a new design style unless the user explicitly asks for a redesign.
 - Ensure text, buttons, forms, cards, and navigation remain usable and readable on small screens.
 - Run `npm run build` after UI changes when practical.
+- **GUI SIZING CONSISTENCY (MANDATORY):** All elements must use a unified sizing system. Define and reuse a single spacing scale (e.g., `4px`, `8px`, `12px`, `16px`, `24px`, `32px`, `48px`). Use the same component sizing for buttons, inputs, cards, and modals across every route. Do not mix arbitrary `px`, `rem`, or `em` values. For responsive sizing, follow breakpoint‑aware but proportionally consistent values. Before committing any UI change, verify that new elements visually match existing ones in dimensions, padding, margins, and min‑width/heights. If a shared component library or design tokens exist, they must be used exclusively.
 
 # Security Standards
 

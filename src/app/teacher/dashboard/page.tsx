@@ -10,20 +10,12 @@ const summaryCards = [
     iconClass: "bg-[#dce1ff] text-[#002576]",
   },
   {
-    label: "Pending Evaluations",
-    value: "18",
-    tag: "Action Required",
-    tagClass: "bg-[#ffdbd1] text-[#591400]",
-    icon: "fa-solid fa-list-check",
-    iconClass: "bg-[#ffdbd1] text-[#591400]",
-  },
-  {
-    label: "Approved Assessments",
-    value: "156",
-    tag: "Last 30 days",
+    label: "Rooms Created",
+    value: "12",
+    tag: "Active today",
     tagClass: "bg-[#dfe0e0] text-[#454747]",
-    icon: "fa-solid fa-circle-check",
-    iconClass: "bg-[#dfe0e0] text-[#454747]",
+    icon: "fa-solid fa-door-open",
+    iconClass: "bg-[#dfe9ff] text-[#3056c4]",
   },
   {
     label: "Today's Schedule",
@@ -124,11 +116,11 @@ export default function TeacherDashboardPage() {
           </div>
         </section>
 
-        <section className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <section className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {summaryCards.map((card) => (
             <article
               key={card.label}
-              className="rounded-2xl border border-[#c4c5d5] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="flex min-h-[172px] flex-col justify-between rounded-2xl border border-[#c4c5d5] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="mb-4 flex items-start justify-between gap-3">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.iconClass}`}>
@@ -136,8 +128,10 @@ export default function TeacherDashboardPage() {
                 </div>
                 <span className={`rounded-md px-2.5 py-1 text-[11px] font-bold ${card.tagClass}`}>{card.tag}</span>
               </div>
-              <p className="mb-1 text-[14px] font-medium text-[#444653]">{card.label}</p>
-              <p className="text-[2rem] font-bold leading-none text-[#0b1c30]">{card.value}</p>
+              <div>
+                <p className="mb-1 text-[14px] font-medium text-[#444653]">{card.label}</p>
+                <p className="text-[2rem] font-bold leading-none text-[#0b1c30]">{card.value}</p>
+              </div>
             </article>
           ))}
         </section>
