@@ -197,18 +197,11 @@ export default function StudentDashboardPage() {
                   {joinedRooms.map((membership) =>
                     membership.rooms ? (
                       <div key={membership.id} className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
-                        <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
                           <div>
                             <p className="text-[15px] font-bold text-[#0b1c30]">{membership.rooms.name}</p>
                             <p className="mt-1 text-[14px] text-[#444653]">{membership.rooms.qualification}</p>
                           </div>
-                          <span
-                            className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
-                              membership.rooms.is_active ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#dfe0e0] text-[#616363]"
-                            }`}
-                          >
-                            {membership.rooms.is_active ? "Active" : "Inactive"}
-                          </span>
                         </div>
                         <div className="mt-3 flex items-center justify-between gap-3">
                           <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
@@ -219,9 +212,9 @@ export default function StudentDashboardPage() {
                         <div className="mt-3 flex justify-end">
                           <Link
                             className="text-[13px] font-bold text-[#002576] hover:underline"
-                            href={`/applicant/rooms/${membership.rooms.id}`}
+                            href="/applicant/dashboard"
                           >
-                            Open Room
+                            Start Application
                           </Link>
                         </div>
                       </div>

@@ -20,6 +20,10 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const activeItemHref =
+    items
+      .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
+      .sort((firstItem, secondItem) => secondItem.href.length - firstItem.href.length)[0]?.href ?? null;
 
   const performLogout = async () => {
     setIsLoggingOut(true);
@@ -45,15 +49,15 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
             width={40}
           />
           <div>
-            <h2 className="text-sm font-bold text-white">TESDA E-Assess</h2>
-            <p className="text-xs text-[#d9e7ff]">{portalLabel}</p>
+            <h2 className="text-[18px] font-bold leading-[1.15] text-white">TESDA E-Assess</h2>
+            <p className="mt-1 text-[14px] leading-[1.2] text-[#d9e7ff]">{portalLabel}</p>
           </div>
         </div>
       </div>
 
       <nav className="flex-1 space-y-1 px-2">
         {items.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive = activeItemHref === item.href;
 
           return (
             <button

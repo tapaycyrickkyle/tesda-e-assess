@@ -160,13 +160,6 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                     {room.qualification}
                   </span>
                 </div>
-                <span
-                  className={`mt-4 inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${
-                    room.is_active ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#dfe0e0] text-[#616363]"
-                  }`}
-                >
-                  {room.is_active ? "Active Room" : "Inactive Room"}
-                </span>
               </div>
 
               <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
@@ -185,8 +178,8 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                     <i aria-hidden="true" className="fa-solid fa-users text-[14px] text-[#5d5f5f]" />
                     Applicants
                   </span>
-                  <span className="rounded-full bg-white px-3 py-1 text-[13px] font-bold text-[#24364c]">
-                    {room.member_count ?? 0} registered
+                  <span className="rounded-full bg-white px-3 py-1 text-[13px] font-medium text-[#24364c]">
+                    {room.member_count ?? 0} joined
                   </span>
                 </div>
               </div>

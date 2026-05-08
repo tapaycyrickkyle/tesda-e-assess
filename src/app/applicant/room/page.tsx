@@ -130,13 +130,6 @@ export default async function ApplicantRoomPage() {
                     {membership.rooms.qualification}
                   </span>
                 </div>
-                <span
-                  className={`mt-4 inline-flex rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] ${
-                    membership.rooms.is_active ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#dfe0e0] text-[#616363]"
-                  }`}
-                >
-                  {membership.rooms.is_active ? "Active Room" : "Inactive Room"}
-                </span>
               </div>
 
               <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
@@ -155,17 +148,27 @@ export default async function ApplicantRoomPage() {
                     <i aria-hidden="true" className="fa-regular fa-clock text-[14px] text-[#5d5f5f]" />
                     Joined
                   </span>
-                  <span className="rounded-full bg-white px-3 py-1 text-[13px] font-bold text-[#24364c]">
+                  <span className="rounded-full bg-white px-3 py-1 text-[13px] font-medium text-[#24364c]">
                     {formatJoinedAt(membership.joined_at)}
+                  </span>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-[#d9e3f7] pt-3">
+                  <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
+                    <i aria-hidden="true" className="fa-regular fa-file-lines text-[14px] text-[#5d5f5f]" />
+                    Status
+                  </span>
+                  <span className="rounded-full bg-[#eef3ff] px-3 py-1 text-[13px] font-bold text-[#093cab]">
+                    Pending Submission
                   </span>
                 </div>
               </div>
 
               <Link
                 className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
-                href={`/applicant/rooms/${membership.rooms.id}`}
+                href="/applicant/dashboard"
               >
-                <span>Open Room</span>
+                <span>Start Application</span>
                 <i aria-hidden="true" className="fa-solid fa-arrow-right text-[12px]" />
               </Link>
             </article>
