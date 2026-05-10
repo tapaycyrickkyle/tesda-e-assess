@@ -31,6 +31,22 @@ export function createSupabaseAccessTokenClient(accessToken: string) {
   return createBaseSupabaseClient(accessToken);
 }
 
+export function createSupabaseAdminClient() {
+  const { url } = getSupabaseEnv();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+
+  if (!url || !serviceRoleKey) {
+    throw new Error("Supabase service role credentials are not configured.");
+  }
+
+  return createClient(url, serviceRoleKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
+
 export async function getUserRoleFromRoleTable(email: string, accessToken?: string): Promise<UserRole> {
   const normalizedEmail = email.trim().toLowerCase();
 

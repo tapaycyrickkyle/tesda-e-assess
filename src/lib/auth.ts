@@ -1,7 +1,7 @@
 export const SESSION_COOKIE_NAME = "tesda_session";
 export const USER_ROLE_COOKIE_NAME = "tesda_user_role";
 
-export type UserRole = "admin" | "student" | "teacher" | "unknown";
+export type UserRole = "admin" | "assessment_center" | "student" | "teacher" | "unknown";
 type AuthMetadata = Record<string, unknown> | null | undefined;
 type AuthValue = string | number | boolean | Record<string, unknown> | AuthValue[] | null | undefined;
 
@@ -68,6 +68,21 @@ export function normalizeUserRole(roleValue: string | null | undefined): UserRol
     normalized.includes("trainer")
   ) {
     return "teacher";
+  }
+
+  if (
+    normalized === "assessment_center" ||
+    normalized === "assessment_centre" ||
+    normalized === "assessmentcenter" ||
+    normalized === "assessmentcentre" ||
+    normalized === "center" ||
+    normalized === "centre" ||
+    normalized.includes("assessment_center") ||
+    normalized.includes("assessmentcentre") ||
+    normalized.includes("assessment center") ||
+    normalized.includes("assessment centre")
+  ) {
+    return "assessment_center";
   }
 
   return "unknown";
@@ -151,6 +166,10 @@ export function getRoleHomePath(role: UserRole) {
 
   if (role === "teacher") {
     return "/teacher/dashboard";
+  }
+
+  if (role === "assessment_center") {
+    return "/assessment-center/dashboard";
   }
 
   return "/";

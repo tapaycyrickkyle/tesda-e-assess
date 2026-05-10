@@ -118,13 +118,13 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
         </section>
 
         {errorMessage ? (
-          <div className="mb-6 rounded-xl border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
+          <div className="mb-6 rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
             {errorMessage}
           </div>
         ) : null}
 
         {sortedRooms.length === 0 ? (
-          <section className="rounded-2xl border border-dashed border-[#c4c5d5] bg-white p-8 text-center shadow-sm">
+          <section className="rounded-lg border border-dashed border-[#c4c5d5] bg-white p-8 text-center shadow-sm">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eff4ff] text-[#002576]">
               <i aria-hidden="true" className="fa-solid fa-door-open text-[18px]" />
             </div>
@@ -133,7 +133,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
               Start by creating your first room and sharing its generated join code with applicants.
             </p>
             <button
-              className="mt-5 rounded-xl bg-[#002576] px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#0038a8]"
+              className="mt-5 rounded-lg bg-[#002576] px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#0038a8]"
               onClick={() => setIsCreateModalOpen(true)}
               type="button"
             >
@@ -146,7 +146,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
           {sortedRooms.map((room) => (
             <article
               key={room.id}
-              className="relative overflow-hidden rounded-2xl border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="relative overflow-hidden rounded-lg border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
 
@@ -162,7 +162,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+              <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
                 <div className="flex items-center justify-between gap-3 border-b border-[#d9e3f7] pb-3">
                   <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
                     <i aria-hidden="true" className="fa-solid fa-hashtag text-[14px] text-[#5d5f5f]" />
@@ -185,7 +185,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
               </div>
 
               <Link
-                className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
+                className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
                 href={`/teacher/room/${room.id}`}
               >
                 <span>View Applicants</span>
@@ -207,7 +207,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
       {isCreateModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[760px] rounded-[24px] border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
+          <div className="w-full max-w-[760px] rounded-lg border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-[1.5rem] font-semibold leading-[1.2] text-[#0b1c30] sm:text-[1.75rem]">
@@ -241,7 +241,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                       className="fa-solid fa-door-open pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
                     />
                     <input
-                      className="w-full rounded-xl border border-[#c4c5d5] bg-[#f8f9ff] py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      className="w-full rounded-lg border border-[#c4c5d5] bg-[#f8f9ff] py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                       id="room-name"
                       onChange={(event) => setRoomName(event.target.value.toUpperCase())}
                       placeholder="e.g., Computer Lab 101"
@@ -265,7 +265,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                       className="fa-regular fa-clipboard pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
                     />
                     <select
-                      className="w-full appearance-none rounded-xl border border-[#c4c5d5] bg-[#f8f9ff] py-3 pl-10 pr-10 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      className="w-full appearance-none rounded-lg border border-[#c4c5d5] bg-[#f8f9ff] py-3 pl-10 pr-10 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                       id="course"
                       onChange={(event) => setQualification(event.target.value)}
                       required
@@ -288,7 +288,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
               <div className="flex flex-col gap-3 border-t border-[#c4c5d5] pt-5 sm:flex-row sm:justify-end">
                 <button
-                  className="rounded-xl border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
+                  className="rounded-lg border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
                   onClick={() => {
                     setIsCreateModalOpen(false);
                     setErrorMessage("");
@@ -300,7 +300,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                   Cancel
                 </button>
                 <button
-                  className="flex items-center justify-center rounded-xl bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex items-center justify-center rounded-lg bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isSubmitting}
                   type="submit"
                 >
@@ -314,7 +314,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
       {createdRoom ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[440px] rounded-[24px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+          <div className="w-full max-w-[440px] rounded-lg border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
             <div className="mb-5 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#effaf2] text-[#1e5d31]">
                 <i aria-hidden="true" className="fa-solid fa-circle-check text-[18px]" />
@@ -327,7 +327,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-5">
+            <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-5">
               <div className="space-y-5">
                 <div>
                   <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-[#747685]">Room Name</p>
@@ -354,7 +354,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
-                className="min-w-[96px] rounded-xl border border-[#c4c5d5] px-5 py-3 text-[13px] font-bold text-[#444653] transition hover:bg-[#f8f9ff]"
+                className="min-w-[96px] rounded-lg border border-[#c4c5d5] px-5 py-3 text-[13px] font-bold text-[#444653] transition hover:bg-[#f8f9ff]"
                 onClick={() => {
                   setCreatedRoom(null);
                   setSuccessMessage("");
@@ -364,7 +364,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 Close
               </button>
               <Link
-                className="min-w-[120px] rounded-xl bg-[#002576] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+                className="min-w-[120px] rounded-lg bg-[#002576] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
                 href={`/teacher/room/${createdRoom.id}`}
                 onClick={() => {
                   setCreatedRoom(null);

@@ -37,6 +37,10 @@ export async function requireUserRole(requiredRole: UserRole) {
       redirect("/teacher/dashboard");
     }
 
+    if (currentRole === "assessment_center") {
+      redirect("/assessment-center/dashboard");
+    }
+
     redirect("/");
   }
 }

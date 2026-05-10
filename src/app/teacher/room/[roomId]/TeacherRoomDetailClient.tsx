@@ -162,7 +162,7 @@ export default function TeacherRoomDetailClient({
           </Link>
         </div>
 
-        <section className="mb-6 rounded-2xl border border-[#c4c5d5] bg-white p-4 shadow-sm sm:p-5">
+        <section className="mb-6 rounded-lg border border-[#c4c5d5] bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-[640px]">
               <div className="min-w-0">
@@ -177,7 +177,7 @@ export default function TeacherRoomDetailClient({
                 </p>
               </div>
 
-              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-xl border border-[#d9e3f7] bg-[#f8fbff] px-3.5 py-2">
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3.5 py-2">
                 <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
                 <span className="font-mono text-[16px] font-bold tracking-[0.16em] text-[#002576]">{room.join_code}</span>
                 <button
@@ -192,7 +192,7 @@ export default function TeacherRoomDetailClient({
 
             <div className="flex w-full flex-col gap-2.5 sm:flex-row lg:w-auto">
               <button
-                className="inline-flex min-w-[144px] items-center justify-center rounded-xl bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-w-[144px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => void runAction("regenerate_code")}
                 type="button"
@@ -200,7 +200,7 @@ export default function TeacherRoomDetailClient({
                 Regenerate Code
               </button>
               <button
-                className="inline-flex min-w-[128px] items-center justify-center rounded-xl border border-[#ba1a1a] bg-white px-4 py-2.5 text-[12px] font-bold text-[#ba1a1a] shadow-sm transition hover:bg-[#fff5f5] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-w-[128px] items-center justify-center rounded-lg border border-[#ba1a1a] bg-white px-4 py-2.5 text-[12px] font-bold text-[#ba1a1a] shadow-sm transition hover:bg-[#fff5f5] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => setIsDeleteModalOpen(true)}
                 type="button"
@@ -211,15 +211,15 @@ export default function TeacherRoomDetailClient({
           </div>
 
           {message ? (
-            <div className="mt-5 rounded-xl border border-[#b9d6c1] bg-[#effaf2] p-4 text-[14px] text-[#1e5d31]">{message}</div>
+            <div className="mt-5 rounded-lg border border-[#b9d6c1] bg-[#effaf2] p-4 text-[14px] text-[#1e5d31]">{message}</div>
           ) : null}
 
           {errorMessage ? (
-            <div className="mt-5 rounded-xl border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">{errorMessage}</div>
+            <div className="mt-5 rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">{errorMessage}</div>
           ) : null}
         </section>
 
-        <section className="overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white shadow-sm">
+        <section className="overflow-hidden rounded-lg border border-[#c4c5d5] bg-white shadow-sm">
           <div className="border-b border-[#c4c5d5] bg-[#eff4ff] px-5 py-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -269,7 +269,7 @@ export default function TeacherRoomDetailClient({
         {members.length > 0 ? (
           <div className="mt-5 flex justify-end">
             <button
-              className="inline-flex min-w-[96px] items-center justify-center rounded-xl bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8]"
+              className="inline-flex min-w-[96px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8]"
               type="button"
             >
               Submit
@@ -280,7 +280,7 @@ export default function TeacherRoomDetailClient({
 
       {isDeleteModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[440px] rounded-[24px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+          <div className="w-full max-w-[440px] rounded-lg border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fff1f1] text-[#ba1a1a]">
                 <i aria-hidden="true" className="fa-solid fa-triangle-exclamation text-[18px]" />
@@ -293,7 +293,7 @@ export default function TeacherRoomDetailClient({
               </div>
             </div>
 
-            <div className="rounded-2xl border border-[#f4d2d2] bg-[#fff8f8] px-4 py-3 text-center">
+            <div className="rounded-lg border border-[#f4d2d2] bg-[#fff8f8] px-4 py-3 text-center">
               <p className="text-[13px] leading-[1.55] text-[#7a3b3b]">
                 This action cannot be undone.
               </p>
@@ -301,7 +301,7 @@ export default function TeacherRoomDetailClient({
 
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
               <button
-                className="min-w-[100px] rounded-xl border border-[#c4c5d5] px-4 py-2.5 text-[12px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
+                className="min-w-[100px] rounded-lg border border-[#c4c5d5] px-4 py-2.5 text-[12px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => setIsDeleteModalOpen(false)}
                 type="button"
@@ -309,7 +309,7 @@ export default function TeacherRoomDetailClient({
                 Cancel
               </button>
               <button
-                className="min-w-[136px] rounded-xl bg-[#ba1a1a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#93000a] disabled:cursor-not-allowed disabled:opacity-70"
+                className="min-w-[136px] rounded-lg bg-[#ba1a1a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#93000a] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => void handleDeleteRoom()}
                 type="button"

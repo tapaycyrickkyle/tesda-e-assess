@@ -45,7 +45,7 @@ export default function AdminDashboard() {
           ].map(([icon, tag, label, value, color]) => (
             <div
               key={String(label)}
-              className="flex min-h-[170px] flex-col justify-between rounded-xl border border-[#c4c5d5]/30 bg-white p-6 shadow-sm"
+              className="flex min-h-[170px] flex-col justify-between rounded-lg border border-[#c4c5d5]/30 bg-white p-6 shadow-sm"
             >
               <div className="mb-4 flex items-start justify-between">
                 <div className="rounded-lg p-2" style={{ backgroundColor: `${String(color)}1a`, color: String(color) }}>
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-8">
-          <div className="overflow-hidden rounded-xl border border-[#c4c5d5]/30 bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-[#c4c5d5]/30 bg-white shadow-sm">
             <div className="flex items-center justify-between border-b border-[#c4c5d5] bg-[#eff4ff]/50 px-6 py-4">
               <h3 className="text-2xl font-semibold">Teacher Verification Requests</h3>
               <button className="text-sm font-bold text-[#002576] hover:underline" type="button">

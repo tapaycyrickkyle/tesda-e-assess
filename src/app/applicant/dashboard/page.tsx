@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const cardClass = "rounded-xl border border-[#c4c5d5] bg-white p-5 shadow-sm";
+const cardClass = "rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm";
 
 type JoinedRoomMembership = {
   id: string;
@@ -82,7 +82,7 @@ export default function StudentDashboardPage() {
           </section>
 
           <section className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
-            <article className="relative overflow-hidden rounded-xl border border-[#c4c5d5] bg-white p-5 shadow-sm md:col-span-2">
+            <article className="relative overflow-hidden rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm md:col-span-2">
               <span className="mb-3 inline-block rounded-full bg-[#dce1ff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#093cab]">
                 Current Status
               </span>
@@ -196,7 +196,7 @@ export default function StudentDashboardPage() {
                 <div className="space-y-3">
                   {joinedRooms.map((membership) =>
                     membership.rooms ? (
-                      <div key={membership.id} className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+                      <div key={membership.id} className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
                         <div className="flex items-start gap-3">
                           <div>
                             <p className="text-[15px] font-bold text-[#0b1c30]">{membership.rooms.name}</p>
@@ -329,7 +329,7 @@ function QuickAction({ icon, label, href }: { icon: string; label: string; href?
   if (href) {
     return (
       <Link
-        className="group flex flex-col items-center justify-center rounded-xl border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
+        className="group flex flex-col items-center justify-center rounded-lg border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
         href={href}
       >
         <i aria-hidden="true" className={`fa-solid ${icon} mb-2 text-[16px] transition group-hover:scale-110`} />
@@ -340,7 +340,7 @@ function QuickAction({ icon, label, href }: { icon: string; label: string; href?
 
   return (
     <button
-      className="group flex flex-col items-center justify-center rounded-xl border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
+      className="group flex flex-col items-center justify-center rounded-lg border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
       type="button"
     >
       <i aria-hidden="true" className={`fa-solid ${icon} mb-2 text-[16px] transition group-hover:scale-110`} />

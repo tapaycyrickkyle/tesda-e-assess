@@ -72,7 +72,7 @@ function ApplicationPathCard({ description, href, icon, onClick, title }: Applic
   );
 
   const className =
-    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
+    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
 
   if (onClick) {
     return (
@@ -173,7 +173,7 @@ export default function ApplicantApplicationsPage() {
 
       {isJoinModalOpen ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[560px] rounded-[24px] border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
+          <div className="w-full max-w-[560px] rounded-lg border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-[1.5rem] font-semibold leading-[1.2] text-[#0b1c30] sm:text-[1.75rem]">
@@ -202,7 +202,7 @@ export default function ApplicantApplicationsPage() {
                   Room Code
                 </label>
                 <input
-                  className="w-full rounded-xl border border-[#c4c5d5] bg-[#f8f9ff] px-4 py-3 text-center font-mono text-[18px] font-bold uppercase tracking-[0.22em] text-[#002576] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#c4c5d5] bg-[#f8f9ff] px-4 py-3 text-center font-mono text-[18px] font-bold uppercase tracking-[0.22em] text-[#002576] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   id="room-code"
                   maxLength={8}
                   onChange={(event) => setCode(normalizeRoomCode(event.target.value))}
@@ -216,14 +216,14 @@ export default function ApplicantApplicationsPage() {
               </div>
 
               {errorMessage ? (
-                <div className="rounded-xl border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
+                <div className="rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
                   {errorMessage}
                 </div>
               ) : null}
 
               <div className="flex flex-col gap-3 border-t border-[#c4c5d5] pt-5 sm:flex-row sm:justify-end">
                 <button
-                  className="rounded-xl border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
+                  className="rounded-lg border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
                   onClick={() => {
                     setIsJoinModalOpen(false);
                     setErrorMessage("");
@@ -234,7 +234,7 @@ export default function ApplicantApplicationsPage() {
                   Cancel
                 </button>
                 <button
-                  className="flex items-center justify-center rounded-xl bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex items-center justify-center rounded-lg bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isSubmitting}
                   type="submit"
                 >
