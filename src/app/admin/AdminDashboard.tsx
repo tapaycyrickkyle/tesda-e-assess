@@ -64,25 +64,30 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-8">
-          <div className="overflow-hidden rounded-lg border border-[#c4c5d5]/30 bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-[#c4c5d5] bg-[#eff4ff]/50 px-6 py-4">
-              <h3 className="text-2xl font-semibold">Teacher Verification Requests</h3>
-              <button className="text-sm font-bold text-[#002576] hover:underline" type="button">
+          <div className="overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
+            <div className="flex flex-col gap-3 border-b border-[#d9e3f7] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-5 py-5 sm:px-6 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h3 className="text-[24px] font-semibold text-[#0b1c30]">Teacher Verification Requests</h3>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
+                  Review the latest instructor and assessor submissions waiting for approval.
+                </p>
+              </div>
+              <button className="text-[13px] font-bold text-[#002576] transition hover:underline" type="button">
                 View All Requests
               </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-[#c4c5d5] bg-[#eff4ff]/30">
-                    <th className="px-6 py-4 text-sm text-[#444653]">Teacher Name</th>
-                    <th className="px-6 py-4 text-sm text-[#444653]">Type/Institution</th>
-                    <th className="px-6 py-4 text-sm text-[#444653]">Uploaded ID</th>
-                    <th className="px-6 py-4 text-sm text-[#444653]">Status</th>
-                    <th className="px-6 py-4 text-right text-sm text-[#444653]">Action</th>
+                  <tr className="border-b border-[#d9e3f7] bg-[#f8fbff]">
+                    <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Teacher Name</th>
+                    <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Type/Institution</th>
+                    <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Uploaded ID</th>
+                    <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Status</th>
+                    <th className="px-6 py-4 text-right text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#c4c5d5]/20">
+                <tbody className="divide-y divide-[#d9e3f7]">
                   {verificationRows.map((row) => (
                     <tr key={row.email} className="transition-colors hover:bg-[#f8f9ff]">
                       <td className="px-6 py-4">
@@ -91,23 +96,23 @@ export default function AdminDashboard() {
                             {row.initials}
                           </div>
                           <div>
-                            <p className="font-bold">{row.name}</p>
-                            <p className="text-xs text-[#444653]">{row.email}</p>
+                            <p className="text-[14px] font-bold text-[#0b1c30]">{row.name}</p>
+                            <p className="text-[11px] text-[#747685]">{row.email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm font-medium">{row.role}</p>
-                        <p className="text-xs text-[#444653]">{row.institution}</p>
+                        <p className="text-[14px] font-medium text-[#0b1c30]">{row.role}</p>
+                        <p className="text-[11px] text-[#747685]">{row.institution}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-2 text-sm font-medium text-[#002576]">
+                        <div className="flex items-center gap-2 text-[14px] font-medium text-[#002576]">
                           <i className="fa-solid fa-paperclip" />
                           {row.idType}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="rounded-full bg-[#002576]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#002576]">
+                        <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-[#093cab]">
                           Pending
                         </span>
                       </td>

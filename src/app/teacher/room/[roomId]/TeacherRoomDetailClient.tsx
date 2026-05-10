@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import AnimatedModal from "@/components/AnimatedModal";
 import type { RoomRecord } from "@/lib/rooms";
 
 type RoomMember = {
@@ -278,9 +279,10 @@ export default function TeacherRoomDetailClient({
         ) : null}
       </div>
 
-      {isDeleteModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[440px] rounded-lg border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="w-full max-w-[440px] rounded-[20px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={isDeleteModalOpen}
+      >
             <div className="mb-6 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fff1f1] text-[#ba1a1a]">
                 <i aria-hidden="true" className="fa-solid fa-triangle-exclamation text-[18px]" />
@@ -301,7 +303,7 @@ export default function TeacherRoomDetailClient({
 
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
               <button
-                className="min-w-[100px] rounded-lg border border-[#c4c5d5] px-4 py-2.5 text-[12px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-h-[44px] min-w-[100px] items-center justify-center rounded-lg border border-[#c4c5d5] px-4 text-[14px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => setIsDeleteModalOpen(false)}
                 type="button"
@@ -309,7 +311,7 @@ export default function TeacherRoomDetailClient({
                 Cancel
               </button>
               <button
-                className="min-w-[136px] rounded-lg bg-[#ba1a1a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#93000a] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-h-[44px] min-w-[136px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 text-[14px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => void handleDeleteRoom()}
                 type="button"
@@ -317,9 +319,7 @@ export default function TeacherRoomDetailClient({
                 {isUpdating ? "Deleting..." : "Yes, Delete Room"}
               </button>
             </div>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
     </main>
   );
 }

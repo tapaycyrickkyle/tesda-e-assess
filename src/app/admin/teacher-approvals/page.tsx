@@ -86,24 +86,13 @@ const formatInstitutionPill = (institutionType: InstitutionType) =>
 
 export default function AdminTeacherApprovalsPage() {
   const [activeInstitutionFilter, setActiveInstitutionFilter] = useState<"all" | InstitutionType>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const filteredApprovals = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-
-    return approvalRecords.filter((record) => {
-      const matchesInstitution =
-        activeInstitutionFilter === "all" || record.institutionType === activeInstitutionFilter;
-      const matchesQuery =
-        normalizedQuery.length === 0 ||
-        record.name.toLowerCase().includes(normalizedQuery) ||
-        record.email.toLowerCase().includes(normalizedQuery) ||
-        record.institution.toLowerCase().includes(normalizedQuery);
-
-      return matchesInstitution && matchesQuery;
-    });
-  }, [activeInstitutionFilter, searchQuery]);
+    return approvalRecords.filter(
+      (record) => activeInstitutionFilter === "all" || record.institutionType === activeInstitutionFilter,
+    );
+  }, [activeInstitutionFilter]);
 
   const totalPages = Math.max(1, Math.ceil(filteredApprovals.length / itemsPerPage));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -117,7 +106,7 @@ export default function AdminTeacherApprovalsPage() {
   const pendingVerificationCount = approvalRecords.filter((record) => record.status === "Pending Verification").length;
   const paginationStart = filteredApprovals.length === 0 ? 0 : (safeCurrentPage - 1) * itemsPerPage + 1;
   const paginationEnd = Math.min(safeCurrentPage * itemsPerPage, filteredApprovals.length);
-  const hasActiveFilters = activeInstitutionFilter !== "all" || searchQuery.trim().length > 0;
+  const hasActiveFilters = activeInstitutionFilter !== "all";
 
   return (
     <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
@@ -125,12 +114,6 @@ export default function AdminTeacherApprovalsPage() {
         <section className="mb-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <nav className="mb-3 flex items-center gap-2 text-[13px] font-medium text-[#747685]">
-                <span>Admin</span>
-                <i aria-hidden="true" className="fa-solid fa-chevron-right text-[10px]" />
-                <span className="font-bold text-[#002576]">Teacher Approvals</span>
-              </nav>
-
               <h1 className="text-[34px] font-bold leading-[1.1] text-[#002576]">Pending Approvals</h1>
               <p className="mt-3 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
                 Review and manage teacher account verifications. Ensure submitted credentials align with TESDA
@@ -187,23 +170,6 @@ export default function AdminTeacherApprovalsPage() {
               </div>
 
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <div className="group relative">
-                  <i
-                    aria-hidden="true"
-                    className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                  />
-                  <input
-                    className="w-full rounded-lg border border-[#c4c5d5] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15 sm:w-[280px]"
-                    onChange={(event) => {
-                      setSearchQuery(event.target.value);
-                      setCurrentPage(1);
-                    }}
-                    placeholder="Search approvals..."
-                    type="text"
-                    value={searchQuery}
-                  />
-                </div>
-
                 <div className="inline-flex items-center rounded-xl border border-[#c4c5d5] bg-white p-1 shadow-sm">
                   {[
                     { label: "All", value: "all" as const },
@@ -234,7 +200,6 @@ export default function AdminTeacherApprovalsPage() {
                       className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
                       onClick={() => {
                         setActiveInstitutionFilter("all");
-                        setSearchQuery("");
                         setCurrentPage(1);
                       }}
                       type="button"

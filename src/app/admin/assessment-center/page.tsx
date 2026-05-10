@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
 
 type AssessmentCenter = {
   address: string;
@@ -29,6 +30,20 @@ const emptyFormState: CenterFormState = {
   manager: "",
   name: "",
   password: "",
+};
+
+const formatCenterCreatedAt = (value?: string) => {
+  if (!value) {
+    return "Not available";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(value));
 };
 
 export default function AdminAssessmentCenterPage() {
@@ -198,20 +213,6 @@ export default function AdminAssessmentCenterPage() {
         </section>
 
         <section className="overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
-          <div className="border-b border-[#d9e3f7] bg-[#f8fbff] px-5 py-4 sm:px-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-[22px] font-semibold text-[#0b1c30]">Assessment Center List</h2>
-                <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                  View current assessment centers and their assigned contact details.
-                </p>
-              </div>
-              <span className="inline-flex w-fit items-center rounded-full bg-[#eef4ff] px-3 py-1.5 text-[12px] font-semibold text-[#093cab]">
-                {assessmentCenters.length} centers
-              </span>
-            </div>
-          </div>
-
           {pageError ? (
             <div className="border-b border-[#f3d6d6] bg-[#fff4f4] px-5 py-3 text-[13px] text-[#93000a] sm:px-6">
               {pageError}
@@ -227,16 +228,7 @@ export default function AdminAssessmentCenterPage() {
                   {assessmentCenters.map((center) => (
                     <article
                       key={center.id}
-                      className="cursor-pointer rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-sm transition hover:border-[#bfd0f2] hover:bg-white"
-                      onClick={() => setSelectedCenter(center)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter" || event.key === " ") {
-                          event.preventDefault();
-                          setSelectedCenter(center);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
+                      className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-sm transition hover:border-[#bfd0f2] hover:bg-white"
                     >
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold text-[#0b1c30]">{center.name}</p>
@@ -256,7 +248,18 @@ export default function AdminAssessmentCenterPage() {
                           <p className="mt-1 text-[13px] text-[#444653]">{center.contact}</p>
                         </div>
                       </div>
-                      <p className="mt-3 text-[12px] font-semibold text-[#002576]">View details</p>
+                      <div className="mt-3">
+                        <button
+                          className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setSelectedCenter(center);
+                          }}
+                          type="button"
+                        >
+                          View More
+                        </button>
+                      </div>
                     </article>
                   ))}
 
@@ -284,14 +287,16 @@ export default function AdminAssessmentCenterPage() {
                       <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
                         Contact
                       </th>
+                      <th className="px-6 py-4 text-right text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
+                        Action
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#d9e3f7]">
                     {assessmentCenters.map((center) => (
                       <tr
                         key={center.id}
-                        className="cursor-pointer transition-colors hover:bg-[#f8fbff]"
-                        onClick={() => setSelectedCenter(center)}
+                        className="transition-colors hover:bg-[#f8fbff]"
                       >
                         <td className="px-6 py-4">
                           <p className="text-[14px] font-bold text-[#0b1c30]">{center.name}</p>
@@ -299,12 +304,24 @@ export default function AdminAssessmentCenterPage() {
                         <td className="px-6 py-4 text-[14px] text-[#444653]">{center.address}</td>
                         <td className="px-6 py-4 text-[14px] text-[#444653]">{center.manager}</td>
                         <td className="px-6 py-4 text-[14px] text-[#444653]">{center.contact}</td>
+                        <td className="px-6 py-4 text-right">
+                          <button
+                            className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedCenter(center);
+                            }}
+                            type="button"
+                          >
+                            View More
+                          </button>
+                        </td>
                       </tr>
                     ))}
 
                     {assessmentCenters.length === 0 ? (
                       <tr>
-                        <td className="px-6 py-10 text-center text-[14px] text-[#747685]" colSpan={4}>
+                        <td className="px-6 py-10 text-center text-[14px] text-[#747685]" colSpan={5}>
                           No assessment centers found yet.
                         </td>
                       </tr>
@@ -326,9 +343,10 @@ export default function AdminAssessmentCenterPage() {
         Add Assessment Center
       </button>
 
-      {isAddModalOpen ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={isAddModalOpen}
+      >
             <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Add Assessment Center</h2>
@@ -437,13 +455,14 @@ export default function AdminAssessmentCenterPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
 
-      {selectedCenter ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(selectedCenter)}
+      >
+        {selectedCenter ? (
+          <>
             <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">{selectedCenter.name}</h2>
@@ -460,40 +479,38 @@ export default function AdminAssessmentCenterPage() {
               </button>
             </div>
 
-            <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
-              <div className="grid gap-3 rounded-[14px] border border-[#e4ebf7] bg-white p-4">
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
-                  <p className="mt-1 text-[14px] text-[#444653]">{selectedCenter.address}</p>
+            <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-4 sm:px-7">
+              <div className="rounded-[16px] border border-[#d9e3f7] bg-white p-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
+                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.address}</p>
+                  </div>
+                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center Head</p>
+                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.manager}</p>
+                  </div>
+                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact</p>
+                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.contact}</p>
+                  </div>
+                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Login Email</p>
+                    <p className="mt-1.5 break-all text-[14px] leading-[1.55] text-[#0b1c30]">
+                      {selectedCenter.center_email ?? "Not available"}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center Head</p>
-                  <p className="mt-1 text-[14px] text-[#444653]">{selectedCenter.manager}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact</p>
-                  <p className="mt-1 text-[14px] text-[#444653]">{selectedCenter.contact}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Login Email</p>
-                  <p className="mt-1 text-[14px] text-[#444653]">{selectedCenter.center_email ?? "Not available"}</p>
-                </div>
-                <div>
+
+                <div className="mt-3 rounded-[12px] bg-[#f8fbff] px-4 py-3">
                   <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Created</p>
-                  <p className="mt-1 text-[14px] text-[#444653]">
-                    {selectedCenter.created_at ? new Date(selectedCenter.created_at).toLocaleString() : "Not available"}
+                  <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">
+                    {formatCenterCreatedAt(selectedCenter.created_at)}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
-                <button
-                  className="inline-flex min-w-[132px] items-center justify-center rounded-lg border border-[#efc5c5] bg-[#fff4f4] px-4 py-2.5 text-[12px] font-bold text-[#93000a] transition hover:bg-[#ffeaea]"
-                  onClick={() => setIsDeleteConfirmOpen(true)}
-                  type="button"
-                >
-                  Delete Center
-                </button>
+              <div className="flex flex-col-reverse gap-2 border-t border-[#d9e3f7] pt-3 sm:flex-row sm:justify-end">
                 <button
                   className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={closeDetailsModal}
@@ -501,15 +518,26 @@ export default function AdminAssessmentCenterPage() {
                 >
                   Close
                 </button>
+                <button
+                  className="inline-flex min-w-[132px] items-center justify-center rounded-lg border border-[#efc5c5] bg-[#fff4f4] px-4 py-2.5 text-[12px] font-bold text-[#93000a] transition hover:bg-[#ffeaea]"
+                  onClick={() => setIsDeleteConfirmOpen(true)}
+                  type="button"
+                >
+                  Delete Center
+                </button>
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+          </>
+        ) : null}
+      </AnimatedModal>
 
-      {selectedCenter && isDeleteConfirmOpen ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-[60] flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop w-full max-w-[460px] rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="w-full max-w-[460px] rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(selectedCenter && isDeleteConfirmOpen)}
+        zIndexClassName="z-[60]"
+      >
+        {selectedCenter ? (
+          <>
             <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
               <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Delete Assessment Center</h2>
               <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
@@ -535,7 +563,7 @@ export default function AdminAssessmentCenterPage() {
                   Cancel
                 </button>
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg bg-[#ba1a1a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#93000a] disabled:cursor-not-allowed disabled:bg-[#d9a3a3]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:bg-[#d9a3a3]"
                   disabled={isDeletingCenter}
                   onClick={handleDeleteAssessmentCenter}
                   type="button"
@@ -544,9 +572,9 @@ export default function AdminAssessmentCenterPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+          </>
+        ) : null}
+      </AnimatedModal>
     </main>
   );
 }

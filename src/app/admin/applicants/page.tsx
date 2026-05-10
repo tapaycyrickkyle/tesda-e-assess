@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
 
 type ApplicantRecord = {
   course: string;
@@ -82,6 +83,8 @@ export default function AdminApplicantsPage() {
   const [isSavingAssignment, setIsSavingAssignment] = useState(false);
   const [assignmentError, setAssignmentError] = useState("");
   const [assignmentSuccess, setAssignmentSuccess] = useState("");
+  const [individualCourseFilter, setIndividualCourseFilter] = useState("all");
+  const [bulkProgramFilter, setBulkProgramFilter] = useState("all");
 
   useEffect(() => {
     if (!assignmentSuccess) {
@@ -137,8 +140,21 @@ export default function AdminApplicantsPage() {
     };
   }, []);
 
-  const bulkSchoolCount = 1;
-  const topRightCount = activeTab === "individual" ? applicants.length : bulkSchoolCount;
+  const individualCourseOptions = useMemo(
+    () => ["all", ...new Set(applicants.map((applicant) => applicant.course))],
+    [],
+  );
+  const bulkProgramOptions = useMemo(() => ["all", bulkQualification], []);
+  const filteredApplicants = useMemo(
+    () =>
+      applicants.filter((applicant) => individualCourseFilter === "all" || applicant.course === individualCourseFilter),
+    [individualCourseFilter],
+  );
+  const filteredBulkSubmissions = useMemo(
+    () => (bulkProgramFilter === "all" || bulkQualification === bulkProgramFilter ? [bulkSubmission] : []),
+    [bulkProgramFilter],
+  );
+  const topRightCount = activeTab === "individual" ? filteredApplicants.length : filteredBulkSubmissions.length;
   const topRightLabel = activeTab === "individual" ? "Applicants" : "Schools";
   const filteredBulkApplicants = bulkApplicants.filter((applicant) =>
     applicant.name.toLowerCase().includes(bulkSearch.trim().toLowerCase()),
@@ -208,62 +224,101 @@ export default function AdminApplicantsPage() {
   return (
     <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
       <div className="mx-auto max-w-[1440px]">
-        <section className="mb-8">
+        <section className="mb-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <nav className="mb-2 flex items-center gap-2 text-[13px] font-medium text-[#747685]">
-                <span>Applicants</span>
-                <i aria-hidden="true" className="fa-solid fa-chevron-right text-[10px]" />
-                <span className="font-bold text-[#002576]">Submitted Applicants</span>
-              </nav>
               <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Submitted Applicants</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
                 Manage and review candidates who have completed their portfolio submissions.
               </p>
             </div>
 
-            <div className="w-full max-w-[220px] rounded-[14px] border border-[#d4def2] bg-[#eef4ff] px-5 py-4 text-center shadow-sm">
+            <div className="flex min-h-[112px] w-full max-w-[196px] flex-col justify-center rounded-[14px] border border-[#d4def2] bg-[#eef4ff] px-4 py-3 text-center shadow-sm">
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{topRightLabel}</p>
-              <p className="mt-2 text-[30px] font-bold leading-none text-[#0b1c30]">{topRightCount}</p>
-              <p className="mt-1 text-[12px] text-[#4563a5]">
+              <p className="mt-1.5 text-[26px] font-bold leading-none text-[#0b1c30]">{topRightCount}</p>
+              <p className="mt-1 text-[11px] text-[#4563a5]">
                 {activeTab === "individual" ? "Ready for assessment assignment" : "Submitted school batches"}
               </p>
             </div>
           </div>
 
-          <div className="mt-5 flex justify-center">
-            <div className="inline-flex items-center rounded-full border border-[#c4c5d5] bg-white p-1 shadow-sm">
-              <button
-                className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                  activeTab === "individual"
-                    ? "bg-[#002576] font-bold text-white"
-                    : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                }`}
-                onClick={() => setActiveTab("individual")}
-                type="button"
-              >
-                Individual
-              </button>
-              <button
-                className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                  activeTab === "bulk"
-                    ? "bg-[#002576] font-bold text-white"
-                    : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                }`}
-                onClick={() => setActiveTab("bulk")}
-                type="button"
-              >
-                Bulk
-              </button>
+          <div className="mt-4 rounded-[18px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-sm sm:px-5">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div className="inline-flex w-fit items-center rounded-full border border-[#c4c5d5] bg-white p-1 shadow-sm">
+                <button
+                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
+                    activeTab === "individual"
+                      ? "bg-[#002576] font-bold text-white"
+                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                  }`}
+                  onClick={() => setActiveTab("individual")}
+                  type="button"
+                >
+                  Individual
+                </button>
+                <button
+                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
+                    activeTab === "bulk"
+                      ? "bg-[#002576] font-bold text-white"
+                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                  }`}
+                  onClick={() => setActiveTab("bulk")}
+                  type="button"
+                >
+                  Bulk
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2 sm:min-w-[320px] sm:flex-row sm:items-center sm:justify-end">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-fit">
+                  {activeTab === "individual" ? "Course Filter" : "Program Filter"}
+                </p>
+                <label className="block flex-1">
+                  <span className="sr-only">{activeTab === "individual" ? "Filter by course" : "Filter by program"}</span>
+                  <div className="relative">
+                    <select
+                      className="w-full appearance-none rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      onChange={(event) =>
+                        activeTab === "individual"
+                          ? setIndividualCourseFilter(event.target.value)
+                          : setBulkProgramFilter(event.target.value)
+                      }
+                      value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
+                    >
+                      {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
+                        <option key={option} value={option}>
+                          {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
+                      <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+                    </span>
+                  </div>
+                </label>
+
+                {((activeTab === "individual" && individualCourseFilter !== "all") ||
+                  (activeTab === "bulk" && bulkProgramFilter !== "all")) ? (
+                  <button
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
+                    onClick={() =>
+                      activeTab === "individual" ? setIndividualCourseFilter("all") : setBulkProgramFilter("all")
+                    }
+                    type="button"
+                  >
+                    <i aria-hidden="true" className="fa-solid fa-rotate-left text-[12px]" />
+                    Clear
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
-
         </section>
 
         <section>
           {activeTab === "individual" ? (
             <div className="grid grid-cols-1 gap-4">
-              {applicants.map((applicant) => (
+              {filteredApplicants.map((applicant) => (
                 <article key={applicant.id} className="rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="min-w-0">
@@ -303,63 +358,93 @@ export default function AdminApplicantsPage() {
                         }
                         type="button"
                       >
-                        Assign
+                        Assign Center
                       </button>
                     </div>
                   </div>
                 </article>
               ))}
+
+              {filteredApplicants.length === 0 ? (
+                <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
+                    <i aria-hidden="true" className="fa-solid fa-filter-circle-xmark text-[18px]" />
+                  </div>
+                  <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">No applicants match this course filter</p>
+                  <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
+                    Try another course or clear the filter to view all submitted applicants.
+                  </p>
+                </div>
+              ) : null}
             </div>
           ) : (
-            <article
-              className="cursor-pointer rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm transition hover:border-[#002576] hover:shadow-md"
-              onClick={() => setIsBulkModalOpen(true)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  setIsBulkModalOpen(true);
-                }
-              }}
-              role="button"
-              tabIndex={0}
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
-                  <p className={cardTitleClass}>{bulkSubmission.name}</p>
-                  <p className="mt-2 text-[14px] font-medium text-[#444653]">{bulkQualification}</p>
-                </div>
+            <div className="grid grid-cols-1 gap-4">
+              {filteredBulkSubmissions.map((submission) => (
+                <article
+                  key={submission.batchCode}
+                  className="cursor-pointer rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm transition hover:border-[#002576] hover:shadow-md"
+                  onClick={() => setIsBulkModalOpen(true)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setIsBulkModalOpen(true);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="min-w-0">
+                      <p className={cardTitleClass}>{submission.name}</p>
+                      <p className="mt-2 text-[14px] font-medium text-[#444653]">{bulkQualification}</p>
+                    </div>
 
-                <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
-                  <button
-                    className="inline-flex min-w-[108px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      openAssignmentModal({
-                        applicants: bulkApplicants.map((applicant) => ({
-                          id: applicant.id,
-                          name: applicant.name,
-                          qualification: bulkQualification,
-                        })),
-                        applicantCount: bulkApplicants.length,
-                        description: bulkQualification,
-                        title: bulkSubmission.name,
-                        type: "bulk",
-                      });
-                    }}
-                    type="button"
-                  >
-                    Assign
-                  </button>
+                    <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
+                      <button
+                        className="inline-flex min-w-[108px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          openAssignmentModal({
+                            applicants: bulkApplicants.map((applicant) => ({
+                              id: applicant.id,
+                              name: applicant.name,
+                              qualification: bulkQualification,
+                            })),
+                            applicantCount: bulkApplicants.length,
+                            description: bulkQualification,
+                            title: submission.name,
+                            type: "bulk",
+                          });
+                        }}
+                        type="button"
+                      >
+                        Assign Center
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+
+              {filteredBulkSubmissions.length === 0 ? (
+                <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
+                    <i aria-hidden="true" className="fa-solid fa-filter-circle-xmark text-[18px]" />
+                  </div>
+                  <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">No batch submissions match this program filter</p>
+                  <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
+                    Try another program or clear the filter to view all submitted school batches.
+                  </p>
                 </div>
-              </div>
-            </article>
+              ) : null}
+            </div>
           )}
         </section>
       </div>
 
-      {isBulkModalOpen ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={isBulkModalOpen}
+      >
             <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">{bulkSubmission.name}</h2>
@@ -428,17 +513,18 @@ export default function AdminApplicantsPage() {
                 ) : null}
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
 
-      {assignmentTarget && !isAssignmentConfirmOpen ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
-            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(assignmentTarget && !isAssignmentConfirmOpen)}
+      >
+        {assignmentTarget ? (
+          <>
+            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-4 sm:px-7">
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Assign Assessment Center</h2>
-                <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
+                <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">
                   Choose an assessment center for {assignmentTarget.title}.
                 </p>
               </div>
@@ -451,29 +537,29 @@ export default function AdminApplicantsPage() {
               </button>
             </div>
 
-            <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
+            <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-4 sm:px-7">
               {assignmentError ? (
                 <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
                   {assignmentError}
                 </div>
               ) : null}
 
-              <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-4">
+              <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-3.5">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#4563a5]">Assigning</p>
-                <div className="mt-3 min-w-0">
+                <div className="mt-2.5 min-w-0">
                   <p className="text-[15px] font-bold text-[#0b1c30]">{assignmentTarget.title}</p>
                   <p className="mt-1 text-[13px] leading-[1.55] text-[#44506a]">{assignmentTarget.description}</p>
-                  <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#4563a5]">
+                  <p className="mt-1.5 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#4563a5]">
                     {assignmentTarget.applicantCount} {assignmentTarget.applicantCount === 1 ? "Applicant" : "Applicants"}
                   </p>
                 </div>
               </div>
 
               <div>
-                <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="mb-2.5 flex items-center justify-between gap-3">
                   <div>
                     <p className="text-[13px] font-bold text-[#0b1c30]">Choose Assessment Center</p>
-                    <p className="mt-1 text-[12px] leading-[1.5] text-[#747685]">
+                    <p className="mt-0.5 text-[12px] leading-[1.45] text-[#747685]">
                       Select one destination from the list for this assignment.
                     </p>
                   </div>
@@ -482,9 +568,9 @@ export default function AdminApplicantsPage() {
                   </span>
                 </div>
 
-                {centersError ? <p className="mb-3 text-[12px] text-[#93000a]">{centersError}</p> : null}
+                {centersError ? <p className="mb-2.5 text-[12px] text-[#93000a]">{centersError}</p> : null}
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <label className="block">
                     <div className="relative">
                       <select
@@ -507,16 +593,16 @@ export default function AdminApplicantsPage() {
                   </label>
 
                   {selectedCenter ? (
-                    <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-4">
+                    <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
                       <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Selected Center</p>
-                      <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{selectedCenter.name}</p>
+                      <p className="mt-2.5 text-[15px] font-bold text-[#0b1c30]">{selectedCenter.name}</p>
                       <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{selectedCenter.address}</p>
                     </div>
                   ) : null}
                 </div>
               </div>
 
-              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
                 <button
                   className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={closeAssignmentFlow}
@@ -534,13 +620,17 @@ export default function AdminApplicantsPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+          </>
+        ) : null}
+      </AnimatedModal>
 
-      {assignmentTarget && selectedCenter && isAssignmentConfirmOpen ? (
-        <div className="ui-modal-backdrop fixed inset-0 z-[60] flex items-center justify-center bg-[#0b1c30]/45 px-4 py-4">
-          <div className="ui-modal-pop max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-lg border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(assignmentTarget && selectedCenter && isAssignmentConfirmOpen)}
+        zIndexClassName="z-[60]"
+      >
+        {assignmentTarget && selectedCenter ? (
+          <>
             <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
               <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Confirm Assignment</h2>
               <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
@@ -597,9 +687,9 @@ export default function AdminApplicantsPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      ) : null}
+          </>
+        ) : null}
+      </AnimatedModal>
 
       {assignmentSuccess ? (
         <div className="pointer-events-none fixed inset-x-4 top-6 z-[70] flex justify-center lg:left-64 lg:right-8 lg:justify-end">
