@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
 import { normalizeRoomCode, type RoomRecord } from "@/lib/rooms";
 
 type ApplicationPathCardProps = {
@@ -37,12 +38,20 @@ function JoinAssessmentRoomIcon() {
   return (
     <svg aria-hidden className="h-8 w-8" fill="none" viewBox="0 0 24 24">
       <path
-        d="M8 4.75h7a2.25 2.25 0 0 1 2.25 2.25v10A2.25 2.25 0 0 1 15 19.25H8m0-14.5v14.5m0-14.5 7.25.5m-7.25 14 7.25-.5M12.5 12h.01"
+        d="M6.75 5.75A1.75 1.75 0 0 1 8.5 4h5.75A1.75 1.75 0 0 1 16 5.75v12.5A1.75 1.75 0 0 1 14.25 20H8.5a1.75 1.75 0 0 1-1.75-1.75V5.75Z"
         stroke="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.8"
       />
+      <path
+        d="M10.5 12h7m-2.75-2.75L17.5 12l-2.75 2.75"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.8"
+      />
+      <path d="M10.25 11.99h.01" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" />
     </svg>
   );
 }
@@ -171,9 +180,10 @@ export default function ApplicantApplicationsPage() {
         </section>
       </div>
 
-      {isJoinModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[560px] rounded-lg border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
+      <AnimatedModal
+        contentClassName="w-full max-w-[560px] rounded-[20px] border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7"
+        open={isJoinModalOpen}
+      >
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-[1.5rem] font-semibold leading-[1.2] text-[#0b1c30] sm:text-[1.75rem]">
@@ -223,7 +233,7 @@ export default function ApplicantApplicationsPage() {
 
               <div className="flex flex-col gap-3 border-t border-[#c4c5d5] pt-5 sm:flex-row sm:justify-end">
                 <button
-                  className="rounded-lg border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#002576] px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
                   onClick={() => {
                     setIsJoinModalOpen(false);
                     setErrorMessage("");
@@ -234,7 +244,7 @@ export default function ApplicantApplicationsPage() {
                   Cancel
                 </button>
                 <button
-                  className="flex items-center justify-center rounded-lg bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#002576] px-5 text-[14px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isSubmitting}
                   type="submit"
                 >
@@ -242,9 +252,7 @@ export default function ApplicantApplicationsPage() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
     </main>
   );
 }

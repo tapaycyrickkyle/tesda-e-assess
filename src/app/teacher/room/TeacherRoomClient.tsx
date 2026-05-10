@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
 import type { RoomRecord } from "@/lib/rooms";
 
 const qualificationOptions = [
@@ -205,9 +206,10 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
         Add Room
       </button>
 
-      {isCreateModalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[760px] rounded-lg border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7">
+      <AnimatedModal
+        contentClassName="w-full max-w-[760px] rounded-[20px] border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7"
+        open={isCreateModalOpen}
+      >
             <div className="mb-6 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-[1.5rem] font-semibold leading-[1.2] text-[#0b1c30] sm:text-[1.75rem]">
@@ -288,7 +290,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
               <div className="flex flex-col gap-3 border-t border-[#c4c5d5] pt-5 sm:flex-row sm:justify-end">
                 <button
-                  className="rounded-lg border border-[#002576] px-4 py-3 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#002576] px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] active:scale-[0.98]"
                   onClick={() => {
                     setIsCreateModalOpen(false);
                     setErrorMessage("");
@@ -300,7 +302,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                   Cancel
                 </button>
                 <button
-                  className="flex items-center justify-center rounded-lg bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#002576] px-5 text-[14px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isSubmitting}
                   type="submit"
                 >
@@ -308,13 +310,12 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 </button>
               </div>
             </form>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
 
-      {createdRoom ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b1c30]/45 px-4">
-          <div className="w-full max-w-[440px] rounded-lg border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]">
+      <AnimatedModal
+        contentClassName="w-full max-w-[440px] rounded-[20px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(createdRoom)}
+      >
             <div className="mb-5 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#effaf2] text-[#1e5d31]">
                 <i aria-hidden="true" className="fa-solid fa-circle-check text-[18px]" />
@@ -354,7 +355,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
 
             <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button
-                className="min-w-[96px] rounded-lg border border-[#c4c5d5] px-5 py-3 text-[13px] font-bold text-[#444653] transition hover:bg-[#f8f9ff]"
+                className="inline-flex min-h-[44px] min-w-[96px] items-center justify-center rounded-lg border border-[#c4c5d5] px-5 text-[14px] font-bold text-[#444653] transition hover:bg-[#f8f9ff]"
                 onClick={() => {
                   setCreatedRoom(null);
                   setSuccessMessage("");
@@ -364,7 +365,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 Close
               </button>
               <Link
-                className="min-w-[120px] rounded-lg bg-[#002576] px-5 py-3 text-center text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+                className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center rounded-lg bg-[#002576] px-5 text-center text-[14px] font-bold text-white transition hover:bg-[#0038a8]"
                 href={`/teacher/room/${createdRoom.id}`}
                 onClick={() => {
                   setCreatedRoom(null);
@@ -374,9 +375,7 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 Open Room
               </Link>
             </div>
-          </div>
-        </div>
-      ) : null}
+      </AnimatedModal>
     </main>
   );
 }

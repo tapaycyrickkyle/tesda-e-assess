@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
 
 export default function Home() {
   const router = useRouter();
@@ -176,6 +177,19 @@ export default function Home() {
           <span className="auth-footer-copy text-[#d9e7ff]">(c) 2024 TESDA E-Assess Eastern Samar Office. All rights reserved.</span>
         </div>
       </footer>
+
+      <AnimatedModal
+        contentClassName="w-full max-w-[360px] rounded-[20px] border border-[#c4d6f6] bg-white px-6 py-6 text-center shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={isSubmitting}
+      >
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
+              <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[20px]" />
+            </div>
+            <p className="mt-4 text-[18px] font-bold text-[#0b1c30]">Signing you in</p>
+            <p className="mt-2 text-[13px] leading-[1.55] text-[#5d5f5f]">
+              Please wait while we verify your account and prepare your dashboard.
+            </p>
+      </AnimatedModal>
 
     </div>
   );

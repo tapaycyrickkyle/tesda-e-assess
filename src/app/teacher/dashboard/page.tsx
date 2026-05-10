@@ -125,9 +125,14 @@ export default function TeacherDashboardPage() {
 
         <section className="grid grid-cols-1 gap-8 xl:grid-cols-3">
           <div className="xl:col-span-2">
-            <div className="overflow-hidden rounded-lg border border-[#c4c5d5] bg-white shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#c4c5d5] bg-[#eff4ff] px-6 py-4">
-                <h2 className="text-[1.125rem] font-bold text-[#0b1c30]">Assigned Applicants</h2>
+            <div className="overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#d9e3f7] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-5 py-5 sm:px-6">
+                <div>
+                  <h2 className="text-[24px] font-semibold text-[#0b1c30]">Assigned Applicants</h2>
+                  <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
+                    Review applicant schedules and assessment status from today&apos;s queue.
+                  </p>
+                </div>
                 <div className="flex items-center gap-2">
                   <IconButton icon="fa-solid fa-filter" small />
                   <IconButton icon="fa-solid fa-ellipsis-vertical" small />
@@ -137,17 +142,17 @@ export default function TeacherDashboardPage() {
               <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse text-left">
                   <thead>
-                    <tr className="border-b border-[#c4c5d5] bg-[#e5eeff] text-[#444653]">
-                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.12em]">Applicant Name</th>
-                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.12em]">Qualification</th>
-                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.12em]">Schedule</th>
-                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.12em]">Status</th>
-                      <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-[0.12em]">Action</th>
+                    <tr className="border-b border-[#d9e3f7] bg-[#f8fbff]">
+                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicant Name</th>
+                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Qualification</th>
+                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Schedule</th>
+                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Status</th>
+                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#c4c5d5]">
+                  <tbody className="divide-y divide-[#d9e3f7]">
                     {applicants.map((applicant) => (
-                      <tr key={applicant.name} className="transition hover:bg-[#f8fbff]">
+                      <tr key={applicant.name} className="transition-colors hover:bg-[#f8fbff]">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div
@@ -178,7 +183,7 @@ export default function TeacherDashboardPage() {
                 </table>
               </div>
 
-              <div className="flex justify-center border-t border-[#c4c5d5] bg-[#eff4ff] p-4">
+              <div className="flex justify-center border-t border-[#d9e3f7] bg-[#f8fbff] p-4">
                 <button
                   className="flex items-center gap-2 text-[14px] font-bold text-[#002576] transition hover:gap-3"
                   type="button"
