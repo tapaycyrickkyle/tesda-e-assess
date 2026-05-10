@@ -13,7 +13,7 @@ export default function TeacherSignUpPage() {
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.54))]" />
       <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
-        <div className="flex w-full max-w-[1180px] flex-col overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.28)] backdrop-blur-sm md:flex-row">
+        <div className="flex w-full max-w-[1180px] flex-col overflow-hidden rounded-lg border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.28)] backdrop-blur-sm md:flex-row">
           <div className="relative hidden overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-8 text-white md:flex md:w-4/12 md:flex-col md:justify-between">
             <div className="relative z-10">
               <div className="mb-8">
@@ -75,7 +75,7 @@ export default function TeacherSignUpPage() {
             </div>
 
             <form className="space-y-6">
-              <section className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Basic Information</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Use your active professional and institutional details.</p>
@@ -118,7 +118,7 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-xl border border-[#d9e3f7] bg-white p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-white p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Institution Details</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">These details will be used during verification and dashboard setup.</p>
@@ -135,13 +135,13 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-xl border border-[#d9e3f7] bg-white p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-white p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Verification Document</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Upload a valid PRC ID or school-issued ID for account review.</p>
                 </div>
 
-                <div className="group flex flex-col gap-2 rounded-xl border-2 border-dashed border-[#c4c5d5] bg-[#f9f9f9] p-6 transition-all hover:border-[#3056c4]">
+                <div className="group flex flex-col gap-2 rounded-lg border-2 border-dashed border-[#c4c5d5] bg-[#f9f9f9] p-6 transition-all hover:border-[#3056c4]">
                   <label className="flex cursor-pointer flex-col items-center gap-2 py-4 text-center text-[#444653]">
                   <svg
                     aria-hidden
@@ -165,7 +165,7 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-xl border border-[#d9e3f7] bg-white p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-white p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Account Security</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Choose a password you can remember and keep secure.</p>

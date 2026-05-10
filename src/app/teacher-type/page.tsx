@@ -44,7 +44,7 @@ function TeacherTypeCard({
 }: TeacherTypeCardProps) {
   return (
     <Link
-      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md"
+      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md"
       href={href}
     >
       <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />

@@ -60,7 +60,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="w-full rounded-xl border border-white/45 bg-white/94 p-6 shadow-[0_24px_55px_rgba(4,15,37,0.28)] backdrop-blur-sm sm:p-8">
+          <div className="w-full rounded-lg border border-white/45 bg-white/94 p-6 shadow-[0_24px_55px_rgba(4,15,37,0.28)] backdrop-blur-sm sm:p-8">
             <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <label className="auth-label text-[#1a1c1c]" htmlFor="username">

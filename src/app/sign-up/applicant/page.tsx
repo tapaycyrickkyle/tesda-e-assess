@@ -20,7 +20,7 @@ export default function ApplicantSignUpPage() {
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.84),rgba(0,56,168,0.54))]" />
       <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
-        <section className="grid w-full max-w-[1120px] grid-cols-1 overflow-hidden rounded-xl border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
+        <section className="grid w-full max-w-[1120px] grid-cols-1 overflow-hidden rounded-lg border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
           <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-6 text-white sm:p-8 md:col-span-4 lg:p-10">
             <div className="relative z-10 flex h-full flex-col justify-between gap-10">
               <div>
@@ -85,7 +85,7 @@ export default function ApplicantSignUpPage() {
             </div>
 
             <form action="#" className="space-y-6" method="POST">
-              <section className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Basic Information</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Provide your primary contact details for application updates.</p>
@@ -172,7 +172,7 @@ export default function ApplicantSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-xl border border-[#d9e3f7] bg-white p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-white p-5">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Account Security</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Create a secure password for your application account.</p>

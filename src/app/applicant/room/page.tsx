@@ -87,13 +87,13 @@ export default async function ApplicantRoomPage() {
         </section>
 
         {joinedRoomsError ? (
-          <div className="mb-6 rounded-xl border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
+          <div className="mb-6 rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
             {joinedRoomsError}
           </div>
         ) : null}
 
         {!joinedRoomsError && visibleRooms.length === 0 ? (
-          <section className="rounded-2xl border border-dashed border-[#c4c5d5] bg-white p-8 text-center shadow-sm">
+          <section className="rounded-lg border border-dashed border-[#c4c5d5] bg-white p-8 text-center shadow-sm">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eff4ff] text-[#002576]">
               <i aria-hidden="true" className="fa-solid fa-right-to-bracket text-[18px]" />
             </div>
@@ -102,7 +102,7 @@ export default async function ApplicantRoomPage() {
               Go to Applications and use the Join Assessment Room option with a teacher-provided room code.
             </p>
             <Link
-              className="mt-5 inline-flex rounded-xl bg-[#002576] px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#0038a8]"
+              className="mt-5 inline-flex rounded-lg bg-[#002576] px-5 py-3 text-[14px] font-bold text-white transition hover:bg-[#0038a8]"
               href="/applicant/applications"
             >
               Go to Applications
@@ -114,7 +114,7 @@ export default async function ApplicantRoomPage() {
           {visibleRooms.map((membership) => (
             <article
               key={membership.id}
-              className="relative overflow-hidden rounded-2xl border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="relative overflow-hidden rounded-lg border border-[#c9d7f5] bg-white px-5 pb-5 pt-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
 
@@ -132,7 +132,7 @@ export default async function ApplicantRoomPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+              <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
                 <div className="flex items-center justify-between gap-3 border-b border-[#d9e3f7] pb-3">
                   <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
                     <i aria-hidden="true" className="fa-solid fa-hashtag text-[14px] text-[#5d5f5f]" />
@@ -165,7 +165,7 @@ export default async function ApplicantRoomPage() {
               </div>
 
               <Link
-                className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
+                className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
                 href="/applicant/dashboard"
               >
                 <span>Start Application</span>
