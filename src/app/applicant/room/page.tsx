@@ -43,6 +43,7 @@ type JoinedRoomMembershipRow = {
 export default async function ApplicantRoomPage() {
   let joinedRoomsError = "";
   let visibleRooms: Array<JoinedRoomMembership & { rooms: NonNullable<JoinedRoomMembership["rooms"]> }> = [];
+  const submissionStatusByRoomId = new Map<string, "submitted_to_teacher" | "submitted_to_admin">();
 
   const currentUser = await getCurrentAppUser();
 
@@ -68,6 +69,26 @@ export default async function ApplicantRoomPage() {
           (membership): membership is JoinedRoomMembership & { rooms: NonNullable<JoinedRoomMembership["rooms"]> } =>
             Boolean(membership.rooms),
         );
+
+      if (visibleRooms.length > 0) {
+        const { data: submissions } = await supabase
+          .from("applicant_application_submissions")
+          .select("room_id, workflow_status")
+          .eq("applicant_id", currentUser.id)
+          .in(
+            "room_id",
+            visibleRooms.map((membership) => membership.rooms.id),
+          );
+
+        for (const submission of submissions ?? []) {
+          if (submission.room_id) {
+            submissionStatusByRoomId.set(
+              submission.room_id,
+              submission.workflow_status as "submitted_to_teacher" | "submitted_to_admin",
+            );
+          }
+        }
+      }
     }
   } else {
     joinedRoomsError = "Unable to load joined rooms right now.";
@@ -158,17 +179,23 @@ export default async function ApplicantRoomPage() {
                     <i aria-hidden="true" className="fa-regular fa-file-lines text-[14px] text-[#5d5f5f]" />
                     Status
                   </span>
-                  <span className="rounded-full bg-[#eef3ff] px-3 py-1 text-[13px] font-bold text-[#093cab]">
-                    Pending Submission
+                  <span
+                    className={`rounded-full px-3 py-1 text-[13px] font-bold ${getRoomSubmissionStatusBadgeClass(
+                      submissionStatusByRoomId.get(membership.rooms.id),
+                    )}`}
+                  >
+                    {getRoomSubmissionStatusLabel(submissionStatusByRoomId.get(membership.rooms.id))}
                   </span>
                 </div>
               </div>
 
               <Link
                 className="mt-5 flex items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-3 text-[14px] font-bold text-white transition hover:bg-[#002576]"
-                href="/applicant/dashboard"
+                href={`/applicant/applications/individual?roomId=${membership.rooms.id}`}
               >
-                <span>Start Application</span>
+                <span>
+                  {submissionStatusByRoomId.get(membership.rooms.id) ? "Continue Application" : "Start Application"}
+                </span>
                 <i aria-hidden="true" className="fa-solid fa-arrow-right text-[12px]" />
               </Link>
             </article>
@@ -185,4 +212,28 @@ function formatJoinedAt(value: string) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(value));
+}
+
+function getRoomSubmissionStatusLabel(status?: "submitted_to_teacher" | "submitted_to_admin") {
+  if (status === "submitted_to_admin") {
+    return "Forwarded to Admin";
+  }
+
+  if (status === "submitted_to_teacher") {
+    return "Submitted";
+  }
+
+  return "Pending Submission";
+}
+
+function getRoomSubmissionStatusBadgeClass(status?: "submitted_to_teacher" | "submitted_to_admin") {
+  if (status === "submitted_to_admin") {
+    return "bg-[#e8f2ff] text-[#0038a8]";
+  }
+
+  if (status === "submitted_to_teacher") {
+    return "bg-[#eefaf1] text-[#1f7a36]";
+  }
+
+  return "bg-[#eef3ff] text-[#093cab]";
 }

@@ -10,19 +10,40 @@ type AssignedApplicant = {
   assigned_at: string;
   assignment_batch?: string | null;
   assignment_title?: string | null;
+  assessment_center_id: string;
+  center_name: string;
   id: string;
   qualification: string;
 };
 
 type BulkAssignment = {
+  assignmentIds: string[];
   applicantCount: number;
-  applicants: AssignedApplicant[];
   assignedAt: string;
   batchCode: string;
+  centerName: string;
   id: string;
   qualification: string;
   title: string;
 };
+
+type RemovalTarget =
+  | {
+      assignmentIds: string[];
+      centerName: string;
+      count: 1;
+      description: string;
+      title: string;
+      type: "individual";
+    }
+  | {
+      assignmentIds: string[];
+      centerName: string;
+      count: number;
+      description: string;
+      title: string;
+      type: "bulk";
+    };
 
 const formatAssignedDate = (value: string) =>
   new Date(value).toLocaleString([], {
@@ -35,17 +56,35 @@ const formatAssignedDate = (value: string) =>
 
 const cardTitleClass = "text-[18px] font-bold leading-[1.2] text-[#0b1c30]";
 
-export default function AssessmentCenterApplicantsPage() {
+export default function AdminAssignedApplicantsPage() {
   const [activeTab, setActiveTab] = useState<"individual" | "bulk">("individual");
   const [applicants, setApplicants] = useState<AssignedApplicant[]>([]);
   const [bulkSearch, setBulkSearch] = useState("");
-  const [centerName, setCenterName] = useState("");
   const [error, setError] = useState("");
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRemovingAssignment, setIsRemovingAssignment] = useState(false);
+  const [removalError, setRemovalError] = useState("");
+  const [removalSuccess, setRemovalSuccess] = useState("");
+  const [removalTarget, setRemovalTarget] = useState<RemovalTarget | null>(null);
+  const [selectedBulkAssignment, setSelectedBulkAssignment] = useState<BulkAssignment | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [individualCourseFilter, setIndividualCourseFilter] = useState("all");
   const [bulkProgramFilter, setBulkProgramFilter] = useState("all");
-  const [selectedBulkAssignment, setSelectedBulkAssignment] = useState<BulkAssignment | null>(null);
+
+  useEffect(() => {
+    if (!removalSuccess) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setRemovalSuccess("");
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [removalSuccess]);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,12 +94,11 @@ export default function AssessmentCenterApplicantsPage() {
       setError("");
 
       try {
-        const response = await fetch("/api/assessment-center/applicants", {
+        const response = await fetch("/api/admin/assessment-center-assignments", {
           credentials: "same-origin",
         });
         const payload = (await response.json()) as {
           applicants?: AssignedApplicant[];
-          centerName?: string;
           message?: string;
           success?: boolean;
         };
@@ -71,7 +109,6 @@ export default function AssessmentCenterApplicantsPage() {
 
         if (!cancelled) {
           setApplicants(payload.applicants ?? []);
-          setCenterName(payload.centerName ?? "");
         }
       } catch (loadError) {
         if (!cancelled) {
@@ -91,6 +128,7 @@ export default function AssessmentCenterApplicantsPage() {
     };
   }, []);
 
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const individualApplicants = useMemo(
     () => applicants.filter((applicant) => !applicant.assignment_batch),
     [applicants],
@@ -103,27 +141,28 @@ export default function AssessmentCenterApplicantsPage() {
       .filter((applicant) => applicant.assignment_batch)
       .forEach((applicant) => {
         const batchCode = applicant.assignment_batch ?? "";
-        const title = applicant.assignment_title?.trim() || batchCode;
-        const key = `${batchCode}:${title}`;
-        const existing = batchMap.get(key);
+        const assignmentTitle = applicant.assignment_title?.trim() || batchCode;
+        const groupingKey = `${batchCode}:${assignmentTitle}:${applicant.center_name}`;
+        const existing = batchMap.get(groupingKey);
 
         if (existing) {
-          existing.applicants.push(applicant);
           existing.applicantCount += 1;
+          existing.assignmentIds.push(applicant.id);
           if (new Date(applicant.assigned_at).getTime() > new Date(existing.assignedAt).getTime()) {
             existing.assignedAt = applicant.assigned_at;
           }
           return;
         }
 
-        batchMap.set(key, {
+        batchMap.set(groupingKey, {
+          assignmentIds: [applicant.id],
           applicantCount: 1,
-          applicants: [applicant],
           assignedAt: applicant.assigned_at,
           batchCode,
-          id: key,
+          centerName: applicant.center_name,
+          id: applicant.id,
           qualification: applicant.qualification,
-          title,
+          title: assignmentTitle,
         });
       });
 
@@ -144,32 +183,107 @@ export default function AssessmentCenterApplicantsPage() {
 
   const filteredIndividualApplicants = useMemo(
     () =>
-      individualApplicants.filter(
-        (applicant) => individualCourseFilter === "all" || applicant.qualification === individualCourseFilter,
-      ),
-    [individualApplicants, individualCourseFilter],
+      individualApplicants.filter((applicant) => {
+        const matchesCourse = individualCourseFilter === "all" || applicant.qualification === individualCourseFilter;
+        const matchesSearch =
+          normalizedSearchQuery.length === 0 ||
+          applicant.applicant_name.toLowerCase().includes(normalizedSearchQuery) ||
+          applicant.qualification.toLowerCase().includes(normalizedSearchQuery) ||
+          applicant.center_name.toLowerCase().includes(normalizedSearchQuery);
+
+        return matchesCourse && matchesSearch;
+      }),
+    [individualApplicants, individualCourseFilter, normalizedSearchQuery],
   );
 
   const filteredBulkAssignments = useMemo(
     () =>
-      bulkAssignments.filter(
-        (assignment) => bulkProgramFilter === "all" || assignment.qualification === bulkProgramFilter,
-      ),
-    [bulkAssignments, bulkProgramFilter],
-  );
+      bulkAssignments.filter((assignment) => {
+        const matchesProgram = bulkProgramFilter === "all" || assignment.qualification === bulkProgramFilter;
+        const matchesSearch =
+          normalizedSearchQuery.length === 0 ||
+          assignment.batchCode.toLowerCase().includes(normalizedSearchQuery) ||
+          assignment.title.toLowerCase().includes(normalizedSearchQuery) ||
+          assignment.qualification.toLowerCase().includes(normalizedSearchQuery) ||
+          assignment.centerName.toLowerCase().includes(normalizedSearchQuery);
 
-  const filteredSelectedBulkApplicants = useMemo(
-    () =>
-      selectedBulkAssignment
-        ? selectedBulkAssignment.applicants.filter((applicant) =>
-            applicant.applicant_name.toLowerCase().includes(bulkSearch.trim().toLowerCase()),
-          )
-        : [],
-    [bulkSearch, selectedBulkAssignment],
+        return matchesProgram && matchesSearch;
+      }),
+    [bulkAssignments, bulkProgramFilter, normalizedSearchQuery],
   );
 
   const topRightCount = activeTab === "individual" ? filteredIndividualApplicants.length : filteredBulkAssignments.length;
   const topRightLabel = activeTab === "individual" ? "Applicants" : "Batches";
+  const selectedBulkApplicants = useMemo(
+    () =>
+      selectedBulkAssignment
+        ? applicants
+            .filter((applicant) => selectedBulkAssignment.assignmentIds.includes(applicant.id))
+            .sort((left, right) => left.applicant_name.localeCompare(right.applicant_name))
+        : [],
+    [applicants, selectedBulkAssignment],
+  );
+  const filteredSelectedBulkApplicants = useMemo(
+    () =>
+      selectedBulkApplicants.filter((applicant) =>
+        applicant.applicant_name.toLowerCase().includes(bulkSearch.trim().toLowerCase()),
+      ),
+    [bulkSearch, selectedBulkApplicants],
+  );
+
+  const closeRemovalFlow = () => {
+    if (isRemovingAssignment) {
+      return;
+    }
+
+    setRemovalTarget(null);
+    setRemovalError("");
+  };
+
+  const handleRemoveAssignment = async () => {
+    if (!removalTarget) {
+      return;
+    }
+
+    setIsRemovingAssignment(true);
+    setRemovalError("");
+
+    try {
+      const response = await fetch("/api/admin/assessment-center-assignments", {
+        body: JSON.stringify({ assignmentIds: removalTarget.assignmentIds }),
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "DELETE",
+      });
+
+      const payload = (await response.json()) as { message?: string; success?: boolean };
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.message ?? "Unable to remove assignment.");
+      }
+
+      setApplicants((currentApplicants) =>
+        currentApplicants.filter((applicant) => !removalTarget.assignmentIds.includes(applicant.id)),
+      );
+      if (removalTarget.type === "bulk") {
+        setIsBulkModalOpen(false);
+        setSelectedBulkAssignment(null);
+        setBulkSearch("");
+      }
+      setRemovalSuccess(
+        removalTarget.type === "individual"
+          ? `${removalTarget.title} was returned to the submitted queue.`
+          : `${removalTarget.count} applicants from ${removalTarget.title} were returned to the submitted queue.`,
+      );
+      setRemovalTarget(null);
+    } catch (removeError) {
+      setRemovalError(removeError instanceof Error ? removeError.message : "Unable to remove assignment.");
+    } finally {
+      setIsRemovingAssignment(false);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
@@ -177,9 +291,9 @@ export default function AssessmentCenterApplicantsPage() {
         <section className="mb-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Applicants</h1>
+              <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Assigned Applicants</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Review applicants routed to {centerName || "the assessment center"} and open their submitted PDF softcopies.
+                Review applicants and school batches that have already been routed to assessment centers.
               </p>
             </div>
 
@@ -187,7 +301,7 @@ export default function AssessmentCenterApplicantsPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{topRightLabel}</p>
               <p className="mt-1.5 text-[26px] font-bold leading-none text-[#0b1c30]">{topRightCount}</p>
               <p className="mt-1 text-[11px] text-[#4563a5]">
-                {activeTab === "individual" ? "Ready for individual assessment" : "Received bulk assignment batches"}
+                {activeTab === "individual" ? "Already assigned to centers" : "Bulk batches already routed"}
               </p>
             </div>
           </div>
@@ -219,7 +333,26 @@ export default function AssessmentCenterApplicantsPage() {
                 </button>
               </div>
 
-              <div className="flex flex-col gap-2 sm:min-w-[320px] sm:flex-row sm:items-center sm:justify-end">
+              <div className="flex flex-col gap-2 lg:min-w-[720px] lg:flex-row lg:items-center lg:justify-end">
+                <label className="block flex-1 lg:max-w-[280px]">
+                  <span className="sr-only">
+                    {activeTab === "individual" ? "Search assigned applicants" : "Search assigned batches"}
+                  </span>
+                  <div className="group relative">
+                    <i
+                      aria-hidden="true"
+                      className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                    />
+                    <input
+                      className="w-full rounded-lg border border-[#c4c5d5] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                      placeholder={activeTab === "individual" ? "Search assigned applicants..." : "Search assigned batches..."}
+                      type="text"
+                      value={searchQuery}
+                    />
+                  </div>
+                </label>
+
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-fit">
                   {activeTab === "individual" ? "Course Filter" : "Program Filter"}
                 </p>
@@ -248,12 +381,19 @@ export default function AssessmentCenterApplicantsPage() {
                 </label>
 
                 {((activeTab === "individual" && individualCourseFilter !== "all") ||
-                  (activeTab === "bulk" && bulkProgramFilter !== "all")) ? (
+                  (activeTab === "bulk" && bulkProgramFilter !== "all") ||
+                  searchQuery.trim().length > 0) ? (
                   <button
                     className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
-                    onClick={() =>
-                      activeTab === "individual" ? setIndividualCourseFilter("all") : setBulkProgramFilter("all")
-                    }
+                    onClick={() => {
+                      setSearchQuery("");
+                      if (activeTab === "individual") {
+                        setIndividualCourseFilter("all");
+                        return;
+                      }
+
+                      setBulkProgramFilter("all");
+                    }}
                     type="button"
                   >
                     <i aria-hidden="true" className="fa-solid fa-rotate-left text-[12px]" />
@@ -277,7 +417,7 @@ export default function AssessmentCenterApplicantsPage() {
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
             <p className="mt-4 text-[14px] font-semibold text-[#0b1c30]">Loading assigned applicants...</p>
-            <p className="mt-1 text-[13px] text-[#747685]">Pulling the latest assignment list for this center.</p>
+            <p className="mt-1 text-[13px] text-[#747685]">Pulling the latest routing history from assessment centers.</p>
           </div>
         ) : (
           <section>
@@ -291,9 +431,19 @@ export default function AssessmentCenterApplicantsPage() {
                         <p className="mt-2 text-[14px] font-medium text-[#444653]">{applicant.qualification}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end">
+                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center</p>
+                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">{applicant.center_name}</p>
+                        </div>
+                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
+                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
+                            {formatAssignedDate(applicant.assigned_at)}
+                          </p>
+                        </div>
                         <a
-                          className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                           href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
                           rel="noreferrer"
                           target="_blank"
@@ -301,11 +451,27 @@ export default function AssessmentCenterApplicantsPage() {
                           View PDF
                         </a>
                         <a
-                          className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                           href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
                         >
                           Download
                         </a>
+                        <button
+                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-4 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea]"
+                          onClick={() =>
+                            setRemovalTarget({
+                              assignmentIds: [applicant.id],
+                              centerName: applicant.center_name,
+                              count: 1,
+                              description: applicant.qualification,
+                              title: applicant.applicant_name,
+                              type: "individual",
+                            })
+                          }
+                          type="button"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   </article>
@@ -322,12 +488,12 @@ export default function AssessmentCenterApplicantsPage() {
                     <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
                       {individualApplicants.length === 0
                         ? "No individual applicants have been assigned yet"
-                        : "No applicants match this course filter"}
+                        : "No assigned applicants match the current filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {individualApplicants.length === 0
-                        ? "Individual applicant assignments from the admin portal will appear here."
-                        : "Try another course or clear the filter to view all individual assignments."}
+                        ? "Individual applicant assignments will appear here after the admin routes them to a center."
+                        : "Try another search or clear the filters to view all individual assignments."}
                     </p>
                   </div>
                 ) : null}
@@ -336,7 +502,7 @@ export default function AssessmentCenterApplicantsPage() {
               <div className="grid grid-cols-1 gap-4">
                 {filteredBulkAssignments.map((assignment) => (
                   <article
-                    key={assignment.id}
+                    key={`${assignment.batchCode}-${assignment.title}-${assignment.centerName}`}
                     className="cursor-pointer rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm transition hover:border-[#002576] hover:shadow-md"
                     onClick={() => {
                       setSelectedBulkAssignment(assignment);
@@ -360,19 +526,40 @@ export default function AssessmentCenterApplicantsPage() {
                         <p className="mt-2 text-[14px] font-medium text-[#444653]">{assignment.qualification}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-2.5">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicants</p>
-                          <p className="mt-1 text-[13px] font-medium text-[#0b1c30]">
-                            {assignment.applicantCount} {assignment.applicantCount === 1 ? "received" : "received"}
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end">
+                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center</p>
+                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">{assignment.centerName}</p>
+                        </div>
+                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicants</p>
+                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
+                            {assignment.applicantCount} assigned
                           </p>
                         </div>
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-2.5">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
-                          <p className="mt-1 text-[13px] font-medium text-[#0b1c30]">
+                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
+                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
                             {formatAssignedDate(assignment.assignedAt)}
                           </p>
                         </div>
+                        <button
+                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-4 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setRemovalTarget({
+                              assignmentIds: assignment.assignmentIds,
+                              centerName: assignment.centerName,
+                              count: assignment.applicantCount,
+                              description: assignment.qualification,
+                              title: assignment.title,
+                              type: "bulk",
+                            });
+                          }}
+                          type="button"
+                        >
+                          Remove
+                        </button>
                       </div>
                     </div>
                   </article>
@@ -388,13 +575,13 @@ export default function AssessmentCenterApplicantsPage() {
                     </div>
                     <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
                       {bulkAssignments.length === 0
-                        ? "No bulk assignments have been received yet"
-                        : "No batch submissions match this program filter"}
+                        ? "No bulk batches have been assigned yet"
+                        : "No assigned batch submissions match the current filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {bulkAssignments.length === 0
-                        ? "Bulk assignment batches from the admin portal will appear here."
-                        : "Try another program or clear the filter to view all batch assignments."}
+                        ? "Bulk school assignments will appear here after the admin routes them to a center."
+                        : "Try another search or clear the filters to view all assigned batch submissions."}
                     </p>
                   </div>
                 ) : null}
@@ -414,7 +601,7 @@ export default function AssessmentCenterApplicantsPage() {
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">{selectedBulkAssignment.title}</h2>
                 <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
-                  Applicants assigned to {centerName || "this center"} under this batch.
+                  Assigned applicants in this batch routed to {selectedBulkAssignment.centerName}.
                 </p>
               </div>
               <button
@@ -433,7 +620,7 @@ export default function AssessmentCenterApplicantsPage() {
             <div className="rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
               <div className="mb-3 flex items-center justify-between gap-3">
                 <span className="text-[13px] font-semibold text-[#0b1c30]">Applicants</span>
-                <span className="text-[12px] font-medium text-[#747685]">{selectedBulkAssignment.applicantCount} total</span>
+                <span className="text-[12px] font-medium text-[#747685]">{selectedBulkApplicants.length} total</span>
               </div>
 
               <div className="mb-4">
@@ -460,7 +647,6 @@ export default function AssessmentCenterApplicantsPage() {
                   >
                     <div className="min-w-0">
                       <p className="truncate text-[14px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
-                      <p className="mt-1 truncate text-[13px] text-[#5d5f5f]">{applicant.qualification}</p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <a
@@ -491,6 +677,85 @@ export default function AssessmentCenterApplicantsPage() {
           </>
         ) : null}
       </AnimatedModal>
+
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        open={Boolean(removalTarget)}
+        zIndexClassName="z-[60]"
+      >
+        {removalTarget ? (
+          <>
+            <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+              <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Remove Assignment</h2>
+              <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
+                This will return the assignment to the submitted queue so it can be routed again.
+              </p>
+            </div>
+
+            <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
+              {removalError ? (
+                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
+                  {removalError}
+                </div>
+              ) : null}
+
+              <div className="rounded-lg border border-[#f7d9d9] bg-[#fff6f6] px-4 py-4">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#b24c4c]">Removing</p>
+                <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.title}</p>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#5d4a4a]">{removalTarget.description}</p>
+                <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#b24c4c]">
+                  {removalTarget.count} {removalTarget.count === 1 ? "Applicant" : "Applicants"}
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-4">
+                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Current Center</p>
+                <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.centerName}</p>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                  {removalTarget.type === "individual"
+                    ? "This applicant will be removed from the current center and shown again on the Submitted Applicants page."
+                    : "This batch will be removed from the current center and all applicants in it will be shown again on the Submitted Applicants page."}
+                </p>
+              </div>
+
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  disabled={isRemovingAssignment}
+                  onClick={closeRemovalFlow}
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  className="inline-flex min-w-[136px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:bg-[#d2a3a3]"
+                  disabled={isRemovingAssignment}
+                  onClick={handleRemoveAssignment}
+                  type="button"
+                >
+                  {isRemovingAssignment ? "Removing..." : "Remove Assignment"}
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
+      </AnimatedModal>
+
+      {removalSuccess ? (
+        <div className="pointer-events-none fixed inset-x-4 top-6 z-[70] flex justify-center lg:left-64 lg:right-8 lg:justify-end">
+          <div className="ui-modal-pop pointer-events-auto w-full max-w-[360px] rounded-[18px] border border-[#bfe3cc] bg-[#edf9f1] px-5 py-4 shadow-[0_20px_40px_rgba(31,122,69,0.16)]">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d8f0e1] text-[#1f7a45]">
+                <i aria-hidden="true" className="fa-solid fa-check text-[14px]" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#1f7a45]">Assignment Removed</p>
+                <p className="mt-1 text-[14px] leading-[1.55] text-[#215c36]">{removalSuccess}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

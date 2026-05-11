@@ -5,11 +5,14 @@ create table if not exists public.assessment_center_applicants (
   applicant_name text not null,
   qualification text not null,
   assignment_batch text,
+  assignment_title text,
   assigned_by uuid not null,
   assigned_by_email text not null,
   assigned_at timestamptz not null default now(),
   unique (assessment_center_id, applicant_reference)
 );
+
+alter table public.assessment_center_applicants add column if not exists assignment_title text;
 
 alter table public.assessment_center_applicants enable row level security;
 

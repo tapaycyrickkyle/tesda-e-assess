@@ -71,10 +71,13 @@ export default function StudentDashboardPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <button className="flex items-center gap-2 rounded-lg bg-[#002576] px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#0038a8]" type="button">
+              <Link
+                className="flex items-center gap-2 rounded-lg bg-[#002576] px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#0038a8]"
+                href="/applicant/applications/individual"
+              >
                 <i aria-hidden="true" className="fa-solid fa-rocket text-[12px]" />
                 Apply for Assessment
-              </button>
+              </Link>
               <button className="rounded-lg border border-[#747685] px-5 py-3 text-[14px] font-semibold text-[#002576] transition hover:bg-[#e5eeff]" type="button">
                 View Profile
               </button>
@@ -212,7 +215,7 @@ export default function StudentDashboardPage() {
                         <div className="mt-3 flex justify-end">
                           <Link
                             className="text-[13px] font-bold text-[#002576] hover:underline"
-                            href="/applicant/dashboard"
+                            href={`/applicant/applications/individual?roomId=${membership.rooms.id}`}
                           >
                             Start Application
                           </Link>

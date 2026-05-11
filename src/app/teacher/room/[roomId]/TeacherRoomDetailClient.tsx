@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AnimatedModal from "@/components/AnimatedModal";
+import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 import type { RoomRecord } from "@/lib/rooms";
 
 type RoomMember = {
@@ -13,7 +14,18 @@ type RoomMember = {
   joined_at: string;
 };
 
+type RoomApplicationSubmission = {
+  applicant_id: string;
+  applicant_name: string;
+  id: string;
+  qualification_title: string;
+  submitted_at: string;
+  teacher_forwarded_at: string | null;
+  workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+};
+
 type TeacherRoomDetailClientProps = {
+  initialApplications: RoomApplicationSubmission[];
   initialMembers: RoomMember[];
   initialRoom: RoomRecord;
 };
@@ -22,6 +34,7 @@ type UpdateRoomResponse = {
   success: boolean;
   message?: string;
   room?: RoomRecord;
+  submittedCount?: number;
 };
 
 type DeleteRoomResponse = {
@@ -48,22 +61,15 @@ function formatJoinedAt(value: string) {
   }).format(new Date(value));
 }
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
-}
-
 export default function TeacherRoomDetailClient({
+  initialApplications,
   initialMembers,
   initialRoom,
 }: TeacherRoomDetailClientProps) {
   const router = useRouter();
   const [room, setRoom] = useState(initialRoom);
   const [members] = useState(initialMembers);
+  const [applications, setApplications] = useState(initialApplications);
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -71,6 +77,10 @@ export default function TeacherRoomDetailClient({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const joinedApplicantLabel =
     members.length === 1 ? "1 applicant currently joined" : `${members.length} applicants currently joined`;
+  const applicationByApplicantId = new Map(applications.map((application) => [application.applicant_id, application]));
+  const submittedToTeacherCount = applications.filter((application) => application.workflow_status === "submitted_to_teacher").length;
+  const pendingApplicantsCount = members.filter((member) => !applicationByApplicantId.has(member.applicant_id)).length;
+  const canSubmitBatch = members.length > 0 && pendingApplicantsCount === 0 && submittedToTeacherCount > 0;
 
   useEffect(() => {
     if (!message && !errorMessage) {
@@ -95,7 +105,7 @@ export default function TeacherRoomDetailClient({
     }
   }
 
-  async function runAction(action: "regenerate_code") {
+  async function runAction(action: "regenerate_code" | "submit_applications") {
     setIsUpdating(true);
     setMessage("");
     setErrorMessage("");
@@ -109,12 +119,32 @@ export default function TeacherRoomDetailClient({
 
       const payload = (await response.json()) as UpdateRoomResponse;
 
-      if (!response.ok || !payload.success || !payload.room) {
+      if (!response.ok || !payload.success) {
         setErrorMessage(payload.message ?? "Unable to update room.");
         return;
       }
 
-      setRoom(payload.room);
+      if (action === "regenerate_code") {
+        if (!payload.room) {
+          setErrorMessage("Unable to update room.");
+          return;
+        }
+
+        setRoom(payload.room);
+      } else {
+        setApplications((currentApplications) =>
+          currentApplications.map((application) =>
+            application.workflow_status === "submitted_to_teacher"
+              ? {
+                  ...application,
+                  teacher_forwarded_at: new Date().toISOString(),
+                  workflow_status: "submitted_to_admin",
+                }
+              : application,
+          ),
+        );
+      }
+
       setMessage(payload.message ?? "Room updated successfully.");
     } catch {
       setErrorMessage("Unable to update the room right now. Please try again.");
@@ -189,6 +219,7 @@ export default function TeacherRoomDetailClient({
                   {copiedCode ? "Copied" : "Copy Code"}
                 </button>
               </div>
+
             </div>
 
             <div className="flex w-full flex-col gap-2.5 sm:flex-row lg:w-auto">
@@ -241,24 +272,41 @@ export default function TeacherRoomDetailClient({
           ) : (
             <div className="p-3.5 sm:p-4">
               {members.map((member) => (
-                <article
-                  key={member.id}
-                  className="border-b border-[#eef2fb] py-3 last:border-b-0"
-                >
-                  <div className="flex flex-col gap-2.5 md:flex-row md:items-center md:justify-between">
-                    <div className="flex min-w-0 items-center gap-2.5">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f0ff] text-[12px] font-bold text-[#002576]">
-                        {getInitials(formatApplicantName(member.applicant_email))}
-                      </div>
+                <article key={member.id} className="border-b border-[#eef2fb] py-3 last:border-b-0">
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_220px_auto] md:items-center">
+                    <div className="min-w-0">
                       <div className="min-w-0">
-                        <p className="truncate text-[15px] font-bold text-[#0b1c30]">{formatApplicantName(member.applicant_email)}</p>
+                        <p className="truncate text-[15px] font-bold text-[#0b1c30]">
+                          {applicationByApplicantId.get(member.applicant_id)?.applicant_name || formatApplicantName(member.applicant_email)}
+                        </p>
                         <p className="mt-0.5 truncate text-[13px] text-[#5d5f5f]">{member.applicant_email}</p>
                       </div>
                     </div>
 
-                    <div className="md:pl-3 md:text-right">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Joined At</p>
-                      <p className="mt-0.5 text-[14px] font-semibold text-[#24364c]">{formatJoinedAt(member.joined_at)}</p>
+                    <div className="text-left md:px-3 md:text-center">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">
+                        {applicationByApplicantId.get(member.applicant_id) ? "Submitted At" : "Joined At"}
+                      </p>
+                      <p className="mt-0.5 text-[14px] font-semibold text-[#24364c]">
+                        {applicationByApplicantId.get(member.applicant_id)
+                          ? formatJoinedAt(applicationByApplicantId.get(member.applicant_id)?.submitted_at ?? member.joined_at)
+                          : formatJoinedAt(member.joined_at)}
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap justify-start gap-2 md:justify-end">
+                      {applicationByApplicantId.get(member.applicant_id) ? (
+                        <>
+                          <a
+                            className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                            href={buildApplicationSubmissionPdfUrl(applicationByApplicantId.get(member.applicant_id)!.id)}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            View PDF
+                          </a>
+                        </>
+                      ) : null}
                     </div>
                   </div>
                 </article>
@@ -271,6 +319,8 @@ export default function TeacherRoomDetailClient({
           <div className="mt-5 flex justify-end">
             <button
               className="inline-flex min-w-[96px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8]"
+              disabled={isUpdating || !canSubmitBatch}
+              onClick={() => void runAction("submit_applications")}
               type="button"
             >
               Submit

@@ -316,6 +316,8 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
         contentClassName="w-full max-w-[440px] rounded-[20px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
         open={Boolean(createdRoom)}
       >
+        {createdRoom ? (
+          <>
             <div className="mb-5 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#effaf2] text-[#1e5d31]">
                 <i aria-hidden="true" className="fa-solid fa-circle-check text-[18px]" />
@@ -375,6 +377,8 @@ export default function TeacherRoomClient({ initialRooms, initialLoadError }: Te
                 Open Room
               </Link>
             </div>
+          </>
+        ) : null}
       </AnimatedModal>
     </main>
   );

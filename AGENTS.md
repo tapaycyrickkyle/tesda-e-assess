@@ -1,4 +1,4 @@
-<!-- BEGIN:nextjs-agent-rules -->
+gi<!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
 
@@ -76,7 +76,7 @@ When instructions conflict, use this order:
 
 - Use one consistent sizing system across the UI.
 - Reuse the project's existing spacing, sizing, and radius tokens whenever they already exist.
-- Default sizing system for the app:
+- Default sizing system for this app:
   - Typography:
     - `12px` helper text, captions, tiny labels
     - `14px` secondary text, compact controls

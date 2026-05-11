@@ -4,6 +4,12 @@ import { requireUserRole } from "@/lib/server-auth";
 const adminSidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: "fa-solid fa-chart-pie", href: "/admin/dashboard" },
   { key: "applicants", label: "Applicants", icon: "fa-solid fa-users", href: "/admin/applicants" },
+  {
+    key: "assigned-applicants",
+    label: "Assigned Applicants",
+    icon: "fa-solid fa-user-check",
+    href: "/admin/assigned-applicants",
+  },
   { key: "teacher-approvals", label: "Teacher Approvals", icon: "fa-solid fa-user-check", href: "/admin/teacher-approvals" },
   {
     key: "assessment-center",

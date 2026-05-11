@@ -37,13 +37,18 @@ const formatCenterCreatedAt = (value?: string) => {
     return "Not available";
   }
 
-  return new Intl.DateTimeFormat("en-US", {
+  const date = new Date(value);
+  const datePart = new Intl.DateTimeFormat("en-US", {
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
     month: "long",
     year: "numeric",
-  }).format(new Date(value));
+  }).format(date);
+  const timePart = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+
+  return `${datePart}, ${timePart}`;
 };
 
 export default function AdminAssessmentCenterPage() {
@@ -458,15 +463,15 @@ export default function AdminAssessmentCenterPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[540px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
         open={Boolean(selectedCenter)}
       >
         {selectedCenter ? (
           <>
-            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-4 sm:px-7">
               <div>
                 <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">{selectedCenter.name}</h2>
-                <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
+                <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">
                   Assessment center account and contact details.
                 </p>
               </div>
@@ -479,22 +484,22 @@ export default function AdminAssessmentCenterPage() {
               </button>
             </div>
 
-            <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-4 sm:px-7">
-              <div className="rounded-[16px] border border-[#d9e3f7] bg-white p-4">
+            <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-3.5 sm:px-7">
+              <div className="rounded-[16px] border border-[#d9e3f7] bg-white p-3.5">
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                  <div className="rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
                     <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.address}</p>
                   </div>
-                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                  <div className="rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center Head</p>
                     <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.manager}</p>
                   </div>
-                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                  <div className="rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact</p>
                     <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.contact}</p>
                   </div>
-                  <div className="rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                  <div className="rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Login Email</p>
                     <p className="mt-1.5 break-all text-[14px] leading-[1.55] text-[#0b1c30]">
                       {selectedCenter.center_email ?? "Not available"}
@@ -502,7 +507,7 @@ export default function AdminAssessmentCenterPage() {
                   </div>
                 </div>
 
-                <div className="mt-3 rounded-[12px] bg-[#f8fbff] px-4 py-3">
+                <div className="mt-3 rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                   <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Created</p>
                   <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">
                     {formatCenterCreatedAt(selectedCenter.created_at)}
