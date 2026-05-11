@@ -73,7 +73,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("assessment_center_applicants")
-    .select("id, applicant_name, applicant_reference, qualification, assignment_batch, assigned_at")
+    .select("id, applicant_name, applicant_reference, qualification, assignment_batch, assignment_title, assigned_at")
     .eq("assessment_center_id", center.id)
     .order("assigned_at", { ascending: false });
 

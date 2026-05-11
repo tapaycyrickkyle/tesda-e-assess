@@ -162,7 +162,7 @@ export default function ApplicantApplicationsPage() {
         <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
           <ApplicationPathCard
             description="Apply for a competency assessment independently. Best for self-paced candidates or those not affiliated with a specific training center batch."
-            href="/applicant/dashboard"
+            href="/applicant/applications/individual"
             icon={<IndividualApplicationIcon />}
             title="Individual Application"
           />

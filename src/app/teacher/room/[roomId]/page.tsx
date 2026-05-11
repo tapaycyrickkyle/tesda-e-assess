@@ -17,6 +17,16 @@ type RoomMember = {
   joined_at: string;
 };
 
+type RoomApplicationSubmission = {
+  applicant_id: string;
+  applicant_name: string;
+  id: string;
+  qualification_title: string;
+  submitted_at: string;
+  teacher_forwarded_at: string | null;
+  workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+};
+
 export default async function TeacherRoomDetailPage({ params }: RouteProps) {
   const currentUser = await getCurrentAppUser();
 
@@ -27,7 +37,7 @@ export default async function TeacherRoomDetailPage({ params }: RouteProps) {
   const { roomId } = await params;
   const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
 
-  const [{ data: room }, { data: members }] = await Promise.all([
+  const [{ data: room }, { data: members }, { data: submissions }] = await Promise.all([
     supabase
       .from("rooms")
       .select("id, name, qualification, join_code, is_active, created_at")
@@ -39,6 +49,11 @@ export default async function TeacherRoomDetailPage({ params }: RouteProps) {
       .select("id, applicant_id, applicant_email, joined_at")
       .eq("room_id", roomId)
       .order("joined_at", { ascending: false }),
+    supabase
+      .from("applicant_application_submissions")
+      .select("id, applicant_id, applicant_name, qualification_title, submitted_at, teacher_forwarded_at, workflow_status")
+      .eq("room_id", roomId)
+      .order("submitted_at", { ascending: false }),
   ]);
 
   if (!room) {
@@ -47,6 +62,7 @@ export default async function TeacherRoomDetailPage({ params }: RouteProps) {
 
   return (
     <TeacherRoomDetailClient
+      initialApplications={(submissions ?? []) as RoomApplicationSubmission[]}
       initialMembers={(members ?? []) as RoomMember[]}
       initialRoom={room as RoomRecord}
     />
