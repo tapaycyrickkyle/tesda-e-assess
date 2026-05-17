@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { generateRoomCode, type RoomRecord } from "@/lib/rooms";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { generateRoomCode, getRoomSubmissionStatus, type RoomRecord } from "@/lib/rooms";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type CreateRoomPayload = {
   name?: string;
   qualification?: string;
 };
 
-async function generateUniqueRoomCode(accessToken: string) {
-  const supabase = createSupabaseAccessTokenClient(accessToken);
+async function generateUniqueRoomCode() {
+  const supabase = createSupabaseAdminClient();
 
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const joinCode = generateRoomCode();
@@ -38,7 +38,7 @@ export async function GET() {
     return NextResponse.json({ success: false, message: "Teacher access is required." }, { status: 403 });
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("rooms")
     .select("id, name, qualification, join_code, is_active, created_at")
@@ -49,8 +49,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "Unable to load rooms. Make sure the `rooms` table and its RLS policies are created in Supabase.",
+        message: "Unable to load your rooms right now. Please try again in a moment.",
       },
       { status: 500 },
     );
@@ -62,23 +61,48 @@ export async function GET() {
     return NextResponse.json({ success: true, rooms });
   }
 
-  const { data: memberships, error: membershipError } = await supabase
-    .from("room_members")
-    .select("room_id")
-    .in(
-      "room_id",
-      rooms.map((room) => room.id),
-    );
+  const roomIds = rooms.map((room) => room.id);
+  const [{ data: memberships, error: membershipError }, { data: submissions, error: submissionError }] =
+    await Promise.all([
+      supabase.from("room_members").select("room_id").in("room_id", roomIds),
+      supabase
+        .from("applicant_application_submissions")
+        .select("room_id, applicant_id, workflow_status")
+        .in("room_id", roomIds),
+    ]);
 
-  if (membershipError) {
+  if (membershipError || submissionError) {
     return NextResponse.json({ success: true, rooms });
   }
 
   const counts = new Map<string, number>();
+  const submissionsByRoomId = new Map<
+    string,
+    Array<{ applicant_id: string; workflow_status: "submitted_to_teacher" | "submitted_to_admin" }>
+  >();
 
   for (const membership of memberships ?? []) {
     const roomId = (membership as { room_id: string }).room_id;
     counts.set(roomId, (counts.get(roomId) ?? 0) + 1);
+  }
+
+  for (const submission of submissions ?? []) {
+    const typedSubmission = submission as {
+      applicant_id: string;
+      room_id: string | null;
+      workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+    };
+
+    if (!typedSubmission.room_id) {
+      continue;
+    }
+
+    const roomSubmissions = submissionsByRoomId.get(typedSubmission.room_id) ?? [];
+    roomSubmissions.push({
+      applicant_id: typedSubmission.applicant_id,
+      workflow_status: typedSubmission.workflow_status,
+    });
+    submissionsByRoomId.set(typedSubmission.room_id, roomSubmissions);
   }
 
   return NextResponse.json({
@@ -86,6 +110,7 @@ export async function GET() {
     rooms: rooms.map((room) => ({
       ...room,
       member_count: counts.get(room.id) ?? 0,
+      submission_status: getRoomSubmissionStatus(counts.get(room.id) ?? 0, submissionsByRoomId.get(room.id) ?? []),
     })),
   });
 }
@@ -102,20 +127,28 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json()) as CreateRoomPayload;
-  const name = body.name?.trim() ?? "";
   const qualification = body.qualification?.trim() ?? "";
 
-  if (!name || !qualification) {
+  if (!qualification) {
     return NextResponse.json(
-      { success: false, message: "Room name and qualification are required." },
+      { success: false, message: "Qualification is required." },
       { status: 400 },
     );
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
+  const { data: profile } = await supabase.from("profiles").select("institution_name").eq("id", currentUser.id).maybeSingle();
+  const name = ((profile as { institution_name?: string | null } | null)?.institution_name ?? "").trim();
+
+  if (!name) {
+    return NextResponse.json(
+      { success: false, message: "Your school name is missing from the teacher profile. Please contact admin." },
+      { status: 400 },
+    );
+  }
 
   try {
-    const joinCode = await generateUniqueRoomCode(currentUser.accessToken);
+    const joinCode = await generateUniqueRoomCode();
     const { data, error } = await supabase
       .from("rooms")
       .insert({
@@ -133,8 +166,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          message:
-            "Unable to create room. Make sure the `rooms` table exists and your Supabase RLS policies allow teachers to insert their own rooms.",
+          message: "Unable to create the room right now. Please try again in a moment.",
         },
         { status: 500 },
       );
@@ -146,6 +178,7 @@ export async function POST(request: Request) {
       room: {
         ...(data as RoomRecord),
         member_count: 0,
+        submission_status: "not_submitted",
       },
     });
   } catch (error) {

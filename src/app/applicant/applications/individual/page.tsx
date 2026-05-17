@@ -1,8 +1,12 @@
 import { notFound } from "next/navigation";
 import ApplicantApplicationFormClient from "@/app/applicant/applications/ApplicationFormClient";
 import { normalizeApplicationFormData, type ApplicationSubmissionRecord } from "@/lib/application-form";
+import {
+  getSubmissionAssignmentInfoByIds,
+  getApplicantSubmissionEditLock,
+} from "@/lib/application-submission-lifecycle";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type IndividualApplicationPageProps = {
   searchParams: Promise<{ edit?: string | string[]; roomId?: string | string[]; submissionId?: string | string[] }>;
@@ -11,7 +15,7 @@ type IndividualApplicationPageProps = {
 export default async function IndividualApplicationPage({ searchParams }: IndividualApplicationPageProps) {
   const currentUser = await getCurrentAppUser();
 
-  if (!currentUser || currentUser.role !== "student") {
+  if (!currentUser || currentUser.role !== "applicant") {
     notFound();
   }
 
@@ -23,7 +27,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
   const roomId = Array.isArray(roomIdParam) ? roomIdParam[0] : roomIdParam;
   const submissionId = Array.isArray(submissionIdParam) ? submissionIdParam[0] : submissionIdParam;
   const isRoomApplication = Boolean(roomId?.trim());
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   let room: { id: string; join_code: string; name: string; qualification: string } | null = null;
 
@@ -45,12 +49,16 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
     room = matchedRoom;
   }
 
-  if (!shouldLoadExistingSubmission || !submissionId?.trim()) {
+  const shouldLoadSpecificSubmission = shouldLoadExistingSubmission && Boolean(submissionId?.trim());
+
+  if (!shouldLoadSpecificSubmission && !isRoomApplication) {
     return (
       <ApplicantApplicationFormClient
         applicantEmail={currentUser.email}
         existingSubmission={null}
+        isReadOnly={false}
         mode={isRoomApplication ? "room" : "individual"}
+        readOnlyMessage={null}
         room={room}
       />
     );
@@ -61,11 +69,17 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
     .select(
       "id, applicant_id, applicant_email, room_id, submission_source, workflow_status, applicant_name, qualification_title, qualification_type, contact_number, form_data, submitted_at, teacher_forwarded_at, created_at, updated_at",
     )
-    .eq("id", submissionId.trim())
     .eq("applicant_id", currentUser.id);
+
+  if (shouldLoadSpecificSubmission && submissionId?.trim()) {
+    submissionQuery.eq("id", submissionId.trim());
+  }
 
   if (isRoomApplication) {
     submissionQuery.eq("room_id", roomId!.trim());
+    if (!shouldLoadSpecificSubmission) {
+      submissionQuery.order("submitted_at", { ascending: false }).limit(1);
+    }
   } else {
     submissionQuery.is("room_id", null);
   }
@@ -79,11 +93,24 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
       } satisfies ApplicationSubmissionRecord)
     : null;
 
+  const assignmentMap = existingSubmission
+    ? await getSubmissionAssignmentInfoByIds([existingSubmission.id])
+    : new Map();
+  const editLock = existingSubmission
+    ? getApplicantSubmissionEditLock({
+        assignment: assignmentMap.get(existingSubmission.id) ?? null,
+        submissionSource: existingSubmission.submission_source,
+        workflowStatus: existingSubmission.workflow_status,
+      })
+    : { isLocked: false, message: null };
+
   return (
     <ApplicantApplicationFormClient
       applicantEmail={currentUser.email}
       existingSubmission={existingSubmission}
+      isReadOnly={editLock.isLocked}
       mode={isRoomApplication ? "room" : "individual"}
+      readOnlyMessage={editLock.message}
       room={room}
     />
   );

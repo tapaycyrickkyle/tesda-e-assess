@@ -1,0 +1,8 @@
+drop index if exists public.applicant_application_submissions_individual_unique_idx;
+drop index if exists public.applicant_application_submissions_room_unique_idx;
+
+create index if not exists applicant_application_submissions_applicant_idx
+on public.applicant_application_submissions (applicant_id);
+
+create index if not exists applicant_application_submissions_applicant_room_idx
+on public.applicant_application_submissions (applicant_id, room_id);

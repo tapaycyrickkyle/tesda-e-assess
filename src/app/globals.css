@@ -22,10 +22,10 @@
   --space-8: 2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
-  --radius-sm: 0.375rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
+  --radius-xl: 0.75rem;
   --control-height-sm: 2.25rem;
   --control-height-md: 2.75rem;
   --control-height-lg: 3rem;
@@ -84,6 +84,30 @@ body {
 
   to {
     opacity: 0;
+  }
+}
+
+@keyframes ui-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ui-toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
   }
 }
 
@@ -156,6 +180,100 @@ body {
     padding: var(--space-6);
   }
 
+  .ui-portal-main {
+    min-height: 100vh;
+    background: #f8f9ff;
+    color: #0b1c30;
+    min-width: 0;
+    overflow-x: clip;
+    padding-inline: 1rem;
+  }
+
+  .ui-page-content {
+    width: 100%;
+    min-width: 0;
+    max-width: 80rem;
+    margin-inline: auto;
+  }
+
+  .ui-page-content-narrow {
+    width: 100%;
+    min-width: 0;
+    max-width: 72rem;
+    margin-inline: auto;
+  }
+
+  .ui-data-table-shell {
+    overflow: hidden;
+    border: 1px solid #c7d0db;
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+  }
+
+  .ui-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+  }
+
+  .ui-data-table thead {
+    background: #f1f4f8;
+  }
+
+  .ui-data-table th {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid #c7d0db;
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #334155;
+  }
+
+  .ui-data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #d8dee6;
+    vertical-align: top;
+    background: #ffffff;
+  }
+
+  .ui-data-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .ui-data-table tbody tr:hover td {
+    background: #f8fafc;
+  }
+
+  .ui-data-table-action {
+    display: inline-flex;
+    min-height: var(--control-height-sm);
+    min-width: 7.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border: 1px solid #b8c4d1;
+    border-radius: var(--radius-sm);
+    background: #ffffff;
+    padding: 0.5rem 0.875rem;
+    font-size: var(--font-size-xs);
+    line-height: 1.2;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #1e3a5f;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .ui-data-table-action:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
   .ui-modal {
     border-radius: var(--radius-xl);
     padding: var(--space-6);
@@ -163,6 +281,13 @@ body {
 
   .ui-modal-pop {
     transform-origin: center;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: opacity, transform;
+  }
+
+  .ui-toast-pop {
+    transform-origin: top center;
     backface-visibility: hidden;
     transform: translateZ(0);
     will-change: opacity, transform;
@@ -182,6 +307,14 @@ body {
 
   .ui-modal-backdrop[data-state="closed"] {
     animation: ui-backdrop-fade-out 160ms ease both;
+  }
+
+  .ui-toast-pop[data-state="open"] {
+    animation: ui-toast-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .ui-toast-pop[data-state="closed"] {
+    animation: ui-toast-out 260ms ease both;
   }
 
   .auth-hero-title {
@@ -241,6 +374,19 @@ body {
   }
 }
 
+@media (min-width: 640px) {
+  .ui-portal-main {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ui-portal-main {
+    margin-left: 16rem;
+    padding-inline: 2rem;
+  }
+}
+
 a,
 button,
 [role="button"],
@@ -261,6 +407,7 @@ textarea:disabled {
 
 @media (prefers-reduced-motion: reduce) {
   .ui-modal-pop,
+  .ui-toast-pop,
   .ui-modal-backdrop[data-state="open"],
   .ui-modal-backdrop[data-state="closed"] {
     animation: none;

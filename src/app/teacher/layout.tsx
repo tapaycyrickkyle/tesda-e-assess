@@ -4,6 +4,7 @@ import { requireUserRole } from "@/lib/server-auth";
 const teacherSidebarItems = [
   { key: "dashboard", label: "Dashboard", icon: "fa-solid fa-table-columns", href: "/teacher/dashboard" },
   { key: "classes", label: "Room", icon: "fa-solid fa-chalkboard-user", href: "/teacher/room" },
+  { key: "profile", label: "Profile", icon: "fa-regular fa-user", href: "/teacher/profile" },
 ];
 
 export default async function TeacherLayout({

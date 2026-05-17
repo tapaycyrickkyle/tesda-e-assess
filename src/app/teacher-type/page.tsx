@@ -44,7 +44,7 @@ function TeacherTypeCard({
 }: TeacherTypeCardProps) {
   return (
     <Link
-      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md"
+      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
       href={href}
     >
       <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
@@ -100,17 +100,17 @@ export default function TeacherTypePage() {
               </p>
             </div>
 
-            <div className="mx-auto mt-5 grid w-full max-w-[920px] grid-cols-1 gap-5 lg:grid-cols-2">
+            <div className="mx-auto mt-5 grid w-full max-w-[920px] grid-cols-1 gap-4 lg:grid-cols-2">
               <TeacherTypeCard
                 description="For TESDA centers, public schools, and government-funded institutions."
-                href="/teacher-signup"
+                href="/teacher-signup?institutionType=public"
                 icon={<BuildingPublicIcon />}
                 title="Public Teacher"
               />
 
               <TeacherTypeCard
                 description="For private schools, academic institutions, and technical training centers."
-                href="/teacher-signup"
+                href="/teacher-signup?institutionType=private"
                 icon={<BuildingPrivateIcon />}
                 title="Private Teacher"
               />

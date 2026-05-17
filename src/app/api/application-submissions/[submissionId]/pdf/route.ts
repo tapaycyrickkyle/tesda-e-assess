@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
+import {
+  getAssessmentCenterLinkMessage,
+  resolveAssessmentCenterForUser,
+} from "@/lib/assessment-centers";
+import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { generateApplicationPdf } from "@/lib/application-pdf";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { createSupabaseAccessTokenClient, createSupabaseAdminClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type RouteContext = {
   params: Promise<{
@@ -15,44 +20,29 @@ type SubmissionRecord = {
   id: string;
   room_id: string | null;
   submission_source: "individual" | "room";
-  workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+  workflow_status: ApplicationSubmissionStatus;
 };
 
-async function resolveAssessmentCenterId(userId: string, email: string) {
-  const adminSupabase = createSupabaseAdminClient();
-  const { data: centerByAuthId, error: centerByAuthIdError } = await adminSupabase
-    .from("assessment_centers")
-    .select("id, center_auth_user_id, center_email")
-    .eq("center_auth_user_id", userId)
-    .maybeSingle();
+async function resolveAssessmentCenterId(currentUser: NonNullable<Awaited<ReturnType<typeof getCurrentAppUser>>>) {
+  const centerResult = await resolveAssessmentCenterForUser<{
+    center_auth_user_id: string | null;
+    center_email: string | null;
+    id: string;
+  }>(currentUser, "id, center_auth_user_id, center_email");
 
-  if (centerByAuthIdError) {
-    throw new Error("Unable to verify the assessment center account linked to this user.");
+  if (!centerResult.center) {
+    return {
+      centerId: null,
+      message: getAssessmentCenterLinkMessage(centerResult.status),
+      status: centerResult.status === "email_conflict" ? 403 : 404,
+    };
   }
 
-  if (centerByAuthId) {
-    return centerByAuthId.id;
-  }
-
-  const { data: centerByEmail, error: centerByEmailError } = await adminSupabase
-    .from("assessment_centers")
-    .select("id, center_auth_user_id")
-    .eq("center_email", email.toLowerCase())
-    .maybeSingle();
-
-  if (centerByEmailError) {
-    throw new Error("Unable to verify the assessment center account using the email fallback.");
-  }
-
-  if (!centerByEmail) {
-    return null;
-  }
-
-  if (centerByEmail.center_auth_user_id !== userId) {
-    await adminSupabase.from("assessment_centers").update({ center_auth_user_id: userId }).eq("id", centerByEmail.id);
-  }
-
-  return centerByEmail.id;
+  return {
+    centerId: centerResult.center.id,
+    message: null,
+    status: 200,
+  };
 }
 
 async function getSubmissionForCurrentUser(submissionId: string) {
@@ -62,9 +52,9 @@ async function getSubmissionForCurrentUser(submissionId: string) {
     return { error: "You must be logged in.", status: 401 as const };
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
-  if (currentUser.role === "student") {
+  if (currentUser.role === "applicant") {
     const { data, error } = await supabase
       .from("applicant_application_submissions")
       .select("id, applicant_email, form_data, room_id, submission_source, workflow_status")
@@ -82,16 +72,30 @@ async function getSubmissionForCurrentUser(submissionId: string) {
   if (currentUser.role === "teacher") {
     const { data, error } = await supabase
       .from("applicant_application_submissions")
-      .select("id, applicant_email, form_data, room_id, submission_source, workflow_status, rooms!inner(teacher_id)")
+      .select("id, applicant_email, form_data, room_id, submission_source, workflow_status")
       .eq("id", submissionId)
-      .eq("rooms.teacher_id", currentUser.id)
       .maybeSingle();
 
     if (error) {
       return { error: "Unable to load the room application form.", status: 500 as const };
     }
 
-    if (!data) {
+    if (!data || !data.room_id) {
+      return { currentUser, submission: null, status: 200 as const };
+    }
+
+    const { data: ownedRoom, error: ownedRoomError } = await supabase
+      .from("rooms")
+      .select("id")
+      .eq("id", data.room_id)
+      .eq("teacher_id", currentUser.id)
+      .maybeSingle();
+
+    if (ownedRoomError) {
+      return { error: "Unable to verify the room application form.", status: 500 as const };
+    }
+
+    if (!ownedRoom) {
       return { currentUser, submission: null, status: 200 as const };
     }
 
@@ -122,16 +126,19 @@ async function getSubmissionForCurrentUser(submissionId: string) {
   }
 
   if (currentUser.role === "assessment_center") {
-    const centerId = await resolveAssessmentCenterId(currentUser.id, currentUser.email);
+    const centerResolution = await resolveAssessmentCenterId(currentUser);
 
-    if (!centerId) {
-      return { error: "No assessment center account is linked to this user.", status: 404 as const };
+    if (!centerResolution.centerId) {
+      return {
+        error: centerResolution.message ?? "No assessment center account is linked to this user.",
+        status: centerResolution.status as 403 | 404,
+      };
     }
 
     const { data: assignment, error: assignmentError } = await supabase
       .from("assessment_center_applicants")
       .select("id")
-      .eq("assessment_center_id", centerId)
+      .eq("assessment_center_id", centerResolution.centerId)
       .eq("applicant_reference", submissionId)
       .maybeSingle();
 
@@ -143,8 +150,7 @@ async function getSubmissionForCurrentUser(submissionId: string) {
       return { error: "This application form is not assigned to your center.", status: 403 as const };
     }
 
-    const adminSupabase = createSupabaseAdminClient();
-    const { data, error } = await adminSupabase
+    const { data, error } = await supabase
       .from("applicant_application_submissions")
       .select("id, applicant_email, form_data, room_id, submission_source, workflow_status")
       .eq("id", submissionId)

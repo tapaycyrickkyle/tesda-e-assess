@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { normalizeRoomCode, type RoomRecord } from "@/lib/rooms";
 
 type ApplicationPathCardProps = {
@@ -81,7 +82,7 @@ function ApplicationPathCard({ description, href, icon, onClick, title }: Applic
   );
 
   const className =
-    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#c4c5d5] bg-white px-6 py-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
+    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
 
   if (onClick) {
     return (
@@ -148,18 +149,16 @@ export default function ApplicantApplicationsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-10 text-center">
-          <div className="mx-auto max-w-3xl">
-            <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Choose Your Application Path</h1>
-            <p className="mt-3 text-[17px] leading-[1.6] text-[#444653]">
-              Select how you would like to proceed with your competency assessment.
-            </p>
-          </div>
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-5">
+          <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Choose Your Application Path</h1>
+          <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
+            Choose how you want to start or join an assessment application.
+          </p>
         </section>
 
-        <section className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
+        <section className="mx-auto grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-2">
           <ApplicationPathCard
             description="Apply for a competency assessment independently. Best for self-paced candidates or those not affiliated with a specific training center batch."
             href="/applicant/applications/individual"
@@ -181,10 +180,10 @@ export default function ApplicantApplicationsPage() {
       </div>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[560px] rounded-[20px] border border-[#c4c5d5] bg-white p-6 shadow-[0_24px_60px_rgba(4,15,37,0.22)] sm:p-7"
+        contentClassName="w-full max-w-[560px] rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_12px_30px_rgba(15,23,42,0.12)] sm:p-7"
         open={isJoinModalOpen}
       >
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-[1.5rem] font-semibold leading-[1.2] text-[#0b1c30] sm:text-[1.75rem]">
                   Join Assessment Room
@@ -226,9 +225,7 @@ export default function ApplicantApplicationsPage() {
               </div>
 
               {errorMessage ? (
-                <div className="rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">
-                  {errorMessage}
-                </div>
+                <NotificationBanner compact message={errorMessage} variant="error" />
               ) : null}
 
               <div className="flex flex-col gap-3 border-t border-[#c4c5d5] pt-5 sm:flex-row sm:justify-end">
@@ -244,7 +241,7 @@ export default function ApplicantApplicationsPage() {
                   Cancel
                 </button>
                 <button
-                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#002576] px-5 text-[14px] font-bold text-white shadow-md transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#002576] px-5 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                   disabled={isSubmitting}
                   type="submit"
                 >

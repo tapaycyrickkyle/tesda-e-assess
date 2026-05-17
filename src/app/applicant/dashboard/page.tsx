@@ -1,378 +1,325 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { notFound } from "next/navigation";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
+import { getSubmissionAssignmentInfoByIds } from "@/lib/application-submission-lifecycle";
+import { getCurrentAppUser } from "@/lib/current-user";
+import { loadApplicantJoinedRooms, type ApplicantJoinedRoomMembership } from "@/lib/rooms";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
-const cardClass = "rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm";
-
-type JoinedRoomMembership = {
+type DashboardSubmission = {
+  assessment_center_name?: string | null;
   id: string;
-  joined_at: string;
-  rooms:
-    | {
-        id: string;
-        name: string;
-        qualification: string;
-        join_code: string;
-        is_active: boolean;
-        created_at: string;
-      }
-    | null;
+  qualification_title: string;
+  room_id: string | null;
+  submission_source: "individual" | "room";
+  submitted_at: string;
+  teacher_forwarded_at: string | null;
+  workflow_status: ApplicationSubmissionStatus;
 };
 
-export default function StudentDashboardPage() {
-  const [joinedRooms, setJoinedRooms] = useState<JoinedRoomMembership[]>([]);
-  const [joinedRoomsError, setJoinedRoomsError] = useState("");
+const terminalStatuses: ApplicationSubmissionStatus[] = ["completed", "rejected", "cancelled", "withdrawn"];
+const statCardClass = "rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadJoinedRooms() {
-      try {
-        const response = await fetch("/api/applicant/rooms");
-        const payload = (await response.json()) as {
-          success: boolean;
-          message?: string;
-          memberships?: JoinedRoomMembership[];
-        };
-
-        if (cancelled) {
-          return;
-        }
-
-        if (!response.ok || !payload.success) {
-          setJoinedRoomsError(payload.message ?? "Unable to load joined rooms.");
-          return;
-        }
-
-        setJoinedRooms(payload.memberships ?? []);
-      } catch {
-        if (!cancelled) {
-          setJoinedRoomsError("Unable to load joined rooms right now.");
-        }
-      }
-    }
-
-    void loadJoinedRooms();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return (
-    <main className="px-4 pb-8 pt-8 sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-          <section className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
-            <div>
-              <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Welcome back, Maria Dela Cruz</h1>
-              <p className="mt-2 text-[17px] leading-[1.5] text-[#444653]">
-                Your assessment journey is 65% complete. You&apos;re doing great!
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link
-                className="flex items-center gap-2 rounded-lg bg-[#002576] px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-[#0038a8]"
-                href="/applicant/applications/individual"
-              >
-                <i aria-hidden="true" className="fa-solid fa-rocket text-[12px]" />
-                Apply for Assessment
-              </Link>
-              <button className="rounded-lg border border-[#747685] px-5 py-3 text-[14px] font-semibold text-[#002576] transition hover:bg-[#e5eeff]" type="button">
-                View Profile
-              </button>
-            </div>
-          </section>
-
-          <section className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-4">
-            <article className="relative overflow-hidden rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm md:col-span-2">
-              <span className="mb-3 inline-block rounded-full bg-[#dce1ff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#093cab]">
-                Current Status
-              </span>
-              <h2 className="text-[28px] font-semibold leading-[1.2] text-[#0b1c30]">Pending Verification</h2>
-              <p className="mt-1 text-[15px] text-[#444653]">Technical Education and Skills Development Specialist NC II</p>
-              <div className="mt-8 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-[13px] font-medium text-[#5d5f5f]">
-                  <i aria-hidden="true" className="fa-regular fa-clock text-[13px] text-[#3056c4]" />
-                  Updated 2 hours ago
-                </div>
-                <button className="text-[14px] font-bold text-[#002576] hover:underline" type="button">
-                  Track Process
-                </button>
-              </div>
-              <i
-                aria-hidden="true"
-                className="fa-solid fa-certificate pointer-events-none absolute right-4 top-4 text-[72px] text-[#0038a8]/10"
-              />
-            </article>
-
-            <article className={cardClass}>
-              <div className="mb-4 flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded bg-[#dce1ff] text-[#093cab]">
-                  <i aria-hidden="true" className="fa-regular fa-calendar text-[13px]" />
-                </span>
-                <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#5d5f5f]">Assessment Schedule</span>
-              </div>
-              <p className="text-[23px] font-semibold leading-[1.3]">Oct 24, 2023</p>
-              <p className="text-[14px] font-semibold text-[#002576]">09:00 AM - 04:00 PM</p>
-              <p className="mt-2 text-[14px] text-[#444653]">Eastern Samar PTC, Borongan City</p>
-              <button className="mt-4 text-[14px] font-semibold text-[#002576] hover:underline" type="button">
-                Add to Calendar
-              </button>
-            </article>
-
-            <article className={cardClass}>
-              <div className="mb-4 flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded bg-[#dfe0e0] text-[#454747]">
-                  <i aria-hidden="true" className="fa-regular fa-folder-open text-[13px]" />
-                </span>
-                <span className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#5d5f5f]">Requirements</span>
-              </div>
-              <div className="mb-2 flex items-center justify-between">
-                <span className="text-[14px] font-semibold text-[#1a1c1c]">Submission Status</span>
-                <span className="text-[14px] font-bold text-[#002576]">3/4</span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-[#dfe0e0]">
-                <div className="h-full w-3/4 bg-[#002576]" />
-              </div>
-              <p className="mt-2 text-[12px] font-semibold text-[#5d5f5f]">Missing: National ID Clearance</p>
-              <button className="mt-4 text-[14px] font-semibold text-[#002576] hover:underline" type="button">
-                Upload Missing File
-              </button>
-            </article>
-          </section>
-
-          <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="space-y-4 lg:col-span-2">
-              <article className={cardClass}>
-                <h3 className="mb-5 text-[24px] font-semibold text-[#0b1c30]">Application Progress</h3>
-                <div className="relative space-y-5">
-                  <div className="absolute left-6 top-4 h-[calc(100%-2rem)] w-px bg-[#c4c5d5]" />
-                  <ProgressRow
-                    description="Received on Oct 12, 2023 at 14:30"
-                    icon="fa-check"
-                    state="COMPLETED"
-                    stateClass="bg-[#dce1ff] text-[#093cab]"
-                    title="Application Submitted"
-                  />
-                  <ProgressRow
-                    description="Administrator is currently reviewing your uploaded IDs and certificates."
-                    icon="fa-hourglass-half"
-                    state="IN PROGRESS"
-                    stateClass="bg-[#e5eeff] text-[#002576]"
-                    title="Document Verification"
-                  />
-                  <ProgressRow
-                    description="Waiting for qualified assessor availability."
-                    icon="fa-user-clock"
-                    muted
-                    state="PENDING"
-                    stateClass="bg-[#eff4ff] text-[#5d5f5f]"
-                    title="Assessor Assignment"
-                  />
-                </div>
-              </article>
-
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                <QuickAction icon="fa-eye" label="View Application" />
-                <QuickAction icon="fa-upload" label="Upload Files" />
-                <QuickAction icon="fa-calendar-days" label="Check Schedule" />
-                <QuickAction href="/applicant/room" icon="fa-right-to-bracket" label="Join Room" />
-              </div>
-
-              <article className={cardClass}>
-                <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-[24px] font-semibold text-[#0b1c30]">My Joined Rooms</h3>
-                  <Link className="text-[13px] font-bold text-[#002576] hover:underline" href="/applicant/room">
-                    Join Another
-                  </Link>
-                </div>
-
-                {joinedRoomsError ? <p className="text-[14px] text-[#8a1f1f]">{joinedRoomsError}</p> : null}
-
-                {!joinedRoomsError && joinedRooms.length === 0 ? (
-                  <p className="text-[14px] leading-[1.6] text-[#444653]">
-                    You have not joined any room yet. Use a teacher-provided code to join your assessment room.
-                  </p>
-                ) : null}
-
-                <div className="space-y-3">
-                  {joinedRooms.map((membership) =>
-                    membership.rooms ? (
-                      <div key={membership.id} className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
-                        <div className="flex items-start gap-3">
-                          <div>
-                            <p className="text-[15px] font-bold text-[#0b1c30]">{membership.rooms.name}</p>
-                            <p className="mt-1 text-[14px] text-[#444653]">{membership.rooms.qualification}</p>
-                          </div>
-                        </div>
-                        <div className="mt-3 flex items-center justify-between gap-3">
-                          <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
-                          <span className="rounded-md bg-white px-3 py-1 font-mono text-[13px] font-bold tracking-[0.14em] text-[#002576]">
-                            {membership.rooms.join_code}
-                          </span>
-                        </div>
-                        <div className="mt-3 flex justify-end">
-                          <Link
-                            className="text-[13px] font-bold text-[#002576] hover:underline"
-                            href={`/applicant/applications/individual?roomId=${membership.rooms.id}`}
-                          >
-                            Start Application
-                          </Link>
-                        </div>
-                      </div>
-                    ) : null,
-                  )}
-                </div>
-              </article>
-            </div>
-
-            <aside className={cardClass}>
-              <div className="mb-5 flex items-center justify-between">
-                <h3 className="text-[24px] font-semibold text-[#0b1c30]">Announcements</h3>
-                <i aria-hidden="true" className="fa-solid fa-bullhorn text-[15px] text-[#002576]" />
-              </div>
-
-              <div className="space-y-4">
-                <Announcement
-                  badge="Important"
-                  badgeClass="text-[#591400]"
-                  date="Oct 18"
-                  text="Please review the updated safety protocols for all onsite technical assessments beginning November 1st."
-                  title="New Assessment Guidelines for NC III released"
-                />
-                <Announcement
-                  badge="Update"
-                  badgeClass="rounded bg-[#dce1ff] px-2 py-1 text-[#093cab]"
-                  date="Oct 15"
-                  text="The E-Assess portal will be offline for routine maintenance this coming Sunday from 2 AM to 6 AM."
-                  title="System Maintenance Schedule"
-                />
-                <Announcement
-                  badge="General"
-                  badgeClass="rounded bg-[#dfe0e0] px-2 py-1 text-[#454747]"
-                  date="Oct 12"
-                  text="Check out the latest TWSP slots available for the upcoming quarter in Eastern Samar district office."
-                  title="Scholarship Opportunities for Tech-Voc"
-                />
-              </div>
-
-              <button className="mt-5 w-full rounded-lg border border-[#747685] py-2 text-[14px] font-semibold text-[#002576] transition hover:bg-[#eff4ff]" type="button">
-                View All Announcements
-              </button>
-
-              <div className="mt-6 border-t border-[#c4c5d5] pt-5">
-                <h4 className="mb-3 text-[13px] font-bold uppercase tracking-[0.03em] text-[#5d5f5f]">Evaluation Center</h4>
-                <div className="h-32 rounded-lg border border-[#c4c5d5] bg-[linear-gradient(135deg,#eaf1ff_0%,#d3e4fe_100%)] p-4">
-                  <div className="flex h-full items-end justify-between">
-                    <i aria-hidden="true" className="fa-solid fa-industry text-[34px] text-[#3056c4]/65" />
-                    <i aria-hidden="true" className="fa-solid fa-graduation-cap text-[30px] text-[#3056c4]/65" />
-                  </div>
-                </div>
-                <p className="mt-3 text-[12px] italic leading-[1.45] text-[#5d5f5f]">
-                  &quot;Commitment to quality technical-vocational education for every Filipino.&quot;
-                </p>
-              </div>
-            </aside>
-          </section>
-      </div>
-
-      <div className="fixed bottom-6 right-6 lg:hidden">
-        <button className="flex h-14 w-14 items-center justify-center rounded-full bg-[#002576] text-white shadow-lg transition active:scale-95" type="button">
-          <i aria-hidden="true" className="fa-solid fa-plus text-[16px]" />
-        </button>
-      </div>
-
-      <div className="fixed bottom-4 left-4 lg:hidden">
-        <Link
-          className="rounded-full border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-semibold text-[#002576] shadow-sm"
-          href="/"
-        >
-          Back to Login
-        </Link>
-      </div>
-    </main>
-  );
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
-function ProgressRow({
-  title,
-  description,
-  icon,
-  state,
-  stateClass,
-  muted,
-}: {
-  title: string;
-  description: string;
-  icon: string;
-  state: string;
-  stateClass: string;
-  muted?: boolean;
-}) {
-  return (
-    <div className={`relative z-10 flex gap-4 ${muted ? "opacity-55" : ""}`}>
-      <div
-        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
-          muted ? "border border-[#c4c5d5] bg-[#eff4ff] text-[#5d5f5f]" : "bg-[#002576] text-white"
-        }`}
-      >
-        <i aria-hidden="true" className={`fa-solid ${icon} text-[14px]`} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <h4 className="text-[14px] font-bold text-[#1a1c1c]">{title}</h4>
-        <p className="mt-1 text-[14px] leading-[1.45] text-[#444653]">{description}</p>
-      </div>
-      <span className={`h-fit rounded-full px-3 py-1 text-[11px] font-bold tracking-[0.04em] ${stateClass}`}>{state}</span>
-    </div>
-  );
-}
-
-function QuickAction({ icon, label, href }: { icon: string; label: string; href?: string }) {
-  if (href) {
-    return (
-      <Link
-        className="group flex flex-col items-center justify-center rounded-lg border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
-        href={href}
-      >
-        <i aria-hidden="true" className={`fa-solid ${icon} mb-2 text-[16px] transition group-hover:scale-110`} />
-        <span className="text-[13px] font-semibold">{label}</span>
-      </Link>
-    );
+function getSubmissionStatusText(submission: DashboardSubmission) {
+  if (submission.workflow_status === "assigned" || submission.workflow_status === "under_review") {
+    return submission.assessment_center_name
+      ? `Under review at ${submission.assessment_center_name}`
+      : "Under Review at Assessment Center";
   }
 
-  return (
-    <button
-      className="group flex flex-col items-center justify-center rounded-lg border border-[#c4c5d5] bg-[#eff4ff] p-4 text-[#1a1c1c] transition hover:bg-[#0038a8] hover:text-white"
-      type="button"
-    >
-      <i aria-hidden="true" className={`fa-solid ${icon} mb-2 text-[16px] transition group-hover:scale-110`} />
-      <span className="text-[13px] font-semibold">{label}</span>
-    </button>
-  );
+  return getApplicationSubmissionStatusLabel(submission.workflow_status);
 }
 
-function Announcement({
-  badge,
-  badgeClass,
-  date,
-  title,
-  text,
-}: {
-  badge: string;
-  badgeClass: string;
-  date: string;
-  title: string;
-  text: string;
-}) {
+function getSubmissionUpdateText(submission: DashboardSubmission) {
+  if (submission.workflow_status === "assigned" || submission.workflow_status === "under_review") {
+    return submission.assessment_center_name
+      ? `${submission.assessment_center_name} is now reviewing your application.`
+      : "The assigned assessment center is now reviewing your application.";
+  }
+
+  if (terminalStatuses.includes(submission.workflow_status)) {
+    return "This submission is finalized and stays available as a record.";
+  }
+
+  if (submission.workflow_status === "submitted_to_teacher") {
+    return "Your teacher still needs to review and forward this room submission.";
+  }
+
+  return submission.submission_source === "room"
+    ? "TESDA has received this room submission and will assign an assessment center next."
+    : "TESDA has received this submission. You can still edit it until assignment.";
+}
+
+function getRoomStatusText(status?: ApplicationSubmissionStatus, assessmentCenterName?: string) {
+  if (status === "assigned" || status === "under_review") {
+    return assessmentCenterName ? `Under review at ${assessmentCenterName}` : "Under Review at Assessment Center";
+  }
+
+  if (status === "submitted_to_admin") {
+    return "Submitted to TESDA";
+  }
+
+  if (status === "submitted_to_teacher") {
+    return "Submitted to Teacher";
+  }
+
+  if (status) {
+    return getApplicationSubmissionStatusLabel(status);
+  }
+
+  return "No submission yet";
+}
+
+function getRoomActionLabel(status?: ApplicationSubmissionStatus) {
+  if (!status) {
+    return "Start Application";
+  }
+
+  if (status === "submitted_to_teacher") {
+    return "Continue Application";
+  }
+
+  return "Open Submission";
+}
+
+export default async function StudentDashboardPage() {
+  const currentUser = await getCurrentAppUser();
+
+  if (!currentUser || currentUser.role !== "applicant") {
+    notFound();
+  }
+
+  const supabase = createSupabaseAdminClient();
+  let dashboardNotice = "";
+
+  const [{ data: submissionRows, error: submissionsError }, joinedRoomsResult] =
+    await Promise.all([
+      supabase
+        .from("applicant_application_submissions")
+        .select("id, qualification_title, room_id, submission_source, submitted_at, teacher_forwarded_at, workflow_status")
+        .eq("applicant_id", currentUser.id)
+        .order("submitted_at", { ascending: false }),
+      loadApplicantJoinedRooms(currentUser.accessToken, currentUser.id),
+    ]);
+  const joinedRoomsError = joinedRoomsResult.error;
+
+  if (submissionsError || joinedRoomsError) {
+    dashboardNotice =
+      "Some dashboard details could not be loaded right now. Confirm the room and applicant submissions setup SQL has been run in Supabase, then try again.";
+  }
+
+  const assignmentMap = await getSubmissionAssignmentInfoByIds((submissionRows ?? []).map((submission) => submission.id));
+  const submissions: DashboardSubmission[] = (submissionRows ?? []).map((submission) => ({
+    ...submission,
+    assessment_center_name: assignmentMap.get(submission.id)?.assessment_center_name ?? null,
+  }));
+
+  const joinedRooms = joinedRoomsResult.memberships.filter(
+    (membership): membership is ApplicantJoinedRoomMembership & { room: NonNullable<ApplicantJoinedRoomMembership["room"]> } =>
+      Boolean(membership.room),
+  );
+
+  const roomStatusById = new Map<string, ApplicationSubmissionStatus>();
+  const roomCenterById = new Map<string, string>();
+
+  for (const submission of submissions) {
+    if (!submission.room_id) {
+      continue;
+    }
+
+    roomStatusById.set(submission.room_id, submission.workflow_status);
+
+    if (submission.assessment_center_name) {
+      roomCenterById.set(submission.room_id, submission.assessment_center_name);
+    }
+  }
+
+  const latestSubmission = submissions[0] ?? null;
+  const activeSubmissionCount = submissions.filter((submission) => !terminalStatuses.includes(submission.workflow_status)).length;
+  const finalizedSubmissionCount = submissions.filter((submission) => terminalStatuses.includes(submission.workflow_status)).length;
+  const recentSubmissions = submissions.slice(0, 3);
+
   return (
-    <article className="border-b border-[#c4c5d5] pb-4 last:border-b-0">
-      <div className="mb-1 flex items-center justify-between">
-        <span className={`text-[11px] font-bold uppercase tracking-[0.08em] ${badgeClass}`}>{badge}</span>
-        <span className="text-[11px] font-semibold text-[#747685]">{date}</span>
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-5">
+          <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Applicant Dashboard</h1>
+          <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
+            Track your submissions, room activity, and overall application progress.
+          </p>
+        </section>
+
+        {dashboardNotice ? <NotificationBanner className="mb-5" message={dashboardNotice} variant="warning" /> : null}
+
+        <section className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Submitted Forms</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{submissions.length}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">All individual and room-based submissions linked to your account.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Active Forms</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{activeSubmissionCount}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Submissions still moving through teacher review, TESDA, or center assignment.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Finalized</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{finalizedSubmissionCount}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Completed, rejected, cancelled, or withdrawn submissions kept as records.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Joined Rooms</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{joinedRooms.length}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Rooms you already joined using a teacher-provided room code.</p>
+          </div>
+        </section>
+
+        <section className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+          <article className="rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Latest Submission</p>
+                <h2 className="mt-2 text-[24px] font-bold leading-[1.2] text-[#0b1c30]">
+                  {latestSubmission ? latestSubmission.qualification_title : "No submitted forms yet"}
+                </h2>
+              </div>
+              <Link
+                className="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                href="/applicant/submitted-forms"
+              >
+                Open Forms
+              </Link>
+            </div>
+
+            {latestSubmission ? (
+              <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Current Status</p>
+                  <p className="mt-2 text-[14px] font-semibold leading-[1.5] text-[#0b1c30]">
+                    {getSubmissionStatusText(latestSubmission)}
+                  </p>
+                </div>
+                <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Submitted</p>
+                  <p className="mt-2 text-[14px] font-semibold leading-[1.5] text-[#0b1c30]">
+                    {formatDate(latestSubmission.submitted_at)}
+                  </p>
+                </div>
+                <div className="rounded-[10px] border border-[#dbe6fb] bg-[#f7faff] px-4 py-3 md:col-span-2">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
+                  <p className="mt-2 text-[14px] leading-[1.6] text-[#30435f]">{getSubmissionUpdateText(latestSubmission)}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 rounded-[10px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-5">
+                <p className="text-[14px] leading-[1.6] text-[#444653]">
+                  Once you submit an application, its live status will appear here.
+                </p>
+              </div>
+            )}
+          </article>
+
+          <article className="rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Joined Rooms</p>
+                <h2 className="mt-2 text-[24px] font-bold leading-[1.2] text-[#0b1c30]">Room Access</h2>
+              </div>
+              <Link
+                className="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                href="/applicant/room"
+              >
+                Open Rooms
+              </Link>
+            </div>
+
+            <div className="mt-5 space-y-3">
+              {joinedRooms.slice(0, 3).map((membership) => (
+                <div key={membership.id} className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[14px] font-bold text-[#0b1c30]">{membership.room.name}</p>
+                      <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                        {getRoomStatusText(
+                          roomStatusById.get(membership.room.id),
+                          roomCenterById.get(membership.room.id),
+                        )}
+                      </p>
+                    </div>
+                    <Link
+                      className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                      href={`/applicant/applications/individual?roomId=${membership.room.id}`}
+                    >
+                      {getRoomActionLabel(roomStatusById.get(membership.room.id))}
+                    </Link>
+                  </div>
+                </div>
+              ))}
+
+              {joinedRooms.length === 0 ? (
+                <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                  <p className="text-[14px] leading-[1.6] text-[#444653]">
+                    You have not joined any rooms yet. Use a teacher-provided room code when you need to submit through a room.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </article>
+        </section>
+
+        <section className="mt-5 rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Recent Submissions</p>
+              <h2 className="mt-2 text-[24px] font-bold leading-[1.2] text-[#0b1c30]">Latest Form Activity</h2>
+            </div>
+            <Link
+              className="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+              href="/applicant/submitted-forms"
+            >
+              View All
+            </Link>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {recentSubmissions.map((submission) => (
+              <div key={submission.id} className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-bold text-[#0b1c30]">{submission.qualification_title}</p>
+                    <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                      {getSubmissionStatusText(submission)} | Submitted {formatDate(submission.submitted_at)}
+                    </p>
+                  </div>
+                  <Link
+                    className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                    href="/applicant/submitted-forms"
+                  >
+                    Open
+                  </Link>
+                </div>
+              </div>
+            ))}
+
+            {recentSubmissions.length === 0 ? (
+              <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <p className="text-[14px] leading-[1.6] text-[#444653]">
+                  No submissions yet. Start with an individual form or join a room when your teacher gives you a code.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </section>
       </div>
-      <h4 className="text-[14px] font-bold leading-[1.35] text-[#1a1c1c]">{title}</h4>
-      <p className="mt-1 text-[13px] leading-[1.4] text-[#5d5f5f]">{text}</p>
-    </article>
+    </main>
   );
 }

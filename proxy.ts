@@ -6,7 +6,7 @@ import { createSupabaseServerClient, getUserRoleFromRoleTable } from "@/lib/supa
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const publicPaths = new Set(["/", "/sign-up/applicant", "/teacher-signup", "/teacher-type"]);
+  const publicPaths = new Set(["/", "/applicant-signup", "/sign-up/applicant", "/teacher-signup", "/teacher-type"]);
   const isPublicPath = publicPaths.has(pathname);
 
   let isLoggedIn = false;
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(getRoleHomePath(role), request.url));
   }
 
-  if (isLoggedIn && pathname.startsWith("/applicant") && role !== "student") {
+  if (isLoggedIn && pathname.startsWith("/applicant") && role !== "applicant") {
     return NextResponse.redirect(new URL(getRoleHomePath(role), request.url));
   }
 

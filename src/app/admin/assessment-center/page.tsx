@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
 
 type AssessmentCenter = {
   address: string;
@@ -208,38 +209,38 @@ export default function AdminAssessmentCenterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-24 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-8">
+    <main className="ui-portal-main pb-24 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-5">
           <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Assessment Center</h1>
           <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-            Manage and configure assessment center records from the admin portal.
+            Manage assessment center records and open each center&apos;s details from the admin portal.
           </p>
         </section>
 
-        <section className="overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
+        <section className="mb-5">
           {pageError ? (
-            <div className="border-b border-[#f3d6d6] bg-[#fff4f4] px-5 py-3 text-[13px] text-[#93000a] sm:px-6">
-              {pageError}
-            </div>
+            <NotificationBanner className="mb-3 rounded-[12px] sm:px-6" compact message={pageError} variant="error" />
           ) : null}
 
           {isLoadingCenters ? (
-            <div className="px-5 py-10 text-center text-[14px] text-[#747685] sm:px-6">Loading assessment centers...</div>
+            <div className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-8 text-center text-[14px] text-[#747685] shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-6">
+              Loading assessment centers...
+            </div>
           ) : (
             <>
               <div className="lg:hidden">
-                <div className="space-y-3 px-4 py-4 sm:px-6">
+                <div className="space-y-2.5 px-4 py-4 sm:px-6">
                   {assessmentCenters.map((center) => (
                     <article
                       key={center.id}
-                      className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-sm transition hover:border-[#bfd0f2] hover:bg-white"
+                      className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-[#bfd0f2] hover:bg-white"
                     >
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold text-[#0b1c30]">{center.name}</p>
                       </div>
 
-                      <div className="mt-4 grid gap-3 rounded-[14px] border border-[#e4ebf7] bg-white p-3">
+                      <div className="mt-4 grid gap-3 rounded-[8px] border border-[#e4ebf7] bg-white p-3">
                         <div>
                           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
                           <p className="mt-1 text-[13px] text-[#444653]">{center.address}</p>
@@ -255,7 +256,7 @@ export default function AdminAssessmentCenterPage() {
                       </div>
                       <div className="mt-3">
                         <button
-                          className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                           onClick={(event) => {
                             event.stopPropagation();
                             setSelectedCenter(center);
@@ -269,70 +270,71 @@ export default function AdminAssessmentCenterPage() {
                   ))}
 
                   {assessmentCenters.length === 0 ? (
-                    <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center text-[14px] text-[#747685]">
+                    <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
                       No assessment centers found yet.
                     </div>
                   ) : null}
                 </div>
               </div>
 
-              <div className="hidden overflow-x-auto lg:block">
-                <table className="w-full border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-[#d9e3f7] bg-[#f8fbff]">
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
-                        Center Name
-                      </th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
-                        Address
-                      </th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
-                        Center Head
-                      </th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
-                        Contact
-                      </th>
-                      <th className="px-6 py-4 text-right text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#d9e3f7]">
-                    {assessmentCenters.map((center) => (
-                      <tr
-                        key={center.id}
-                        className="transition-colors hover:bg-[#f8fbff]"
-                      >
-                        <td className="px-6 py-4">
-                          <p className="text-[14px] font-bold text-[#0b1c30]">{center.name}</p>
-                        </td>
-                        <td className="px-6 py-4 text-[14px] text-[#444653]">{center.address}</td>
-                        <td className="px-6 py-4 text-[14px] text-[#444653]">{center.manager}</td>
-                        <td className="px-6 py-4 text-[14px] text-[#444653]">{center.contact}</td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              setSelectedCenter(center);
-                            }}
-                            type="button"
-                          >
-                            View More
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-
-                    {assessmentCenters.length === 0 ? (
-                      <tr>
-                        <td className="px-6 py-10 text-center text-[14px] text-[#747685]" colSpan={5}>
-                          No assessment centers found yet.
-                        </td>
-                      </tr>
-                    ) : null}
-                  </tbody>
-                </table>
+              <div className="hidden lg:block">
+                {assessmentCenters.length > 0 ? (
+                  <div className="ui-data-table-shell">
+                    <table className="ui-data-table">
+                      <thead>
+                        <tr>
+                          <th className="text-left">
+                            Center Name
+                          </th>
+                          <th className="text-left">
+                            Address
+                          </th>
+                          <th className="text-left">
+                            Center Head
+                          </th>
+                          <th className="text-left">
+                            Contact
+                          </th>
+                          <th className="text-right">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {assessmentCenters.map((center) => (
+                          <tr key={center.id}>
+                            <td>
+                              <p className="truncate text-[15px] font-bold text-[#0b1c30]">{center.name}</p>
+                            </td>
+                            <td>
+                              <p className="truncate text-[14px] leading-[1.55] text-[#444653]">{center.address}</p>
+                            </td>
+                            <td>
+                              <p className="truncate text-[14px] font-medium text-[#444653]">{center.manager}</p>
+                            </td>
+                            <td>
+                              <p className="truncate text-[14px] font-medium text-[#444653]">{center.contact}</p>
+                            </td>
+                            <td className="text-right">
+                              <button
+                                className="ui-data-table-action"
+                                onClick={() => setSelectedCenter(center)}
+                                type="button"
+                              >
+                                <span>View Details</span>
+                                <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
+                    No assessment centers found yet.
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -340,7 +342,7 @@ export default function AdminAssessmentCenterPage() {
       </div>
 
       <button
-        className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-full bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-[0_16px_32px_rgba(0,37,118,0.24)] transition hover:bg-[#0038a8] lg:right-8"
+        className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-lg bg-[#002576] px-5 py-3 text-[13px] font-bold text-white shadow-[0_10px_24px_rgba(0,37,118,0.16)] transition hover:bg-[#0038a8] lg:right-8"
         onClick={() => setIsAddModalOpen(true)}
         type="button"
       >
@@ -349,7 +351,7 @@ export default function AdminAssessmentCenterPage() {
       </button>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isAddModalOpen}
       >
             <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
@@ -370,15 +372,13 @@ export default function AdminAssessmentCenterPage() {
 
             <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
               {formError ? (
-                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
-                  {formError}
-                </div>
+                <NotificationBanner compact message={formError} variant="error" />
               ) : null}
 
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Center Name</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, name: event.target.value }))}
                   placeholder="Enter assessment center name"
                   type="text"
@@ -389,7 +389,7 @@ export default function AdminAssessmentCenterPage() {
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Address</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, address: event.target.value }))}
                   placeholder="Enter center address"
                   type="text"
@@ -400,7 +400,7 @@ export default function AdminAssessmentCenterPage() {
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Center Head</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, manager: event.target.value }))}
                   placeholder="Enter assigned center head"
                   type="text"
@@ -411,7 +411,7 @@ export default function AdminAssessmentCenterPage() {
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Contact</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, contact: event.target.value }))}
                   placeholder="Enter center contact number"
                   type="text"
@@ -422,7 +422,7 @@ export default function AdminAssessmentCenterPage() {
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Login Email</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, email: event.target.value }))}
                   placeholder="Enter assessment center login email"
                   type="email"
@@ -433,7 +433,7 @@ export default function AdminAssessmentCenterPage() {
               <label className="block">
                 <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Password</span>
                 <input
-                  className="w-full rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                   onChange={(event) => setFormState((current) => ({ ...current, password: event.target.value }))}
                   placeholder="Enter at least 8 characters"
                   type="password"
@@ -444,7 +444,7 @@ export default function AdminAssessmentCenterPage() {
 
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={closeModal}
                   type="button"
                 >
@@ -463,7 +463,7 @@ export default function AdminAssessmentCenterPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[540px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[540px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(selectedCenter)}
       >
         {selectedCenter ? (
@@ -485,7 +485,7 @@ export default function AdminAssessmentCenterPage() {
             </div>
 
             <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-3.5 sm:px-7">
-              <div className="rounded-[16px] border border-[#d9e3f7] bg-white p-3.5">
+              <div className="rounded-[10px] border border-[#d9e3f7] bg-white p-3.5">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[12px] bg-[#f8fbff] px-3.5 py-3">
                     <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
@@ -517,7 +517,7 @@ export default function AdminAssessmentCenterPage() {
 
               <div className="flex flex-col-reverse gap-2 border-t border-[#d9e3f7] pt-3 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={closeDetailsModal}
                   type="button"
                 >
@@ -537,7 +537,7 @@ export default function AdminAssessmentCenterPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[460px] rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="w-full max-w-[460px] rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(selectedCenter && isDeleteConfirmOpen)}
         zIndexClassName="z-[60]"
       >
@@ -560,7 +560,7 @@ export default function AdminAssessmentCenterPage() {
 
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   disabled={isDeletingCenter}
                   onClick={() => setIsDeleteConfirmOpen(false)}
                   type="button"
@@ -568,7 +568,7 @@ export default function AdminAssessmentCenterPage() {
                   Cancel
                 </button>
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:bg-[#d9a3a3]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg bg-[#d97a7a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#c96a6a] disabled:cursor-not-allowed disabled:bg-[#e6b8b8]"
                   disabled={isDeletingCenter}
                   onClick={handleDeleteAssessmentCenter}
                   type="button"

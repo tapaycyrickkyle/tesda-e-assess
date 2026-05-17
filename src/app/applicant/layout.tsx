@@ -6,6 +6,7 @@ const applicantSidebarItems = [
   { key: "applications", label: "Applications", icon: "fa-regular fa-file-lines", href: "/applicant/applications" },
   { key: "submitted-forms", label: "Submitted Forms", icon: "fa-solid fa-file-pdf", href: "/applicant/submitted-forms" },
   { key: "room", label: "Room", icon: "fa-solid fa-door-open", href: "/applicant/room" },
+  { key: "profile", label: "Profile", icon: "fa-regular fa-user", href: "/applicant/profile" },
 ];
 
 export default async function ApplicantLayout({
@@ -13,7 +14,7 @@ export default async function ApplicantLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireUserRole("student");
+  await requireUserRole("applicant");
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
       <DashboardSidebar items={applicantSidebarItems} portalLabel="Applicant Portal" />

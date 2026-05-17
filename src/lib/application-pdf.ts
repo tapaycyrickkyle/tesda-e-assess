@@ -20,6 +20,7 @@ import {
 import {
   educationalAttainmentOptions,
   buildApplicantName,
+  getApplicationSubmissionStatusLabel,
   normalizeApplicationFormData,
   type ApplicantApplicationFormData,
   type ApplicationSubmissionSource,
@@ -51,10 +52,16 @@ type DrawTextBoxOptions = {
   y: number;
 };
 
+type TextFieldOptions = {
+  alignment?: TextAlignment;
+  fontSize?: number;
+};
+
 const FILLABLE_TEMPLATE_PATH = path.join(process.cwd(), "public", "forms", "fillable-application-form.pdf");
 const INK = rgb(0.07, 0.11, 0.24);
 const MUTED = rgb(0.31, 0.38, 0.52);
 const PDF_FIELD_FONT_SIZE = 8;
+const DATE_OF_APPLICATION_FONT_SIZE = 10;
 const CHECKBOX_MARK_SCALE = 0.54;
 const CHECKBOX_MARK_THICKNESS = 1.7;
 
@@ -302,7 +309,7 @@ function appendOverflowPage(
         `Name: ${buildApplicantName(formData) || "N/A"}`,
         `Email: ${formData.emailAddress || options.applicantEmail || "N/A"}`,
         `Route: ${options.submissionSource === "individual" ? "Individual to Admin" : `Room via ${options.roomName || "Teacher"}`}`,
-        `Workflow Status: ${options.workflowStatus === "submitted_to_admin" ? "Submitted to Admin" : "Submitted to Teacher"}`,
+        `Workflow Status: ${getApplicationSubmissionStatusLabel(options.workflowStatus)}`,
       ],
     },
     {
@@ -391,7 +398,10 @@ export function buildApplicationPdfFileName(formData: ApplicantApplicationFormDa
   return `${formatApplicantFileName(applicantName)}-application-form.pdf`;
 }
 
-function configureTextFieldAppearance(field: PDFTextField, alignment = TextAlignment.Left) {
+function configureTextFieldAppearance(
+  field: PDFTextField,
+  { alignment = TextAlignment.Left, fontSize = PDF_FIELD_FONT_SIZE }: TextFieldOptions = {},
+) {
   try {
     field.setAlignment(alignment);
   } catch {
@@ -399,7 +409,7 @@ function configureTextFieldAppearance(field: PDFTextField, alignment = TextAlign
   }
 
   try {
-    field.setFontSize(PDF_FIELD_FONT_SIZE);
+    field.setFontSize(fontSize);
   } catch {
     // Some vendor-provided fields may not expose a default appearance stream.
   }
@@ -413,57 +423,27 @@ function configureAllTextFields(form: PDFForm) {
   });
 }
 
-function setTextField(form: PDFForm, fieldName: string, value: string, alignment = TextAlignment.Left) {
+function setTextField(form: PDFForm, fieldName: string, value: string, options?: TextAlignment | TextFieldOptions) {
   const normalizedValue = cleanValue(value);
 
   if (!normalizedValue) {
     return;
   }
 
+  const appearanceOptions =
+    typeof options === "number"
+      ? {
+          alignment: options,
+        }
+      : options;
+
   try {
     const field = form.getTextField(fieldName);
-    configureTextFieldAppearance(field, alignment);
+    configureTextFieldAppearance(field, appearanceOptions);
     field.setText(normalizedValue);
   } catch {
     // Ignore missing or incompatible fields in vendor-provided templates.
   }
-}
-
-function getTextFieldRectangle(form: PDFForm, fieldName: string) {
-  try {
-    const field = form.getTextField(fieldName);
-    const widget = field.acroField.getWidgets()[0];
-    return widget?.getRectangle();
-  } catch {
-    return null;
-  }
-}
-
-function drawCenteredFieldText(
-  page: PDFPage,
-  rectangle: { height: number; width: number; x: number; y: number } | null,
-  text: string,
-  font: PDFFont,
-  options?: { size?: number; yOffset?: number },
-) {
-  const normalizedText = cleanValue(text);
-
-  if (!normalizedText || !rectangle) {
-    return;
-  }
-
-  const fontSize = options?.size ?? PDF_FIELD_FONT_SIZE;
-  const textWidth = font.widthOfTextAtSize(normalizedText, fontSize);
-  const centeredX = rectangle.x + Math.max((rectangle.width - textWidth) / 2, 0);
-  const baselineY = rectangle.y + rectangle.height / 2 - fontSize / 2 + (options?.yOffset ?? 0);
-
-  page.drawText(normalizedText, {
-    x: centeredX,
-    y: baselineY,
-    size: fontSize,
-    font,
-    color: INK,
-  });
 }
 
 function setCharacterFields(form: PDFForm, fieldNames: string[], value: string) {
@@ -472,9 +452,13 @@ function setCharacterFields(form: PDFForm, fieldNames: string[], value: string) 
   fieldNames.forEach((fieldName, index) => {
     const character = characters[index] ?? "";
 
+    if (!character) {
+      return;
+    }
+
     try {
       const field = form.getTextField(fieldName);
-      configureTextFieldAppearance(field, TextAlignment.Center);
+      configureTextFieldAppearance(field, { alignment: TextAlignment.Center, fontSize: PDF_FIELD_FONT_SIZE });
       field.setMaxLength(1);
       field.setText(character);
     } catch {
@@ -637,16 +621,21 @@ async function generateFillableApplicationPdf(
   const trainings = formData.trainings.filter(hasTraining);
   const licensureExams = formData.licensureExams.filter(hasLicensure);
   const competencyAssessments = formData.competencyAssessments.filter(hasCompetency);
-  const applicantNameFieldRectangle = getTextFieldRectangle(form, "Applicant Name");
-
   configureAllTextFields(form);
 
-  setTextField(form, "Date of Application", formatDisplayDate(formData.applicationDate));
+  setTextField(form, "Date of Application", formatDisplayDate(formData.applicationDate), {
+    alignment: TextAlignment.Center,
+    fontSize: DATE_OF_APPLICATION_FONT_SIZE,
+  });
   setTextField(form, "Name of SchoolTraining CenterCompany", formData.schoolName);
   setTextField(form, "Address", formData.schoolAddress);
   setTextField(form, "Title of Assessment applied for", formData.qualificationTitle);
 
   setTextField(form, "Name of Applicant", applicantName);
+  setTextField(form, "Applicant Fullname", printedApplicantName, {
+    alignment: TextAlignment.Center,
+    fontSize: 9,
+  });
   setTextField(form, "Tel Number", phoneNumber);
   setTextField(form, "Assessment Applied for", formData.qualificationTitle);
   setTextField(form, "Date Issued", formatDisplayDate(formData.applicationDate));
@@ -686,13 +675,13 @@ async function generateFillableApplicationPdf(
   );
 
   setTextField(form, "Birth place", formData.birthPlace);
-  setTextField(form, "Age", calculateAge(formData.dateOfBirth));
+  setTextField(form, "Age", calculateAge(formData.dateOfBirth), TextAlignment.Center);
 
   setCheckboxField(form, "Full Qualification Checkbox", formData.assessmentType === "Full Qualification");
   setCheckboxField(form, "COC Checkbox", formData.assessmentType === "COC");
   setCheckboxField(form, "Renewal Checkbox", formData.assessmentType === "Renewal");
   setCheckboxField(form, "TVET Graduating Student Checkbox", formData.clientType === "TVET Graduating Student");
-  setCheckboxField(form, "Industry Worker Checkbox", formData.clientType === "Industry Worker");
+  setCheckboxField(form, "Industry worker Checkbox", formData.clientType === "Industry Worker");
   setCheckboxField(form, "K-12 Checkbox", formData.clientType === "K-12");
   setCheckboxField(form, "Male Checkbox", formData.sex === "Male");
   setCheckboxField(form, "Female Checkbox", formData.sex === "Female");
@@ -769,10 +758,6 @@ async function generateFillableApplicationPdf(
   form.updateFieldAppearances(font);
   updateCheckboxAppearances(form);
   form.flatten();
-  drawCenteredFieldText(pdfDoc.getPages()[0], applicantNameFieldRectangle, printedApplicantName, font, {
-    size: PDF_FIELD_FONT_SIZE,
-    yOffset: -1.5,
-  });
 
   const needsOverflowPage =
     workExperiences.length > 3 || trainings.length > 4 || licensureExams.length > 3 || competencyAssessments.length > 3;

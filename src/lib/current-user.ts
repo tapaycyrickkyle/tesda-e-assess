@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createSupabaseServerClient, getUserRoleFromRoleTable } from "@/lib/supabase";
+import { createSupabaseServerClient, getUserApprovalStatusFromProfile, getUserRoleFromRoleTable } from "@/lib/supabase";
 import { getUserRoleFromMetadata, SESSION_COOKIE_NAME, type UserRole } from "@/lib/auth";
 
 export type CurrentAppUser = {
@@ -32,6 +32,14 @@ export async function getCurrentAppUser(): Promise<CurrentAppUser | null> {
 
   if (role === "unknown") {
     return null;
+  }
+
+  if (role === "teacher") {
+    const approvalStatus = await getUserApprovalStatusFromProfile(data.user.email, accessToken);
+
+    if (approvalStatus === "pending_review" || approvalStatus === "rejected") {
+      return null;
+    }
   }
 
   return {

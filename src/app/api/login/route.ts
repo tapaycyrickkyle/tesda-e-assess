@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createSupabaseServerClient, getUserRoleFromRoleTable } from "@/lib/supabase";
+import { createSupabaseServerClient, getUserApprovalStatusFromProfile, getUserRoleFromRoleTable } from "@/lib/supabase";
 import {
   getRoleHomePath,
   getUserRoleFromMetadata,
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Supabase authentication is not configured on the server.",
+        message: "Login is not available right now. Please contact the administrator.",
       },
       { status: 500 },
     );
@@ -49,10 +49,36 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "No valid role was found for this account. Check your Supabase role table and RLS policy.",
+        message: "This account is not ready for dashboard access yet. Please contact the administrator for help.",
       },
       { status: 403 },
     );
+  }
+
+  if (userRole === "teacher") {
+    const approvalStatus = await getUserApprovalStatusFromProfile(data.user.email ?? email, data.session.access_token);
+
+    if (approvalStatus === "pending_review") {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Your teacher account is still pending admin approval. You can log in after your uploaded credentials have been reviewed.",
+        },
+        { status: 403 },
+      );
+    }
+
+    if (approvalStatus === "rejected") {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Your teacher account was rejected during verification. Please contact the admin if you need help or want to resubmit your details.",
+        },
+        { status: 403 },
+      );
+    }
   }
 
   const redirectTo = getRoleHomePath(userRole);

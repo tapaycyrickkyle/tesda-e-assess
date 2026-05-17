@@ -30,7 +30,16 @@ export const employmentStatusOptions = [
 ] as const;
 
 export type ApplicationSubmissionSource = "individual" | "room";
-export type ApplicationSubmissionStatus = "submitted_to_teacher" | "submitted_to_admin";
+export type ApplicationSubmissionStatus =
+  | "draft"
+  | "submitted_to_teacher"
+  | "submitted_to_admin"
+  | "assigned"
+  | "under_review"
+  | "completed"
+  | "rejected"
+  | "cancelled"
+  | "withdrawn";
 
 export type WorkExperienceItem = {
   companyName: string;
@@ -331,4 +340,29 @@ export function buildApplicantName(formData: ApplicantApplicationFormData) {
 
 export function getPrimaryContactNumber(formData: ApplicantApplicationFormData) {
   return formData.contactNumbers || formData.mobileNumber || formData.homeTelephone || "";
+}
+
+export function getApplicationSubmissionStatusLabel(status: ApplicationSubmissionStatus) {
+  switch (status) {
+    case "draft":
+      return "Draft";
+    case "submitted_to_teacher":
+      return "Submitted to Teacher";
+    case "submitted_to_admin":
+      return "Submitted to TESDA";
+    case "assigned":
+      return "Under Review at Assessment Center";
+    case "under_review":
+      return "Under Review at Assessment Center";
+    case "completed":
+      return "Completed";
+    case "rejected":
+      return "Rejected";
+    case "cancelled":
+      return "Cancelled";
+    case "withdrawn":
+      return "Withdrawn";
+    default:
+      return status;
+  }
 }

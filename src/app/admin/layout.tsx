@@ -10,13 +10,19 @@ const adminSidebarItems = [
     icon: "fa-solid fa-user-check",
     href: "/admin/assigned-applicants",
   },
-  { key: "teacher-approvals", label: "Teacher Approvals", icon: "fa-solid fa-user-check", href: "/admin/teacher-approvals" },
+  {
+    key: "teacher-approvals",
+    label: "Teacher Approvals",
+    icon: "fa-solid fa-chalkboard-user",
+    href: "/admin/teacher-approvals",
+  },
   {
     key: "assessment-center",
     label: "Assessment Center",
     icon: "fa-solid fa-building",
     href: "/admin/assessment-center",
   },
+  { key: "profile", label: "Profile", icon: "fa-regular fa-user", href: "/admin/profile" },
 ];
 
 export default async function AdminLayout({

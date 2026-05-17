@@ -1,8 +1,11 @@
 "use client";
 
 import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import NotificationToast from "@/components/notifications/NotificationToast";
 import { useEffect, useMemo, useState } from "react";
 import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
+import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 
 type AssignedApplicant = {
   applicant_name: string;
@@ -14,6 +17,7 @@ type AssignedApplicant = {
   center_name: string;
   id: string;
   qualification: string;
+  workflow_status: ApplicationSubmissionStatus;
 };
 
 type BulkAssignment = {
@@ -22,9 +26,21 @@ type BulkAssignment = {
   assignedAt: string;
   batchCode: string;
   centerName: string;
+  hasProcessedApplicants: boolean;
   id: string;
   qualification: string;
   title: string;
+};
+
+type AssessmentCenterSummary = {
+  applicantCount: number;
+  batchCount: number;
+  id: string;
+  individualCount: number;
+  latestAssignedAt: string;
+  name: string;
+  pendingCount: number;
+  processedCount: number;
 };
 
 type RemovalTarget =
@@ -55,6 +71,36 @@ const formatAssignedDate = (value: string) =>
   });
 
 const cardTitleClass = "text-[18px] font-bold leading-[1.2] text-[#0b1c30]";
+const assignedMetaCardClass =
+  "flex min-h-[48px] w-full flex-col justify-center rounded-lg border border-[#d9e3f7] bg-white px-3 py-2 text-left sm:min-w-[188px] sm:w-auto";
+const secondaryActionButtonClass =
+  "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff] sm:min-w-[96px] sm:w-auto";
+const destructiveActionButtonClass =
+  "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-3.5 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea] sm:min-w-[96px] sm:w-auto";
+const tabInlineCountClass =
+  "pointer-events-none absolute -right-1 -top-0.5 inline-flex min-w-[22px] items-center justify-center rounded-full border-2 border-white bg-[#e53935] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white shadow-[0_2px_6px_rgba(229,57,53,0.18)]";
+const summaryCardClass =
+  "flex min-h-[120px] flex-col rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
+const summaryIconClass =
+  "inline-flex h-8 w-8 items-center justify-center rounded-[10px] border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
+const centerActiveStatuses: ApplicationSubmissionStatus[] = ["assigned", "under_review"];
+const centerClosedStatuses: ApplicationSubmissionStatus[] = ["completed", "rejected", "cancelled", "withdrawn"];
+
+function getStatusBadgeClass(status: ApplicationSubmissionStatus) {
+  if (status === "completed") {
+    return "bg-[#e8f7ee] text-[#166534]";
+  }
+
+  if (status === "rejected" || status === "cancelled" || status === "withdrawn") {
+    return "bg-[#fff1f1] text-[#b42318]";
+  }
+
+  if (status === "assigned" || status === "under_review") {
+    return "bg-[#eef4ff] text-[#3056c4]";
+  }
+
+  return "bg-[#fff4db] text-[#8a5200]";
+}
 
 export default function AdminAssignedApplicantsPage() {
   const [activeTab, setActiveTab] = useState<"individual" | "bulk">("individual");
@@ -68,6 +114,7 @@ export default function AdminAssignedApplicantsPage() {
   const [removalSuccess, setRemovalSuccess] = useState("");
   const [removalTarget, setRemovalTarget] = useState<RemovalTarget | null>(null);
   const [selectedBulkAssignment, setSelectedBulkAssignment] = useState<BulkAssignment | null>(null);
+  const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [individualCourseFilter, setIndividualCourseFilter] = useState("all");
   const [bulkProgramFilter, setBulkProgramFilter] = useState("all");
@@ -79,7 +126,7 @@ export default function AdminAssignedApplicantsPage() {
 
     const timeoutId = window.setTimeout(() => {
       setRemovalSuccess("");
-    }, 3000);
+    }, 4500);
 
     return () => {
       window.clearTimeout(timeoutId);
@@ -129,15 +176,66 @@ export default function AdminAssignedApplicantsPage() {
   }, []);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const centerSummaries = useMemo(() => {
+    const centerMap = new Map<string, AssessmentCenterSummary & { batchCodes: Set<string> }>();
+
+    applicants.forEach((applicant) => {
+      const existing = centerMap.get(applicant.assessment_center_id);
+
+        if (existing) {
+          existing.applicantCount += 1;
+          existing.pendingCount += centerActiveStatuses.includes(applicant.workflow_status) ? 1 : 0;
+          existing.processedCount += centerClosedStatuses.includes(applicant.workflow_status) ? 1 : 0;
+          existing.individualCount += applicant.assignment_batch ? 0 : 1;
+        if (applicant.assignment_batch) {
+          existing.batchCodes.add(applicant.assignment_batch);
+        }
+        if (new Date(applicant.assigned_at).getTime() > new Date(existing.latestAssignedAt).getTime()) {
+          existing.latestAssignedAt = applicant.assigned_at;
+        }
+        return;
+      }
+
+      centerMap.set(applicant.assessment_center_id, {
+        applicantCount: 1,
+        batchCodes: new Set(applicant.assignment_batch ? [applicant.assignment_batch] : []),
+        batchCount: 0,
+        id: applicant.assessment_center_id,
+        individualCount: applicant.assignment_batch ? 0 : 1,
+        latestAssignedAt: applicant.assigned_at,
+        name: applicant.center_name,
+        pendingCount: centerActiveStatuses.includes(applicant.workflow_status) ? 1 : 0,
+        processedCount: centerClosedStatuses.includes(applicant.workflow_status) ? 1 : 0,
+      });
+    });
+
+    return Array.from(centerMap.values())
+      .map(({ batchCodes, ...center }) => ({
+        ...center,
+        batchCount: batchCodes.size,
+      }))
+      .sort((left, right) => left.name.localeCompare(right.name));
+  }, [applicants]);
+
+  const selectedCenterSummary = useMemo(
+    () => centerSummaries.find((center) => center.id === selectedCenterId) ?? null,
+    [centerSummaries, selectedCenterId],
+  );
+
+  const selectedCenterApplicants = useMemo(
+    () => applicants.filter((applicant) => applicant.assessment_center_id === selectedCenterId),
+    [applicants, selectedCenterId],
+  );
+
   const individualApplicants = useMemo(
-    () => applicants.filter((applicant) => !applicant.assignment_batch),
-    [applicants],
+    () => selectedCenterApplicants.filter((applicant) => !applicant.assignment_batch),
+    [selectedCenterApplicants],
   );
 
   const bulkAssignments = useMemo(() => {
     const batchMap = new Map<string, BulkAssignment>();
 
-    applicants
+    selectedCenterApplicants
       .filter((applicant) => applicant.assignment_batch)
       .forEach((applicant) => {
         const batchCode = applicant.assignment_batch ?? "";
@@ -148,6 +246,8 @@ export default function AdminAssignedApplicantsPage() {
         if (existing) {
           existing.applicantCount += 1;
           existing.assignmentIds.push(applicant.id);
+          existing.hasProcessedApplicants =
+            existing.hasProcessedApplicants || applicant.workflow_status !== "assigned";
           if (new Date(applicant.assigned_at).getTime() > new Date(existing.assignedAt).getTime()) {
             existing.assignedAt = applicant.assigned_at;
           }
@@ -160,6 +260,7 @@ export default function AdminAssignedApplicantsPage() {
           assignedAt: applicant.assigned_at,
           batchCode,
           centerName: applicant.center_name,
+          hasProcessedApplicants: applicant.workflow_status !== "assigned",
           id: applicant.id,
           qualification: applicant.qualification,
           title: assignmentTitle,
@@ -169,7 +270,7 @@ export default function AdminAssignedApplicantsPage() {
     return Array.from(batchMap.values()).sort(
       (left, right) => new Date(right.assignedAt).getTime() - new Date(left.assignedAt).getTime(),
     );
-  }, [applicants]);
+  }, [selectedCenterApplicants]);
 
   const individualCourseOptions = useMemo(
     () => ["all", ...new Set(individualApplicants.map((applicant) => applicant.qualification))],
@@ -212,8 +313,6 @@ export default function AdminAssignedApplicantsPage() {
     [bulkAssignments, bulkProgramFilter, normalizedSearchQuery],
   );
 
-  const topRightCount = activeTab === "individual" ? filteredIndividualApplicants.length : filteredBulkAssignments.length;
-  const topRightLabel = activeTab === "individual" ? "Applicants" : "Batches";
   const selectedBulkApplicants = useMemo(
     () =>
       selectedBulkAssignment
@@ -240,6 +339,27 @@ export default function AdminAssignedApplicantsPage() {
     setRemovalError("");
   };
 
+  const openCenterView = (centerId: string) => {
+    setSelectedCenterId(centerId);
+    setActiveTab("individual");
+    setSearchQuery("");
+    setBulkSearch("");
+    setIndividualCourseFilter("all");
+    setBulkProgramFilter("all");
+    setSelectedBulkAssignment(null);
+    setIsBulkModalOpen(false);
+  };
+
+  const returnToCenterDirectory = () => {
+    setSelectedCenterId(null);
+    setSearchQuery("");
+    setBulkSearch("");
+    setIndividualCourseFilter("all");
+    setBulkProgramFilter("all");
+    setSelectedBulkAssignment(null);
+    setIsBulkModalOpen(false);
+  };
+
   const handleRemoveAssignment = async () => {
     if (!removalTarget) {
       return;
@@ -264,13 +384,15 @@ export default function AdminAssignedApplicantsPage() {
         throw new Error(payload.message ?? "Unable to remove assignment.");
       }
 
-      setApplicants((currentApplicants) =>
-        currentApplicants.filter((applicant) => !removalTarget.assignmentIds.includes(applicant.id)),
-      );
+      const nextApplicants = applicants.filter((applicant) => !removalTarget.assignmentIds.includes(applicant.id));
+      setApplicants(nextApplicants);
       if (removalTarget.type === "bulk") {
         setIsBulkModalOpen(false);
         setSelectedBulkAssignment(null);
         setBulkSearch("");
+      }
+      if (selectedCenterId && !nextApplicants.some((applicant) => applicant.assessment_center_id === selectedCenterId)) {
+        returnToCenterDirectory();
       }
       setRemovalSuccess(
         removalTarget.type === "individual"
@@ -286,164 +408,252 @@ export default function AdminAssignedApplicantsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-2.5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="min-w-0 flex-1">
               <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Assigned Applicants</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Review applicants and school batches that have already been routed to assessment centers.
+                {selectedCenterSummary
+                  ? `Review the assignments currently routed to ${selectedCenterSummary.name}.`
+                  : "Open an assessment center to review its individual and bulk assignment queues."}
               </p>
             </div>
 
-            <div className="flex min-h-[112px] w-full max-w-[196px] flex-col justify-center rounded-[14px] border border-[#d4def2] bg-[#eef4ff] px-4 py-3 text-center shadow-sm">
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{topRightLabel}</p>
-              <p className="mt-1.5 text-[26px] font-bold leading-none text-[#0b1c30]">{topRightCount}</p>
-              <p className="mt-1 text-[11px] text-[#4563a5]">
-                {activeTab === "individual" ? "Already assigned to centers" : "Bulk batches already routed"}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-[18px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-sm sm:px-5">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="inline-flex w-fit items-center rounded-full border border-[#c4c5d5] bg-white p-1 shadow-sm">
-                <button
-                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                    activeTab === "individual"
-                      ? "bg-[#002576] font-bold text-white"
-                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                  }`}
-                  onClick={() => setActiveTab("individual")}
-                  type="button"
-                >
-                  Individual
-                </button>
-                <button
-                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                    activeTab === "bulk"
-                      ? "bg-[#002576] font-bold text-white"
-                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                  }`}
-                  onClick={() => setActiveTab("bulk")}
-                  type="button"
-                >
-                  Bulk
-                </button>
-              </div>
-
-              <div className="flex flex-col gap-2 lg:min-w-[720px] lg:flex-row lg:items-center lg:justify-end">
-                <label className="block flex-1 lg:max-w-[280px]">
-                  <span className="sr-only">
-                    {activeTab === "individual" ? "Search assigned applicants" : "Search assigned batches"}
-                  </span>
-                  <div className="group relative">
-                    <i
-                      aria-hidden="true"
-                      className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                    />
-                    <input
-                      className="w-full rounded-lg border border-[#c4c5d5] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      placeholder={activeTab === "individual" ? "Search assigned applicants..." : "Search assigned batches..."}
-                      type="text"
-                      value={searchQuery}
-                    />
-                  </div>
-                </label>
-
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-fit">
-                  {activeTab === "individual" ? "Course Filter" : "Program Filter"}
-                </p>
-                <label className="block flex-1">
-                  <span className="sr-only">{activeTab === "individual" ? "Filter by course" : "Filter by program"}</span>
-                  <div className="relative">
-                    <select
-                      className="w-full appearance-none rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                      onChange={(event) =>
-                        activeTab === "individual"
-                          ? setIndividualCourseFilter(event.target.value)
-                          : setBulkProgramFilter(event.target.value)
-                      }
-                      value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
-                    >
-                      {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
-                        <option key={option} value={option}>
-                          {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                      <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+            {selectedCenterSummary ? (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[320px]">
+                <div className={summaryCardClass}>
+                  <div className="flex min-h-[44px] items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Individual</p>
+                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">
+                        Direct assignments
+                      </p>
+                    </div>
+                    <span aria-hidden="true" className={`${summaryIconClass} text-[#002576]`}>
+                      <i className="fa-solid fa-user" />
                     </span>
                   </div>
-                </label>
 
-                {((activeTab === "individual" && individualCourseFilter !== "all") ||
-                  (activeTab === "bulk" && bulkProgramFilter !== "all") ||
-                  searchQuery.trim().length > 0) ? (
-                  <button
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
-                    onClick={() => {
-                      setSearchQuery("");
-                      if (activeTab === "individual") {
-                        setIndividualCourseFilter("all");
-                        return;
-                      }
+                  <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
+                    <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
+                      {individualApplicants.length.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
 
-                      setBulkProgramFilter("all");
-                    }}
-                    type="button"
-                  >
-                    <i aria-hidden="true" className="fa-solid fa-rotate-left text-[12px]" />
-                    Clear
-                  </button>
-                ) : null}
+                <div className={summaryCardClass}>
+                  <div className="flex min-h-[44px] items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Bulk</p>
+                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">
+                        Assigned batches
+                      </p>
+                    </div>
+                    <span aria-hidden="true" className={`${summaryIconClass} text-[#3056c4]`}>
+                      <i className="fa-solid fa-layer-group" />
+                    </span>
+                  </div>
+
+                  <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
+                    <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
+                      {bulkAssignments.length.toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : null}
           </div>
         </section>
 
+        <section className="mb-3">
+          {selectedCenterSummary ? (
+            <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
+              <div className="flex justify-start">
+                <button
+                  className="inline-flex min-h-[38px] items-center gap-2 rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#eff4ff]"
+                  onClick={returnToCenterDirectory}
+                  type="button"
+                >
+                  <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
+                  Back to Centers
+                </button>
+              </div>
+
+              <div className="flex justify-center md:col-start-2">
+                <div className="inline-flex w-[240px] max-w-full items-center rounded-full border border-[#d9e3f7] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+                  <button
+                    className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
+                      activeTab === "individual"
+                        ? "bg-[#002576] font-bold text-white"
+                        : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                    }`}
+                    onClick={() => setActiveTab("individual")}
+                    type="button"
+                  >
+                    <span className="flex items-center justify-center">
+                      <span>Individual</span>
+                    </span>
+                    <span className={tabInlineCountClass}>{filteredIndividualApplicants.length}</span>
+                  </button>
+                  <button
+                    className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
+                      activeTab === "bulk"
+                        ? "bg-[#002576] font-bold text-white"
+                        : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                    }`}
+                    onClick={() => setActiveTab("bulk")}
+                    type="button"
+                  >
+                    <span className="flex items-center justify-center">
+                      <span>Bulk</span>
+                    </span>
+                    <span className={tabInlineCountClass}>{filteredBulkAssignments.length}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="hidden md:block" aria-hidden="true" />
+            </div>
+          ) : null}
+
+          {selectedCenterSummary ? (
+            <>
+              <div className="mt-4 rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+                  <div className="flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-4">
+                    <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:w-full xl:max-w-[520px]">
+                      <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">
+                        Search
+                      </span>
+                      <div className="group relative min-w-0 flex-1">
+                        <i
+                          aria-hidden="true"
+                          className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                        />
+                        <input
+                          className="w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                          onChange={(event) => setSearchQuery(event.target.value)}
+                          placeholder={activeTab === "individual" ? "Search assigned applicants..." : "Search assigned batches..."}
+                          type="text"
+                          value={searchQuery}
+                        />
+                      </div>
+                    </label>
+
+                    <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:ml-auto xl:w-full xl:max-w-[360px]">
+                      <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[108px]">
+                        Program Filter
+                      </span>
+                      <span className="sr-only">Filter by program</span>
+                      <div className="relative min-w-0 flex-1">
+                        <select
+                          className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                          onChange={(event) =>
+                            activeTab === "individual"
+                              ? setIndividualCourseFilter(event.target.value)
+                              : setBulkProgramFilter(event.target.value)
+                          }
+                          value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
+                        >
+                          {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
+                            <option key={option} value={option}>
+                              {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
+                          <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+                        </span>
+                      </div>
+                    </label>
+                </div>
+              </div>
+            </>
+          ) : null}
+        </section>
+
         {error ? (
-          <div className="mb-4 rounded-[18px] border border-[#f3d6d6] bg-[#fff4f4] px-5 py-4 text-[13px] text-[#93000a]">
-            {error}
-          </div>
+          <NotificationBanner className="mb-4" message={error} variant="error" />
         ) : null}
 
         {isLoading ? (
-          <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center shadow-sm">
+          <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
             <p className="mt-4 text-[14px] font-semibold text-[#0b1c30]">Loading assigned applicants...</p>
             <p className="mt-1 text-[13px] text-[#747685]">Pulling the latest routing history from assessment centers.</p>
           </div>
+        ) : !selectedCenterSummary ? (
+          <section>
+            {centerSummaries.length === 0 ? (
+              <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
+                  <i aria-hidden="true" className="fa-solid fa-building text-[18px]" />
+                </div>
+                <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">No assessment centers have assigned applicants yet</p>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
+                  Centers will appear here after applicants are routed from the submitted queue.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
+                {centerSummaries.map((center) => (
+                  <button
+                    key={center.id}
+                    className="rounded-[12px] border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] p-4 text-left shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+                    onClick={() => openCenterView(center.id)}
+                    type="button"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Assessment Center</p>
+                        <h2 className="mt-2 text-[22px] font-bold leading-[1.2] text-[#0b1c30]">{center.name}</h2>
+                        <p className="mt-2 text-[13px] leading-[1.55] text-[#4c5d79]">
+                          Latest assignment {formatAssignedDate(center.latestAssignedAt)}
+                        </p>
+                      </div>
+                      <span className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#eef4ff] px-3 text-[12px] font-bold text-[#093cab]">
+                        Open
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
         ) : (
           <section>
             {activeTab === "individual" ? (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-2.5">
                 {filteredIndividualApplicants.map((applicant) => (
-                  <article key={applicant.id} className="rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <article
+                    className="rounded-[12px] border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:px-5"
+                    key={applicant.id}
+                  >
+                    <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
                       <div className="min-w-0">
                         <p className={cardTitleClass}>{applicant.applicant_name}</p>
-                        <p className="mt-2 text-[14px] font-medium text-[#444653]">{applicant.qualification}</p>
+                        <p className="mt-1 text-[14px] font-medium text-[#444653]">{applicant.qualification}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end">
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center</p>
-                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">{applicant.center_name}</p>
-                        </div>
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap xl:justify-end">
+                        <div className={assignedMetaCardClass}>
                           <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
                           <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
                             {formatAssignedDate(applicant.assigned_at)}
                           </p>
                         </div>
+                        {applicant.workflow_status !== "assigned" ? (
+                          <span
+                            className={`inline-flex min-h-[36px] min-w-[96px] items-center justify-center rounded-lg px-3.5 text-[12px] font-bold ${getStatusBadgeClass(applicant.workflow_status)}`}
+                          >
+                            {getApplicationSubmissionStatusLabel(applicant.workflow_status)}
+                          </span>
+                        ) : null}
                         <a
-                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className={secondaryActionButtonClass}
                           href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
                           rel="noreferrer"
                           target="_blank"
@@ -451,34 +661,36 @@ export default function AdminAssignedApplicantsPage() {
                           View PDF
                         </a>
                         <a
-                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className={secondaryActionButtonClass}
                           href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
                         >
                           Download
                         </a>
-                        <button
-                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-4 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea]"
-                          onClick={() =>
-                            setRemovalTarget({
-                              assignmentIds: [applicant.id],
-                              centerName: applicant.center_name,
-                              count: 1,
-                              description: applicant.qualification,
-                              title: applicant.applicant_name,
-                              type: "individual",
-                            })
-                          }
-                          type="button"
-                        >
-                          Remove
-                        </button>
+                        {applicant.workflow_status === "assigned" ? (
+                          <button
+                            className={destructiveActionButtonClass}
+                            onClick={() =>
+                              setRemovalTarget({
+                                assignmentIds: [applicant.id],
+                                centerName: applicant.center_name,
+                                count: 1,
+                                description: applicant.qualification,
+                                title: applicant.applicant_name,
+                                type: "individual",
+                              })
+                            }
+                            type="button"
+                          >
+                            Remove
+                          </button>
+                        ) : null}
                       </div>
                     </div>
                   </article>
                 ))}
 
                 {filteredIndividualApplicants.length === 0 ? (
-                  <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center">
+                  <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -499,74 +711,65 @@ export default function AdminAssignedApplicantsPage() {
                 ) : null}
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-2.5">
                 {filteredBulkAssignments.map((assignment) => (
                   <article
                     key={`${assignment.batchCode}-${assignment.title}-${assignment.centerName}`}
-                    className="cursor-pointer rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm transition hover:border-[#002576] hover:shadow-md"
-                    onClick={() => {
-                      setSelectedBulkAssignment(assignment);
-                      setBulkSearch("");
-                      setIsBulkModalOpen(true);
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setSelectedBulkAssignment(assignment);
-                        setBulkSearch("");
-                        setIsBulkModalOpen(true);
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
+                    className="rounded-lg border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
                   >
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
                       <div className="min-w-0">
                         <p className={cardTitleClass}>{assignment.title}</p>
                         <p className="mt-2 text-[14px] font-medium text-[#444653]">{assignment.qualification}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center lg:justify-end">
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center</p>
-                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">{assignment.centerName}</p>
-                        </div>
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
-                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicants</p>
-                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
-                            {assignment.applicantCount} assigned
-                          </p>
-                        </div>
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3 py-2">
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap xl:justify-end">
+                        <div className={assignedMetaCardClass}>
                           <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
                           <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
                             {formatAssignedDate(assignment.assignedAt)}
                           </p>
                         </div>
                         <button
-                          className="inline-flex min-h-[38px] min-w-[104px] items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-4 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea]"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            setRemovalTarget({
-                              assignmentIds: assignment.assignmentIds,
-                              centerName: assignment.centerName,
-                              count: assignment.applicantCount,
-                              description: assignment.qualification,
-                              title: assignment.title,
-                              type: "bulk",
-                            });
+                          className={secondaryActionButtonClass}
+                          onClick={() => {
+                            setSelectedBulkAssignment(assignment);
+                            setBulkSearch("");
+                            setIsBulkModalOpen(true);
                           }}
                           type="button"
                         >
-                          Remove
+                          Open
                         </button>
+                        {!assignment.hasProcessedApplicants ? (
+                          <button
+                            className={destructiveActionButtonClass}
+                            onClick={() => {
+                              setRemovalTarget({
+                                assignmentIds: assignment.assignmentIds,
+                                centerName: assignment.centerName,
+                                count: assignment.applicantCount,
+                                description: assignment.qualification,
+                                title: assignment.title,
+                                type: "bulk",
+                              });
+                            }}
+                            type="button"
+                          >
+                            Remove
+                          </button>
+                        ) : (
+                          <span className="inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#d6dce9] bg-[#f7f9fc] px-4 text-[12px] font-bold text-[#7a879d] sm:min-w-[104px] sm:w-auto">
+                            Processing
+                          </span>
+                        )}
                       </div>
                     </div>
                   </article>
                 ))}
 
                 {filteredBulkAssignments.length === 0 ? (
-                  <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center">
+                  <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -592,7 +795,7 @@ export default function AdminAssignedApplicantsPage() {
       </div>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(isBulkModalOpen && selectedBulkAssignment)}
       >
         {selectedBulkAssignment ? (
@@ -623,34 +826,37 @@ export default function AdminAssignedApplicantsPage() {
                 <span className="text-[12px] font-medium text-[#747685]">{selectedBulkApplicants.length} total</span>
               </div>
 
-              <div className="mb-4">
-                <div className="group relative">
+              <label className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[128px]">
+                  Search Applicants
+                </span>
+                <div className="group relative min-w-0 flex-1">
                   <i
                     aria-hidden="true"
                     className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
                   />
                   <input
-                    className="w-full rounded-lg border border-[#c4c5d5] bg-white py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    className="w-full rounded-lg border border-[#d9e3f7] bg-white py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                     onChange={(event) => setBulkSearch(event.target.value)}
                     placeholder="Search applicants..."
                     type="text"
                     value={bulkSearch}
                   />
                 </div>
-              </div>
+              </label>
 
               <div className="max-h-[360px] space-y-2 overflow-y-auto pr-1">
                 {filteredSelectedBulkApplicants.map((applicant) => (
                   <div
+                    className="flex flex-col gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)] sm:flex-row sm:items-center sm:justify-between"
                     key={applicant.id}
-                    className="flex flex-col gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-[14px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <a
-                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                         href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
                         rel="noreferrer"
                         target="_blank"
@@ -658,7 +864,7 @@ export default function AdminAssignedApplicantsPage() {
                         View PDF
                       </a>
                       <a
-                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                         href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
                       >
                         Download
@@ -679,7 +885,7 @@ export default function AdminAssignedApplicantsPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(removalTarget)}
         zIndexClassName="z-[60]"
       >
@@ -694,9 +900,7 @@ export default function AdminAssignedApplicantsPage() {
 
             <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
               {removalError ? (
-                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
-                  {removalError}
-                </div>
+                <NotificationBanner compact message={removalError} variant="error" />
               ) : null}
 
               <div className="rounded-lg border border-[#f7d9d9] bg-[#fff6f6] px-4 py-4">
@@ -720,7 +924,7 @@ export default function AdminAssignedApplicantsPage() {
 
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   disabled={isRemovingAssignment}
                   onClick={closeRemovalFlow}
                   type="button"
@@ -728,7 +932,7 @@ export default function AdminAssignedApplicantsPage() {
                   Cancel
                 </button>
                 <button
-                  className="inline-flex min-w-[136px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:bg-[#d2a3a3]"
+                  className="inline-flex min-w-[136px] items-center justify-center rounded-lg bg-[#d97a7a] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#c96a6a] disabled:cursor-not-allowed disabled:bg-[#e6b8b8]"
                   disabled={isRemovingAssignment}
                   onClick={handleRemoveAssignment}
                   type="button"
@@ -741,21 +945,13 @@ export default function AdminAssignedApplicantsPage() {
         ) : null}
       </AnimatedModal>
 
-      {removalSuccess ? (
-        <div className="pointer-events-none fixed inset-x-4 top-6 z-[70] flex justify-center lg:left-64 lg:right-8 lg:justify-end">
-          <div className="ui-modal-pop pointer-events-auto w-full max-w-[360px] rounded-[18px] border border-[#bfe3cc] bg-[#edf9f1] px-5 py-4 shadow-[0_20px_40px_rgba(31,122,69,0.16)]">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d8f0e1] text-[#1f7a45]">
-                <i aria-hidden="true" className="fa-solid fa-check text-[14px]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#1f7a45]">Assignment Removed</p>
-                <p className="mt-1 text-[14px] leading-[1.55] text-[#215c36]">{removalSuccess}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <NotificationToast
+        message={removalSuccess}
+        onClose={() => setRemovalSuccess("")}
+        open={Boolean(removalSuccess)}
+        title="Assignment Removed"
+        variant="success"
+      />
     </main>
   );
 }

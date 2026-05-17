@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient, getUserRoleFromRoleTable } from "@/lib/supabase";
+import { createSupabaseServerClient, getUserApprovalStatusFromProfile, getUserRoleFromRoleTable } from "@/lib/supabase";
 import { getUserRoleFromMetadata, SESSION_COOKIE_NAME, type UserRole } from "@/lib/auth";
 
 export async function requireUserRole(requiredRole: UserRole) {
@@ -24,12 +24,20 @@ export async function requireUserRole(requiredRole: UserRole) {
       ? metadataRole
       : await getUserRoleFromRoleTable(data.user.email ?? "", sessionToken);
 
+  if (currentRole === "teacher") {
+    const approvalStatus = await getUserApprovalStatusFromProfile(data.user.email ?? "", sessionToken);
+
+    if (approvalStatus === "pending_review" || approvalStatus === "rejected") {
+      redirect("/");
+    }
+  }
+
   if (currentRole !== requiredRole) {
     if (currentRole === "admin") {
       redirect("/admin/dashboard");
     }
 
-    if (currentRole === "student") {
+    if (currentRole === "applicant") {
       redirect("/applicant/dashboard");
     }
 

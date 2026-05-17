@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import TeacherRoomDetailClient from "@/app/teacher/room/[roomId]/TeacherRoomDetailClient";
 import { getCurrentAppUser } from "@/lib/current-user";
+import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import type { RoomRecord } from "@/lib/rooms";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type RouteProps = {
   params: Promise<{
@@ -24,7 +25,7 @@ type RoomApplicationSubmission = {
   qualification_title: string;
   submitted_at: string;
   teacher_forwarded_at: string | null;
-  workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+  workflow_status: ApplicationSubmissionStatus;
 };
 
 export default async function TeacherRoomDetailPage({ params }: RouteProps) {
@@ -35,15 +36,19 @@ export default async function TeacherRoomDetailPage({ params }: RouteProps) {
   }
 
   const { roomId } = await params;
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
+  const { data: room } = await supabase
+    .from("rooms")
+    .select("id, name, qualification, join_code, is_active, created_at")
+    .eq("id", roomId)
+    .eq("teacher_id", currentUser.id)
+    .maybeSingle();
 
-  const [{ data: room }, { data: members }, { data: submissions }] = await Promise.all([
-    supabase
-      .from("rooms")
-      .select("id, name, qualification, join_code, is_active, created_at")
-      .eq("id", roomId)
-      .eq("teacher_id", currentUser.id)
-      .maybeSingle(),
+  if (!room) {
+    notFound();
+  }
+
+  const [{ data: members }, { data: submissions }] = await Promise.all([
     supabase
       .from("room_members")
       .select("id, applicant_id, applicant_email, joined_at")
@@ -55,10 +60,6 @@ export default async function TeacherRoomDetailPage({ params }: RouteProps) {
       .eq("room_id", roomId)
       .order("submitted_at", { ascending: false }),
   ]);
-
-  if (!room) {
-    notFound();
-  }
 
   return (
     <TeacherRoomDetailClient

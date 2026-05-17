@@ -1,259 +1,263 @@
-"use client";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { type ApplicationSubmissionStatus } from "@/lib/application-form";
+import { getCurrentAppUser } from "@/lib/current-user";
+import { getRoomSubmissionStatus, getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
-const summaryCards = [
-  {
-    label: "Assigned Applicants",
-    value: "42",
-    tag: "+12%",
-    tagClass: "bg-[#dce1ff] text-[#093cab]",
-    icon: "fa-solid fa-users",
-    iconClass: "bg-[#dce1ff] text-[#002576]",
-  },
-  {
-    label: "Rooms Created",
-    value: "12",
-    tag: "Active today",
-    tagClass: "bg-[#dfe0e0] text-[#454747]",
-    icon: "fa-solid fa-door-open",
-    iconClass: "bg-[#dfe9ff] text-[#3056c4]",
-  },
-  {
-    label: "Today's Schedule",
-    value: "09:00 AM",
-    tag: "5 Events",
-    tagClass: "bg-[#d3e4fe] text-[#444653]",
-    icon: "fa-regular fa-calendar-days",
-    iconClass: "bg-[#dce9ff] text-[#0b1c30]",
-  },
-];
+type RoomDashboardRecord = RoomRecord & {
+  member_count: number;
+  pending_review_count: number;
+  submission_status: RoomRecord["submission_status"];
+};
 
-const applicants = [
-  {
-    initials: "JD",
-    name: "John Dela Cruz",
-    qualification: "Computer Systems NC II",
-    schedule: "09:30 AM",
-    status: "Pending",
-    statusClass: "bg-[#dce1ff] text-[#093cab]",
-    action: "Assess Now",
-    actionClass: "text-[#002576]",
-    accentClass: "bg-[#dce1ff] text-[#093cab]",
-  },
-  {
-    initials: "AM",
-    name: "Ana Magpale",
-    qualification: "Cookery NC II",
-    schedule: "11:00 AM",
-    status: "Evaluating",
-    statusClass: "bg-[#ffdbd1] text-[#591400]",
-    action: "Continue",
-    actionClass: "text-[#002576]",
-    accentClass: "bg-[#ffdbd1] text-[#591400]",
-  },
-  {
-    initials: "RS",
-    name: "Roberto Santos",
-    qualification: "Bread and Pastry NC II",
-    schedule: "01:30 PM",
-    status: "Scheduled",
-    statusClass: "bg-[#dfe0e0] text-[#616363]",
-    action: "View Details",
-    actionClass: "text-[#444653]",
-    accentClass: "bg-[#dfe0e0] text-[#1a1c1c]",
-  },
-  {
-    initials: "LL",
-    name: "Liza Lopez",
-    qualification: "Visual Graphic NC III",
-    schedule: "03:00 PM",
-    status: "Pending",
-    statusClass: "bg-[#dce1ff] text-[#093cab]",
-    action: "Assess Now",
-    actionClass: "text-[#002576]",
-    accentClass: "bg-[#dce1ff] text-[#093cab]",
-  },
-];
+const statCardClass = "rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 
-const announcements = [
-  {
-    title: "New NC III Standards",
-    body: "Please review the updated assessment guidelines for Information Technology NC III by Friday.",
-  },
-  {
-    title: "Regional Audit",
-    body: "Region VIII audit team will visit the Eastern Samar office on Oct 30. Ensure all physical logs are updated.",
-  },
-];
+function getSubmissionStatusClass(status: RoomRecord["submission_status"]) {
+  if (status === "submitted") {
+    return "bg-[#edf9f1] text-[#1f7a45]";
+  }
 
-export default function TeacherDashboardPage() {
+  return "bg-[#fff8e8] text-[#8a5200]";
+}
+
+export default async function TeacherDashboardPage() {
+  const currentUser = await getCurrentAppUser();
+
+  if (!currentUser || currentUser.role !== "teacher") {
+    notFound();
+  }
+
+  const supabase = createSupabaseAdminClient();
+  let dashboardNotice = "";
+
+  const { data: roomRows, error: roomsError } = await supabase
+    .from("rooms")
+    .select("id, name, qualification, join_code, is_active, created_at")
+    .eq("teacher_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  const rooms = (roomRows ?? []) as RoomRecord[];
+
+  let roomDashboardRecords: RoomDashboardRecord[] = rooms.map((room) => ({
+    ...room,
+    member_count: 0,
+    pending_review_count: 0,
+    submission_status: "not_submitted",
+  }));
+
+  if (roomsError) {
+    dashboardNotice = "Some dashboard details could not be loaded right now. You can still open the rooms page below.";
+  } else if (rooms.length > 0) {
+    const roomIds = rooms.map((room) => room.id);
+    const [{ data: memberships, error: membershipsError }, { data: submissions, error: submissionsError }] =
+      await Promise.all([
+        supabase.from("room_members").select("room_id").in("room_id", roomIds),
+        supabase
+          .from("applicant_application_submissions")
+          .select("room_id, applicant_id, workflow_status")
+          .in("room_id", roomIds),
+      ]);
+
+    if (membershipsError || submissionsError) {
+      dashboardNotice = "Some dashboard details could not be loaded right now. You can still open the rooms page below.";
+    } else {
+      const memberCounts = new Map<string, number>();
+      const submissionsByRoomId = new Map<
+        string,
+        Array<{ applicant_id: string; workflow_status: ApplicationSubmissionStatus }>
+      >();
+      const pendingReviewCounts = new Map<string, number>();
+
+      for (const membership of memberships ?? []) {
+        const roomId = (membership as { room_id: string }).room_id;
+        memberCounts.set(roomId, (memberCounts.get(roomId) ?? 0) + 1);
+      }
+
+      for (const submission of submissions ?? []) {
+        const typedSubmission = submission as {
+          applicant_id: string;
+          room_id: string | null;
+          workflow_status: ApplicationSubmissionStatus;
+        };
+
+        if (!typedSubmission.room_id) {
+          continue;
+        }
+
+        const roomSubmissions = submissionsByRoomId.get(typedSubmission.room_id) ?? [];
+        roomSubmissions.push({
+          applicant_id: typedSubmission.applicant_id,
+          workflow_status: typedSubmission.workflow_status,
+        });
+        submissionsByRoomId.set(typedSubmission.room_id, roomSubmissions);
+
+        if (typedSubmission.workflow_status === "submitted_to_teacher") {
+          pendingReviewCounts.set(
+            typedSubmission.room_id,
+            (pendingReviewCounts.get(typedSubmission.room_id) ?? 0) + 1,
+          );
+        }
+      }
+
+      roomDashboardRecords = rooms.map((room) => ({
+        ...room,
+        member_count: memberCounts.get(room.id) ?? 0,
+        pending_review_count: pendingReviewCounts.get(room.id) ?? 0,
+        submission_status: getRoomSubmissionStatus(
+          memberCounts.get(room.id) ?? 0,
+          submissionsByRoomId.get(room.id) ?? [],
+        ),
+      }));
+    }
+  }
+
+  const totalJoinedApplicants = roomDashboardRecords.reduce((sum, room) => sum + room.member_count, 0);
+  const waitingForReviewCount = roomDashboardRecords.reduce((sum, room) => sum + room.pending_review_count, 0);
+  const submittedRoomCount = roomDashboardRecords.filter((room) => room.submission_status === "submitted").length;
+  const roomsNeedingAction = roomDashboardRecords
+    .filter((room) => room.pending_review_count > 0)
+    .sort((left, right) => right.pending_review_count - left.pending_review_count)
+    .slice(0, 5);
+  const recentRooms = [...roomDashboardRecords]
+    .sort((left, right) => new Date(right.created_at).getTime() - new Date(left.created_at).getTime())
+    .slice(0, 5);
+
   return (
-    <main className="min-h-screen px-4 pb-8 pt-6 sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-8 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div>
-            <h1 className="text-[2rem] font-bold leading-[1.15] text-[#002576] sm:text-[2.25rem]">Welcome, Maria Clara</h1>
-            <p className="mt-2 text-[15px] leading-[1.6] text-[#444653] sm:text-[1.0625rem]">
-              Here is your assessment overview for today, October 24, 2023.
-            </p>
-          </div>
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-5">
+          <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Teacher Dashboard</h1>
+          <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
+            Track room activity, pending reviews, and the latest submission flow.
+          </p>
+        </section>
 
-          <div className="flex flex-wrap gap-3">
-            <SecondaryButton icon="fa-regular fa-calendar-days" label="Schedule" />
-            <SecondaryButton icon="fa-solid fa-download" label="Export Data" />
+        {dashboardNotice ? <NotificationBanner className="mb-5" message={dashboardNotice} variant="warning" /> : null}
+
+        <section className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Rooms Created</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{roomDashboardRecords.length}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Assessment rooms currently managed from your teacher account.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Applicants Joined</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{totalJoinedApplicants}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Applicants who already joined one of your room codes.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Waiting for Review</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{waitingForReviewCount}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Room submissions still waiting for teacher forwarding to TESDA.</p>
+          </div>
+          <div className={statCardClass}>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Submitted Rooms</p>
+            <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{submittedRoomCount}</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Rooms whose applicants have already moved past the teacher review step.</p>
           </div>
         </section>
 
-        <section className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {summaryCards.map((card) => (
-            <article
-              key={card.label}
-              className="flex min-h-[172px] flex-col justify-between rounded-lg border border-[#c4c5d5] bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="mb-4 flex items-start justify-between gap-3">
-                <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${card.iconClass}`}>
-                  <i aria-hidden="true" className={`${card.icon} text-[18px]`} />
-                </div>
-                <span className={`rounded-md px-2.5 py-1 text-[11px] font-bold ${card.tagClass}`}>{card.tag}</span>
-              </div>
+        <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <article className="rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="mb-1 text-[14px] font-medium text-[#444653]">{card.label}</p>
-                <p className="text-[2rem] font-bold leading-none text-[#0b1c30]">{card.value}</p>
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Needs Teacher Action</p>
+                <h2 className="mt-2 text-[24px] font-bold leading-[1.2] text-[#0b1c30]">Rooms Waiting for Review</h2>
               </div>
-            </article>
-          ))}
-        </section>
+              <Link
+                className="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                href="/teacher/room"
+              >
+                View All
+              </Link>
+            </div>
 
-        <section className="grid grid-cols-1 gap-8 xl:grid-cols-3">
-          <div className="xl:col-span-2">
-            <div className="overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
-              <div className="flex items-center justify-between border-b border-[#d9e3f7] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-5 py-5 sm:px-6">
-                <div>
-                  <h2 className="text-[24px] font-semibold text-[#0b1c30]">Assigned Applicants</h2>
-                  <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                    Review applicant schedules and assessment status from today&apos;s queue.
+            <div className="mt-5 space-y-3">
+              {roomsNeedingAction.map((room) => (
+                <div key={room.id} className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="text-[14px] font-bold text-[#0b1c30]">{room.name}</p>
+                      <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                        {room.pending_review_count} waiting for teacher review | {room.member_count} joined
+                      </p>
+                    </div>
+                    <Link
+                      className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                      href={`/teacher/room/${room.id}`}
+                    >
+                      Open Room
+                    </Link>
+                  </div>
+                </div>
+              ))}
+
+              {roomsNeedingAction.length === 0 ? (
+                <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                  <p className="text-[14px] leading-[1.6] text-[#444653]">
+                    No room submissions are waiting for teacher review right now.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <IconButton icon="fa-solid fa-filter" small />
-                  <IconButton icon="fa-solid fa-ellipsis-vertical" small />
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-[#d9e3f7] bg-[#f8fbff]">
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicant Name</th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Qualification</th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Schedule</th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Status</th>
-                      <th className="px-6 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#d9e3f7]">
-                    {applicants.map((applicant) => (
-                      <tr key={applicant.name} className="transition-colors hover:bg-[#f8fbff]">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <div
-                              className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold ${applicant.accentClass}`}
-                            >
-                              {applicant.initials}
-                            </div>
-                            <span className="text-[15px] font-medium text-[#0b1c30]">{applicant.name}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-[14px] text-[#444653]">{applicant.qualification}</td>
-                        <td className="px-6 py-4 text-[14px] text-[#444653]">{applicant.schedule}</td>
-                        <td className="px-6 py-4">
-                          <span
-                            className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] ${applicant.statusClass}`}
-                          >
-                            {applicant.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4">
-                          <button className={`text-[14px] font-bold hover:underline ${applicant.actionClass}`} type="button">
-                            {applicant.action}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="flex justify-center border-t border-[#d9e3f7] bg-[#f8fbff] p-4">
-                <button
-                  className="flex items-center gap-2 text-[14px] font-bold text-[#002576] transition hover:gap-3"
-                  type="button"
-                >
-                  View All Applicants
-                  <i aria-hidden="true" className="fa-solid fa-arrow-right text-[13px]" />
-                </button>
-              </div>
+              ) : null}
             </div>
-          </div>
+          </article>
 
-          <div className="space-y-8">
-            <aside className="relative overflow-hidden rounded-lg bg-[#002576] text-white shadow-lg">
-              <div className="relative z-10 p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-md bg-white text-[#002576]">
-                    <i aria-hidden="true" className="fa-solid fa-bullhorn text-[14px]" />
-                  </span>
-                  <h2 className="text-[13px] font-bold uppercase tracking-[0.18em] text-[#dce1ff]">
-                    Office Announcements
-                  </h2>
-                </div>
-
-                <div className="space-y-4">
-                  {announcements.map((announcement) => (
-                    <article key={announcement.title} className="border-l-2 border-[#96adff] pl-3">
-                      <p className="text-[15px] font-bold">{announcement.title}</p>
-                      <p className="mt-1 text-[12px] leading-[1.55] text-[#eaf1ff]">{announcement.body}</p>
-                    </article>
-                  ))}
-                </div>
-
-                <button
-                  className="mt-6 w-full rounded-lg bg-white py-2.5 text-[14px] font-bold text-[#002576] transition hover:opacity-90"
-                  type="button"
-                >
-                  Open Dashboard Notice
-                </button>
+          <article className="rounded-[12px] border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Recent Rooms</p>
+                <h2 className="mt-2 text-[24px] font-bold leading-[1.2] text-[#0b1c30]">Latest Room Activity</h2>
               </div>
+              <Link
+                className="inline-flex min-h-[40px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                href="/teacher/room"
+              >
+                Manage Rooms
+              </Link>
+            </div>
 
-              <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#96adff] opacity-20 transition-transform duration-300 hover:scale-110" />
-            </aside>
-          </div>
+            <div className="mt-5 space-y-3">
+              {recentRooms.map((room) => (
+                <div key={room.id} className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="text-[14px] font-bold text-[#0b1c30]">{room.name}</p>
+                      <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                        {room.member_count} joined | {room.qualification}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex min-h-[36px] items-center justify-center rounded-lg px-3 text-[12px] font-bold ${getSubmissionStatusClass(
+                          room.submission_status,
+                        )}`}
+                      >
+                        {getRoomSubmissionStatusLabel(room.submission_status ?? "not_submitted")}
+                      </span>
+                      <Link
+                        className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                        href={`/teacher/room/${room.id}`}
+                      >
+                        Open
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {recentRooms.length === 0 ? (
+                <div className="rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                  <p className="text-[14px] leading-[1.6] text-[#444653]">
+                    No rooms yet. Create your first room to begin inviting applicants.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </article>
         </section>
       </div>
     </main>
-  );
-}
-
-function IconButton({ icon, small }: { icon: string; small?: boolean }) {
-  return (
-    <button
-      className={`inline-flex items-center justify-center rounded-full border border-[#c4c5d5] bg-white text-[#5d5f5f] transition hover:bg-[#eff4ff] hover:text-[#0b1c30] ${
-        small ? "h-9 w-9 text-[13px]" : "h-10 w-10 text-[14px]"
-      }`}
-      type="button"
-    >
-      <i aria-hidden="true" className={icon} />
-    </button>
-  );
-}
-
-function SecondaryButton({ icon, label }: { icon: string; label: string }) {
-  return (
-    <button
-      className="flex items-center gap-2 rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[14px] font-semibold text-[#0b1c30] transition hover:bg-[#eff4ff]"
-      type="button"
-    >
-      <i aria-hidden="true" className={`${icon} text-[14px] text-[#444653]`} />
-      {label}
-    </button>
   );
 }
