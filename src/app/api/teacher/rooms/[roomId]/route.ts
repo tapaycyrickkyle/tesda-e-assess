@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { generateRoomCode } from "@/lib/rooms";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type RouteContext = {
   params: Promise<{
@@ -13,8 +13,8 @@ type UpdateRoomPayload = {
   action?: "deactivate" | "activate" | "regenerate_code" | "submit_applications";
 };
 
-async function generateUniqueRoomCode(accessToken: string) {
-  const supabase = createSupabaseAccessTokenClient(accessToken);
+async function generateUniqueRoomCode() {
+  const supabase = createSupabaseAdminClient();
 
   for (let attempt = 0; attempt < 10; attempt += 1) {
     const joinCode = generateRoomCode();
@@ -44,23 +44,16 @@ export async function GET(_: Request, context: RouteContext) {
   }
 
   const { roomId } = await context.params;
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
-  const [{ data: room, error: roomError }, { data: members, error: membersError }] = await Promise.all([
-    supabase
-      .from("rooms")
-      .select("id, name, qualification, join_code, is_active, created_at")
-      .eq("id", roomId)
-      .eq("teacher_id", currentUser.id)
-      .maybeSingle(),
-    supabase
-      .from("room_members")
-      .select("id, applicant_id, applicant_email, joined_at")
-      .eq("room_id", roomId)
-      .order("joined_at", { ascending: false }),
-  ]);
+  const { data: room, error: roomError } = await supabase
+    .from("rooms")
+    .select("id, name, qualification, join_code, is_active, created_at")
+    .eq("id", roomId)
+    .eq("teacher_id", currentUser.id)
+    .maybeSingle();
 
-  if (roomError || membersError) {
+  if (roomError) {
     return NextResponse.json(
       {
         success: false,
@@ -72,6 +65,22 @@ export async function GET(_: Request, context: RouteContext) {
 
   if (!room) {
     return NextResponse.json({ success: false, message: "Room not found." }, { status: 404 });
+  }
+
+  const { data: members, error: membersError } = await supabase
+    .from("room_members")
+    .select("id, applicant_id, applicant_email, joined_at")
+    .eq("room_id", roomId)
+    .order("joined_at", { ascending: false });
+
+  if (membersError) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unable to load room members. Check that your Supabase tables and RLS policies are configured.",
+      },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({
@@ -100,7 +109,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ success: false, message: "Action is required." }, { status: 400 });
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   const { data: room, error: roomLookupError } = await supabase
     .from("rooms")
@@ -122,7 +131,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     if (action === "regenerate_code") {
       updateValues = {
-        join_code: await generateUniqueRoomCode(currentUser.accessToken),
+        join_code: await generateUniqueRoomCode(),
       };
     } else if (action === "submit_applications") {
       const [{ data: members, error: membersError }, { data: submissions, error: submissionsError }] = await Promise.all([
@@ -173,7 +182,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       if (submissionIdsToForward.length === 0) {
         return NextResponse.json({
           success: true,
-          message: "All current room application submissions have already been forwarded to admin.",
+          message: "All current room application submissions have already been submitted to TESDA.",
           submittedCount: 0,
         });
       }
@@ -204,8 +213,8 @@ export async function PATCH(request: Request, context: RouteContext) {
         success: true,
         message:
           submissionIdsToForward.length === 1
-            ? "1 room application was forwarded to admin successfully."
-            : `${submissionIdsToForward.length} room applications were forwarded to admin successfully.`,
+            ? "1 room application was submitted to TESDA successfully."
+            : `${submissionIdsToForward.length} room applications were submitted to TESDA successfully.`,
         submittedCount: submissionIdsToForward.length,
       });
     } else if (action === "deactivate") {
@@ -261,7 +270,7 @@ export async function DELETE(_: Request, context: RouteContext) {
   }
 
   const { roomId } = await context.params;
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   const { error } = await supabase.from("rooms").delete().eq("id", roomId).eq("teacher_id", currentUser.id);
 

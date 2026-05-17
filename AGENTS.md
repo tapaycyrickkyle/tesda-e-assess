@@ -88,15 +88,18 @@ When instructions conflict, use this order:
   - Spacing:
     - `4px`, `8px`, `12px`, `16px`, `24px`, `32px`, `40px`, `48px`
   - Radius:
-    - `6px` small controls
-    - `10px` standard controls
-    - `12px` cards and panels
-    - `16px` modals and large emphasis containers
+    - `4px` small controls
+    - `8px` standard controls
+    - `10px` cards and panels
+    - `12px` modals and large emphasis containers
   - Control heights:
     - `36px` small controls
     - `44px` default controls
     - `48px` large buttons
 - If shared tokens are not present, create or reuse a small token system before adding many one-off sizes.
+- Favor compact, intentional spacing. In this project, most cards, forms, and panels should usually stay within `12px` to `24px` internal spacing instead of large empty padding.
+- Use larger spacing like `32px` or `40px` only for page-level separation, hero areas, or intentionally spacious layouts.
+- Avoid overly rounded UI. In this project, do not default above `12px` radius for standard app surfaces unless the shape is intentionally pill-style.
 - Avoid mixing many arbitrary sizes across similar elements without a clear reason.
 - Keep buttons, inputs, cards, tables, and modals visually aligned with existing dimensions and spacing.
 - Before finishing UI work, compare the new elements against nearby screens for consistency in padding, margins, min-heights, widths, and text scale.

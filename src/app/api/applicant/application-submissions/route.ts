@@ -6,8 +6,12 @@ import {
   type ApplicationSubmissionSource,
   type ApplicationSubmissionStatus,
 } from "@/lib/application-form";
+import {
+  getApplicantSubmissionAssignmentInfoByIds,
+  getApplicantSubmissionEditLock,
+} from "@/lib/application-submission-lifecycle";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type CreateApplicationSubmissionPayload = {
   formData?: unknown;
@@ -16,8 +20,21 @@ type CreateApplicationSubmissionPayload = {
   submissionSource?: ApplicationSubmissionSource | null;
 };
 
-async function verifyRoomMembership(accessToken: string, applicantId: string, roomId: string) {
-  const supabase = createSupabaseAccessTokenClient(accessToken);
+function isLegacySubmissionRouteUniqueConflict(error: { code?: string; message?: string; details?: string | null }) {
+  if (error.code !== "23505") {
+    return false;
+  }
+
+  const combinedMessage = `${error.message ?? ""} ${error.details ?? ""}`;
+
+  return (
+    combinedMessage.includes("applicant_application_submissions_individual_unique_idx") ||
+    combinedMessage.includes("applicant_application_submissions_room_unique_idx")
+  );
+}
+
+async function verifyRoomMembership(applicantId: string, roomId: string) {
+  const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
     .from("room_members")
@@ -49,18 +66,18 @@ export async function GET(request: Request) {
     return NextResponse.json({ success: false, message: "You must be logged in." }, { status: 401 });
   }
 
-  if (currentUser.role !== "student") {
+  if (currentUser.role !== "applicant") {
     return NextResponse.json({ success: false, message: "Applicant access is required." }, { status: 403 });
   }
 
   const roomId = new URL(request.url).searchParams.get("roomId")?.trim() ?? "";
   const submissionId = new URL(request.url).searchParams.get("submissionId")?.trim() ?? "";
   const isRoomSubmission = Boolean(roomId);
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   if (isRoomSubmission) {
     try {
-      const hasMembership = await verifyRoomMembership(currentUser.accessToken, currentUser.id, roomId);
+      const hasMembership = await verifyRoomMembership(currentUser.id, roomId);
 
       if (!hasMembership) {
         return NextResponse.json(
@@ -127,7 +144,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "You must be logged in." }, { status: 401 });
   }
 
-  if (currentUser.role !== "student") {
+  if (currentUser.role !== "applicant") {
     return NextResponse.json({ success: false, message: "Applicant access is required." }, { status: 403 });
   }
 
@@ -151,7 +168,7 @@ export async function POST(request: Request) {
 
   if (isRoomSubmission) {
     try {
-      const hasMembership = await verifyRoomMembership(currentUser.accessToken, currentUser.id, roomId);
+      const hasMembership = await verifyRoomMembership(currentUser.id, roomId);
 
       if (!hasMembership) {
         return NextResponse.json(
@@ -183,17 +200,41 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   const existingQuery = supabase
     .from("applicant_application_submissions")
-    .select("id, room_id")
-    .eq("applicant_id", currentUser.id)
-    .eq("id", submissionId);
+    .select("id, room_id, submission_source, workflow_status")
+    .eq("applicant_id", currentUser.id);
 
-  const { data: existingSubmission, error: existingSubmissionError } = submissionId
-    ? await existingQuery.maybeSingle()
-    : { data: null, error: null };
+  let existingSubmission:
+    | {
+        id: string;
+        room_id: string | null;
+        submission_source: ApplicationSubmissionSource;
+        workflow_status: ApplicationSubmissionStatus;
+      }
+    | null = null;
+  let existingSubmissionError: {
+    code?: string;
+    details?: string | null;
+    hint?: string | null;
+    message?: string;
+  } | null = null;
+
+  if (submissionId) {
+    const { data, error } = await existingQuery.eq("id", submissionId).maybeSingle();
+    existingSubmission = data;
+    existingSubmissionError = error;
+  } else if (isRoomSubmission) {
+    const { data, error } = await existingQuery
+      .eq("room_id", roomId)
+      .order("submitted_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    existingSubmission = data;
+    existingSubmissionError = error;
+  }
 
   if (existingSubmissionError) {
     return NextResponse.json(
@@ -222,6 +263,20 @@ export async function POST(request: Request) {
         { success: false, message: "This submission does not match the current application route." },
         { status: 400 },
       );
+    }
+
+    const assignmentMap = await getApplicantSubmissionAssignmentInfoByIds({
+      applicantId: currentUser.id,
+      submissionIds: [existingSubmission.id],
+    });
+    const editLock = getApplicantSubmissionEditLock({
+      assignment: assignmentMap.get(existingSubmission.id) ?? null,
+      submissionSource: existingSubmission.submission_source,
+      workflowStatus: existingSubmission.workflow_status,
+    });
+
+    if (editLock.isLocked) {
+      return NextResponse.json({ success: false, message: editLock.message }, { status: 403 });
     }
   }
 
@@ -255,6 +310,28 @@ export async function POST(request: Request) {
   const { data: savedSubmission, error } = await mutation;
 
   if (error) {
+    console.error("Failed to save applicant application submission", {
+      applicantId: currentUser.id,
+      errorCode: error.code,
+      errorDetails: error.details,
+      errorHint: error.hint,
+      errorMessage: error.message,
+      roomId: isRoomSubmission ? roomId : null,
+      submissionId: existingSubmission?.id ?? null,
+      submissionSource,
+    });
+
+    if (!existingSubmission && isLegacySubmissionRouteUniqueConflict(error)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "Unable to save a new application as a separate entry because the database still enforces one submission per route. Run the applicant application submissions setup SQL to remove the legacy unique indexes, then try again.",
+        },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,
@@ -272,8 +349,8 @@ export async function POST(request: Request) {
         ? "Application updated and sent back to your teacher for batch review."
         : "Application submitted to your teacher for batch review."
       : existingSubmission
-        ? "Application updated and resubmitted to admin successfully."
-        : "Application submitted to admin successfully.",
+        ? "Application updated and resubmitted to TESDA successfully."
+        : "Application submitted to TESDA successfully.",
     submissionId: savedSubmission?.id ?? existingSubmission?.id ?? null,
   });
 }

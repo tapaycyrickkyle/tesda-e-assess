@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import NotificationModal from "@/components/notifications/NotificationModal";
 
 const fieldClass =
   "w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] px-4 py-3 text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]";
@@ -9,8 +11,52 @@ const fieldClass =
 const labelClass = "auth-label text-[#1a1c1c]";
 
 export default function ApplicantSignUpPage() {
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+    const payload = {
+      confirmPassword: String(formData.get("confirmPassword") ?? ""),
+      contactNumber: String(formData.get("contactNumber") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      firstName: String(formData.get("firstName") ?? ""),
+      middleName: String(formData.get("middleName") ?? ""),
+      password: String(formData.get("password") ?? ""),
+      surname: String(formData.get("surname") ?? ""),
+    };
+
+    try {
+      const response = await fetch("/api/sign-up/applicant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = (await response.json()) as { message?: string; success?: boolean };
+
+      if (!response.ok || !result.success) {
+        setErrorMessage(result.message ?? "Unable to create the applicant account.");
+        return;
+      }
+
+      setSuccessMessage(result.message ?? "Applicant account created successfully.");
+      event.currentTarget.reset();
+    } catch {
+      setErrorMessage("Unable to reach the server. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0a2f7a] px-4 pt-6 text-[#0b1c30] sm:px-6">
@@ -19,15 +65,15 @@ export default function ApplicantSignUpPage() {
         className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.84),rgba(0,56,168,0.54))]" />
-      <main className="relative z-10 flex flex-1 items-center justify-center py-10 lg:py-12">
-        <section className="grid w-full max-w-[1120px] grid-cols-1 overflow-hidden rounded-lg border border-white/40 bg-white/92 shadow-[0_24px_60px_rgba(4,15,37,0.30)] backdrop-blur-sm md:grid-cols-12">
-          <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-6 text-white sm:p-8 md:col-span-4 lg:p-10">
+      <main className="relative z-10 flex flex-1 items-center justify-center py-8 lg:py-12">
+        <section className="grid w-full max-w-[1120px] grid-cols-1 overflow-hidden rounded-lg border border-white/40 bg-white/92 shadow-[0_16px_36px_rgba(15,23,42,0.15)] backdrop-blur-sm md:grid-cols-12">
+          <aside className="relative overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-4 text-white sm:p-6 md:col-span-4 lg:p-10">
             <div className="relative z-10 flex h-full flex-col justify-between gap-10">
               <div>
                 <h1 className="auth-hero-title mb-4 sm:text-[2.25rem]">
                   Empowering Your Career
                 </h1>
-                <p className="auth-hero-copy mb-8 text-[#c7d7ff] sm:text-[1.0625rem]">
+                <p className="auth-hero-copy mb-5 text-[#c7d7ff] sm:text-[1.0625rem]">
                   Register today to access specialized competency assessments and advance your professional journey
                   with TESDA certification.
                 </p>
@@ -71,8 +117,8 @@ export default function ApplicantSignUpPage() {
             />
           </aside>
 
-          <div className="bg-white/92 p-6 sm:p-8 md:col-span-8 lg:p-12">
-            <div className="mb-8">
+          <div className="bg-white/92 p-4 sm:p-6 md:col-span-8 lg:p-12">
+            <div className="mb-5">
               <span className="inline-flex rounded-full bg-[#eef3ff] px-3 py-1 text-[12px] font-bold text-[#3056c4]">
                 Applicant Registration
               </span>
@@ -84,8 +130,8 @@ export default function ApplicantSignUpPage() {
               </p>
             </div>
 
-            <form action="#" className="space-y-6" method="POST">
-              <section className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-5">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              <section className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Basic Information</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Provide your primary contact details for application updates.</p>
@@ -152,6 +198,7 @@ export default function ApplicantSignUpPage() {
                         type="tel"
                       />
                     </div>
+                    <p className="text-[12px] text-[#747685]">Enter 10 mobile digits after +63, for example `9123456789`.</p>
                   </div>
                 </div>
 
@@ -172,7 +219,7 @@ export default function ApplicantSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-lg border border-[#d9e3f7] bg-white p-5">
+              <section className="rounded-lg border border-[#d9e3f7] bg-white p-4">
                 <div className="mb-4">
                   <h3 className="text-[16px] font-bold text-[#0b1c30]">Account Security</h3>
                   <p className="mt-1 text-[13px] text-[#5d5f5f]">Create a secure password for your application account.</p>
@@ -196,11 +243,16 @@ export default function ApplicantSignUpPage() {
                 </div>
               </section>
 
+              {errorMessage ? (
+                <NotificationBanner compact message={errorMessage} variant="error" />
+              ) : null}
+
               <button
-                className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-4 text-white shadow-sm transition-all hover:bg-[#002576] hover:shadow-md active:scale-[0.98]"
+                className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-4 text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition-all hover:bg-[#002576] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100"
+                disabled={isSubmitting}
                 type="submit"
               >
-                Create Account
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
 
               <p className="auth-label text-center text-[#444653]">
@@ -219,6 +271,32 @@ export default function ApplicantSignUpPage() {
           <span className="auth-footer-copy text-[#d9e7ff]">(c) 2024 TESDA E-Assess Eastern Samar Office. All rights reserved.</span>
         </div>
       </footer>
+
+      <NotificationModal
+        actions={
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <button
+              className="inline-flex min-h-[44px] min-w-[140px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+              onClick={() => setSuccessMessage("")}
+              type="button"
+            >
+              Stay Here
+            </button>
+            <Link
+              className="inline-flex min-h-[44px] min-w-[140px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+              href="/"
+            >
+              Back to Login
+            </Link>
+          </div>
+        }
+        description="Your applicant account is ready. You can return to the login page and sign in now."
+        message={successMessage}
+        open={Boolean(successMessage)}
+        onClose={() => setSuccessMessage("")}
+        title="Account Created"
+        variant="success"
+      />
     </div>
   );
 }

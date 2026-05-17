@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import NotificationModal from "@/components/notifications/NotificationModal";
 import {
   assessmentTypeOptions,
   civilStatusOptions,
@@ -24,7 +26,9 @@ type ApplicationMode = "individual" | "room";
 type ApplicantApplicationFormClientProps = {
   applicantEmail: string;
   existingSubmission: ApplicationSubmissionRecord | null;
+  isReadOnly?: boolean;
   mode: ApplicationMode;
+  readOnlyMessage?: string | null;
   room:
     | {
         id: string;
@@ -175,7 +179,9 @@ const formSteps: FormStep[] = [
 export default function ApplicantApplicationFormClient({
   applicantEmail,
   existingSubmission,
+  isReadOnly = false,
   mode,
+  readOnlyMessage = null,
   room,
 }: ApplicantApplicationFormClientProps) {
   const initialFormData = useMemo(
@@ -188,10 +194,15 @@ export default function ApplicantApplicationFormClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedSubmissionId, setSavedSubmissionId] = useState(existingSubmission?.id ?? null);
   const [successMessage, setSuccessMessage] = useState("");
-  const isReadOnly = false;
   const activeStep = formSteps[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === formSteps.length - 1;
+  const isUpdatedSubmission = successMessage.toLowerCase().includes("updated");
+  const successModalTitle = isUpdatedSubmission ? "Application Updated" : "Application Submitted";
+  const successModalDetail =
+    mode === "room"
+      ? "Your form is now back with your teacher for room review before it reaches TESDA."
+      : "Your form is now in the TESDA review queue and can still be reopened from Submitted Forms while editing remains available.";
 
   function updateField<Key extends keyof ApplicantApplicationFormData>(key: Key, value: ApplicantApplicationFormData[Key]) {
     setFormData((current) => ({
@@ -307,7 +318,7 @@ export default function ApplicantApplicationFormClient({
         body: JSON.stringify({
           formData,
           roomId: mode === "room" ? room?.id ?? null : null,
-          submissionId: existingSubmission?.id ?? null,
+          submissionId: savedSubmissionId ?? existingSubmission?.id ?? null,
           submissionSource: mode,
         }),
       });
@@ -812,11 +823,11 @@ export default function ApplicantApplicationFormClient({
   }
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-6 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1240px]">
+    <main className="ui-portal-main pb-8 pt-6">
+      <div className="ui-page-content-narrow">
         <div className="mb-3">
           <Link
-            className="inline-flex items-center gap-2 rounded-lg border border-[#c9d7f5] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-sm transition hover:bg-[#f8fbff]"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#d9e3f7] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#f8fbff]"
             href={mode === "individual" ? "/applicant/applications" : "/applicant/room"}
           >
             <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
@@ -824,20 +835,12 @@ export default function ApplicantApplicationFormClient({
           </Link>
         </div>
 
-        {successMessage ? (
-          <div className="mb-4 rounded-[18px] border border-[#bfe3cc] bg-[#edf9f1] px-4 py-3 text-[14px] text-[#215c36]">
-            {successMessage}
-          </div>
-        ) : null}
-
         {errorMessage ? (
-          <div className="mb-4 rounded-[18px] border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[14px] text-[#93000a]">
-            {errorMessage}
-          </div>
+          <NotificationBanner className="mb-4" message={errorMessage} variant="error" />
         ) : null}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="rounded-[18px] border border-[#d7e3fb] bg-white px-3.5 py-3 shadow-sm">
+          <div className="rounded-[12px] border border-[#d7e3fb] bg-white px-3.5 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               {formSteps.map((step, index) => {
                 const isActive = index === currentStep;
@@ -849,7 +852,7 @@ export default function ApplicantApplicationFormClient({
                     aria-label={`Go to ${step.title}`}
                     className={`flex h-10 w-10 items-center justify-center rounded-full border text-[13px] font-bold transition ${
                       isActive
-                        ? "border-[#002576] bg-[#002576] text-white shadow-sm"
+                        ? "border-[#002576] bg-[#002576] text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]"
                         : isComplete
                           ? "border-[#9dbaf3] bg-[#e7f0ff] text-[#093cab] hover:bg-[#dbe8ff]"
                           : "border-[#d1dbef] bg-white text-[#5f6b85] hover:border-[#a8bde8] hover:bg-[#f8fbff]"
@@ -866,11 +869,13 @@ export default function ApplicantApplicationFormClient({
 
           {renderCurrentStep()}
 
-          <div className="rounded-[22px] border border-[#d9e3f7] bg-white px-4 py-4 shadow-sm sm:px-5">
+          <div className="rounded-[22px] border border-[#d9e3f7] bg-white px-4 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-1.5">
                 <p className="text-[13px] leading-[1.7] text-[#44506a]">
-                  {isLastStep
+                  {isReadOnly && readOnlyMessage
+                    ? readOnlyMessage
+                    : isLastStep
                     ? "Use submit on this last step to update the saved PDF. Empty fields are allowed for now while you test."
                     : "Move through the form one part at a time. You can reopen submitted forms later, edit the original data, and resubmit."}
                 </p>
@@ -883,7 +888,7 @@ export default function ApplicantApplicationFormClient({
 
               <div className="flex items-center justify-end gap-2.5">
                 <button
-                  className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-xl border border-[#c4d1eb] bg-white px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={isFirstStep}
                   onClick={goToPreviousStep}
                   type="button"
@@ -893,7 +898,7 @@ export default function ApplicantApplicationFormClient({
 
                 {!isLastStep ? (
                   <button
-                    className="inline-flex min-h-[44px] min-w-[160px] items-center justify-center rounded-xl bg-[#002576] px-5 text-[14px] font-bold text-white shadow-md transition hover:bg-[#0038a8]"
+                    className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8]"
                     onClick={goToNextStep}
                     type="button"
                   >
@@ -901,11 +906,11 @@ export default function ApplicantApplicationFormClient({
                   </button>
                 ) : (
                   <button
-                    className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-xl bg-[#002576] px-4 text-[14px] font-bold text-white shadow-md transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:bg-[#9aa6c7]"
-                    disabled={isSubmitting}
-                    type="submit"
+                    className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:bg-[#9aa6c7]"
+                    disabled={isReadOnly || isSubmitting}
+                    type={isReadOnly ? "button" : "submit"}
                   >
-                    {isSubmitting ? "Submitting..." : "Submit"}
+                    {isReadOnly ? "Locked" : isSubmitting ? "Submitting..." : "Submit"}
                   </button>
                 )}
               </div>
@@ -922,6 +927,33 @@ export default function ApplicantApplicationFormClient({
           </div>
         </form>
       </div>
+
+      <NotificationModal
+        actions={
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+            <button
+              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+              onClick={() => setSuccessMessage("")}
+              type="button"
+            >
+              Stay Here
+            </button>
+            <Link
+              className="inline-flex min-h-[40px] min-w-[148px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+              href="/applicant/submitted-forms"
+              onClick={() => setSuccessMessage("")}
+            >
+              View Submitted Forms
+            </Link>
+          </div>
+        }
+        description={successModalDetail}
+        message={successMessage}
+        open={Boolean(successMessage)}
+        onClose={() => setSuccessMessage("")}
+        title={successModalTitle}
+        variant="success"
+      />
     </main>
   );
 }
@@ -936,7 +968,7 @@ function SectionCard({
   title?: string;
 }) {
   return (
-    <section className="rounded-[22px] border border-[#d9e3f7] bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5">
+    <section className="rounded-[22px] border border-[#d9e3f7] bg-white px-4 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5 sm:py-5">
       {title || description ? (
         <div className="mb-4 border-b border-[#edf2fd] pb-4">
           {title ? <h2 className="text-[24px] font-bold leading-[1.2] text-[#002576]">{title}</h2> : null}
@@ -956,7 +988,7 @@ function SubsectionCard({
   title?: string;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3.5 sm:px-4 sm:py-4">
+    <div className="rounded-[12px] border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3.5 sm:px-4 sm:py-4">
       <div className="space-y-3.5">{children}</div>
     </div>
   );
@@ -986,7 +1018,7 @@ function TextField({
     <label className="block">
       <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-[0.04em] text-[#4c5e7a]">{label}</span>
       <input
-        className={`min-h-[44px] w-full rounded-xl border border-[#c8d5ee] bg-white px-3.5 py-2.5 text-[14px] text-[#0b1c30] outline-none transition placeholder:text-[#94a0b5] focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b] ${
+        className={`min-h-[44px] w-full rounded-lg border border-[#c8d5ee] bg-white px-3.5 py-2.5 text-[14px] text-[#0b1c30] outline-none transition placeholder:text-[#94a0b5] focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b] ${
           shouldUppercase ? "uppercase" : ""
         }`}
         disabled={disabled}
@@ -1024,7 +1056,7 @@ function OptionGroup({
           return (
             <button
               key={option}
-              className={`inline-flex min-h-[40px] items-center justify-center rounded-xl border px-3.5 py-2 text-center text-[13px] font-semibold transition ${
+              className={`inline-flex min-h-[40px] items-center justify-center rounded-lg border px-3.5 py-2 text-center text-[13px] font-semibold transition ${
                 isActive
                   ? "border-[#002576] bg-[#002576] text-white"
                   : "border-[#c8d5ee] bg-white text-[#24364c] hover:border-[#8ea8e6] hover:bg-[#f8fbff]"
@@ -1059,7 +1091,7 @@ function RepeaterSection<T extends { [key: string]: string }>({
     >
       <div className="space-y-3">
         {items.map((item, index) => (
-          <div key={`${title}-${index}`} className="rounded-[18px] border border-[#e3ebfb] bg-[#fbfdff] p-3.5 sm:p-4">
+          <div key={`${title}-${index}`} className="rounded-[12px] border border-[#e3ebfb] bg-[#fbfdff] p-3.5 sm:p-4">
             <div className="mb-2.5 flex items-center justify-between gap-3">
               <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Entry {index + 1}</p>
               <button
@@ -1090,7 +1122,7 @@ function RepeaterSection<T extends { [key: string]: string }>({
       </div>
 
       <button
-        className="inline-flex min-h-[40px] items-center rounded-xl border border-[#002576] px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+        className="inline-flex min-h-[40px] items-center rounded-lg border border-[#002576] px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
         disabled={disabled}
         onClick={onAdd}
         type="button"
@@ -1103,7 +1135,7 @@ function RepeaterSection<T extends { [key: string]: string }>({
 
 function ReviewPanel({ rows, title }: { rows: [string, string][]; title: string }) {
   return (
-    <div className="rounded-[18px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+    <div className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5">
       <p className="text-[14px] font-bold text-[#002576]">{title}</p>
       <div className="mt-2.5 space-y-2.5">
         {rows.map(([label, value]) => (
@@ -1127,14 +1159,14 @@ function ReviewListPanel({
   title: string;
 }) {
   return (
-    <div className="rounded-[18px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+    <div className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5">
       <p className="text-[14px] font-bold text-[#002576]">{title}</p>
       {items.length === 0 ? (
         <p className="mt-2.5 text-[13px] text-[#5d6b84]">{emptyLabel}</p>
       ) : (
         <div className="mt-2.5 space-y-2.5">
           {items.map((item, index) => (
-            <div key={`${title}-${index}`} className="rounded-[14px] border border-[#edf2fd] bg-[#fbfdff] px-3 py-2.5">
+            <div key={`${title}-${index}`} className="rounded-[8px] border border-[#edf2fd] bg-[#fbfdff] px-3 py-2.5">
               <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Entry {index + 1}</p>
               <p className="mt-1.5 text-[13px] leading-[1.55] text-[#0b1c30]">{item}</p>
             </div>

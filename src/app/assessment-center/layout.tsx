@@ -14,6 +14,12 @@ const assessmentCenterSidebarItems = [
     icon: "fa-solid fa-users",
     href: "/assessment-center/applicants",
   },
+  {
+    key: "profile",
+    label: "Profile",
+    icon: "fa-regular fa-user",
+    href: "/assessment-center/profile",
+  },
 ];
 
 export default async function AssessmentCenterLayout({

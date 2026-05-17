@@ -73,3 +73,25 @@ export async function getUserRoleFromRoleTable(email: string, accessToken?: stri
   const rawRole = (data as Record<string, unknown>)[roleColumn];
   return typeof rawRole === "string" ? normalizeUserRole(rawRole) : "unknown";
 }
+
+export async function getUserApprovalStatusFromProfile(email: string, accessToken?: string) {
+  const normalizedEmail = email.trim().toLowerCase();
+
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("approval_status")
+    .eq("email", normalizedEmail)
+    .maybeSingle();
+
+  if (error || !data || typeof data !== "object" || Array.isArray(data)) {
+    return null;
+  }
+
+  const approvalStatus = (data as Record<string, unknown>).approval_status;
+  return typeof approvalStatus === "string" ? approvalStatus : null;
+}

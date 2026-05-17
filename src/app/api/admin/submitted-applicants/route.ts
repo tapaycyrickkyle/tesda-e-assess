@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { normalizeApplicationFormData } from "@/lib/application-form";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { createSupabaseAccessTokenClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export async function GET() {
   const currentUser = await getCurrentAppUser();
@@ -14,7 +14,7 @@ export async function GET() {
     return NextResponse.json({ success: false, message: "Admin access is required." }, { status: 403 });
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
 
   const [{ data: submissions, error: submissionsError }, { data: assignments, error: assignmentsError }] =
     await Promise.all([

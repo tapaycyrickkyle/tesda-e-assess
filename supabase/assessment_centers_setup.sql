@@ -24,23 +24,17 @@ where center_auth_user_id is not null;
 
 alter table public.assessment_centers enable row level security;
 
-create or replace function public.is_admin_user()
-returns boolean
-language sql
-stable
-as $$
-  select
-    coalesce(
-      auth.jwt() -> 'app_metadata' ->> 'role',
-      auth.jwt() -> 'user_metadata' ->> 'role'
-    ) = 'admin'
-    or exists (
-      select 1
-      from public.profiles
-      where lower(profiles.email) = lower(auth.email())
-        and lower(coalesce(profiles.role, '')) like '%admin%'
-    );
-$$;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_proc
+    where proname = 'is_admin_user'
+      and pronamespace = 'public'::regnamespace
+  ) then
+    raise exception 'public.is_admin_user() is required before running assessment_centers_setup.sql. Run profiles_and_teacher_signup_setup.sql first.';
+  end if;
+end $$;
 
 drop policy if exists "admins_select_assessment_centers" on public.assessment_centers;
 create policy "admins_select_assessment_centers"

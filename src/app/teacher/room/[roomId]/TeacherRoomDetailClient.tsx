@@ -4,8 +4,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import NotificationModal from "@/components/notifications/NotificationModal";
+import NotificationToast from "@/components/notifications/NotificationToast";
 import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
-import type { RoomRecord } from "@/lib/rooms";
+import { type ApplicationSubmissionStatus } from "@/lib/application-form";
+import { getRoomSubmissionStatus, getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
 
 type RoomMember = {
   id: string;
@@ -21,7 +25,7 @@ type RoomApplicationSubmission = {
   qualification_title: string;
   submitted_at: string;
   teacher_forwarded_at: string | null;
-  workflow_status: "submitted_to_teacher" | "submitted_to_admin";
+  workflow_status: ApplicationSubmissionStatus;
 };
 
 type TeacherRoomDetailClientProps = {
@@ -73,7 +77,9 @@ export default function TeacherRoomDetailClient({
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successModalMessage, setSuccessModalMessage] = useState("");
   const [copiedCode, setCopiedCode] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const joinedApplicantLabel =
     members.length === 1 ? "1 applicant currently joined" : `${members.length} applicants currently joined`;
@@ -81,6 +87,13 @@ export default function TeacherRoomDetailClient({
   const submittedToTeacherCount = applications.filter((application) => application.workflow_status === "submitted_to_teacher").length;
   const pendingApplicantsCount = members.filter((member) => !applicationByApplicantId.has(member.applicant_id)).length;
   const canSubmitBatch = members.length > 0 && pendingApplicantsCount === 0 && submittedToTeacherCount > 0;
+  const roomSubmissionStatus = getRoomSubmissionStatus(
+    members.length,
+    applications.map((application) => ({
+      applicant_id: application.applicant_id,
+      workflow_status: application.workflow_status,
+    })),
+  );
 
   useEffect(() => {
     if (!message && !errorMessage) {
@@ -90,7 +103,7 @@ export default function TeacherRoomDetailClient({
     const timeoutId = window.setTimeout(() => {
       setMessage("");
       setErrorMessage("");
-    }, 4000);
+    }, 4500);
 
     return () => window.clearTimeout(timeoutId);
   }, [message, errorMessage]);
@@ -131,6 +144,7 @@ export default function TeacherRoomDetailClient({
         }
 
         setRoom(payload.room);
+        setMessage(payload.message ?? "Room updated successfully.");
       } else {
         setApplications((currentApplications) =>
           currentApplications.map((application) =>
@@ -143,9 +157,9 @@ export default function TeacherRoomDetailClient({
               : application,
           ),
         );
+        setIsSubmitModalOpen(false);
+        setSuccessModalMessage(payload.message ?? "Application submitted to TESDA successfully.");
       }
-
-      setMessage(payload.message ?? "Room updated successfully.");
     } catch {
       setErrorMessage("Unable to update the room right now. Please try again.");
     } finally {
@@ -181,11 +195,11 @@ export default function TeacherRoomDetailClient({
   }
 
   return (
-    <main className="min-h-screen px-4 pb-8 pt-6 sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
+    <main className="ui-portal-main pb-8 pt-6">
+      <div className="ui-page-content">
         <div className="mb-4">
           <Link
-            className="inline-flex items-center gap-2 rounded-lg border border-[#c9d7f5] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-sm transition hover:bg-[#f8fbff]"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#d9e3f7] bg-white px-3.5 py-2 text-[12px] font-bold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#f8fbff]"
             href="/teacher/room"
           >
             <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
@@ -193,14 +207,21 @@ export default function TeacherRoomDetailClient({
           </Link>
         </div>
 
-        <section className="mb-6 rounded-lg border border-[#c4c5d5] bg-white p-4 shadow-sm sm:p-5">
+        <section className="mb-5 rounded-lg border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:p-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-[640px]">
               <div className="min-w-0">
                 <h1 className="text-[1.625rem] font-bold leading-[1.05] text-[#0b1c30]">{room.name}</h1>
-                <div className="mt-1.5 flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#eff4ff] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] text-[#3056c4]">
+                <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full border border-[#cfe0ff] bg-[#eef4ff] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.04em] text-[#3056c4] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
                     {room.qualification}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.08em] ${
+                      roomSubmissionStatus === "submitted" ? "bg-[#edf9f1] text-[#1f7a45]" : "bg-[#fff4db] text-[#8a5200]"
+                    }`}
+                  >
+                    {getRoomSubmissionStatusLabel(roomSubmissionStatus)}
                   </span>
                 </div>
                 <p className="mt-1.5 text-[14px] leading-[1.55] text-[#444653]">
@@ -212,7 +233,7 @@ export default function TeacherRoomDetailClient({
                 <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
                 <span className="font-mono text-[16px] font-bold tracking-[0.16em] text-[#002576]">{room.join_code}</span>
                 <button
-                  className="inline-flex items-center justify-center rounded-lg border border-[#c9d7f5] bg-white px-3 py-1.5 text-[11px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-3 py-1.5 text-[11px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={() => void handleCopyCode()}
                   type="button"
                 >
@@ -224,7 +245,7 @@ export default function TeacherRoomDetailClient({
 
             <div className="flex w-full flex-col gap-2.5 sm:flex-row lg:w-auto">
               <button
-                className="inline-flex min-w-[144px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-w-[144px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => void runAction("regenerate_code")}
                 type="button"
@@ -232,7 +253,7 @@ export default function TeacherRoomDetailClient({
                 Regenerate Code
               </button>
               <button
-                className="inline-flex min-w-[128px] items-center justify-center rounded-lg border border-[#ba1a1a] bg-white px-4 py-2.5 text-[12px] font-bold text-[#ba1a1a] shadow-sm transition hover:bg-[#fff5f5] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-w-[128px] items-center justify-center rounded-lg border border-[#ba1a1a] bg-white px-4 py-2.5 text-[12px] font-bold text-[#ba1a1a] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fff5f5] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => setIsDeleteModalOpen(true)}
                 type="button"
@@ -242,23 +263,19 @@ export default function TeacherRoomDetailClient({
             </div>
           </div>
 
-          {message ? (
-            <div className="mt-5 rounded-lg border border-[#b9d6c1] bg-[#effaf2] p-4 text-[14px] text-[#1e5d31]">{message}</div>
-          ) : null}
-
           {errorMessage ? (
-            <div className="mt-5 rounded-lg border border-[#f0b4b4] bg-[#fff5f5] p-4 text-[14px] text-[#8a1f1f]">{errorMessage}</div>
+            <NotificationBanner className="mt-5" message={errorMessage} variant="error" />
           ) : null}
         </section>
 
-        <section className="overflow-hidden rounded-lg border border-[#c4c5d5] bg-white shadow-sm">
-          <div className="border-b border-[#c4c5d5] bg-[#eff4ff] px-5 py-4">
+        <section className="overflow-hidden rounded-lg border border-[#d9e3f7] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <div className="border-b border-[#c4c5d5] bg-[#eff4ff] px-4 py-3.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-[1.25rem] font-bold text-[#0b1c30]">Joined Applicants</h2>
                 <p className="mt-0.5 text-[13px] text-[#747685]">{joinedApplicantLabel}</p>
               </div>
-              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-[#002576] shadow-sm">
+              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
                 <i aria-hidden="true" className="fa-solid fa-users text-[11px]" />
                 {members.length} Registered
               </div>
@@ -266,7 +283,7 @@ export default function TeacherRoomDetailClient({
           </div>
 
           {members.length === 0 ? (
-            <div className="p-6 text-[14px] leading-[1.6] text-[#747685]">
+            <div className="p-4 text-[14px] leading-[1.6] text-[#747685]">
               No applicants have joined this room yet.
             </div>
           ) : (
@@ -298,7 +315,7 @@ export default function TeacherRoomDetailClient({
                       {applicationByApplicantId.get(member.applicant_id) ? (
                         <>
                           <a
-                            className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                            className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                             href={buildApplicationSubmissionPdfUrl(applicationByApplicantId.get(member.applicant_id)!.id)}
                             rel="noreferrer"
                             target="_blank"
@@ -318,9 +335,9 @@ export default function TeacherRoomDetailClient({
         {members.length > 0 ? (
           <div className="mt-5 flex justify-end">
             <button
-              className="inline-flex min-w-[96px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-sm transition hover:bg-[#0038a8]"
+              className="inline-flex min-w-[96px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#0038a8]"
               disabled={isUpdating || !canSubmitBatch}
-              onClick={() => void runAction("submit_applications")}
+              onClick={() => setIsSubmitModalOpen(true)}
               type="button"
             >
               Submit
@@ -329,11 +346,77 @@ export default function TeacherRoomDetailClient({
         ) : null}
       </div>
 
+      <NotificationModal
+        actions={
+          <div className="flex justify-center">
+            <button
+              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+              onClick={() => setSuccessModalMessage("")}
+              type="button"
+            >
+              Okay
+            </button>
+          </div>
+        }
+        description="The room batch is now ready for admin review and assessment center assignment."
+        message={successModalMessage}
+        open={Boolean(successModalMessage)}
+        onClose={() => setSuccessModalMessage("")}
+        title="Submitted To TESDA"
+        variant="success"
+      />
+
       <AnimatedModal
-        contentClassName="w-full max-w-[440px] rounded-[20px] border border-[#c4c5d5] bg-white p-7 shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="w-full max-w-[440px] rounded-[12px] border border-[#d9e3f7] bg-white p-7 shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        open={isSubmitModalOpen}
+      >
+        <div className="mb-5 flex flex-col items-center text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#002576]">
+            <i aria-hidden="true" className="fa-solid fa-circle-question text-[18px]" />
+          </div>
+          <div className="mt-4">
+            <h2 className="text-[22px] font-semibold leading-[1.3] text-[#0b1c30]">Submit Room Applications?</h2>
+            <p className="mt-2 text-[15px] leading-[1.6] text-[#444653]">
+              This will forward{" "}
+              <span className="font-bold">
+                {submittedToTeacherCount} {submittedToTeacherCount === 1 ? "application" : "applications"}
+              </span>{" "}
+              from <span className="font-bold">{room.name}</span> to TESDA for review.
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-3 text-center">
+          <p className="text-[13px] leading-[1.55] text-[#3c4f69]">
+            Make sure all applicant details are complete before continuing.
+          </p>
+        </div>
+
+        <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+          <button
+            className="inline-flex min-h-[44px] min-w-[100px] items-center justify-center rounded-lg border border-[#c4c5d5] px-4 text-[14px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={isUpdating}
+            onClick={() => setIsSubmitModalOpen(false)}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            className="inline-flex min-h-[44px] min-w-[136px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[14px] font-bold text-white transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
+            disabled={isUpdating}
+            onClick={() => void runAction("submit_applications")}
+            type="button"
+          >
+            {isUpdating ? "Submitting..." : "Yes, Submit"}
+          </button>
+        </div>
+      </AnimatedModal>
+
+      <AnimatedModal
+        contentClassName="w-full max-w-[440px] rounded-[12px] border border-[#d9e3f7] bg-white p-7 shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isDeleteModalOpen}
       >
-            <div className="mb-6 flex flex-col items-center text-center">
+            <div className="mb-5 flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#fff1f1] text-[#ba1a1a]">
                 <i aria-hidden="true" className="fa-solid fa-triangle-exclamation text-[18px]" />
               </div>
@@ -351,7 +434,7 @@ export default function TeacherRoomDetailClient({
               </p>
             </div>
 
-            <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
               <button
                 className="inline-flex min-h-[44px] min-w-[100px] items-center justify-center rounded-lg border border-[#c4c5d5] px-4 text-[14px] font-bold text-[#444653] transition hover:bg-[#f8f9ff] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
@@ -361,7 +444,7 @@ export default function TeacherRoomDetailClient({
                 Cancel
               </button>
               <button
-                className="inline-flex min-h-[44px] min-w-[136px] items-center justify-center rounded-lg bg-[#c65a5a] px-4 text-[14px] font-bold text-white transition hover:bg-[#b84d4d] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex min-h-[44px] min-w-[136px] items-center justify-center rounded-lg bg-[#d97a7a] px-4 text-[14px] font-bold text-white transition hover:bg-[#c96a6a] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isUpdating}
                 onClick={() => void handleDeleteRoom()}
                 type="button"
@@ -370,6 +453,14 @@ export default function TeacherRoomDetailClient({
               </button>
             </div>
       </AnimatedModal>
+
+      <NotificationToast
+        message={message}
+        onClose={() => setMessage("")}
+        open={Boolean(message)}
+        title="Room Updated"
+        variant="success"
+      />
     </main>
   );
 }

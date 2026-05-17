@@ -1,396 +1,573 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { useEffect, useMemo, useState } from "react";
 
-type ApprovalStatus = "Awaiting Evaluation" | "Pending Verification";
-type InstitutionType = "Private" | "Public";
+type ApprovalStatus = "approved" | "pending_review" | "rejected";
+type InstitutionType = "private" | "public";
 
-type ApprovalRecord = {
+type TeacherApprovalRecord = {
+  approval_status: ApprovalStatus;
+  auth_user_id: string;
+  contact_number: string;
+  created_at: string;
   email: string;
+  first_name: string;
+  full_name: string;
   id: string;
-  initials: string;
-  institution: string;
-  institutionType: InstitutionType;
-  name: string;
-  registeredAt: string;
-  status: ApprovalStatus;
+  institution_name: string;
+  institution_type: InstitutionType;
+  last_name: string;
+  middle_name: string | null;
+  position_title: string;
+  verification_document_mime_type: string | null;
+  verification_document_name: string;
+  verification_document_path: string;
+  verification_document_url: string | null;
 };
 
-const approvalRecords: ApprovalRecord[] = [
-  {
-    email: "julianne.s@edu.ph",
-    id: "TA-1024",
-    initials: "JS",
-    institution: "Eastern Samar State University",
-    institutionType: "Public",
-    name: "Julianne Santiago",
-    registeredAt: "Oct 24, 2023",
-    status: "Pending Verification",
-  },
-  {
-    email: "m.rivera@private.school",
-    id: "TA-1025",
-    initials: "MR",
-    institution: "St. Mary's Academy Borongan",
-    institutionType: "Private",
-    name: "Marcus Rivera",
-    registeredAt: "Oct 25, 2023",
-    status: "Awaiting Evaluation",
-  },
-  {
-    email: "elena.dc@deped.gov.ph",
-    id: "TA-1026",
-    initials: "ED",
-    institution: "Balangiga National High School",
-    institutionType: "Public",
-    name: "Elena Dela Cruz",
-    registeredAt: "Oct 26, 2023",
-    status: "Pending Verification",
-  },
-  {
-    email: "a.torres@private.edu",
-    id: "TA-1027",
-    initials: "AT",
-    institution: "Eastern Visayas Tech Academy",
-    institutionType: "Private",
-    name: "Angela Torres",
-    registeredAt: "Oct 27, 2023",
-    status: "Awaiting Evaluation",
-  },
-  {
-    email: "roberto.l@deped.gov.ph",
-    id: "TA-1028",
-    initials: "RL",
-    institution: "Guiuan National Vocational School",
-    institutionType: "Public",
-    name: "Roberto Lim",
-    registeredAt: "Oct 28, 2023",
-    status: "Pending Verification",
-  },
-  {
-    email: "c.mendoza@skillshub.ph",
-    id: "TA-1029",
-    initials: "CM",
-    institution: "Borongan Skills Hub",
-    institutionType: "Private",
-    name: "Carla Mendoza",
-    registeredAt: "Oct 29, 2023",
-    status: "Pending Verification",
-  },
-];
+function formatInstitutionPill(institutionType: InstitutionType) {
+  return institutionType === "public" ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#e3e5e8] text-[#454747]";
+}
 
-const itemsPerPage = 3;
-const pageLabels = ["1", "2", "3"];
-const formatInstitutionPill = (institutionType: InstitutionType) =>
-  institutionType === "Public" ? "bg-[#dce1ff] text-[#093cab]" : "bg-[#e3e5e8] text-[#454747]";
+function formatApprovalStatusPill(status: ApprovalStatus) {
+  if (status === "approved") {
+    return "bg-[#edf9f1] text-[#1f7a45]";
+  }
+
+  if (status === "rejected") {
+    return "bg-[#fff4f4] text-[#93000a]";
+  }
+
+  return "bg-[#fff8e8] text-[#7f5b00]";
+}
+
+function formatApprovalStatusLabel(status: ApprovalStatus) {
+  if (status === "approved") {
+    return "Approved";
+  }
+
+  if (status === "rejected") {
+    return "Rejected";
+  }
+
+  return "Pending Review";
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+function formatInstitutionLabel(value: InstitutionType) {
+  return value === "public" ? "Public" : "Private";
+}
+
+function isImageDocument(record: TeacherApprovalRecord) {
+  return record.verification_document_mime_type?.startsWith("image/") ?? false;
+}
+
+function isPdfDocument(record: TeacherApprovalRecord) {
+  return record.verification_document_mime_type === "application/pdf";
+}
 
 export default function AdminTeacherApprovalsPage() {
   const [activeInstitutionFilter, setActiveInstitutionFilter] = useState<"all" | InstitutionType>("all");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [activeStatusFilter, setActiveStatusFilter] = useState<"all" | ApprovalStatus>("pending_review");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [records, setRecords] = useState<TeacherApprovalRecord[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const [updatingRequestId, setUpdatingRequestId] = useState<string | null>(null);
 
-  const filteredApprovals = useMemo(() => {
-    return approvalRecords.filter(
-      (record) => activeInstitutionFilter === "all" || record.institutionType === activeInstitutionFilter,
-    );
-  }, [activeInstitutionFilter]);
+  useEffect(() => {
+    let cancelled = false;
 
-  const totalPages = Math.max(1, Math.ceil(filteredApprovals.length / itemsPerPage));
-  const safeCurrentPage = Math.min(currentPage, totalPages);
-  const paginatedApprovals = filteredApprovals.slice(
-    (safeCurrentPage - 1) * itemsPerPage,
-    safeCurrentPage * itemsPerPage,
+    const loadApprovalRequests = async () => {
+      setIsLoading(true);
+      setError("");
+
+      try {
+        const response = await fetch("/api/admin/teacher-approvals", {
+          credentials: "same-origin",
+        });
+        const payload = (await response.json()) as {
+          message?: string;
+          requests?: TeacherApprovalRecord[];
+          success?: boolean;
+        };
+
+        if (!response.ok || !payload.success) {
+          throw new Error(payload.message ?? "Unable to load teacher approval requests.");
+        }
+
+        if (!cancelled) {
+          setRecords(payload.requests ?? []);
+        }
+      } catch (loadError) {
+        if (!cancelled) {
+          setError(loadError instanceof Error ? loadError.message : "Unable to load teacher approval requests.");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadApprovalRequests();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredApprovals = useMemo(
+    () =>
+      records.filter((record) => {
+        const matchesInstitution =
+          activeInstitutionFilter === "all" || record.institution_type === activeInstitutionFilter;
+        const matchesStatus = activeStatusFilter === "all" || record.approval_status === activeStatusFilter;
+        const matchesSearch =
+          normalizedSearchQuery.length === 0 ||
+          record.full_name.toLowerCase().includes(normalizedSearchQuery) ||
+          record.email.toLowerCase().includes(normalizedSearchQuery) ||
+          record.institution_name.toLowerCase().includes(normalizedSearchQuery) ||
+          record.position_title.toLowerCase().includes(normalizedSearchQuery);
+
+        return matchesInstitution && matchesStatus && matchesSearch;
+      }),
+    [activeInstitutionFilter, activeStatusFilter, normalizedSearchQuery, records],
   );
+  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
 
-  const publicInstitutionCount = approvalRecords.filter((record) => record.institutionType === "Public").length;
-  const privateInstitutionCount = approvalRecords.filter((record) => record.institutionType === "Private").length;
-  const pendingVerificationCount = approvalRecords.filter((record) => record.status === "Pending Verification").length;
-  const paginationStart = filteredApprovals.length === 0 ? 0 : (safeCurrentPage - 1) * itemsPerPage + 1;
-  const paginationEnd = Math.min(safeCurrentPage * itemsPerPage, filteredApprovals.length);
-  const hasActiveFilters = activeInstitutionFilter !== "all";
+  function renderApprovalButtons(record: TeacherApprovalRecord, compact = false) {
+    const buttonClass = compact
+      ? "inline-flex min-h-[40px] items-center justify-center rounded-lg px-3.5 text-[12px] font-bold transition"
+      : "inline-flex min-h-[42px] items-center justify-center rounded-lg px-4 text-[13px] font-bold transition";
+
+    return (
+      <div className={`flex ${compact ? "flex-wrap" : "flex-wrap justify-end"} gap-2`}>
+        {record.approval_status === "pending_review" ? (
+          <>
+            <button
+              className={`${buttonClass} bg-[#002576] text-white hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70`}
+              disabled={updatingRequestId === record.id}
+              onClick={() => void handleUpdateStatus(record, "approve")}
+              type="button"
+            >
+              {updatingRequestId === record.id ? "Saving..." : "Approve"}
+            </button>
+            <button
+              className={`${buttonClass} border border-[#f0b4b4] bg-[#fff5f5] text-[#93000a] hover:bg-[#ffeaea] disabled:cursor-not-allowed disabled:opacity-70`}
+              disabled={updatingRequestId === record.id}
+              onClick={() => void handleUpdateStatus(record, "reject")}
+              type="button"
+            >
+              {updatingRequestId === record.id ? "Saving..." : "Reject"}
+            </button>
+          </>
+        ) : null}
+      </div>
+    );
+  }
+
+  async function handleUpdateStatus(record: TeacherApprovalRecord, action: "approve" | "reject") {
+    if (updatingRequestId) {
+      return;
+    }
+
+    setUpdatingRequestId(record.id);
+    setError("");
+
+    try {
+      const response = await fetch("/api/admin/teacher-approvals", {
+        body: JSON.stringify({
+          action,
+          requestId: record.id,
+        }),
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      });
+      const payload = (await response.json()) as {
+        message?: string;
+        request?: TeacherApprovalRecord;
+        success?: boolean;
+      };
+
+      if (!response.ok || !payload.success || !payload.request) {
+        throw new Error(payload.message ?? "Unable to update the teacher approval.");
+      }
+
+      setRecords((currentRecords) =>
+        currentRecords.map((currentRecord) => (currentRecord.id === payload.request!.id ? payload.request! : currentRecord)),
+      );
+      setSelectedRecordId(payload.request.id);
+    } catch (updateError) {
+      setError(updateError instanceof Error ? updateError.message : "Unable to update the teacher approval.");
+    } finally {
+      setUpdatingRequestId(null);
+    }
+  }
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-8">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h1 className="text-[34px] font-bold leading-[1.1] text-[#002576]">Pending Approvals</h1>
-              <p className="mt-3 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Review and manage teacher account verifications. Ensure submitted credentials align with TESDA
-                institutional standards before granting access.
-              </p>
-            </div>
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-4">
+          <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Pending Approvals</h1>
+          <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
+            Review teacher verification requests and update their access decisions.
+          </p>
+        </section>
 
-            <div className="w-full max-w-[240px] rounded-[14px] border border-[#d4def2] bg-[#eef4ff] px-5 py-4 text-center shadow-sm">
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Pending Verification</p>
-              <p className="mt-2 text-[30px] font-bold leading-none text-[#0b1c30]">{pendingVerificationCount}</p>
-              <p className="mt-1 text-[12px] text-[#4563a5]">Accounts waiting for verification</p>
+        <section className="mb-5">
+          <div className="overflow-hidden rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)] xl:gap-3">
+              <label className="block min-w-0">
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+                  Search
+                </span>
+                <div className="group relative">
+                  <i
+                    aria-hidden="true"
+                    className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                  />
+                  <input
+                    className="min-h-[40px] w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Search teacher, email, institution..."
+                    type="text"
+                    value={searchQuery}
+                  />
+                </div>
+              </label>
+
+              <label className="block min-w-0">
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+                  Institution
+                </span>
+                <div className="relative">
+                  <select
+                    className="min-h-[40px] w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-11 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setActiveInstitutionFilter(event.target.value as "all" | InstitutionType)}
+                    value={activeInstitutionFilter}
+                  >
+                    <option value="all">All Institutions</option>
+                    <option value="public">Public</option>
+                    <option value="private">Private</option>
+                  </select>
+                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
+                    <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+                  </span>
+                </div>
+              </label>
+
+              <label className="block min-w-0 md:col-span-2 xl:col-span-1">
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+                  Status
+                </span>
+                <div className="relative">
+                  <select
+                    className="min-h-[40px] w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-11 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setActiveStatusFilter(event.target.value as "all" | ApprovalStatus)}
+                    value={activeStatusFilter}
+                  >
+                    <option value="pending_review">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="all">All Statuses</option>
+                  </select>
+                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
+                    <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+                  </span>
+                </div>
+              </label>
             </div>
           </div>
-        </section>
 
-        <section className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-          <article className="group relative overflow-hidden rounded-[20px] border border-[#cfd8ea] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#dce1ff]/75 blur-2xl transition group-hover:bg-[#d0dbff]/90" />
-            <div className="relative flex flex-col items-center text-center">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] bg-[#dce1ff] text-[#002576] shadow-[inset_0_0_0_1px_rgba(9,60,171,0.06)]">
-                <i aria-hidden="true" className="fa-solid fa-school text-[22px]" />
-              </div>
-              <div className="mt-4">
-                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Public Institutions</p>
-                <p className="mt-2 text-[36px] font-bold leading-none text-[#0b1c30]">{publicInstitutionCount}</p>
-                <p className="mt-2 text-[13px] text-[#5d5f5f]">Schools under public education review</p>
-              </div>
+          {error ? (
+            <NotificationBanner className="mt-3 rounded-[12px] sm:px-6" compact message={error} variant="error" />
+          ) : null}
+
+          {isLoading ? (
+            <div className="mt-3 rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-8 text-center text-[14px] text-[#747685] shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-6">
+              Loading teacher approval requests...
             </div>
-          </article>
-
-          <article className="group relative overflow-hidden rounded-[20px] border border-[#cfd8ea] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-            <div className="absolute right-0 top-0 h-28 w-28 rounded-full bg-[#e5eeff]/85 blur-2xl transition group-hover:bg-[#d9e5ff]/95" />
-            <div className="relative flex flex-col items-center text-center">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[16px] bg-[#e5eeff] text-[#002576] shadow-[inset_0_0_0_1px_rgba(9,60,171,0.06)]">
-                <i aria-hidden="true" className="fa-solid fa-building-columns text-[22px]" />
-              </div>
-              <div className="mt-4">
-                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685]">Private Institutions</p>
-                <p className="mt-2 text-[36px] font-bold leading-none text-[#0b1c30]">{privateInstitutionCount}</p>
-                <p className="mt-2 text-[13px] text-[#5d5f5f]">Independent and partner institutions in queue</p>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section className="mb-8 overflow-hidden rounded-[20px] border border-[#c4c5d5] bg-white shadow-sm">
-          <div className="border-b border-[#d9e3f7] bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-5 py-5 sm:px-6">
-            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-              <div>
-                <h2 className="text-[24px] font-semibold text-[#0b1c30]">Verification Queue</h2>
-                <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                  Use search and institution filters to focus on the current verification batch.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                <div className="inline-flex items-center rounded-xl border border-[#c4c5d5] bg-white p-1 shadow-sm">
-                  {[
-                    { label: "All", value: "all" as const },
-                    { label: "Public", value: "Public" as const },
-                    { label: "Private", value: "Private" as const },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      className={`rounded-lg px-4 py-2 text-[12px] font-bold transition ${
-                        activeInstitutionFilter === option.value
-                          ? "bg-[#002576] text-white"
-                          : "text-[#5d5f5f] hover:bg-[#eff4ff]"
-                      }`}
-                      onClick={() => {
-                        setActiveInstitutionFilter(option.value);
-                        setCurrentPage(1);
-                      }}
-                      type="button"
+          ) : (
+            <>
+              <div className="mt-3 lg:hidden">
+                <div className="space-y-2.5 px-4 py-4 sm:px-6">
+                  {filteredApprovals.map((record) => (
+                    <article
+                      key={record.id}
+                      className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-[#bfd0f2] hover:bg-white"
                     >
-                      {option.label}
-                    </button>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="truncate text-[14px] font-bold text-[#0b1c30]">{record.full_name}</p>
+                          <p className="truncate text-[12px] text-[#747685]">{record.email}</p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span
+                            className={`inline-flex rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatInstitutionPill(record.institution_type)}`}
+                          >
+                            {formatInstitutionLabel(record.institution_type)}
+                          </span>
+                          <span
+                            className={`inline-flex rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatApprovalStatusPill(record.approval_status)}`}
+                          >
+                            {formatApprovalStatusLabel(record.approval_status)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-2 gap-3 rounded-[8px] border border-[#e4ebf7] bg-white p-3">
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Institution</p>
+                          <p className="mt-1 text-[13px] font-medium leading-[1.5] text-[#0b1c30]">{record.institution_name}</p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Registered</p>
+                          <p className="mt-1 text-[13px] font-medium text-[#444653]">{formatDate(record.created_at)}</p>
+                        </div>
+                        <div className="col-span-2">
+                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Role</p>
+                          <p className="mt-1 text-[13px] font-medium text-[#444653]">{record.position_title}</p>
+                        </div>
+                      </div>
+
+                      <button
+                        className="mt-4 inline-flex w-full items-center justify-between rounded-[8px] border border-[#d9e3f7] bg-white px-3.5 py-3 text-left transition hover:border-[#bfd0f2] hover:bg-[#f8fbff]"
+                        onClick={() => setSelectedRecordId(record.id)}
+                        type="button"
+                      >
+                        <div>
+                          <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Open Request</p>
+                          <p className="mt-1 text-[13px] text-[#5d5f5f]">View full details and credential preview.</p>
+                        </div>
+                        <i aria-hidden="true" className="fa-solid fa-chevron-right text-[12px] text-[#4563a5]" />
+                      </button>
+                    </article>
                   ))}
-                </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {hasActiveFilters ? (
-                    <button
-                      className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
-                      onClick={() => {
-                        setActiveInstitutionFilter("all");
-                        setCurrentPage(1);
-                      }}
-                      type="button"
-                    >
-                      <i aria-hidden="true" className="fa-solid fa-rotate-left text-[12px]" />
-                      Clear
-                    </button>
+                  {filteredApprovals.length === 0 ? (
+                    <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
+                      No teacher approvals match the current filters.
+                    </div>
                   ) : null}
                 </div>
               </div>
-            </div>
-          </div>
 
-          <div className="border-b border-[#d9e3f7] bg-white px-5 py-3 sm:px-6">
-            <div className="flex flex-col gap-2 text-[13px] text-[#5d5f5f] sm:flex-row sm:items-center sm:justify-between">
-              <p>
-                Showing <span className="font-semibold text-[#0b1c30]">{filteredApprovals.length}</span> approval
-                {filteredApprovals.length === 1 ? "" : "s"} in the current view
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center rounded-full bg-[#eef4ff] px-3 py-1 text-[11px] font-semibold text-[#093cab]">
-                  Public: {filteredApprovals.filter((record) => record.institutionType === "Public").length}
-                </span>
-                <span className="inline-flex items-center rounded-full bg-[#f1f3f5] px-3 py-1 text-[11px] font-semibold text-[#454747]">
-                  Private: {filteredApprovals.filter((record) => record.institutionType === "Private").length}
-                </span>
+              <div className="mt-3 hidden lg:block">
+                {filteredApprovals.length > 0 ? (
+                  <div className="ui-data-table-shell">
+                    <table className="ui-data-table">
+                      <thead>
+                        <tr>
+                          <th className="text-left">
+                            Teacher
+                          </th>
+                          <th className="text-left">
+                            Institution
+                          </th>
+                          <th className="text-left">
+                            Submitted
+                          </th>
+                          <th className="text-left">
+                            Status
+                          </th>
+                          <th className="text-right">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredApprovals.map((record) => (
+                          <tr key={record.id}>
+                            <td>
+                              <p className="text-[15px] font-bold text-[#0b1c30]">{record.full_name}</p>
+                            </td>
+                            <td>
+                              <p className="max-w-[260px] truncate text-[14px] font-medium text-[#0b1c30]">
+                                {record.institution_name}
+                              </p>
+                            </td>
+                            <td>
+                              <p className="text-[13px] font-medium text-[#444653]">{formatDate(record.created_at)}</p>
+                            </td>
+                            <td>
+                              <span
+                                className={`inline-flex rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatApprovalStatusPill(record.approval_status)}`}
+                              >
+                                {formatApprovalStatusLabel(record.approval_status)}
+                              </span>
+                            </td>
+                            <td className="text-right">
+                              <button
+                                className="ui-data-table-action"
+                                onClick={() => setSelectedRecordId(record.id)}
+                                type="button"
+                              >
+                                <span>View Details</span>
+                                <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
+                    No teacher approvals match the current filters.
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </section>
+      </div>
+
+      <AnimatedModal
+        contentClassName="w-full max-w-[920px] overflow-hidden rounded-[22px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        open={Boolean(selectedRecord)}
+      >
+        {selectedRecord ? (
+          <div className="max-h-[calc(100vh-32px)] overflow-y-auto">
+            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`inline-flex rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatInstitutionPill(selectedRecord.institution_type)}`}
+                  >
+                    {formatInstitutionLabel(selectedRecord.institution_type)}
+                  </span>
+                  <span
+                    className={`inline-flex rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatApprovalStatusPill(selectedRecord.approval_status)}`}
+                  >
+                    {formatApprovalStatusLabel(selectedRecord.approval_status)}
+                  </span>
+                </div>
+                <h2 className="mt-3 text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">{selectedRecord.full_name}</h2>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                  Full request details and uploaded credential preview.
+                </p>
+              </div>
+              <button
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#5d5f5f] transition hover:bg-[#f3f6fd]"
+                onClick={() => setSelectedRecordId(null)}
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-xmark text-[15px]" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 bg-[#f8fbff] px-6 py-5 sm:px-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+              <div className="space-y-5">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Email</p>
+                    <p className="mt-2 break-words text-[14px] font-medium text-[#0b1c30]">{selectedRecord.email}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact Number</p>
+                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.contact_number}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Institution</p>
+                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.institution_name}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Position / Role</p>
+                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.position_title}</p>
+                  </div>
+                  <div className="rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Submitted</p>
+                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{formatDate(selectedRecord.created_at)}</p>
+                  </div>
+                </div>
+
+                <div className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-4">
+                  <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Review Decision</p>
+                  <p className="mt-2 text-[14px] leading-[1.6] text-[#5d5f5f]">
+                    Open the uploaded credential preview, confirm the teacher details, then approve or reject this request.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {selectedRecord.approval_status === "pending_review" ? (
+                      renderApprovalButtons(selectedRecord)
+                    ) : (
+                      <span
+                        className={`inline-flex min-h-[40px] items-center justify-center rounded-lg px-4 text-[12px] font-bold ${formatApprovalStatusPill(selectedRecord.approval_status)}`}
+                      >
+                        {formatApprovalStatusLabel(selectedRecord.approval_status)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="rounded-[12px] border border-[#d9e3f7] bg-white p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Credential Preview</p>
+                      <p className="mt-1 text-[13px] text-[#5d5f5f]">Uploaded by the teacher during signup.</p>
+                    </div>
+                    {selectedRecord.verification_document_url ? (
+                      <a
+                        className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-2 rounded-full border border-[#d9e3f7] bg-white px-4 text-[12px] font-bold whitespace-nowrap text-[#002576] transition hover:bg-[#eff4ff]"
+                        href={selectedRecord.verification_document_url}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        <i aria-hidden="true" className="fa-solid fa-arrow-up-right-from-square text-[11px]" />
+                        Open File
+                      </a>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-4 overflow-hidden rounded-[10px] border border-[#e3ebfb] bg-[#fbfdff]">
+                    {selectedRecord.verification_document_url ? (
+                      isImageDocument(selectedRecord) ? (
+                        // Signed storage URLs are short-lived and remote, so a plain img preview is the safer fit here.
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          alt={`${selectedRecord.full_name} uploaded credential`}
+                          className="h-auto max-h-[520px] w-full object-contain bg-white"
+                          src={selectedRecord.verification_document_url}
+                        />
+                      ) : isPdfDocument(selectedRecord) ? (
+                        <iframe
+                          className="h-[520px] w-full bg-white"
+                          src={selectedRecord.verification_document_url}
+                          title={`${selectedRecord.full_name} uploaded credential`}
+                        />
+                      ) : (
+                        <div className="flex min-h-[260px] items-center justify-center px-6 py-8 text-center text-[13px] text-[#747685]">
+                          This file type cannot be previewed here. Use the open file button above to inspect it.
+                        </div>
+                      )
+                    ) : (
+                      <div className="flex min-h-[260px] items-center justify-center px-6 py-8 text-center text-[13px] text-[#747685]">
+                        The uploaded credential file is not available right now.
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-
-          <div className="lg:hidden">
-            <div className="space-y-3 px-4 py-4 sm:px-6">
-              {paginatedApprovals.map((record) => (
-                <article key={record.id} className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-sm">
-                  <div className="min-w-0">
-                    <p className="truncate text-[14px] font-bold text-[#0b1c30]">{record.name}</p>
-                    <p className="truncate text-[11px] text-[#747685]">{record.email}</p>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-1 gap-3 rounded-[14px] border border-[#e4ebf7] bg-white p-3">
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Institution</p>
-                      <p className="mt-1 text-[13px] font-medium leading-[1.5] text-[#0b1c30]">{record.institution}</p>
-                      <span
-                        className={`mt-2 inline-flex w-fit items-center rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatInstitutionPill(record.institutionType)}`}
-                      >
-                        {record.institutionType}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Registered</p>
-                      <p className="mt-1 text-[13px] font-medium text-[#444653]">{record.registeredAt}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                    <button
-                      className="inline-flex w-full items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                      type="button"
-                    >
-                      Review Credentials
-                    </button>
-                    <button
-                      className="inline-flex w-full items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
-                      type="button"
-                    >
-                      Approve
-                    </button>
-                  </div>
-                </article>
-              ))}
-
-              {paginatedApprovals.length === 0 ? (
-                <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center text-[14px] text-[#747685]">
-                  No teacher approvals match the current filters.
-                </div>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="hidden overflow-x-auto lg:block">
-            <table className="w-full min-w-[940px] border-collapse text-left">
-              <thead>
-                <tr className="border-b border-[#d9e3f7] bg-[#f8fbff]">
-                  <th className="px-5 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685] sm:px-6">
-                    Teacher Name
-                  </th>
-                  <th className="px-5 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685] sm:px-6">
-                    Institution
-                  </th>
-                  <th className="px-5 py-4 text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685] sm:px-6">
-                    Registration Date
-                  </th>
-                  <th className="px-5 py-4 text-right text-[12px] font-bold uppercase tracking-[0.08em] text-[#747685] sm:px-6">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#d9e3f7]">
-              {paginatedApprovals.map((record) => (
-                  <tr key={record.id} className="transition-colors hover:bg-[#f8fbff]">
-                    <td className="px-5 py-4 sm:px-6">
-                      <div>
-                        <p className="text-[14px] font-bold text-[#0b1c30]">{record.name}</p>
-                        <p className="mt-0.5 text-[11px] text-[#747685]">{record.email}</p>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 sm:px-6">
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-[14px] font-medium text-[#0b1c30]">{record.institution}</span>
-                        <span
-                          className={`inline-flex w-fit items-center rounded-md px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] ${formatInstitutionPill(record.institutionType)}`}
-                        >
-                          {record.institutionType}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-5 py-4 text-[14px] text-[#444653] sm:px-6">{record.registeredAt}</td>
-                    <td className="px-5 py-4 sm:px-6">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          className="inline-flex items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                          type="button"
-                        >
-                          Review Credentials
-                        </button>
-                        <button
-                          className="inline-flex items-center justify-center rounded-lg bg-[#002576] px-4 py-2 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
-                          type="button"
-                        >
-                          Approve
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-
-                {paginatedApprovals.length === 0 ? (
-                  <tr>
-                    <td className="px-5 py-12 text-center text-[14px] text-[#747685] sm:px-6" colSpan={4}>
-                      No teacher approvals match the current filters.
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex flex-col gap-3 border-t border-[#d9e3f7] bg-[#f8fbff] px-5 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-            <p className="text-[13px] text-[#747685]">
-              Showing {paginationStart} to {paginationEnd} of {filteredApprovals.length} applicants
-            </p>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#c4c5d5] bg-white text-[#5d5f5f] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={safeCurrentPage === 1}
-                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                type="button"
-              >
-                <i aria-hidden="true" className="fa-solid fa-chevron-left text-[11px]" />
-              </button>
-
-              {Array.from({ length: totalPages }, (_, index) => index + 1).map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-md text-[12px] font-bold transition ${
-                    pageNumber === safeCurrentPage
-                      ? "bg-[#002576] text-white"
-                      : "bg-white text-[#0b1c30] hover:bg-[#eff4ff]"
-                  } ${pageNumber === safeCurrentPage ? "" : "border border-[#c4c5d5]"}`}
-                  onClick={() => setCurrentPage(pageNumber)}
-                  type="button"
-                >
-                  {pageLabels[pageNumber - 1] ?? pageNumber}
-                </button>
-              ))}
-
-              <button
-                className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#c4c5d5] bg-white text-[#5d5f5f] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={safeCurrentPage === totalPages}
-                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                type="button"
-              >
-                <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
-              </button>
-            </div>
-          </div>
-        </section>
-
-      </div>
+        ) : null}
+      </AnimatedModal>
     </main>
   );
 }

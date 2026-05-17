@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentAppUser } from "@/lib/current-user";
-import { createSupabaseAccessTokenClient, createSupabaseAdminClient } from "@/lib/supabase";
+import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type CreateAssessmentCenterPayload = {
   address?: string;
@@ -77,7 +77,7 @@ export async function GET() {
     return NextResponse.json({ success: false, message: "Admin access is required." }, { status: 403 });
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
   const { data, error } = await supabase
     .from("assessment_centers")
     .select("id, name, address, manager, contact, center_email, center_auth_user_id, created_at")
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
   let assessmentCenterAuthUserId: string | null = null;
   let profileSyncWarning: string | null = null;
 
@@ -248,7 +248,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ success: false, message: "Assessment center ID is required." }, { status: 400 });
   }
 
-  const supabase = createSupabaseAccessTokenClient(currentUser.accessToken);
+  const supabase = createSupabaseAdminClient();
   const { data: existingCenter, error: lookupError } = await supabase
     .from("assessment_centers")
     .select("id, center_email, center_auth_user_id")

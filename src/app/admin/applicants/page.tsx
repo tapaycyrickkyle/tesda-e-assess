@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
+import NotificationBanner from "@/components/notifications/NotificationBanner";
+import NotificationToast from "@/components/notifications/NotificationToast";
 import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 
 type SubmittedApplicant = {
@@ -67,6 +69,16 @@ type BulkSubmissionGroup = {
 };
 
 const cardTitleClass = "text-[18px] font-bold leading-[1.2] text-[#0b1c30]";
+const secondaryActionButtonClass =
+  "inline-flex min-h-[36px] min-w-[96px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]";
+const assignCenterButtonClass =
+  "inline-flex min-h-[36px] min-w-[112px] items-center justify-center rounded-lg bg-[#002576] px-3.5 py-1.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]";
+const tabInlineCountClass =
+  "pointer-events-none absolute -right-1 -top-0.5 inline-flex min-w-[22px] items-center justify-center rounded-full border-2 border-white bg-[#e53935] px-1.5 py-0.5 text-[10px] font-bold leading-none text-white shadow-[0_2px_6px_rgba(229,57,53,0.18)]";
+const summaryCardClass =
+  "flex min-h-[120px] flex-col rounded-[10px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
+const summaryIconClass =
+  "inline-flex h-8 w-8 items-center justify-center rounded-[10px] border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 
 export default function AdminApplicantsPage() {
   const [activeTab, setActiveTab] = useState<"individual" | "bulk">("individual");
@@ -96,7 +108,7 @@ export default function AdminApplicantsPage() {
 
     const timeoutId = window.setTimeout(() => {
       setAssignmentSuccess("");
-    }, 3000);
+    }, 4500);
 
     return () => {
       window.clearTimeout(timeoutId);
@@ -274,8 +286,6 @@ export default function AdminApplicantsPage() {
     [bulkSearch, selectedBulkSubmission],
   );
 
-  const topRightCount = activeTab === "individual" ? filteredIndividualApplicants.length : filteredBulkSubmissions.length;
-  const topRightLabel = activeTab === "individual" ? "Applicants" : "Schools";
   const selectedCenter = assessmentCenters.find((center) => center.id === selectedCenterId) ?? null;
 
   const openAssignmentModal = (target: AssignmentTarget) => {
@@ -351,133 +361,150 @@ export default function AdminApplicantsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8f9ff] px-4 pb-8 pt-8 text-[#0b1c30] sm:px-6 lg:ml-64 lg:px-8">
-      <div className="mx-auto max-w-[1440px]">
-        <section className="mb-6">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <main className="ui-portal-main pb-8 pt-8">
+      <div className="ui-page-content">
+        <section className="mb-2.5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Submitted Applicants</h1>
+              <h1 className="text-[34px] font-bold leading-[1.15] text-[#002576]">Applicants</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Manage and review real applicant submissions coming from the new individual and teacher-batched form flows.
+                Review incoming individual and bulk submissions and route them to assessment centers.
               </p>
             </div>
 
-            <div className="flex min-h-[112px] w-full max-w-[196px] flex-col justify-center rounded-[14px] border border-[#d4def2] bg-[#eef4ff] px-4 py-3 text-center shadow-sm">
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{topRightLabel}</p>
-              <p className="mt-1.5 text-[26px] font-bold leading-none text-[#0b1c30]">{topRightCount}</p>
-              <p className="mt-1 text-[11px] text-[#4563a5]">
-                {activeTab === "individual" ? "Ready for assessment assignment" : "Submitted school batches"}
-              </p>
-            </div>
-          </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[320px]">
+              <div className={summaryCardClass}>
+                <div className="flex min-h-[44px] items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Individual</p>
+                    <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">
+                      Direct submissions
+                    </p>
+                  </div>
+                  <span aria-hidden="true" className={`${summaryIconClass} text-[#002576]`}>
+                    <i className="fa-solid fa-user" />
+                  </span>
+                </div>
 
-          <div className="mt-4 rounded-[18px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-sm sm:px-5">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="inline-flex w-fit items-center rounded-full border border-[#c4c5d5] bg-white p-1 shadow-sm">
-                <button
-                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                    activeTab === "individual"
-                      ? "bg-[#002576] font-bold text-white"
-                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                  }`}
-                  onClick={() => setActiveTab("individual")}
-                  type="button"
-                >
-                  Individual
-                </button>
-                <button
-                  className={`w-[112px] rounded-full px-5 py-2 text-[13px] transition ${
-                    activeTab === "bulk"
-                      ? "bg-[#002576] font-bold text-white"
-                      : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                  }`}
-                  onClick={() => setActiveTab("bulk")}
-                  type="button"
-                >
-                  Bulk
-                </button>
+                <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
+                  <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
+                    {individualApplicants.length.toLocaleString()}
+                  </p>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-2 lg:min-w-[720px] lg:flex-row lg:items-center lg:justify-end">
-                <label className="block flex-1 lg:max-w-[280px]">
-                  <span className="sr-only">
-                    {activeTab === "individual" ? "Search submitted applicants" : "Search submitted batches"}
+              <div className={summaryCardClass}>
+                <div className="flex min-h-[44px] items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Bulk</p>
+                    <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">Room batches</p>
+                  </div>
+                  <span aria-hidden="true" className={`${summaryIconClass} text-[#3056c4]`}>
+                    <i className="fa-solid fa-layer-group" />
                   </span>
-                  <div className="group relative">
-                    <i
-                      aria-hidden="true"
-                      className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                    />
-                    <input
-                      className="w-full rounded-lg border border-[#c4c5d5] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      placeholder={activeTab === "individual" ? "Search applicants..." : "Search batches..."}
-                      type="text"
-                      value={searchQuery}
-                    />
-                  </div>
-                </label>
+                </div>
 
-                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-fit">
-                  {activeTab === "individual" ? "Course Filter" : "Program Filter"}
-                </p>
-                <label className="block flex-1">
-                  <span className="sr-only">{activeTab === "individual" ? "Filter by course" : "Filter by program"}</span>
-                  <div className="relative">
-                    <select
-                      className="w-full appearance-none rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                      onChange={(event) =>
-                        activeTab === "individual"
-                          ? setIndividualCourseFilter(event.target.value)
-                          : setBulkProgramFilter(event.target.value)
-                      }
-                      value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
-                    >
-                      {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
-                        <option key={option} value={option}>
-                          {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                      <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
-                    </span>
-                  </div>
-                </label>
-
-                {((activeTab === "individual" && individualCourseFilter !== "all") ||
-                  (activeTab === "bulk" && bulkProgramFilter !== "all") ||
-                  searchQuery.trim().length > 0) ? (
-                  <button
-                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d4def2] bg-[#eef4ff] px-4 py-2.5 text-[13px] font-bold text-[#093cab] transition hover:bg-[#e3edff]"
-                    onClick={() => {
-                      setSearchQuery("");
-                      if (activeTab === "individual") {
-                        setIndividualCourseFilter("all");
-                        return;
-                      }
-
-                      setBulkProgramFilter("all");
-                    }}
-                    type="button"
-                  >
-                    <i aria-hidden="true" className="fa-solid fa-rotate-left text-[12px]" />
-                    Clear
-                  </button>
-                ) : null}
+                <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
+                  <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
+                    {bulkSubmissions.length.toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {submissionsError ? (
-          <div className="mb-4 rounded-[18px] border border-[#f3dfb2] bg-[#fff8e8] px-5 py-4 text-[13px] text-[#7f5b00]">
-            {submissionsError}
+        <section className="mb-3">
+          <div className="flex justify-center">
+            <div className="inline-flex w-[240px] max-w-full items-center rounded-full border border-[#d9e3f7] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+              <button
+                className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
+                  activeTab === "individual"
+                    ? "bg-[#002576] font-bold text-white"
+                    : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                }`}
+                onClick={() => setActiveTab("individual")}
+                type="button"
+              >
+                <span className="flex items-center justify-center">
+                  <span>Individual</span>
+                </span>
+                <span className={tabInlineCountClass}>{filteredIndividualApplicants.length}</span>
+              </button>
+              <button
+                className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
+                  activeTab === "bulk"
+                    ? "bg-[#002576] font-bold text-white"
+                    : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                }`}
+                onClick={() => setActiveTab("bulk")}
+                type="button"
+              >
+                <span className="flex items-center justify-center">
+                  <span>Bulk</span>
+                </span>
+                <span className={tabInlineCountClass}>{filteredBulkSubmissions.length}</span>
+              </button>
+            </div>
           </div>
+
+          <div className="mt-4 rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+              <div className="flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-4">
+              <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:w-full xl:max-w-[520px]">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">
+                  Search
+                </span>
+                <div className="group relative min-w-0 flex-1">
+                  <i
+                    aria-hidden="true"
+                    className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                  />
+                  <input
+                    className="w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder={activeTab === "individual" ? "Search applicants..." : "Search batches..."}
+                    type="text"
+                    value={searchQuery}
+                  />
+                </div>
+              </label>
+
+              <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:ml-auto xl:w-full xl:max-w-[360px]">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[108px]">
+                  Program Filter
+                </span>
+                <span className="sr-only">Filter by program</span>
+                <div className="relative min-w-0 flex-1">
+                  <select
+                    className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) =>
+                      activeTab === "individual"
+                        ? setIndividualCourseFilter(event.target.value)
+                        : setBulkProgramFilter(event.target.value)
+                    }
+                    value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
+                  >
+                    {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
+                      <option key={option} value={option}>
+                        {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
+                    <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+        </section>
+
+        {submissionsError ? (
+          <NotificationBanner className="mb-4" message={submissionsError} variant="warning" />
         ) : null}
 
         {isLoadingSubmissions ? (
-          <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center shadow-sm">
+          <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
@@ -487,18 +514,18 @@ export default function AdminApplicantsPage() {
         ) : (
           <section>
             {activeTab === "individual" ? (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-2.5">
                 {filteredIndividualApplicants.map((applicant) => (
-                  <article key={applicant.id} className="rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm">
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                  <article className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:px-5" key={applicant.id}>
+                    <div className="flex flex-col gap-3 lg:flex-row lg:flex-nowrap lg:items-center lg:justify-between">
                       <div className="min-w-0">
                         <p className={cardTitleClass}>{applicant.applicant_name}</p>
-                        <p className="mt-2 text-[14px] font-medium text-[#444653]">{applicant.qualification_title}</p>
+                        <p className="mt-1 text-[14px] font-medium text-[#444653]">{applicant.qualification_title}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
+                      <div className="flex flex-wrap items-center gap-2 lg:flex-nowrap lg:justify-end">
                         <a
-                          className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className={secondaryActionButtonClass}
                           href={buildApplicationSubmissionPdfUrl(applicant.id)}
                           rel="noreferrer"
                           target="_blank"
@@ -506,13 +533,13 @@ export default function AdminApplicantsPage() {
                           View PDF
                         </a>
                         <a
-                          className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                          className={secondaryActionButtonClass}
                           href={buildApplicationSubmissionPdfUrl(applicant.id, { download: true })}
                         >
                           Download
                         </a>
                         <button
-                          className="inline-flex min-w-[128px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
+                          className={assignCenterButtonClass}
                           onClick={() =>
                             openAssignmentModal({
                               applicants: [
@@ -556,42 +583,33 @@ export default function AdminApplicantsPage() {
                 ) : null}
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-2.5">
                 {filteredBulkSubmissions.map((submission) => (
                   <article
                     key={submission.id}
-                    className="cursor-pointer rounded-lg border border-[#c4c5d5] bg-white p-5 shadow-sm transition hover:border-[#002576] hover:shadow-md"
-                    onClick={() => {
-                      setSelectedBulkSubmission(submission);
-                      setBulkSearch("");
-                      setIsBulkModalOpen(true);
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setSelectedBulkSubmission(submission);
-                        setBulkSearch("");
-                        setIsBulkModalOpen(true);
-                      }
-                    }}
-                    role="button"
-                    tabIndex={0}
+                    className="rounded-[12px] border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:px-5"
                   >
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-col gap-3 lg:flex-row lg:flex-nowrap lg:items-center lg:justify-between">
                       <div className="min-w-0">
                         <p className={cardTitleClass}>{submission.title}</p>
-                        <p className="mt-2 text-[14px] font-medium text-[#444653]">{submission.qualification}</p>
+                        <p className="mt-1 text-[14px] font-medium text-[#444653]">{submission.qualification}</p>
                       </div>
 
-                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
-                        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-2.5">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicants</p>
-                          <p className="mt-1 text-[13px] font-medium text-[#0b1c30]">{submission.applicantCount} ready</p>
-                        </div>
+                      <div className="flex flex-wrap items-center gap-2 lg:flex-nowrap lg:justify-end">
                         <button
-                          className="inline-flex min-w-[108px] items-center justify-center rounded-lg bg-[#002576] px-4 py-2.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8]"
-                          onClick={(event) => {
-                            event.stopPropagation();
+                          className={secondaryActionButtonClass}
+                          onClick={() => {
+                            setSelectedBulkSubmission(submission);
+                            setBulkSearch("");
+                            setIsBulkModalOpen(true);
+                          }}
+                          type="button"
+                        >
+                          Open
+                        </button>
+                        <button
+                          className={assignCenterButtonClass}
+                          onClick={() => {
                             openAssignmentModal({
                               applicants: submission.applicants.map((applicant) => ({
                                 id: applicant.id,
@@ -637,7 +655,7 @@ export default function AdminApplicantsPage() {
       </div>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(isBulkModalOpen && selectedBulkSubmission)}
       >
         {selectedBulkSubmission ? (
@@ -668,27 +686,30 @@ export default function AdminApplicantsPage() {
                 <span className="text-[12px] font-medium text-[#747685]">{selectedBulkSubmission.applicantCount} total</span>
               </div>
 
-              <div className="mb-4">
-                <div className="group relative">
+              <label className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[128px]">
+                  Search Applicants
+                </span>
+                <div className="group relative min-w-0 flex-1">
                   <i
                     aria-hidden="true"
                     className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
                   />
                   <input
-                    className="w-full rounded-lg border border-[#c4c5d5] bg-white py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    className="w-full rounded-lg border border-[#d9e3f7] bg-white py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                     onChange={(event) => setBulkSearch(event.target.value)}
                     placeholder="Search applicants..."
                     type="text"
                     value={bulkSearch}
                   />
                 </div>
-              </div>
+              </label>
 
               <div className="max-h-[360px] space-y-2 overflow-y-auto pr-1">
                 {filteredBulkApplicants.map((applicant) => (
                   <div
+                    className="flex flex-col gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)] sm:flex-row sm:items-center sm:justify-between"
                     key={applicant.id}
-                    className="flex flex-col gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="min-w-0">
                       <p className="truncate text-[14px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
@@ -696,7 +717,7 @@ export default function AdminApplicantsPage() {
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <a
-                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                         href={buildApplicationSubmissionPdfUrl(applicant.id)}
                         rel="noreferrer"
                         target="_blank"
@@ -704,7 +725,7 @@ export default function AdminApplicantsPage() {
                         View PDF
                       </a>
                       <a
-                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                        className="inline-flex min-w-[96px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                         href={buildApplicationSubmissionPdfUrl(applicant.id, { download: true })}
                       >
                         Download
@@ -725,7 +746,7 @@ export default function AdminApplicantsPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[560px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(assignmentTarget && !isAssignmentConfirmOpen)}
       >
         {assignmentTarget ? (
@@ -748,9 +769,7 @@ export default function AdminApplicantsPage() {
 
             <div className="space-y-3 rounded-b-[24px] bg-[#f8fbff] px-6 py-4 sm:px-7">
               {assignmentError ? (
-                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
-                  {assignmentError}
-                </div>
+                <NotificationBanner compact message={assignmentError} variant="error" />
               ) : null}
 
               <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-3.5">
@@ -772,7 +791,7 @@ export default function AdminApplicantsPage() {
                       Select one destination from the list for this assignment.
                     </p>
                   </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#747685] shadow-sm">
+                  <span className="rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#747685] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
                     {isLoadingCenters ? "Loading..." : `${assessmentCenters.length} options`}
                   </span>
                 </div>
@@ -783,7 +802,7 @@ export default function AdminApplicantsPage() {
                   <label className="block">
                     <div className="relative">
                       <select
-                        className="w-full appearance-none rounded-lg border border-[#c4c5d5] bg-white px-4 py-3 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                        className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                         disabled={isLoadingCenters || assessmentCenters.length === 0}
                         onChange={(event) => setSelectedCenterId(event.target.value || null)}
                         value={selectedCenterId ?? ""}
@@ -813,7 +832,7 @@ export default function AdminApplicantsPage() {
 
               <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   onClick={closeAssignmentFlow}
                   type="button"
                 >
@@ -834,7 +853,7 @@ export default function AdminApplicantsPage() {
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[20px] border border-[#c4c5d5] bg-white shadow-[0_24px_60px_rgba(4,15,37,0.22)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[480px] overflow-y-auto rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(assignmentTarget && selectedCenter && isAssignmentConfirmOpen)}
         zIndexClassName="z-[60]"
       >
@@ -849,9 +868,7 @@ export default function AdminApplicantsPage() {
 
             <div className="space-y-4 rounded-b-[24px] bg-[#f8fbff] px-6 py-5 sm:px-7">
               {assignmentError ? (
-                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-3 text-[13px] text-[#93000a]">
-                  {assignmentError}
-                </div>
+                <NotificationBanner compact message={assignmentError} variant="error" />
               ) : null}
 
               <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-4">
@@ -879,7 +896,7 @@ export default function AdminApplicantsPage() {
 
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#c4c5d5] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
                   disabled={isSavingAssignment}
                   onClick={() => setIsAssignmentConfirmOpen(false)}
                   type="button"
@@ -900,28 +917,20 @@ export default function AdminApplicantsPage() {
         ) : null}
       </AnimatedModal>
 
-      {assignmentSuccess ? (
-        <div className="pointer-events-none fixed inset-x-4 top-6 z-[70] flex justify-center lg:left-64 lg:right-8 lg:justify-end">
-          <div className="ui-modal-pop pointer-events-auto w-full max-w-[360px] rounded-[18px] border border-[#bfe3cc] bg-[#edf9f1] px-5 py-4 shadow-[0_20px_40px_rgba(31,122,69,0.16)]">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d8f0e1] text-[#1f7a45]">
-                <i aria-hidden="true" className="fa-solid fa-check text-[14px]" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[13px] font-bold uppercase tracking-[0.08em] text-[#1f7a45]">Assignment Complete</p>
-                <p className="mt-1 text-[14px] leading-[1.55] text-[#215c36]">{assignmentSuccess}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+      <NotificationToast
+        message={assignmentSuccess}
+        onClose={() => setAssignmentSuccess("")}
+        open={Boolean(assignmentSuccess)}
+        title="Assignment Complete"
+        variant="success"
+      />
     </main>
   );
 }
 
 function EmptyState({ body, icon, title }: { body: string; icon: string; title: string }) {
   return (
-    <div className="rounded-[18px] border border-[#d9e3f7] bg-[#fbfdff] px-5 py-10 text-center">
+    <div className="rounded-[12px] border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
         <i aria-hidden="true" className={`fa-solid ${icon} text-[18px]`} />
       </div>
