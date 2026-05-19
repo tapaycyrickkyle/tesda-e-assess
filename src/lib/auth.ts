@@ -155,19 +155,19 @@ export function getUserRoleFromMetadata(user: {
 
 export function getRoleHomePath(role: UserRole) {
   if (role === "admin") {
-    return "/admin/dashboard";
+    return "/admin/overview";
   }
 
   if (role === "applicant") {
-    return "/applicant/dashboard";
+    return "/applicant/overview";
   }
 
   if (role === "teacher") {
-    return "/teacher/dashboard";
+    return "/teacher/overview";
   }
 
   if (role === "assessment_center") {
-    return "/assessment-center/dashboard";
+    return "/assessment-center/overview";
   }
 
   return "/";

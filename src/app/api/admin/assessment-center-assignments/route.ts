@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
+import { recordSubmissionWorkflowTransition } from "@/lib/workflow-history";
 
 type ApplicantAssignmentPayload = {
   applicantName?: string;
@@ -158,7 +159,7 @@ export async function POST(request: Request) {
   const supabase = createSupabaseAdminClient();
   const { data: center, error: centerError } = await supabase
     .from("assessment_centers")
-    .select("id")
+    .select("id, name, center_email, center_auth_user_id")
     .eq("id", assessmentCenterId)
     .maybeSingle();
 
@@ -169,7 +170,7 @@ export async function POST(request: Request) {
   const submissionIds = normalizedApplicants.map((applicant) => applicant.applicant_reference);
   const { data: matchedSubmissions, error: submissionsLookupError } = await supabase
     .from("applicant_application_submissions")
-    .select("id, workflow_status")
+    .select("id, applicant_id, applicant_email, applicant_name, qualification_title, workflow_status")
     .in("id", submissionIds);
 
   if (submissionsLookupError) {
@@ -271,6 +272,8 @@ export async function POST(request: Request) {
   const { error: submissionStatusError } = await supabase
     .from("applicant_application_submissions")
     .update({
+      latest_status_reason: null,
+      latest_status_updated_at: assignedAt,
       updated_at: assignedAt,
       workflow_status: "under_review",
     })
@@ -295,6 +298,59 @@ export async function POST(request: Request) {
       { success: false, message: "Applicants were assigned, but submission statuses could not be updated safely." },
       { status: 500 },
     );
+  }
+
+  try {
+    const normalizedApplicantBySubmissionId = new Map(
+      normalizedApplicants.map((applicant) => [applicant.applicant_reference, applicant]),
+    );
+
+    await Promise.all(
+      (matchedSubmissions ?? []).map((submission) =>
+        recordSubmissionWorkflowTransition({
+          actor: currentUser,
+          eventType: "admin_assigned_to_center",
+          fromStatus: submission.workflow_status as ApplicationSubmissionStatus,
+          metadata: {
+            assessmentCenterId: center.id,
+            assessmentCenterName: center.name,
+            assignmentBatch: normalizedApplicantBySubmissionId.get(submission.id)?.assignment_batch ?? null,
+            assignmentTitle: normalizedApplicantBySubmissionId.get(submission.id)?.assignment_title ?? null,
+          },
+          notifications: [
+            {
+              message: `${center.name} is now handling your ${submission.qualification_title} application.`,
+              notificationType: "success",
+              recipientEmail: submission.applicant_email,
+              recipientRole: "applicant",
+              recipientUserId: submission.applicant_id,
+              submissionId: submission.id,
+              title: "Assessment Center Assigned",
+            },
+            ...(center.center_email
+              ? [
+                  {
+                    message: `${submission.applicant_name} (${submission.qualification_title}) was assigned to ${center.name}.`,
+                    notificationType: "info",
+                    recipientEmail: center.center_email,
+                    recipientRole: "assessment_center" as const,
+                    recipientUserId: center.center_auth_user_id,
+                    submissionId: submission.id,
+                    title: "New Applicant Assignment",
+                  },
+                ]
+              : []),
+          ],
+          submissionId: submission.id,
+          toStatus: "under_review",
+        }),
+      ),
+    );
+  } catch (historyError) {
+    console.error("Failed to record admin assignment workflow history.", {
+      assessmentCenterId,
+      error: historyError,
+    });
   }
 
   return NextResponse.json({ success: true, message: "Applicants assigned successfully." });
@@ -339,7 +395,7 @@ export async function DELETE(request: Request) {
   const { data: submissions, error: submissionLookupError } = submissionIds.length
     ? await supabase
         .from("applicant_application_submissions")
-        .select("id, submission_source, workflow_status")
+        .select("id, applicant_id, applicant_email, applicant_name, qualification_title, submission_source, workflow_status")
         .in("id", submissionIds)
     : { data: [], error: null };
 
@@ -392,6 +448,8 @@ export async function DELETE(request: Request) {
     const { error: revertError } = await supabase
       .from("applicant_application_submissions")
       .update({
+        latest_status_reason: null,
+        latest_status_updated_at: revertedAt,
         updated_at: revertedAt,
         workflow_status: "submitted_to_admin",
       })
@@ -403,6 +461,36 @@ export async function DELETE(request: Request) {
         { success: false, message: "Assignments were removed, but submission statuses could not be restored safely." },
         { status: 500 },
       );
+    }
+
+    try {
+      await Promise.all(
+        (submissions ?? []).map((submission) =>
+          recordSubmissionWorkflowTransition({
+            actor: currentUser,
+            eventType: "admin_returned_to_queue",
+            fromStatus: submission.workflow_status as ApplicationSubmissionStatus,
+            notifications: [
+              {
+                message: `Your ${submission.qualification_title} application was returned to the TESDA queue for reassignment.`,
+                notificationType: "warning",
+                recipientEmail: submission.applicant_email,
+                recipientRole: "applicant",
+                recipientUserId: submission.applicant_id,
+                submissionId: submission.id,
+                title: "Assignment Returned to Queue",
+              },
+            ],
+            submissionId: submission.id,
+            toStatus: "submitted_to_admin",
+          }),
+        ),
+      );
+    } catch (historyError) {
+      console.error("Failed to record admin assignment removal workflow history.", {
+        error: historyError,
+        submissionIds,
+      });
     }
   }
 

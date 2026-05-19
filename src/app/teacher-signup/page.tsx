@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationModal from "@/components/notifications/NotificationModal";
+import { sanitizePhilippineMobileNumberAfterCountryCode } from "@/lib/registration";
 
 const labelClass = "auth-label px-1 text-[#1a1c1c]";
 const fieldClass =
-  "w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] px-4 py-3 outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]";
+  "auth-field";
 
 function PasswordField({
   id,
@@ -50,6 +51,7 @@ function PasswordField({
 }
 
 export default function TeacherSignUpPage() {
+  const [contactNumber, setContactNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedDocumentName, setSelectedDocumentName] = useState("");
@@ -87,6 +89,7 @@ export default function TeacherSignUpPage() {
           "Teacher account created successfully. Your login will stay blocked until the admin approves your verification request.",
       );
       event.currentTarget.reset();
+      setContactNumber("");
       setSelectedDocumentName("");
     } catch {
       setErrorMessage("Unable to reach the server. Please try again.");
@@ -102,11 +105,11 @@ export default function TeacherSignUpPage() {
         className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.54))]" />
-      <main className="relative z-10 flex flex-1 items-center justify-center py-8 lg:py-12">
-        <div className="flex w-full max-w-[1180px] flex-col overflow-hidden rounded-lg border border-white/40 bg-white/92 shadow-[0_14px_34px_rgba(15,23,42,0.14)] backdrop-blur-sm md:flex-row">
-          <div className="relative hidden overflow-hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] p-8 text-white md:flex md:w-4/12 md:flex-col md:justify-between">
+      <main className="auth-page-main">
+        <div className="auth-split-surface flex flex-col md:flex-row">
+          <div className="auth-side-pane hidden bg-[linear-gradient(180deg,rgba(0,37,118,0.95),rgba(0,56,168,0.86))] text-white md:flex md:w-4/12 md:flex-col md:justify-between">
             <div className="relative z-10">
-              <div className="mb-5">
+              <div className="mb-6">
                 <svg
                   aria-hidden
                   className="h-12 w-12 text-white"
@@ -123,8 +126,8 @@ export default function TeacherSignUpPage() {
                   />
                 </svg>
               </div>
-              <h1 className="auth-hero-title mb-4 text-white sm:text-[2.25rem]">Empower the Future of Skills.</h1>
-              <p className="auth-hero-copy text-[#c7d7ff] sm:text-[1.0625rem]">
+              <h1 className="auth-hero-title mb-4 text-white">Empower the Future of Skills.</h1>
+              <p className="auth-hero-copy text-[#c7d7ff]">
                 Join our network of certified assessors and educators in streamlining the
                 technical-vocational assessment process across the Philippines.
               </p>
@@ -149,22 +152,22 @@ export default function TeacherSignUpPage() {
             />
           </div>
 
-          <div className="max-h-[870px] w-full overflow-y-auto bg-white/92 p-8 md:w-8/12">
-            <div className="mb-5">
-              <span className="inline-flex rounded-full bg-[#eef3ff] px-3 py-1 text-[12px] font-bold text-[#3056c4]">
+          <div className="auth-form-pane max-h-[870px] w-full overflow-y-auto md:w-8/12">
+            <div className="auth-panel-header">
+              <span className="auth-pill inline-flex rounded-full bg-[#eef3ff] px-3 py-1 text-[#3056c4]">
                 Teacher Registration
               </span>
-              <h2 className="auth-panel-title mb-2 text-[#002576] sm:text-[1.875rem]">Teacher Sign Up</h2>
+              <h2 className="auth-panel-title mb-2 text-[#002576]">Teacher Sign Up</h2>
               <p className="auth-panel-copy text-[#444653]">
                 Create your professional account to begin managing assessments.
               </p>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              <section className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-4">
+              <section className="auth-section auth-section-soft">
                 <div className="mb-4">
-                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Basic Information</h3>
-                  <p className="mt-1 text-[13px] text-[#5d5f5f]">Use your active professional and institutional details.</p>
+                  <h3 className="auth-section-title">Basic Information</h3>
+                  <p className="auth-section-copy">Use your active professional and institutional details.</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -194,16 +197,23 @@ export default function TeacherSignUpPage() {
                       Contact Number
                     </label>
                     <div className="flex">
-                      <span className="auth-help-text flex items-center justify-center rounded-l-lg border border-r-0 border-[#c4c5d5] bg-[#e5eeff] px-3 font-semibold text-[#444653]">
+                      <span className="auth-field-prefix">
                         +63
                       </span>
                       <input
-                        className="w-full rounded-r-lg border border-[#c4c5d5] bg-[#f9f9f9] px-4 py-3 text-[#1a1c1c] outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
+                        className={`${fieldClass} auth-field-suffixless`}
                         id="contact-number"
+                        inputMode="numeric"
+                        maxLength={10}
                         name="contactNumber"
+                        onChange={(event) =>
+                          setContactNumber(sanitizePhilippineMobileNumberAfterCountryCode(event.target.value))
+                        }
+                        pattern="9[0-9]{9}"
                         placeholder="900 000 0000"
                         required
                         type="tel"
+                        value={contactNumber}
                       />
                     </div>
                     <p className="text-[12px] text-[#747685]">Enter 10 mobile digits after +63, for example `9123456789`.</p>
@@ -225,10 +235,10 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-lg border border-[#d9e3f7] bg-white p-4">
+              <section className="auth-section bg-white">
                 <div className="mb-4">
-                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Institution Details</h3>
-                  <p className="mt-1 text-[13px] text-[#5d5f5f]">These details will be used during verification and dashboard setup.</p>
+                  <h3 className="auth-section-title">Institution Details</h3>
+                  <p className="auth-section-copy">These details will be used during verification and dashboard setup.</p>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -260,10 +270,10 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-lg border border-[#d9e3f7] bg-white p-4">
+              <section className="auth-section bg-white">
                 <div className="mb-4">
-                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Verification Document</h3>
-                  <p className="mt-1 text-[13px] text-[#5d5f5f]">Upload a valid PRC ID or school-issued ID for account review.</p>
+                  <h3 className="auth-section-title">Verification Document</h3>
+                  <p className="auth-section-copy">Upload a valid PRC ID or school-issued ID for account review.</p>
                 </div>
 
                 <div className="group flex flex-col gap-2 rounded-lg border-2 border-dashed border-[#c4c5d5] bg-[#f9f9f9] p-4 transition-all hover:border-[#3056c4]">
@@ -302,10 +312,10 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <section className="rounded-lg border border-[#d9e3f7] bg-white p-4">
+              <section className="auth-section bg-white">
                 <div className="mb-4">
-                  <h3 className="text-[16px] font-bold text-[#0b1c30]">Account Security</h3>
-                  <p className="mt-1 text-[13px] text-[#5d5f5f]">Choose a password you can remember and keep secure.</p>
+                  <h3 className="auth-section-title">Account Security</h3>
+                  <p className="auth-section-copy">Choose a password you can remember and keep secure.</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -326,7 +336,7 @@ export default function TeacherSignUpPage() {
                 </div>
               </section>
 
-              <div className="flex items-start gap-4 rounded-lg border border-[#dfe0e0] bg-[#dfe0e0]/30 p-4">
+              <div className="auth-note flex items-start gap-4">
                 <span className="text-[#5d5f5f]">i</span>
                 <p className="auth-help-text text-[#616363]">
                   Your teacher account request will be saved immediately, but login access stays locked until an admin
@@ -340,14 +350,14 @@ export default function TeacherSignUpPage() {
 
               <div className="space-y-4 pt-2">
                 <button
-                  className="auth-button flex w-full items-center justify-center gap-2 rounded-lg bg-[#0038a8] py-4 text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition-all hover:bg-[#002576] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100"
+                  className="auth-primary-action auth-button flex w-full"
                   disabled={isSubmitting}
                   type="submit"
                 >
                   {isSubmitting ? "Creating Account..." : "Create Account"}
                 </button>
                 <div className="text-center">
-                  <p className="auth-panel-copy text-[#444653]">
+                  <p className="auth-label text-[#444653]">
                     Already have an account?{" "}
                     <Link className="font-bold text-[#002576] hover:underline" href="/">
                       Login
@@ -370,14 +380,14 @@ export default function TeacherSignUpPage() {
         actions={
           <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
             <button
-              className="inline-flex min-h-[44px] min-w-[140px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 text-[13px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+              className="auth-secondary-action min-w-[140px]"
               onClick={() => setSuccessMessage("")}
               type="button"
             >
               Stay Here
             </button>
             <Link
-              className="inline-flex min-h-[44px] min-w-[140px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+              className="auth-primary-action min-w-[140px] bg-[#002576] px-4 hover:bg-[#0038a8]"
               href="/"
             >
               Back to Login

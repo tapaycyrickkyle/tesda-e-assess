@@ -120,3 +120,39 @@ export function getApplicantSubmissionEditLock({
     message: null,
   };
 }
+
+export function getApplicantSubmissionWithdrawalLock({
+  assignment,
+  workflowStatus,
+}: Omit<SubmissionEditLockParams, "submissionSource">) {
+  if (
+    workflowStatus === "completed" ||
+    workflowStatus === "rejected" ||
+    workflowStatus === "cancelled" ||
+    workflowStatus === "withdrawn"
+  ) {
+    return {
+      isLocked: true,
+      message: `This submission is already ${workflowStatus} and can no longer be withdrawn.`,
+    };
+  }
+
+  if (assignment || workflowStatus === "assigned" || workflowStatus === "under_review") {
+    return {
+      isLocked: true,
+      message: "This submission is already being processed by an assessment center and can no longer be withdrawn.",
+    };
+  }
+
+  if (workflowStatus !== "submitted_to_teacher" && workflowStatus !== "submitted_to_admin") {
+    return {
+      isLocked: true,
+      message: "Only submitted applications can be withdrawn.",
+    };
+  }
+
+  return {
+    isLocked: false,
+    message: null,
+  };
+}

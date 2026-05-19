@@ -126,6 +126,8 @@ export type ApplicationSubmissionRecord = {
   form_data: ApplicantApplicationFormData;
   qualification_title: string;
   qualification_type: string;
+  latest_status_reason?: string | null;
+  latest_status_updated_at?: string | null;
   room_id: string | null;
   submission_source: ApplicationSubmissionSource;
   submitted_at: string;

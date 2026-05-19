@@ -3,6 +3,7 @@ import {
   resolveAssessmentCenterForUser,
 } from "@/lib/assessment-centers";
 import type { CurrentAppUser } from "@/lib/current-user";
+import { formatPhilippineMobileNumberForLocalDisplay } from "@/lib/registration";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type ProfileRecord = {
@@ -43,6 +44,24 @@ export type UserProfileSection = {
 
 export type UserProfileView = {
   displayName: string;
+  editor: {
+    assessmentCenter: {
+      address: string;
+      contact: string;
+      manager: string;
+      name: string;
+    } | null;
+    profile: {
+      contactNumber: string;
+      firstName: string;
+      institutionName: string;
+      institutionType: string;
+      lastName: string;
+      middleName: string;
+      positionTitle: string;
+    };
+    role: CurrentAppUser["role"];
+  };
   notice: string;
   sections: UserProfileSection[];
 };
@@ -172,7 +191,7 @@ export async function loadUserProfileView(currentUser: CurrentAppUser): Promise<
     { label: "First Name", value: normalizeText(profile?.first_name) ?? "Not provided" },
     { label: "Middle Name", value: normalizeText(profile?.middle_name) ?? "Not provided" },
     { label: "Last Name", value: normalizeText(profile?.last_name) ?? "Not provided" },
-    { label: "Contact Number", value: normalizeText(profile?.contact_number) ?? "Not provided" },
+    { label: "Contact Number", value: formatPhilippineMobileNumberForLocalDisplay(profile?.contact_number) || "Not provided" },
   ];
 
   const sections: UserProfileSection[] = [
@@ -238,6 +257,26 @@ export async function loadUserProfileView(currentUser: CurrentAppUser): Promise<
 
   return {
     displayName: profileDisplayName,
+    editor: {
+      assessmentCenter: centerRecord
+        ? {
+            address: normalizeText(centerRecord.address) ?? "",
+            contact: normalizeText(centerRecord.contact) ?? "",
+            manager: normalizeText(centerRecord.manager) ?? "",
+            name: normalizeText(centerRecord.name) ?? "",
+          }
+        : null,
+      profile: {
+        contactNumber: formatPhilippineMobileNumberForLocalDisplay(profile?.contact_number),
+        firstName: normalizeText(profile?.first_name) ?? "",
+        institutionName: normalizeText(profile?.institution_name) ?? "",
+        institutionType: normalizeText(profile?.institution_type) ?? "",
+        lastName: normalizeText(profile?.last_name) ?? "",
+        middleName: normalizeText(profile?.middle_name) ?? "",
+        positionTitle: normalizeText(profile?.position_title) ?? "",
+      },
+      role: currentUser.role,
+    },
     notice,
     sections,
   };

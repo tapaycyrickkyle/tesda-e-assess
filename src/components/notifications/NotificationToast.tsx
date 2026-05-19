@@ -100,7 +100,7 @@ export default function NotificationToast({
       data-state={isVisible ? "open" : "closed"}
     >
       <div
-        className={`ui-toast-pop pointer-events-auto w-full max-w-[420px] rounded-[12px] border ${styles.border} ${styles.background} px-4 py-3.5 shadow-[0_10px_24px_rgba(15,23,42,0.10)] sm:px-5 sm:py-4`}
+        className={`ui-toast-pop pointer-events-auto w-full max-w-[420px] rounded-xl border ${styles.border} ${styles.background} px-4 py-3.5 shadow-[0_10px_24px_rgba(15,23,42,0.10)] sm:px-5 sm:py-4`}
         data-state={isVisible ? "open" : "closed"}
       >
         <div className="flex items-start gap-3">

@@ -54,18 +54,18 @@ export default function Home() {
         className="absolute inset-0 bg-[url('/images/TESDA_Backgound.png')] bg-cover bg-center"
       />
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.58))]" />
-      <main className="z-10 flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+      <main className="auth-page-main">
         <div className="flex w-full max-w-[440px] flex-col items-center">
           <div className="mb-5 text-center sm:mb-10">
             <h1 className="auth-hero-title mb-1 text-white">
-              TESDA E-Forms
+              TESDA E-Assess
             </h1>
             <p className="auth-hero-copy mx-auto max-w-[320px] text-[#e2ebff]">
               Application Form System for TESDA Eastern Samar Provincial Office
             </p>
           </div>
 
-          <div className="w-full rounded-lg border border-white/45 bg-white/94 p-4 shadow-[0_14px_34px_rgba(15,23,42,0.14)] backdrop-blur-sm sm:p-6">
+          <div className="auth-surface">
             <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-2">
               <label className="auth-label text-[#1a1c1c]" htmlFor="username">
@@ -80,7 +80,7 @@ export default function Home() {
                 </span>
                 <input
                   suppressHydrationWarning
-                  className="auth-input w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] py-3 pl-10 pr-4 outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
+                  className="auth-field auth-input w-full pl-10 pr-4"
                   id="username"
                   name="email"
                   onChange={(event) => setUsername(event.target.value)}
@@ -97,7 +97,7 @@ export default function Home() {
                 <label className="auth-label text-[#1a1c1c]" htmlFor="password">
                   Password
                 </label>
-                <Link className="auth-label cursor-pointer text-[#002576] hover:underline" href="#">
+                <Link className="auth-label cursor-pointer text-[#002576] hover:underline" href="/forgot-password">
                   Forgot password?
                 </Link>
               </div>
@@ -110,7 +110,7 @@ export default function Home() {
                 </span>
                 <input
                   suppressHydrationWarning
-                  className="auth-input w-full rounded-lg border border-[#c4c5d5] bg-[#f9f9f9] py-3 pl-10 pr-10 outline-none transition-all placeholder:text-[#747685] focus:border-[#3056c4] focus:ring-1 focus:ring-[#3056c4]"
+                  className="auth-field auth-input w-full pl-10 pr-10"
                   id="password"
                   name="password"
                   onChange={(event) => setPassword(event.target.value)}
@@ -136,7 +136,7 @@ export default function Home() {
 
             <button
               suppressHydrationWarning
-              className="auth-button flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#0038a8] py-4 tracking-[0.02em] text-white shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition-all hover:bg-[#002576] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 disabled:active:scale-100"
+              className="auth-primary-action auth-button flex w-full tracking-[0.02em]"
               disabled={isSubmitting}
               type="submit"
             >
@@ -145,12 +145,12 @@ export default function Home() {
 
             {errorMessage ? (
               !showTeacherStatusModal ? (
-                <div className="rounded-[10px] border border-[#f3d6d6] bg-[#fff6f6] px-4 py-3">
+                <div className="rounded-lg border border-[#f3d6d6] bg-[#fff6f6] px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-[#93000a] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
                       <i aria-hidden="true" className="fa-solid fa-circle-exclamation text-[13px]" />
                     </div>
-                    <p className="text-[14px] font-medium leading-[1.45] text-[#93000a]">{errorMessage}</p>
+                    <p className="ui-secondary-text font-medium text-[#93000a]">{errorMessage}</p>
                   </div>
                 </div>
               ) : null
@@ -165,14 +165,14 @@ export default function Home() {
             <div className="grid grid-cols-1 gap-2">
               <Link
                 href="/applicant-signup"
-                className="auth-label flex w-full items-center justify-center gap-2 rounded-lg border border-[#d9e3f7] bg-white py-3 text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                className="auth-secondary-action auth-label flex w-full gap-2 bg-white text-[#444653] hover:border-[#0038a8] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
               >
                 <i aria-hidden="true" className="fa-solid fa-user-plus text-[0.8125rem]" />
                 Sign Up as Applicant
               </Link>
               <Link
                 href="/teacher-type"
-                className="auth-label flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg border border-[#d9e3f7] bg-white py-3 text-[#444653] transition hover:border-[#0038a8] hover:bg-[#eef3ff] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
+                className="auth-secondary-action auth-label flex w-full gap-2 bg-white text-[#444653] hover:border-[#0038a8] hover:text-[#0038a8] active:border-[#0038a8] active:text-[#0038a8]"
               >
                 <i aria-hidden="true" className="fa-solid fa-chalkboard-user text-[0.8125rem]" />
                 Sign Up as Teacher
@@ -190,7 +190,7 @@ export default function Home() {
       </footer>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[360px] rounded-[12px] border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        contentClassName="w-full max-w-[360px] rounded-xl border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isSubmitting}
       >
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
@@ -206,7 +206,7 @@ export default function Home() {
         actions={
           <div className="flex justify-center">
             <button
-              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[13px] font-bold text-white transition hover:bg-[#0038a8]"
+              className="auth-primary-action min-w-[104px] bg-[#002576] px-4 hover:bg-[#0038a8]"
               onClick={() => setErrorMessage("")}
               type="button"
             >

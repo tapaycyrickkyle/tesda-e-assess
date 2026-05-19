@@ -1,28 +1,36 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { getCurrentAppUser } from "@/lib/current-user";
 import { requireUserRole } from "@/lib/server-auth";
 
 const adminSidebarItems = [
-  { key: "dashboard", label: "Dashboard", icon: "fa-solid fa-chart-pie", href: "/admin/dashboard" },
-  { key: "applicants", label: "Applicants", icon: "fa-solid fa-users", href: "/admin/applicants" },
+  { key: "overview", label: "Overview", icon: "fa-solid fa-chart-pie", href: "/admin/overview" },
+  { key: "queue", label: "Queue", icon: "fa-solid fa-users", href: "/admin/queue" },
   {
-    key: "assigned-applicants",
-    label: "Assigned Applicants",
+    key: "assignments",
+    label: "Assignments",
     icon: "fa-solid fa-user-check",
-    href: "/admin/assigned-applicants",
+    href: "/admin/assignments",
   },
   {
-    key: "teacher-approvals",
-    label: "Teacher Approvals",
+    key: "teachers",
+    label: "Teachers",
     icon: "fa-solid fa-chalkboard-user",
-    href: "/admin/teacher-approvals",
+    href: "/admin/teachers",
   },
   {
-    key: "assessment-center",
-    label: "Assessment Center",
+    key: "centers",
+    label: "Centers",
     icon: "fa-solid fa-building",
-    href: "/admin/assessment-center",
+    href: "/admin/centers",
   },
-  { key: "profile", label: "Profile", icon: "fa-regular fa-user", href: "/admin/profile" },
+  {
+    key: "reports",
+    label: "Reports",
+    icon: "fa-solid fa-file-export",
+    href: "/admin/reports",
+  },
+  { key: "inbox", label: "Inbox", icon: "fa-regular fa-bell", href: "/admin/inbox" },
+  { key: "account", label: "Account", icon: "fa-regular fa-user", href: "/admin/account" },
 ];
 
 export default async function AdminLayout({
@@ -31,9 +39,16 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }>) {
   await requireUserRole("admin");
+  const currentUser = await getCurrentAppUser();
+
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">
-      <DashboardSidebar items={adminSidebarItems} portalLabel="Eastern Samar Office" />
+      <DashboardSidebar
+        items={adminSidebarItems}
+        portalLabel="Eastern Samar Office"
+        userAvatarUrl={currentUser?.avatarUrl ?? null}
+        userEmail={currentUser?.email ?? ""}
+      />
       {children}
     </div>
   );

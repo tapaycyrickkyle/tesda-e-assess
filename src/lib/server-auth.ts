@@ -34,19 +34,19 @@ export async function requireUserRole(requiredRole: UserRole) {
 
   if (currentRole !== requiredRole) {
     if (currentRole === "admin") {
-      redirect("/admin/dashboard");
+      redirect("/admin/overview");
     }
 
     if (currentRole === "applicant") {
-      redirect("/applicant/dashboard");
+      redirect("/applicant/overview");
     }
 
     if (currentRole === "teacher") {
-      redirect("/teacher/dashboard");
+      redirect("/teacher/overview");
     }
 
     if (currentRole === "assessment_center") {
-      redirect("/assessment-center/dashboard");
+      redirect("/assessment-center/overview");
     }
 
     redirect("/");

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
@@ -14,6 +15,21 @@ type CreateAssessmentCenterPayload = {
 type DeleteAssessmentCenterPayload = {
   id?: string;
 };
+
+type UpdateAssessmentCenterPayload = {
+  address?: string;
+  contact?: string;
+  id?: string;
+  manager?: string;
+  name?: string;
+};
+
+const closedAssessmentStatuses = new Set<ApplicationSubmissionStatus>([
+  "completed",
+  "rejected",
+  "cancelled",
+  "withdrawn",
+]);
 
 async function syncAssessmentCenterProfile(email: string, authUserId: string) {
   const adminSupabase = createSupabaseAdminClient();
@@ -259,6 +275,56 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ success: false, message: "Assessment center not found." }, { status: 404 });
   }
 
+  const { data: linkedAssignments, error: linkedAssignmentsError } = await supabase
+    .from("assessment_center_applicants")
+    .select("id, applicant_reference")
+    .eq("assessment_center_id", centerId);
+
+  if (linkedAssignmentsError) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unable to verify whether this assessment center still has assigned applicants.",
+      },
+      { status: 500 },
+    );
+  }
+
+  const linkedSubmissionIds = [...new Set((linkedAssignments ?? []).map((assignment) => assignment.applicant_reference).filter(Boolean))];
+  const { data: linkedSubmissions, error: linkedSubmissionsError } = linkedSubmissionIds.length
+    ? await supabase
+        .from("applicant_application_submissions")
+        .select("id, workflow_status")
+        .in("id", linkedSubmissionIds)
+    : { data: [], error: null };
+
+  if (linkedSubmissionsError) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unable to verify the linked applicant submission statuses for this center.",
+      },
+      { status: 500 },
+    );
+  }
+
+  const activeAssignments = (linkedSubmissions ?? []).filter(
+    (submission) => !closedAssessmentStatuses.has(submission.workflow_status as ApplicationSubmissionStatus),
+  );
+
+  if (activeAssignments.length > 0) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          activeAssignments.length === 1
+            ? "This assessment center still has 1 active applicant assignment. Remove or finish it before deleting the center."
+            : `This assessment center still has ${activeAssignments.length} active applicant assignments. Remove or finish them before deleting the center.`,
+      },
+      { status: 400 },
+    );
+  }
+
   const { error: deleteError } = await supabase.from("assessment_centers").delete().eq("id", centerId);
 
   if (deleteError) {
@@ -289,4 +355,66 @@ export async function DELETE(request: Request) {
   }
 
   return NextResponse.json({ success: true, message: "Assessment center deleted successfully." });
+}
+
+export async function PATCH(request: Request) {
+  const currentUser = await getCurrentAppUser();
+
+  if (!currentUser) {
+    return NextResponse.json({ success: false, message: "You must be logged in." }, { status: 401 });
+  }
+
+  if (currentUser.role !== "admin") {
+    return NextResponse.json({ success: false, message: "Admin access is required." }, { status: 403 });
+  }
+
+  const body = (await request.json()) as UpdateAssessmentCenterPayload;
+  const centerId = body.id?.trim() ?? "";
+  const name = body.name?.trim() ?? "";
+  const address = body.address?.trim() ?? "";
+  const manager = body.manager?.trim() ?? "";
+  const contact = body.contact?.trim() ?? "";
+
+  if (!centerId || !name || !address || !manager || !contact) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Assessment center ID, name, address, manager, and contact are required.",
+      },
+      { status: 400 },
+    );
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { data, error } = await supabase
+    .from("assessment_centers")
+    .update({
+      address,
+      contact,
+      manager,
+      name,
+    })
+    .eq("id", centerId)
+    .select("id, name, address, manager, contact, center_email, center_auth_user_id, created_at")
+    .maybeSingle();
+
+  if (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Unable to update the assessment center record right now.",
+      },
+      { status: 500 },
+    );
+  }
+
+  if (!data) {
+    return NextResponse.json({ success: false, message: "Assessment center not found." }, { status: 404 });
+  }
+
+  return NextResponse.json({
+    success: true,
+    center: data,
+    message: "Assessment center updated successfully.",
+  });
 }

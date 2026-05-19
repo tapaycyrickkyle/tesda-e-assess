@@ -59,7 +59,7 @@ export default function NotificationBanner({
 
   return (
     <div
-      className={`rounded-[12px] border ${styles.border} ${styles.background} ${
+      className={`rounded-xl border ${styles.border} ${styles.background} ${
         compact ? "px-4 py-3" : "px-4 py-3.5"
       } ${className}`.trim()}
     >

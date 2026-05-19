@@ -4,10 +4,42 @@ import { getUserRoleFromMetadata, SESSION_COOKIE_NAME, type UserRole } from "@/l
 
 export type CurrentAppUser = {
   accessToken: string;
+  avatarUrl: string | null;
   email: string;
   id: string;
   role: UserRole;
 };
+
+function normalizeAvatarUrl(value: unknown) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
+function getUserAvatarUrl(user: {
+  app_metadata?: Record<string, unknown> | null;
+  user_metadata?: Record<string, unknown> | null;
+}) {
+  const candidates = [
+    user.user_metadata?.avatar_url,
+    user.user_metadata?.picture,
+    user.user_metadata?.photo_url,
+    user.app_metadata?.avatar_url,
+    user.app_metadata?.picture,
+  ];
+
+  for (const candidate of candidates) {
+    const avatarUrl = normalizeAvatarUrl(candidate);
+    if (avatarUrl) {
+      return avatarUrl;
+    }
+  }
+
+  return null;
+}
 
 export async function getCurrentAppUser(): Promise<CurrentAppUser | null> {
   const cookieStore = await cookies();
@@ -44,6 +76,7 @@ export async function getCurrentAppUser(): Promise<CurrentAppUser | null> {
 
   return {
     accessToken,
+    avatarUrl: getUserAvatarUrl(data.user),
     email: data.user.email,
     id: data.user.id,
     role,

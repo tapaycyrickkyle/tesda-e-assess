@@ -1,12 +1,14 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { getCurrentAppUser } from "@/lib/current-user";
 import { requireUserRole } from "@/lib/server-auth";
 
 const applicantSidebarItems = [
-  { key: "dashboard", label: "Dashboard", icon: "fa-solid fa-table-columns", href: "/applicant/dashboard" },
-  { key: "applications", label: "Applications", icon: "fa-regular fa-file-lines", href: "/applicant/applications" },
-  { key: "submitted-forms", label: "Submitted Forms", icon: "fa-solid fa-file-pdf", href: "/applicant/submitted-forms" },
-  { key: "room", label: "Room", icon: "fa-solid fa-door-open", href: "/applicant/room" },
-  { key: "profile", label: "Profile", icon: "fa-regular fa-user", href: "/applicant/profile" },
+  { key: "overview", label: "Overview", icon: "fa-solid fa-table-columns", href: "/applicant/overview" },
+  { key: "apply", label: "Apply", icon: "fa-regular fa-file-lines", href: "/applicant/apply" },
+  { key: "submissions", label: "Submissions", icon: "fa-solid fa-file-pdf", href: "/applicant/submissions" },
+  { key: "inbox", label: "Inbox", icon: "fa-regular fa-bell", href: "/applicant/inbox" },
+  { key: "rooms", label: "Rooms", icon: "fa-solid fa-door-open", href: "/applicant/rooms" },
+  { key: "account", label: "Account", icon: "fa-regular fa-user", href: "/applicant/account" },
 ];
 
 export default async function ApplicantLayout({
@@ -15,9 +17,16 @@ export default async function ApplicantLayout({
   children: React.ReactNode;
 }>) {
   await requireUserRole("applicant");
+  const currentUser = await getCurrentAppUser();
+
   return (
-    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
-      <DashboardSidebar items={applicantSidebarItems} portalLabel="Applicant Portal" />
+    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">
+      <DashboardSidebar
+        items={applicantSidebarItems}
+        portalLabel="Applicant Portal"
+        userAvatarUrl={currentUser?.avatarUrl ?? null}
+        userEmail={currentUser?.email ?? ""}
+      />
       {children}
     </div>
   );

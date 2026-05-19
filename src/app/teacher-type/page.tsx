@@ -44,7 +44,7 @@ function TeacherTypeCard({
 }: TeacherTypeCardProps) {
   return (
     <Link
-      className="group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+      className="auth-choice-card group"
       href={href}
     >
       <div className="absolute inset-x-0 top-0 h-1.5 bg-[#002576]" />
@@ -57,11 +57,11 @@ function TeacherTypeCard({
       </div>
 
       <div className="mt-4">
-        <h2 className="text-[30px] font-bold leading-[1.15] text-[#0038a8] sm:text-[34px]">{title}</h2>
-        <p className="mt-2 max-w-[30ch] text-[14px] leading-[1.6] text-[#5d5f5f]">{description}</p>
+        <h2 className="auth-choice-title">{title}</h2>
+        <p className="auth-choice-copy">{description}</p>
       </div>
 
-      <div className="mt-5 inline-flex items-center gap-2 text-[14px] font-bold text-[#002576]">
+      <div className="auth-choice-link">
         <span>Continue</span>
         <i aria-hidden="true" className="fa-solid fa-arrow-right text-[11px] transition group-hover:translate-x-0.5" />
       </div>
@@ -79,9 +79,9 @@ export default function TeacherTypePage() {
       <div aria-hidden="true" className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,24,74,0.82),rgba(0,56,168,0.58))]" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1080px] flex-1 flex-col px-4 pt-6 pb-8 sm:px-6 lg:pt-8 lg:pb-10">
-        <div className="mb-5">
+        <div className="mb-6">
           <Link
-            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-[#ffffff14] px-4 py-2 text-[14px] font-bold text-white transition hover:bg-[#ffffff22]"
+            className="auth-secondary-action inline-flex gap-2 border-white/20 bg-[#ffffff14] text-white hover:bg-[#ffffff22]"
             href="/"
           >
             <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
@@ -92,10 +92,10 @@ export default function TeacherTypePage() {
         <section className="flex flex-1 items-start justify-center">
           <div className="flex w-full flex-col items-center">
             <div className="mx-auto max-w-xl text-center">
-              <h1 className="text-[2rem] font-bold leading-[1.1] text-white">
+              <h1 className="auth-hero-title text-white">
                 Choose Teacher Type
               </h1>
-              <p className="mt-2 text-[15px] leading-[1.6] text-[#d9e7ff]">
+              <p className="auth-panel-copy mt-2 text-[#d9e7ff]">
                 Select the affiliation that matches your institution.
               </p>
             </div>

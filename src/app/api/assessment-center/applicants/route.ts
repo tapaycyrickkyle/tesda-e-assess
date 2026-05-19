@@ -7,9 +7,11 @@ import {
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
+import { recordSubmissionWorkflowTransition } from "@/lib/workflow-history";
 
 type UpdateAssessmentCenterSubmissionPayload = {
   action?: "complete" | "reject" | "cancel";
+  reason?: string | null;
   submissionId?: string;
 };
 
@@ -90,7 +92,7 @@ export async function GET() {
   const { data: submissions, error: submissionsError } = submissionIds.length
     ? await adminSupabase
         .from("applicant_application_submissions")
-        .select("id, workflow_status")
+        .select("id, workflow_status, latest_status_reason")
         .in("id", submissionIds)
     : { data: [], error: null };
 
@@ -104,13 +106,14 @@ export async function GET() {
     );
   }
 
-  const submissionStatusById = new Map((submissions ?? []).map((submission) => [submission.id, submission.workflow_status]));
+  const submissionById = new Map((submissions ?? []).map((submission) => [submission.id, submission]));
 
   return NextResponse.json({
     success: true,
     applicants: (data ?? []).map((applicant) => ({
       ...applicant,
-      workflow_status: (submissionStatusById.get(applicant.applicant_reference) ?? "under_review") as ApplicationSubmissionStatus,
+      latest_status_reason: submissionById.get(applicant.applicant_reference)?.latest_status_reason ?? null,
+      workflow_status: (submissionById.get(applicant.applicant_reference)?.workflow_status ?? "under_review") as ApplicationSubmissionStatus,
     })),
     centerName: center.name,
     centerLinkNotice: getAssessmentCenterLinkMessage(centerResult.status),
@@ -130,11 +133,19 @@ export async function PATCH(request: Request) {
 
   const body = (await request.json()) as UpdateAssessmentCenterSubmissionPayload;
   const submissionId = body.submissionId?.trim() ?? "";
+  const reason = body.reason?.trim() ?? "";
   const action = body.action;
 
   if (!submissionId || !action) {
     return NextResponse.json(
       { success: false, message: "A submission and processing action are required." },
+      { status: 400 },
+    );
+  }
+
+  if ((action === "reject" || action === "cancel") && !reason) {
+    return NextResponse.json(
+      { success: false, message: "Please provide a reason before rejecting or cancelling this submission." },
       { status: 400 },
     );
   }
@@ -185,7 +196,7 @@ export async function PATCH(request: Request) {
 
   const { data: submission, error: submissionError } = await adminSupabase
     .from("applicant_application_submissions")
-    .select("id, workflow_status")
+    .select("id, applicant_id, applicant_email, applicant_name, qualification_title, workflow_status")
     .eq("id", submissionId)
     .maybeSingle();
 
@@ -210,6 +221,8 @@ export async function PATCH(request: Request) {
   const { error: updateError } = await adminSupabase
     .from("applicant_application_submissions")
     .update({
+      latest_status_reason: reason || null,
+      latest_status_updated_at: processedAt,
       updated_at: processedAt,
       workflow_status: nextStatus,
     })
@@ -222,6 +235,53 @@ export async function PATCH(request: Request) {
     );
   }
 
+  try {
+    await recordSubmissionWorkflowTransition({
+      actor: currentUser,
+      eventType:
+        nextStatus === "completed"
+          ? "assessment_center_completed"
+          : nextStatus === "rejected"
+            ? "assessment_center_rejected"
+            : "assessment_center_cancelled",
+      fromStatus: submission.workflow_status as ApplicationSubmissionStatus,
+      metadata: {
+        assessmentCenterId: center.id,
+        assessmentCenterName: center.name,
+      },
+      notifications: [
+        {
+          message:
+            nextStatus === "completed"
+              ? `${center.name} marked your ${submission.qualification_title} application as completed.`
+              : nextStatus === "rejected"
+                ? `${center.name} rejected your ${submission.qualification_title} application.`
+                : `${center.name} cancelled your ${submission.qualification_title} application.`,
+          notificationType: nextStatus === "completed" ? "success" : nextStatus === "rejected" ? "error" : "warning",
+          recipientEmail: submission.applicant_email,
+          recipientRole: "applicant",
+          recipientUserId: submission.applicant_id,
+          submissionId: submission.id,
+          title:
+            nextStatus === "completed"
+              ? "Application Completed"
+              : nextStatus === "rejected"
+                ? "Application Rejected"
+                : "Application Cancelled",
+        },
+      ],
+      reason,
+      submissionId: submission.id,
+      toStatus: nextStatus,
+    });
+  } catch (historyError) {
+    console.error("Failed to record assessment center workflow history.", {
+      centerId: center.id,
+      error: historyError,
+      submissionId,
+    });
+  }
+
   return NextResponse.json({
     success: true,
     message:
@@ -230,6 +290,7 @@ export async function PATCH(request: Request) {
         : nextStatus === "rejected"
           ? "Submission marked as rejected."
           : "Submission marked as cancelled.",
+    reason: reason || null,
     workflowStatus: nextStatus,
   });
 }
