@@ -1,24 +1,31 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
+import { getCurrentAppUser } from "@/lib/current-user";
 import { requireUserRole } from "@/lib/server-auth";
 
 const assessmentCenterSidebarItems = [
   {
-    key: "dashboard",
-    label: "Dashboard",
+    key: "overview",
+    label: "Overview",
     icon: "fa-solid fa-table-columns",
-    href: "/assessment-center/dashboard",
+    href: "/assessment-center/overview",
   },
   {
-    key: "applicants",
-    label: "Applicants",
+    key: "reviews",
+    label: "Reviews",
     icon: "fa-solid fa-users",
-    href: "/assessment-center/applicants",
+    href: "/assessment-center/reviews",
   },
   {
-    key: "profile",
-    label: "Profile",
+    key: "inbox",
+    label: "Inbox",
+    icon: "fa-regular fa-bell",
+    href: "/assessment-center/inbox",
+  },
+  {
+    key: "account",
+    label: "Account",
     icon: "fa-regular fa-user",
-    href: "/assessment-center/profile",
+    href: "/assessment-center/account",
   },
 ];
 
@@ -28,10 +35,16 @@ export default async function AssessmentCenterLayout({
   children: React.ReactNode;
 }>) {
   await requireUserRole("assessment_center");
+  const currentUser = await getCurrentAppUser();
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30]">
-      <DashboardSidebar items={assessmentCenterSidebarItems} portalLabel="Assessment Center Portal" />
+    <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">
+      <DashboardSidebar
+        items={assessmentCenterSidebarItems}
+        portalLabel="Assessment Center Portal"
+        userAvatarUrl={currentUser?.avatarUrl ?? null}
+        userEmail={currentUser?.email ?? ""}
+      />
       {children}
     </div>
   );

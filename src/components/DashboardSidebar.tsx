@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
-
 type SidebarItem = {
   key: string;
   label: string;
@@ -15,23 +15,75 @@ type SidebarItem = {
 type DashboardSidebarProps = {
   portalLabel: string;
   items: SidebarItem[];
+  userAvatarUrl?: string | null;
+  userEmail: string;
 };
 
-export default function DashboardSidebar({ portalLabel, items }: DashboardSidebarProps) {
+export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, userEmail }: DashboardSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement | null>(null);
+  const shouldRestoreFocusRef = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState<string | null>(null);
   const activeItemHref =
     items
       .filter((item) => pathname === item.href || pathname.startsWith(`${item.href}/`))
       .sort((firstItem, secondItem) => secondItem.href.length - firstItem.href.length)[0]?.href ?? null;
+  const accountItem = items.find((item) => item.key === "account");
+  const navigationItems = items.filter((item) => item.key !== "account");
+  const displayEmail = userEmail.trim() || "Signed-in user";
+  const emailInitial = displayEmail.charAt(0).toUpperCase();
+  const resolvedAvatarUrl = userAvatarUrl?.trim() ? userAvatarUrl.trim() : null;
+  const canShowAvatar = Boolean(resolvedAvatarUrl) && failedAvatarUrl !== resolvedAvatarUrl;
 
-  const navigateTo = (href: string) => {
+  const closeMobileNav = () => {
     setIsMobileNavOpen(false);
-    router.push(href);
   };
+
+  useEffect(() => {
+    if (!isMobileNavOpen) {
+      if (shouldRestoreFocusRef.current) {
+        mobileMenuButtonRef.current?.focus();
+        shouldRestoreFocusRef.current = false;
+      }
+      return;
+    }
+
+    shouldRestoreFocusRef.current = true;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusTimeoutId = window.setTimeout(() => {
+      mobileCloseButtonRef.current?.focus();
+    }, 0);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileNavOpen(false);
+      }
+    };
+
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const handleMediaChange = (event: MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsMobileNavOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    mediaQuery.addEventListener("change", handleMediaChange);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+      mediaQuery.removeEventListener("change", handleMediaChange);
+      window.clearTimeout(focusTimeoutId);
+    };
+  }, [isMobileNavOpen]);
 
   const performLogout = async () => {
     setIsMobileNavOpen(false);
@@ -46,48 +98,76 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
     }
   };
 
+  const accountLinkClassName =
+    "flex w-full items-center gap-2.5 rounded-lg px-5 py-2.5 text-left transition-all hover:bg-white/12 hover:text-white";
+
+  const renderAvatar = (sizeClassName: string, textClassName: string) => {
+    if (resolvedAvatarUrl && canShowAvatar) {
+      return (
+        <span className={`inline-flex shrink-0 overflow-hidden rounded-full bg-white/12 ${sizeClassName}`}>
+          <img
+            alt={`${displayEmail} profile`}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            onError={() => setFailedAvatarUrl(resolvedAvatarUrl)}
+            referrerPolicy="no-referrer"
+            src={resolvedAvatarUrl}
+          />
+        </span>
+      );
+    }
+
+    return (
+      <span
+        className={`inline-flex shrink-0 items-center justify-center rounded-full bg-white text-[#0038a8] shadow-[0_6px_18px_rgba(11,28,48,0.16)] ${sizeClassName} ${textClassName}`}
+      >
+        {emailInitial}
+      </span>
+    );
+  };
+
   return (
     <>
-      <div className="sticky top-0 z-30 border-b border-[#d9e3f7] bg-white/96 backdrop-blur lg:hidden">
-        <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff]">
+      <div className="sticky top-0 z-30 border-b border-[#d9e3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,251,255,0.95)_100%)] backdrop-blur lg:hidden">
+        <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
+            <button
+              aria-expanded={isMobileNavOpen}
+              aria-label={isMobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] text-[#002576] transition duration-300 hover:bg-[#eff4ff] lg:hidden"
+              onClick={() => setIsMobileNavOpen((currentValue) => !currentValue)}
+              ref={mobileMenuButtonRef}
+              type="button"
+            >
+              <span className="relative block h-4 w-4">
+                <span
+                  aria-hidden="true"
+                  className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
+                    isMobileNavOpen ? "rotate-45" : "-translate-y-[5px]"
+                  }`}
+                />
+                <span
+                  aria-hidden="true"
+                  className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
+                    isMobileNavOpen ? "opacity-0" : "opacity-100"
+                  }`}
+                />
+                <span
+                  aria-hidden="true"
+                  className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
+                    isMobileNavOpen ? "-rotate-45" : "translate-y-[5px]"
+                  }`}
+                />
+              </span>
+            </button>
+
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#eef4ff] shadow-[inset_0_0_0_1px_rgba(207,224,255,0.72)] lg:hidden">
               <Image alt="TESDA logo" className="h-7 w-7 object-contain" height={28} priority src="/images/tesda-logo.png" width={28} />
             </div>
-            <div className="min-w-0">
-              <h2 className="truncate text-[16px] font-bold leading-[1.15] text-[#002576]">TESDA E-Assess</h2>
-              <p className="truncate text-[12px] leading-[1.3] text-[#5d6d8a]">{portalLabel}</p>
-            </div>
-          </div>
 
-          <button
-            aria-expanded={isMobileNavOpen}
-            aria-label={isMobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[#c4d1eb] bg-[#f8fbff] text-[#002576] transition duration-300 hover:bg-[#eff4ff]"
-            onClick={() => setIsMobileNavOpen((currentValue) => !currentValue)}
-            type="button"
-          >
-            <span className="relative block h-4 w-4">
-              <span
-                aria-hidden="true"
-                className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
-                  isMobileNavOpen ? "rotate-45" : "-translate-y-[5px]"
-                }`}
-              />
-              <span
-                aria-hidden="true"
-                className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
-                  isMobileNavOpen ? "opacity-0" : "opacity-100"
-                }`}
-              />
-              <span
-                aria-hidden="true"
-                className={`absolute left-1/2 top-1/2 h-[2px] w-4 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
-                  isMobileNavOpen ? "-rotate-45" : "translate-y-[5px]"
-                }`}
-              />
-            </span>
-          </button>
+            <div className="min-w-0 lg:hidden">
+              <p className="truncate text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{portalLabel}</p>
+              <h2 className="truncate text-[15px] font-bold leading-[1.15] text-[#0b1c30]">TESDA E-Assess</h2>
+            </div>
         </div>
       </div>
 
@@ -102,52 +182,77 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
             className={`absolute inset-0 bg-[#0b1c30]/48 transition-opacity duration-300 ${
               isMobileNavOpen ? "opacity-100" : "opacity-0"
             }`}
-            onClick={() => setIsMobileNavOpen(false)}
+            onClick={closeMobileNav}
             type="button"
           />
           <div
+            aria-labelledby="mobile-sidebar-title"
+            aria-modal="true"
             className={`absolute left-0 top-0 flex h-full w-[86%] max-w-[320px] flex-col border-r border-[#2f61c7] bg-[#0038a8] pb-4 pt-5 shadow-[0_14px_34px_rgba(15,23,42,0.14)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isMobileNavOpen ? "translate-x-0" : "-translate-x-full"
             }`}
+            role="dialog"
           >
-            <div className="mb-5 flex items-center gap-3 px-5">
-              <Image
-                alt="TESDA logo"
-                className="h-10 w-10 object-contain [filter:brightness(0)_invert(1)]"
-                height={40}
-                priority
-                src="/images/tesda-logo.png"
-                width={40}
-              />
-              <div className="min-w-0">
-                <h2 className="truncate text-[18px] font-bold leading-[1.15] text-white">TESDA E-Assess</h2>
-                <p className="mt-1 truncate text-[13px] leading-[1.25] text-[#d9e7ff]">{portalLabel}</p>
+            <div className="mb-5 flex items-start justify-between gap-3 px-5">
+              <div className="flex min-w-0 items-center gap-3">
+                <Image
+                  alt="TESDA logo"
+                  className="h-10 w-10 object-contain [filter:brightness(0)_invert(1)]"
+                  height={40}
+                  priority
+                  src="/images/tesda-logo.png"
+                  width={40}
+                />
+                <div className="min-w-0">
+                  <h2 className="truncate text-[18px] font-bold leading-[1.15] text-white" id="mobile-sidebar-title">
+                    TESDA E-Assess
+                  </h2>
+                  <p className="mt-1 truncate text-[13px] leading-[1.25] text-[#d9e7ff]">{portalLabel}</p>
+                </div>
               </div>
+              <button
+                aria-label="Close navigation menu"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white transition hover:bg-white/16"
+                onClick={closeMobileNav}
+                ref={mobileCloseButtonRef}
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-xmark text-[16px]" />
+              </button>
             </div>
 
-            <nav className="flex-1 space-y-1 px-2">
-              {items.map((item) => {
+            <nav aria-label={`${portalLabel} navigation`} className="flex-1 space-y-1 px-2">
+              {navigationItems.map((item) => {
                 const isActive = activeItemHref === item.href;
 
                 return (
-                  <button
+                  <Link
                     key={item.key}
                     className={`flex w-full items-center gap-3 rounded-lg px-5 py-3 text-left text-[13px] font-medium transition-all ${
                       isActive
                         ? "bg-white/16 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
                         : "text-[#d9e7ff] hover:bg-white/12 hover:text-white"
                     }`}
-                    onClick={() => navigateTo(item.href)}
-                    type="button"
+                    href={item.href}
+                    onClick={closeMobileNav}
                   >
                     <i aria-hidden="true" className={item.icon} />
                     {item.label}
-                  </button>
+                  </Link>
                 );
               })}
-            </nav>
+        </nav>
 
-            <div className="mt-auto px-2 pt-4">
+        <div className="mt-auto px-2 pt-4">
+          {accountItem ? (
+            <Link className={accountLinkClassName} href={accountItem.href} onClick={closeMobileNav}>
+              {renderAvatar("h-9 w-9", "text-[13px] font-bold")}
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#bfd4ff]">Account</p>
+                    <p className="truncate text-[13px] font-semibold leading-[1.3] text-white">{displayEmail}</p>
+                  </div>
+                </Link>
+              ) : null}
               <button
                 className="flex w-full items-center gap-3 rounded-lg px-5 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isLoggingOut}
@@ -183,28 +288,36 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
         </div>
 
         <nav className="flex-1 space-y-1 px-2">
-          {items.map((item) => {
+          {navigationItems.map((item) => {
             const isActive = activeItemHref === item.href;
 
             return (
-              <button
+              <Link
                 key={item.key}
                 className={`flex w-full items-center gap-3 rounded-lg px-6 py-3 text-left text-[13px] font-medium transition-all ${
                   isActive
                     ? "bg-white/16 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
                     : "text-[#d9e7ff] hover:bg-white/12 hover:text-white"
                 }`}
-                onClick={() => navigateTo(item.href)}
-                type="button"
+                href={item.href}
               >
                 <i aria-hidden="true" className={item.icon} />
                 {item.label}
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         <div className="mt-auto px-2 pt-4">
+          {accountItem ? (
+            <Link className={accountLinkClassName} href={accountItem.href}>
+              {renderAvatar("h-9 w-9", "text-[13px] font-bold")}
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#bfd4ff]">Account</p>
+                <p className="truncate text-[13px] font-semibold leading-[1.3] text-white">{displayEmail}</p>
+              </div>
+            </Link>
+          ) : null}
           <button
             className="flex w-full items-center gap-3 rounded-lg px-6 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isLoggingOut}
@@ -218,17 +331,17 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
       </aside>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[420px] rounded-[12px] border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        contentClassName="w-full max-w-[420px] rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isLogoutConfirmOpen}
       >
         <div className="border-b border-[#d9e3f7] px-6 py-4">
-          <h2 className="text-[24px] font-semibold leading-[1.2] text-[#0b1c30]">Confirm Logout</h2>
+          <h2 className="ui-section-title text-[#0b1c30]">Confirm Logout</h2>
           <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">
             Are you sure you want to log out of the TESDA E-Assess portal?
           </p>
         </div>
 
-        <div className="space-y-3 rounded-b-[20px] bg-[#f8fbff] px-6 py-4">
+        <div className="ui-modal-section space-y-3 px-6 py-4">
           <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
             <p className="text-[13px] leading-[1.6] text-[#0b1c30]">
               You will be returned to the main login page and need to sign in again to continue.
@@ -255,7 +368,7 @@ export default function DashboardSidebar({ portalLabel, items }: DashboardSideba
       </AnimatedModal>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[340px] rounded-[12px] border border-[#d9e3f7] bg-white px-6 py-5 text-center shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        contentClassName="w-full max-w-[340px] rounded-xl border border-[#d9e3f7] bg-white px-6 py-5 text-center shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isLoggingOut}
         zIndexClassName="z-[60]"
       >

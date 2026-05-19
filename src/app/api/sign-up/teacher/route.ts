@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Enter a valid Philippine mobile number. Use 10 digits after +63, like 9123456789.",
+        message: "Enter a valid Philippine mobile number. Use 10 digits after +63, like 9123456789, or 09123456789 on account pages.",
       },
       { status: 400 },
     );

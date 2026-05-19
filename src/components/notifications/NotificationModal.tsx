@@ -66,7 +66,7 @@ export default function NotificationModal({
 
   return (
     <AnimatedModal
-      contentClassName={`w-full max-w-[420px] rounded-[12px] border ${styles.border} bg-white px-6 py-6 shadow-[0_12px_30px_rgba(15,23,42,0.12)]`}
+      contentClassName={`w-full max-w-[420px] rounded-xl border ${styles.border} bg-white px-6 py-6 shadow-[0_12px_30px_rgba(15,23,42,0.12)]`}
       open={open}
     >
       {open ? (

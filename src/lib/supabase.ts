@@ -23,12 +23,32 @@ function createBaseSupabaseClient(accessToken?: string) {
   });
 }
 
+function createBaseSupabaseBrowserClient() {
+  const { url, anonKey } = getSupabaseEnv();
+
+  if (!url || !anonKey) {
+    throw new Error("Supabase environment variables are not configured.");
+  }
+
+  return createClient(url, anonKey, {
+    auth: {
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      persistSession: false,
+    },
+  });
+}
+
 export function createSupabaseServerClient() {
   return createBaseSupabaseClient();
 }
 
 export function createSupabaseAccessTokenClient(accessToken: string) {
   return createBaseSupabaseClient(accessToken);
+}
+
+export function createSupabaseBrowserClient() {
+  return createBaseSupabaseBrowserClient();
 }
 
 export function createSupabaseAdminClient() {

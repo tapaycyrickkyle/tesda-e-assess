@@ -44,6 +44,20 @@ export function normalizeContactNumber(value: string | null | undefined) {
   return `+63${digits}`;
 }
 
+export function sanitizePhilippineMobileNumberAfterCountryCode(value: string | null | undefined) {
+  let digits = (value ?? "").replace(/\D/g, "");
+
+  if (digits.startsWith("63")) {
+    digits = digits.slice(2);
+  }
+
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return digits.slice(0, 10);
+}
+
 export function isValidPhilippineMobileNumberInput(value: string | null | undefined) {
   const digits = (value ?? "").replace(/\D/g, "");
 
@@ -60,6 +74,28 @@ export function isValidPhilippineMobileNumberInput(value: string | null | undefi
   }
 
   return /^639\d{9}$/.test(digits);
+}
+
+export function formatPhilippineMobileNumberForLocalDisplay(value: string | null | undefined) {
+  const digits = (value ?? "").replace(/\D/g, "");
+
+  if (!digits) {
+    return "";
+  }
+
+  if (/^09\d{9}$/.test(digits)) {
+    return digits;
+  }
+
+  if (/^9\d{9}$/.test(digits)) {
+    return `0${digits}`;
+  }
+
+  if (/^639\d{9}$/.test(digits)) {
+    return `0${digits.slice(2)}`;
+  }
+
+  return value?.trim() ?? "";
 }
 
 export function buildFullName({

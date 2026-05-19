@@ -9,15 +9,23 @@ import {
 import {
   getApplicantSubmissionAssignmentInfoByIds,
   getApplicantSubmissionEditLock,
+  getApplicantSubmissionWithdrawalLock,
 } from "@/lib/application-submission-lifecycle";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
+import { recordSubmissionWorkflowTransition, type PortalNotificationInput } from "@/lib/workflow-history";
 
 type CreateApplicationSubmissionPayload = {
   formData?: unknown;
   roomId?: string | null;
   submissionId?: string | null;
   submissionSource?: ApplicationSubmissionSource | null;
+};
+
+type UpdateApplicationSubmissionPayload = {
+  action?: "withdraw";
+  reason?: string | null;
+  submissionId?: string | null;
 };
 
 function isLegacySubmissionRouteUniqueConflict(error: { code?: string; message?: string; details?: string | null }) {
@@ -280,6 +288,7 @@ export async function POST(request: Request) {
     }
   }
 
+  const submittedAt = new Date().toISOString();
   const payload = {
     applicant_email: currentUser.email,
     applicant_id: currentUser.id,
@@ -290,11 +299,13 @@ export async function POST(request: Request) {
     qualification_type: formData.assessmentType,
     room_id: isRoomSubmission ? roomId : null,
     submission_source: submissionSource,
-    submitted_at: new Date().toISOString(),
+    submitted_at: submittedAt,
     teacher_forwarded_at: null,
     teacher_forwarded_by: null,
     teacher_forwarded_by_email: null,
-    updated_at: new Date().toISOString(),
+    latest_status_reason: null,
+    latest_status_updated_at: submittedAt,
+    updated_at: submittedAt,
     workflow_status: workflowStatus,
   };
 
@@ -342,6 +353,82 @@ export async function POST(request: Request) {
     );
   }
 
+  try {
+    let notifications: PortalNotificationInput[] | undefined;
+
+    if (submissionSource === "room" && roomId) {
+      const { data: roomRecord } = await supabase
+        .from("rooms")
+        .select("id, name, teacher_id")
+        .eq("id", roomId)
+        .maybeSingle();
+
+      if (roomRecord?.teacher_id) {
+        const { data: teacherProfile } = await supabase
+          .from("profiles")
+          .select("id, email")
+          .eq("id", roomRecord.teacher_id)
+          .maybeSingle();
+
+        if (teacherProfile?.email) {
+          notifications = [
+            {
+              message: existingSubmission
+                ? `${applicantName} resubmitted ${formData.qualificationTitle} in ${roomRecord.name}.`
+                : `${applicantName} submitted ${formData.qualificationTitle} in ${roomRecord.name}.`,
+              notificationType: "info",
+              recipientEmail: teacherProfile.email,
+              recipientRole: "teacher",
+              recipientUserId: teacherProfile.id ?? roomRecord.teacher_id,
+              submissionId: savedSubmission?.id ?? existingSubmission?.id ?? "",
+              title: existingSubmission ? "Room Submission Updated" : "New Room Submission",
+            },
+          ];
+        }
+      }
+    } else if (submissionSource === "individual") {
+      const { data: adminRecipients } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("role", "admin");
+
+      if (adminRecipients && adminRecipients.length > 0) {
+        notifications = adminRecipients
+          .filter((adminRecipient) => Boolean(adminRecipient.email))
+          .map((adminRecipient) => ({
+            message: existingSubmission
+              ? `${applicantName} resubmitted ${formData.qualificationTitle} and it is back in the TESDA queue.`
+              : `${applicantName} submitted ${formData.qualificationTitle} directly to TESDA and it is ready for review.`,
+            notificationType: "info",
+            recipientEmail: adminRecipient.email,
+            recipientRole: "admin" as const,
+            recipientUserId: adminRecipient.id ?? null,
+            submissionId: savedSubmission?.id ?? existingSubmission?.id ?? "",
+            title: existingSubmission ? "Individual Submission Updated" : "New Individual Submission",
+          }));
+      }
+    }
+
+    await recordSubmissionWorkflowTransition({
+      actor: currentUser,
+      eventType: existingSubmission
+        ? "applicant_resubmitted"
+        : submissionSource === "room"
+          ? "applicant_submitted_to_teacher"
+          : "applicant_submitted",
+      fromStatus: existingSubmission?.workflow_status ?? null,
+      notifications,
+      submissionId: savedSubmission?.id ?? existingSubmission?.id ?? "",
+      toStatus: workflowStatus,
+    });
+  } catch (historyError) {
+    console.error("Failed to record applicant submission workflow history.", {
+      error: historyError,
+      submissionId: savedSubmission?.id ?? existingSubmission?.id ?? null,
+      userId: currentUser.id,
+    });
+  }
+
   return NextResponse.json({
     success: true,
     message: isRoomSubmission
@@ -352,5 +439,145 @@ export async function POST(request: Request) {
         ? "Application updated and resubmitted to TESDA successfully."
         : "Application submitted to TESDA successfully.",
     submissionId: savedSubmission?.id ?? existingSubmission?.id ?? null,
+  });
+}
+
+export async function PATCH(request: Request) {
+  const currentUser = await getCurrentAppUser();
+
+  if (!currentUser) {
+    return NextResponse.json({ success: false, message: "You must be logged in." }, { status: 401 });
+  }
+
+  if (currentUser.role !== "applicant") {
+    return NextResponse.json({ success: false, message: "Applicant access is required." }, { status: 403 });
+  }
+
+  const body = (await request.json()) as UpdateApplicationSubmissionPayload;
+  const submissionId = body.submissionId?.trim() ?? "";
+  const reason = body.reason?.trim() ?? "";
+  const action = body.action;
+
+  if (!submissionId || action !== "withdraw") {
+    return NextResponse.json(
+      { success: false, message: "A valid submission and applicant action are required." },
+      { status: 400 },
+    );
+  }
+
+  const supabase = createSupabaseAdminClient();
+  const { data: submission, error: submissionError } = await supabase
+    .from("applicant_application_submissions")
+    .select("id, room_id, submission_source, workflow_status")
+    .eq("id", submissionId)
+    .eq("applicant_id", currentUser.id)
+    .maybeSingle();
+
+  if (submissionError || !submission) {
+    return NextResponse.json(
+      { success: false, message: "Unable to find the application submission you are trying to withdraw." },
+      { status: submissionError ? 500 : 404 },
+    );
+  }
+
+  const assignmentMap = await getApplicantSubmissionAssignmentInfoByIds({
+    applicantId: currentUser.id,
+    submissionIds: [submission.id],
+  });
+  const withdrawalLock = getApplicantSubmissionWithdrawalLock({
+    assignment: assignmentMap.get(submission.id) ?? null,
+    workflowStatus: submission.workflow_status,
+  });
+
+  if (withdrawalLock.isLocked) {
+    return NextResponse.json({ success: false, message: withdrawalLock.message }, { status: 403 });
+  }
+
+  const withdrawnAt = new Date().toISOString();
+  const { error: updateError } = await supabase
+    .from("applicant_application_submissions")
+    .update({
+      latest_status_reason: reason || null,
+      latest_status_updated_at: withdrawnAt,
+      updated_at: withdrawnAt,
+      workflow_status: "withdrawn" satisfies ApplicationSubmissionStatus,
+    })
+    .eq("id", submission.id)
+    .eq("applicant_id", currentUser.id);
+
+  if (updateError) {
+    return NextResponse.json(
+      { success: false, message: "Unable to withdraw the application right now." },
+      { status: 500 },
+    );
+  }
+
+  try {
+    let notifications:
+      | Array<{
+          message: string;
+          notificationType: string;
+          recipientEmail: string;
+          recipientRole: "teacher";
+          recipientUserId: string | null;
+          submissionId: string;
+          title: string;
+        }>
+      | undefined;
+
+    if (submission.submission_source === "room" && submission.workflow_status === "submitted_to_teacher" && submission.room_id) {
+      const { data: roomRecord } = await supabase
+        .from("rooms")
+        .select("id, name, teacher_id")
+        .eq("id", submission.room_id)
+        .maybeSingle();
+
+      if (roomRecord?.teacher_id) {
+        const { data: teacherProfile } = await supabase
+          .from("profiles")
+          .select("id, email")
+          .eq("id", roomRecord.teacher_id)
+          .maybeSingle();
+
+        if (teacherProfile?.email) {
+          notifications = [
+            {
+              message: `A room-based application in ${roomRecord.name} was withdrawn before teacher forwarding.`,
+              notificationType: "warning",
+              recipientEmail: teacherProfile.email,
+              recipientRole: "teacher",
+              recipientUserId: teacherProfile.id ?? roomRecord.teacher_id,
+              submissionId: submission.id,
+              title: "Room Submission Withdrawn",
+            },
+          ];
+        }
+      }
+    }
+
+    await recordSubmissionWorkflowTransition({
+      actor: currentUser,
+      eventType: "applicant_withdrew",
+      fromStatus: submission.workflow_status,
+      notifications,
+      reason,
+      submissionId: submission.id,
+      toStatus: "withdrawn",
+    });
+  } catch (historyError) {
+    console.error("Failed to record applicant withdrawal workflow history.", {
+      error: historyError,
+      submissionId: submission.id,
+      userId: currentUser.id,
+    });
+  }
+
+  return NextResponse.json({
+    success: true,
+    message:
+      submission.submission_source === "room"
+        ? "Your room application was withdrawn successfully."
+        : "Your application was withdrawn successfully.",
+    workflowStatus: "withdrawn" satisfies ApplicationSubmissionStatus,
   });
 }
