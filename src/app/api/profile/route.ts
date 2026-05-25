@@ -19,6 +19,7 @@ type UpdateProfilePayload = {
   lastName?: string;
   manager?: string;
   middleName?: string;
+  nameExtension?: string;
   name?: string;
   positionTitle?: string;
 };
@@ -32,6 +33,7 @@ async function upsertOwnProfileRecord({
   institutionType,
   lastName,
   middleName,
+  nameExtension,
   positionTitle,
   role,
 }: {
@@ -43,6 +45,7 @@ async function upsertOwnProfileRecord({
   institutionType: string | null;
   lastName: string;
   middleName: string | null;
+  nameExtension: string | null;
   positionTitle: string | null;
   role: "admin" | "applicant" | "teacher";
 }) {
@@ -51,6 +54,7 @@ async function upsertOwnProfileRecord({
     firstName,
     lastName,
     middleName,
+    nameExtension,
   });
 
   const payload = {
@@ -63,6 +67,7 @@ async function upsertOwnProfileRecord({
     institution_type: institutionType,
     last_name: lastName,
     middle_name: middleName,
+    name_extension: nameExtension,
     position_title: positionTitle,
     role,
   };
@@ -149,6 +154,7 @@ export async function PATCH(request: Request) {
 
   const firstName = body.firstName?.trim() ?? "";
   const middleName = normalizeOptionalText(body.middleName);
+  const nameExtension = normalizeOptionalText(body.nameExtension);
   const lastName = body.lastName?.trim() ?? "";
   const rawContactNumber = body.contactNumber?.trim() ?? "";
   const institutionName = normalizeOptionalText(body.institutionName);
@@ -192,6 +198,7 @@ export async function PATCH(request: Request) {
       institutionType: currentUser.role === "teacher" ? institutionType : null,
       lastName,
       middleName,
+      nameExtension,
       positionTitle: currentUser.role === "teacher" ? positionTitle : null,
       role: currentUser.role,
     });

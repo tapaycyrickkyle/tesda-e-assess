@@ -162,7 +162,7 @@ function getStatusBadge(status: ApplicationSubmissionStatus) {
 
 function getStatusDescription(status: ApplicationSubmissionStatus) {
   if (status === "assigned" || status === "under_review") {
-    return "Your center has started reviewing this submission. Record the final outcome when the assessment is finished.";
+    return "Your center has started reviewing this submission. Record the final status when the assessment is finished.";
   }
 
   if (status === "completed") {
@@ -493,8 +493,8 @@ export default function AssessmentCenterApplicantsPage() {
   const renderStatusActions = (applicant: AssignedApplicant, compact = false) => {
     if (isClosedStatus(applicant.workflow_status)) {
       return (
-        <div className={`rounded-md border border-[#d9e3f7] bg-[#fbfdff] ${compact ? "px-3.5 py-2.5" : "px-4 py-3"}`}>
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Outcome</p>
+        <div className={`border-t border-[#e7edf4] ${compact ? "pt-2.5" : "pt-3"}`}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Status</p>
           <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#444653]`}>
             {getStatusDescription(applicant.workflow_status)}
           </p>
@@ -515,10 +515,10 @@ export default function AssessmentCenterApplicantsPage() {
 
     return (
       <div className={compact ? "space-y-2.5" : "space-y-3"}>
-        <div className={`rounded-md border border-[#dbe6fb] bg-[#f7faff] ${compact ? "px-3.5 py-2.5" : "px-4 py-3"}`}>
+        <div className={`border-t border-[#e1e9fb] ${compact ? "pt-2.5" : "pt-3"}`}>
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
           <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#30435f]`}>
-            This applicant is already under review. Record the final outcome once the center finishes the assessment.
+            This applicant is already under review. Record the final status once the center finishes the assessment.
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
@@ -658,7 +658,7 @@ export default function AssessmentCenterApplicantsPage() {
     }
 
     if (isReasonRequired(pendingStatusUpdate.action) && !statusReason.trim()) {
-      setError("Please provide a reason before saving this outcome.");
+      setError("Please provide a reason before saving this status.");
       return;
     }
 
@@ -704,7 +704,7 @@ export default function AssessmentCenterApplicantsPage() {
             <div className="min-w-0 flex-1">
               <h1 className="ui-page-title text-[#002576]">Reviews</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Review applicant records assigned to {centerName || "your center"} and update their final outcomes.
+                Review applicant records assigned to {centerName || "your center"} and update their final statuses.
               </p>
             </div>
 
@@ -790,7 +790,7 @@ export default function AssessmentCenterApplicantsPage() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-xl border border-[#d9e3f7] bg-white px-4 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+          <div className="mt-4 border-t border-[#e7edf4] px-4 py-4 sm:px-0">
             <div className="w-full max-w-[1120px] 2xl:max-w-[1180px]">
               <div className="grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.5fr)_220px_220px_280px] xl:items-end">
               <label className="block">
@@ -888,7 +888,7 @@ export default function AssessmentCenterApplicantsPage() {
         ) : null}
 
         {isLoading ? (
-          <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <div className="px-4 py-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
@@ -952,7 +952,7 @@ export default function AssessmentCenterApplicantsPage() {
                 })}
 
                 {filteredIndividualApplicants.length === 0 ? (
-                  <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+                  <div className="px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -1020,10 +1020,10 @@ export default function AssessmentCenterApplicantsPage() {
 
                       {batchActionable ? (
                         <div className="space-y-2.5">
-                          <div className="rounded-md border border-[#dbe6fb] bg-[#f7faff] px-3.5 py-2.5">
+                          <div className="border-t border-[#e1e9fb] pt-2.5">
                             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
                             <p className="mt-1.5 text-[12px] leading-[1.5] text-[#30435f]">
-                              This batch is already under review. Record the final outcome here, then use the modal only to view or download applicant PDFs.
+                              This batch is already under review. Record the final status here, then use the modal only to view or download applicant PDFs.
                             </p>
                           </div>
                           <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
@@ -1054,10 +1054,10 @@ export default function AssessmentCenterApplicantsPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="rounded-md border border-[#d9e3f7] bg-[#fbfdff] px-3.5 py-2.5">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Outcome</p>
+                        <div className="border-t border-[#e7edf4] pt-2.5">
+                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Status</p>
                           <p className="mt-1.5 text-[12px] leading-[1.5] text-[#444653]">
-                            Every applicant in this batch already has a final assessment-center outcome.
+                            Every applicant in this batch already has a final assessment-center status.
                           </p>
                           <p className="mt-1.5 text-[12px] font-semibold text-[#30435f]">
                             Closed applicants: {batchClosedCount}
@@ -1069,7 +1069,7 @@ export default function AssessmentCenterApplicantsPage() {
                 )})}
 
                 {filteredBulkAssignments.length === 0 ? (
-                  <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+                  <div className="px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -1109,14 +1109,14 @@ export default function AssessmentCenterApplicantsPage() {
               return (
                 <>
             <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
-              <h2 className="ui-section-title text-[#0b1c30]">Confirm Outcome</h2>
+              <h2 className="ui-section-title text-[#0b1c30]">Confirm Review Result</h2>
               <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
-                Record the final review outcome before this applicant or batch leaves the active center queue.
+                Record the final review result before this applicant or batch leaves the active center queue.
               </p>
             </div>
 
             <div className="ui-modal-section space-y-4 px-6 py-5 sm:px-7">
-              <div className="rounded-lg border border-[#d9e3f7] bg-[#fbfdff] px-4 py-4">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#4563a5]">Updating</p>
                   <span className={`inline-flex min-h-[30px] items-center justify-center rounded-full border px-3 text-[11px] font-bold ${actionTheme.badgeClassName}`}>
@@ -1145,7 +1145,7 @@ export default function AssessmentCenterApplicantsPage() {
                     placeholder={
                       isReasonRequired(pendingStatusUpdate.action)
                         ? "Explain the rejection or cancellation reason."
-                        : "Add any helpful note for the recorded outcome."
+                        : "Add any helpful note for the recorded status."
                     }
                     value={statusReason}
                   />
@@ -1153,9 +1153,9 @@ export default function AssessmentCenterApplicantsPage() {
               ) : null}
 
               {isReasonRequired(pendingStatusUpdate.action) ? (
-                <div className="rounded-lg border border-[#f1d8bf] bg-[#fff8e8] px-4 py-3">
+                <div className="border-t border-[#f1d8bf] pt-4">
                   <p className="text-[12px] leading-[1.55] text-[#8a5200]">
-                    This outcome will be shown to the applicant together with the recorded reason.
+                    This status will be shown to the applicant together with the recorded reason.
                   </p>
                 </div>
               ) : null}
@@ -1178,7 +1178,7 @@ export default function AssessmentCenterApplicantsPage() {
                   onClick={() => void handleConfirmStatusUpdate()}
                   type="button"
                 >
-                  {updatingSubmissionId || updatingBulkAssignmentId ? "Saving..." : "Save Outcome"}
+                  {updatingSubmissionId || updatingBulkAssignmentId ? "Saving..." : "Save Status"}
                 </button>
               </div>
             </div>

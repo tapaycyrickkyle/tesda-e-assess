@@ -321,22 +321,22 @@ export default function AdminAssessmentCenterPage() {
                   {assessmentCenters.map((center) => (
                     <article
                       key={center.id}
-                      className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-[#bfd0f2] hover:bg-white"
+                      className="rounded-xl border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition hover:border-[#bfd0f2] hover:bg-[#fcfdff]"
                     >
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold text-[#0b1c30]">{center.name}</p>
                       </div>
 
-                      <div className="mt-4 grid gap-3 rounded-md border border-[#e4ebf7] bg-white p-3">
+                      <div className="mt-4 grid gap-3 border-t border-[#e7edf4] pt-3">
                         <div>
                           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
                           <p className="mt-1 text-[13px] text-[#444653]">{center.address}</p>
                         </div>
-                        <div>
+                        <div className="border-t border-[#eef2fb] pt-3">
                           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center Head</p>
                           <p className="mt-1 text-[13px] text-[#444653]">{center.manager}</p>
                         </div>
-                        <div>
+                        <div className="border-t border-[#eef2fb] pt-3">
                           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact</p>
                           <p className="mt-1 text-[13px] text-[#444653]">{center.contact}</p>
                         </div>
@@ -357,7 +357,7 @@ export default function AdminAssessmentCenterPage() {
                   ))}
 
                   {assessmentCenters.length === 0 ? (
-                    <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
+                    <div className="px-4 py-8 text-center text-[14px] text-[#747685]">
                       No assessment centers found yet.
                     </div>
                   ) : null}
@@ -421,7 +421,7 @@ export default function AdminAssessmentCenterPage() {
                     </table>
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center text-[14px] text-[#747685]">
+                  <div className="px-4 py-8 text-center text-[14px] text-[#747685]">
                     No assessment centers found yet.
                   </div>
                 )}
@@ -741,13 +741,13 @@ export default function AdminAssessmentCenterPage() {
             </div>
 
             <div className="ui-modal-section space-y-4 px-6 py-5 sm:px-7">
-              <div className="rounded-lg border border-[#f3d6d6] bg-[#fff4f4] px-4 py-4">
+              <div className="border-t border-[#f0d5d5] pt-4">
                 <p className="text-[13px] leading-[1.6] text-[#93000a]">
                   Are you sure you want to delete <span className="font-bold">{selectedCenter.name}</span>?
                 </p>
               </div>
 
-              <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-4">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <p className="text-[13px] leading-[1.6] text-[#30435f]">
                   Delete is only allowed when this center no longer has active applicant assignments still being handled.
                 </p>

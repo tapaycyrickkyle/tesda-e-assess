@@ -272,7 +272,7 @@ export default function TeacherRoomDetailClient({
                 </p>
               </div>
 
-              <div className="mt-3 inline-flex flex-wrap items-center gap-2 rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-3.5 py-2">
+              <div className="mt-3 inline-flex flex-wrap items-center gap-2 border-l-2 border-[#d9e3f7] pl-3.5">
                 <span className="text-[12px] font-semibold text-[#747685]">Join Code</span>
                 <span className="font-mono text-[16px] font-bold tracking-[0.16em] text-[#002576]">{room.join_code}</span>
                 <button
@@ -464,7 +464,7 @@ export default function TeacherRoomDetailClient({
           </div>
         </div>
 
-        <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-3 text-center">
+        <div className="border-t border-[#e7edf4] pt-4 text-center">
           <p className="text-[13px] leading-[1.55] text-[#3c4f69]">
             Make sure all applicant details are complete before continuing.
           </p>
@@ -506,7 +506,7 @@ export default function TeacherRoomDetailClient({
               </div>
             </div>
 
-            <div className="rounded-lg border border-[#f4d2d2] bg-[#fff8f8] px-4 py-3 text-center">
+            <div className="border-t border-[#f0d5d5] pt-4 text-center">
               <p className="text-[13px] leading-[1.55] text-[#7a3b3b]">
                 Delete is only allowed after all joined applicants are removed and no active room submissions are still in progress.
               </p>
@@ -551,7 +551,7 @@ export default function TeacherRoomDetailClient({
               </div>
             </div>
 
-            <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] px-4 py-3 text-center">
+            <div className="border-t border-[#e7edf4] pt-4 text-center">
               <p className="text-[13px] leading-[1.55] text-[#3c4f69]">
                 Applicants can only be removed before the teacher submits this room to TESDA. Submitted room records still stay in the workflow history.
               </p>

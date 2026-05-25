@@ -76,13 +76,13 @@ const formatAssignedDate = (value: string) =>
 
 const cardTitleClass = "text-[18px] font-bold leading-[1.2] text-[#0b1c30]";
 const assignedMetaCardClass =
-  "flex min-h-[48px] w-full flex-col justify-center rounded-lg border border-[#d9e3f7] bg-white px-3 py-2 text-left sm:min-w-[188px] sm:w-auto";
+  "flex min-h-[48px] w-full flex-col justify-center border-t border-[#e7edf4] pt-2.5 text-left sm:min-w-[188px] sm:w-auto";
 const secondaryActionButtonClass =
   "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff] sm:min-w-[96px] sm:w-auto";
 const destructiveActionButtonClass =
   "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-3.5 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea] sm:min-w-[96px] sm:w-auto";
 const summaryCardClass =
-  "flex min-h-[120px] flex-col rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
+  "flex min-h-[120px] flex-col rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 const summaryIconClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 const centerActiveStatuses: ApplicationSubmissionStatus[] = ["assigned", "under_review"];
@@ -541,7 +541,7 @@ export default function AdminAssignedApplicantsPage() {
 
           {selectedCenterSummary ? (
             <>
-              <div className="mt-4 rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+              <div className="mt-4 border-t border-[#e7edf4] px-4 py-3 sm:px-0">
                   <div className="grid min-w-0 grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.25fr)_240px_280px] xl:items-end xl:gap-4">
                     <label className="block min-w-0 xl:w-full xl:max-w-[520px]">
                       <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
@@ -574,7 +574,7 @@ export default function AdminAssignedApplicantsPage() {
                           value={queueTab}
                         >
                           <option value="active">Active Assignments</option>
-                          <option value="closed">Closed Outcomes</option>
+                          <option value="closed">Closed Statuses</option>
                         </select>
                         <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
                           <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
@@ -619,7 +619,7 @@ export default function AdminAssignedApplicantsPage() {
         ) : null}
 
         {isLoading ? (
-          <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+          <div className="px-4 py-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
@@ -629,7 +629,7 @@ export default function AdminAssignedApplicantsPage() {
         ) : !selectedCenterSummary ? (
           <section>
             {centerSummaries.length === 0 ? (
-              <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+              <div className="px-4 py-8 text-center">
                 <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                   <i aria-hidden="true" className="fa-solid fa-building text-[18px]" />
                 </div>
@@ -739,7 +739,7 @@ export default function AdminAssignedApplicantsPage() {
                 ))}
 
                 {filteredIndividualApplicants.length === 0 ? (
-                  <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+                  <div className="px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -751,14 +751,14 @@ export default function AdminAssignedApplicantsPage() {
                         ? "No individual applicants have been assigned yet"
                         : queueTab === "active"
                           ? "No active individual assignments match the current filters"
-                          : "No closed individual outcomes match the current filters"}
+                          : "No closed individual statuses match the current filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {individualApplicants.length === 0
                         ? "Individual applicant assignments will appear here after the admin routes them to a center."
                         : queueTab === "active"
                           ? "Try another search or clear the filters to view all active individual assignments."
-                          : "Try another search or clear the filters to view all closed individual outcomes."}
+                          : "Try another search or clear the filters to view all closed individual statuses."}
                     </p>
                   </div>
                 ) : null}
@@ -827,7 +827,7 @@ export default function AdminAssignedApplicantsPage() {
                 ))}
 
                 {filteredBulkAssignments.length === 0 ? (
-                  <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+                  <div className="px-4 py-8 text-center">
                     <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
                       <i
                         aria-hidden="true"
@@ -839,14 +839,14 @@ export default function AdminAssignedApplicantsPage() {
                         ? "No bulk batches have been assigned yet"
                         : queueTab === "active"
                           ? "No active batch assignments match the current filters"
-                          : "No closed batch outcomes match the current filters"}
+                          : "No closed batch statuses match the current filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {bulkAssignments.length === 0
                         ? "Bulk school assignments will appear here after the admin routes them to a center."
                         : queueTab === "active"
                           ? "Try another search or clear the filters to view all active batch assignments."
-                          : "Try another search or clear the filters to view all closed batch outcomes."}
+                          : "Try another search or clear the filters to view all closed batch statuses."}
                     </p>
                   </div>
                 ) : null}
@@ -910,7 +910,7 @@ export default function AdminAssignedApplicantsPage() {
               <div className="max-h-[440px] space-y-2 overflow-y-auto pr-1">
                 {filteredSelectedBulkApplicants.map((applicant) => (
                   <div
-                    className="grid gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                    className="grid gap-3 border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
                     key={applicant.id}
                   >
                     <div className="min-w-0">
@@ -936,7 +936,7 @@ export default function AdminAssignedApplicantsPage() {
                 ))}
 
                 {filteredSelectedBulkApplicants.length === 0 ? (
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-6 text-center text-[13px] text-[#747685]">
+                  <div className="px-4 py-6 text-center text-[13px] text-[#747685]">
                     No applicants in this batch match the current queue or search.
                   </div>
                 ) : null}
@@ -965,7 +965,7 @@ export default function AdminAssignedApplicantsPage() {
                 <NotificationBanner compact message={removalError} variant="error" />
               ) : null}
 
-              <div className="rounded-lg border border-[#f7d9d9] bg-[#fff6f6] px-4 py-4">
+              <div className="border-t border-[#f0d5d5] pt-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#b24c4c]">Removing</p>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.title}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#5d4a4a]">{removalTarget.description}</p>
@@ -974,7 +974,7 @@ export default function AdminAssignedApplicantsPage() {
                 </p>
               </div>
 
-              <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-4">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Current Center</p>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.centerName}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">

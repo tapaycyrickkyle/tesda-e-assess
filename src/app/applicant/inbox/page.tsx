@@ -30,7 +30,7 @@ export default async function ApplicantNotificationsPage() {
   return (
     <PortalNotificationsView
       description="Review status-change alerts for your submitted applications."
-      emptyMessage="You have no workflow alerts yet. New updates will appear here after your applications move between queues or receive an outcome."
+      emptyMessage="You have no workflow alerts yet. New updates will appear here after your applications move between queues or receive a status update."
       notifications={displayedNotifications}
       relatedHref="/applicant/submissions"
       relatedLabel="Open Submissions"

@@ -176,7 +176,7 @@ export default async function TeacherDashboardPage() {
 
             <div className="mt-5 space-y-3">
               {roomsNeedingAction.map((room) => (
-                <div key={room.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div key={room.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <p className="text-[14px] font-bold text-[#0b1c30]">{room.name}</p>
@@ -195,7 +195,7 @@ export default async function TeacherDashboardPage() {
               ))}
 
               {roomsNeedingAction.length === 0 ? (
-                <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <div className="px-1 py-5">
                   <p className="text-[14px] leading-[1.6] text-[#444653]">
                     No room submissions are waiting for teacher review right now.
                   </p>
@@ -220,7 +220,7 @@ export default async function TeacherDashboardPage() {
 
             <div className="mt-5 space-y-3">
               {recentRooms.map((room) => (
-                <div key={room.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div key={room.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <p className="text-[14px] font-bold text-[#0b1c30]">{room.name}</p>
@@ -248,7 +248,7 @@ export default async function TeacherDashboardPage() {
               ))}
 
               {recentRooms.length === 0 ? (
-                <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <div className="px-1 py-5">
                   <p className="text-[14px] leading-[1.6] text-[#444653]">
                     No rooms yet. Create your first room to begin inviting applicants.
                   </p>

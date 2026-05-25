@@ -234,7 +234,7 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
           <div className="rounded-xl border border-[#d9e3f7] bg-[#eef4ff] px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#3056c4]">Under Review</p>
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{underReviewCount}</p>
-            <p className="mt-2 text-[13px] text-[#4563a5]">Submissions currently with your center for review and outcome processing.</p>
+            <p className="mt-2 text-[13px] text-[#4563a5]">Submissions currently with your center for review and status processing.</p>
           </div>
           <div className="rounded-xl border border-[#cce9d8] bg-[#edf9f1] px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#166534]">Closed</p>
@@ -264,7 +264,7 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
 
           <div className="mt-5 space-y-3">
             {filteredAssignments.slice(0, 5).map((assignment) => (
-              <div key={assignment.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+              <div key={assignment.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
                     <p className="text-[14px] font-bold text-[#0b1c30]">{assignment.applicant_name}</p>
@@ -284,7 +284,7 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
             ))}
 
             {filteredAssignments.length === 0 ? (
-              <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+              <div className="px-1 py-5">
                 <p className="text-[14px] leading-[1.6] text-[#444653]">
                   No applicants match the selected dashboard date filter right now.
                 </p>

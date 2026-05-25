@@ -18,6 +18,7 @@ type ProfileRecord = {
   institution_type?: string | null;
   last_name?: string | null;
   middle_name?: string | null;
+  name_extension?: string | null;
   position_title?: string | null;
   role?: string | null;
   updated_at?: string | null;
@@ -42,6 +43,14 @@ export type UserProfileSection = {
   title: string;
 };
 
+export type ApplicantProfileDefaults = {
+  contactNumber: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  nameExtension: string;
+};
+
 export type UserProfileView = {
   displayName: string;
   editor: {
@@ -58,6 +67,7 @@ export type UserProfileView = {
       institutionType: string;
       lastName: string;
       middleName: string;
+      nameExtension: string;
       positionTitle: string;
     };
     role: CurrentAppUser["role"];
@@ -121,7 +131,7 @@ function formatDateTime(value: string | null | undefined) {
 async function loadProfileRecord(currentUser: CurrentAppUser) {
   const supabase = createSupabaseAdminClient();
   const selectFields =
-    "id, email, role, full_name, first_name, middle_name, last_name, contact_number, institution_name, institution_type, position_title, approval_status, created_at, updated_at";
+    "id, email, role, full_name, first_name, middle_name, last_name, name_extension, contact_number, institution_name, institution_type, position_title, approval_status, created_at, updated_at";
 
   const { data: profileById, error: profileByIdError } = await supabase
     .from("profiles")
@@ -148,6 +158,26 @@ async function loadProfileRecord(currentUser: CurrentAppUser) {
   }
 
   return { error: false, profile: (profileByEmail as ProfileRecord | null) ?? null };
+}
+
+export async function loadApplicantProfileDefaults(currentUser: CurrentAppUser): Promise<ApplicantProfileDefaults | null> {
+  if (currentUser.role !== "applicant") {
+    return null;
+  }
+
+  const { error, profile } = await loadProfileRecord(currentUser);
+
+  if (error || !profile) {
+    return null;
+  }
+
+  return {
+    contactNumber: formatPhilippineMobileNumberForLocalDisplay(profile.contact_number),
+    firstName: normalizeText(profile.first_name) ?? "",
+    lastName: normalizeText(profile.last_name) ?? "",
+    middleName: normalizeText(profile.middle_name) ?? "",
+    nameExtension: normalizeText(profile.name_extension) ?? "",
+  };
 }
 
 async function loadAssessmentCenterRecord(currentUser: CurrentAppUser) {
@@ -191,6 +221,7 @@ export async function loadUserProfileView(currentUser: CurrentAppUser): Promise<
     { label: "First Name", value: normalizeText(profile?.first_name) ?? "Not provided" },
     { label: "Middle Name", value: normalizeText(profile?.middle_name) ?? "Not provided" },
     { label: "Last Name", value: normalizeText(profile?.last_name) ?? "Not provided" },
+    { label: "Name Extension", value: normalizeText(profile?.name_extension) ?? "Not provided" },
     { label: "Contact Number", value: formatPhilippineMobileNumberForLocalDisplay(profile?.contact_number) || "Not provided" },
   ];
 
@@ -273,6 +304,7 @@ export async function loadUserProfileView(currentUser: CurrentAppUser): Promise<
         institutionType: normalizeText(profile?.institution_type) ?? "",
         lastName: normalizeText(profile?.last_name) ?? "",
         middleName: normalizeText(profile?.middle_name) ?? "",
+        nameExtension: normalizeText(profile?.name_extension) ?? "",
         positionTitle: normalizeText(profile?.position_title) ?? "",
       },
       role: currentUser.role,

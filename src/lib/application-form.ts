@@ -1,5 +1,13 @@
 export const assessmentTypeOptions = ["Full Qualification", "COC", "Renewal"] as const;
 
+export const qualificationOptions = [
+  "Computer Systems Servicing NC II",
+  "Cookery NC II",
+  "Automotive Servicing NC I",
+  "Health Care Services NC II",
+  "Visual Graphic Design NC III",
+] as const;
+
 export const clientTypeOptions = [
   "TVET Graduating Student",
   "TVET Graduate",

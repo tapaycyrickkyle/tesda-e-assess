@@ -46,7 +46,7 @@ export default function PortalNotificationsView({
         </section>
 
         <section className="ui-surface overflow-hidden">
-          <div className="border-b border-[#eaf0f9] px-4 py-4 sm:px-5">
+          <div className="border-b border-[#e7edf4] px-4 py-4 sm:px-5">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Inbox</p>
@@ -73,7 +73,7 @@ export default function PortalNotificationsView({
           <div className="divide-y divide-[#edf2fb]">
             {bucketEntries.map(([bucketLabel, bucketNotifications]) => (
               <div key={bucketLabel}>
-                <div className="bg-[#fbfcff] px-4 py-3 sm:px-5">
+                <div className="px-4 py-3 sm:px-5">
                   <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#6b7ca5]">{bucketLabel}</p>
                 </div>
 
@@ -142,14 +142,12 @@ export default function PortalNotificationsView({
             ))}
 
             {notifications.length === 0 ? (
-              <div className="px-4 py-8 sm:px-5">
-                <div className="rounded-xl bg-[#f8fbff] px-5 py-6 text-center">
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#d9e3f7] bg-white text-[#3056c4] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
-                    <i aria-hidden="true" className="fa-regular fa-bell-slash text-[18px]" />
-                  </div>
-                  <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">No notifications yet</p>
-                  <p className="mt-1 text-[14px] leading-[1.6] text-[#444653]">{emptyMessage}</p>
+              <div className="px-4 py-8 text-center sm:px-5">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#d9e3f7] bg-white text-[#3056c4] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+                  <i aria-hidden="true" className="fa-regular fa-bell-slash text-[18px]" />
                 </div>
+                <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">No notifications yet</p>
+                <p className="mt-1 text-[14px] leading-[1.6] text-[#444653]">{emptyMessage}</p>
               </div>
             ) : null}
           </div>

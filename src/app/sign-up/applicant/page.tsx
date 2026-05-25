@@ -32,6 +32,7 @@ export default function ApplicantSignUpPage() {
       email: String(formData.get("email") ?? ""),
       firstName: String(formData.get("firstName") ?? ""),
       middleName: String(formData.get("middleName") ?? ""),
+      nameExtension: String(formData.get("nameExtension") ?? ""),
       password: String(formData.get("password") ?? ""),
       surname: String(formData.get("surname") ?? ""),
     };
@@ -170,7 +171,7 @@ export default function ApplicantSignUpPage() {
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div className="flex flex-col gap-2">
                     <label className={labelClass} htmlFor="middle-name">
                       Middle Name
@@ -180,6 +181,19 @@ export default function ApplicantSignUpPage() {
                       id="middle-name"
                       name="middleName"
                       placeholder="Santos"
+                      type="text"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className={labelClass} htmlFor="name-extension">
+                      Name Extension
+                    </label>
+                    <input
+                      className={fieldClass}
+                      id="name-extension"
+                      name="nameExtension"
+                      placeholder="Jr., Sr., III"
                       type="text"
                     />
                   </div>

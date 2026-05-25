@@ -8,6 +8,7 @@ create table if not exists public.profiles (
   first_name text,
   middle_name text,
   last_name text,
+  name_extension text,
   contact_number text,
   institution_name text,
   institution_type text,
@@ -23,6 +24,7 @@ alter table public.profiles add column if not exists full_name text;
 alter table public.profiles add column if not exists first_name text;
 alter table public.profiles add column if not exists middle_name text;
 alter table public.profiles add column if not exists last_name text;
+alter table public.profiles add column if not exists name_extension text;
 alter table public.profiles add column if not exists contact_number text;
 alter table public.profiles add column if not exists institution_name text;
 alter table public.profiles add column if not exists institution_type text;
