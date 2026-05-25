@@ -9,9 +9,9 @@ import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus }
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import {
-  getWorkflowEventDescription,
   getWorkflowEventLabel,
   loadSubmissionHistoryByIds,
+  type SubmissionHistoryEntry,
 } from "@/lib/workflow-history";
 
 type SubmissionListItem = {
@@ -67,6 +67,33 @@ function formatTimelineActor(actorRole: string | null) {
       return "Teacher";
     default:
       return "System";
+  }
+}
+
+function getApplicantTimelineDescription(event: SubmissionHistoryEntry) {
+  switch (event.event_type) {
+    case "applicant_submitted":
+      return "The applicant submitted this form directly to TESDA.";
+    case "applicant_submitted_to_teacher":
+      return "The applicant submitted this room-based form to the teacher queue.";
+    case "applicant_resubmitted":
+      return "The applicant edited the submission and sent it back through the same route.";
+    case "teacher_forwarded_to_admin":
+      return "The teacher reviewed the room batch and forwarded it to TESDA.";
+    case "admin_assigned_to_center":
+      return "TESDA routed this submission to an assessment center.";
+    case "admin_returned_to_queue":
+      return "TESDA removed the center assignment and returned the submission to the main queue.";
+    case "applicant_withdrew":
+      return "The applicant withdrew the submission before final center processing.";
+    case "assessment_center_completed":
+      return "The assessment center recorded a completed outcome.";
+    case "assessment_center_rejected":
+      return "The assessment center recorded a rejected outcome.";
+    case "assessment_center_cancelled":
+      return "The assessment center recorded a cancelled outcome.";
+    default:
+      return event.to_status ? `Status updated to ${getApplicationSubmissionStatusLabel(event.to_status)}.` : "Workflow updated.";
   }
 }
 
@@ -170,6 +197,14 @@ function getSubmissionStatusDetails(submission: SubmissionListItem): SubmissionS
       updateSummary: submission.assigned_at
         ? `Assessment center review started ${formatDateTime(submission.assigned_at)}`
         : "Assessment center review in progress",
+    };
+  }
+
+  if (submission.workflow_status === "completed") {
+    return {
+      currentStatus: "Completed",
+      nextStep: "No action is needed. This submission now stays here as a record.",
+      updateSummary: "Current record: Completed",
     };
   }
 
@@ -278,7 +313,7 @@ export default async function ApplicantSubmittedFormsPage() {
         (entry) =>
           ({
             actor: formatTimelineActor(entry.actor_role),
-            description: getWorkflowEventDescription(entry),
+            description: getApplicantTimelineDescription(entry),
             id: entry.id,
             label: getWorkflowEventLabel(entry),
             recordedAt: entry.created_at,

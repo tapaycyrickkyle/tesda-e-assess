@@ -45,8 +45,8 @@ export default function PortalNotificationsView({
           <p className="ui-page-description">{description}</p>
         </section>
 
-        <section className="overflow-hidden rounded-xl border border-[#d9e3f7] bg-white shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
-          <div className="border-b border-[#e3ebfb] px-4 py-4 sm:px-5">
+        <section className="ui-surface overflow-hidden">
+          <div className="border-b border-[#eaf0f9] px-4 py-4 sm:px-5">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Inbox</p>
@@ -54,7 +54,7 @@ export default function PortalNotificationsView({
               </div>
               <div className="flex items-center gap-2">
                 {unreadCount > 0 ? (
-                  <span className="inline-flex min-h-[32px] items-center justify-center rounded-full bg-[#d92d20] px-3 text-[11px] font-bold text-white shadow-[0_8px_18px_rgba(217,45,32,0.16)]">
+                  <span className="inline-flex min-h-[32px] items-center justify-center rounded-md bg-[#d92d20] px-3 text-[11px] font-bold uppercase tracking-[0.04em] text-white shadow-[0_8px_18px_rgba(217,45,32,0.16)]">
                     {unreadCount} new
                   </span>
                 ) : null}
@@ -73,7 +73,7 @@ export default function PortalNotificationsView({
           <div className="divide-y divide-[#edf2fb]">
             {bucketEntries.map(([bucketLabel, bucketNotifications]) => (
               <div key={bucketLabel}>
-                <div className="border-b border-[#edf2fb] bg-white px-4 py-3 sm:px-5">
+                <div className="bg-[#fbfcff] px-4 py-3 sm:px-5">
                   <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#6b7ca5]">{bucketLabel}</p>
                 </div>
 
@@ -117,18 +117,18 @@ export default function PortalNotificationsView({
 
                           <div className="mt-3 flex flex-wrap items-center gap-2">
                             <span
-                              className={`inline-flex min-h-[28px] items-center justify-center rounded-full border px-3 text-[11px] font-bold ${getPortalNotificationAccentClass(
+                              className={`inline-flex min-h-[28px] items-center justify-center rounded-md border px-3 text-[11px] font-bold uppercase tracking-[0.04em] ${getPortalNotificationAccentClass(
                                 notification.notification_type,
                               )}`}
                             >
                               {getPortalNotificationLabel(notification.notification_type)}
                             </span>
                             {!notification.is_read ? (
-                              <span className="inline-flex min-h-[28px] items-center justify-center rounded-full border border-[#cfe0ff] bg-white px-3 text-[11px] font-bold text-[#0038a8]">
+                              <span className="inline-flex min-h-[28px] items-center justify-center rounded-md border border-[#cfe0ff] bg-white px-3 text-[11px] font-bold uppercase tracking-[0.04em] text-[#0038a8]">
                                 New
                               </span>
                             ) : (
-                              <span className="inline-flex min-h-[28px] items-center justify-center rounded-full border border-[#e3ebfb] bg-[#fbfdff] px-3 text-[11px] font-bold text-[#747685]">
+                              <span className="inline-flex min-h-[28px] items-center justify-center rounded-md border border-[#e3ebfb] bg-[#fbfdff] px-3 text-[11px] font-bold uppercase tracking-[0.04em] text-[#747685]">
                                 Seen
                               </span>
                             )}
@@ -143,7 +143,7 @@ export default function PortalNotificationsView({
 
             {notifications.length === 0 ? (
               <div className="px-4 py-8 sm:px-5">
-                <div className="rounded-xl border border-[#e3ebfb] bg-[#fbfdff] px-5 py-6 text-center">
+                <div className="rounded-xl bg-[#f8fbff] px-5 py-6 text-center">
                   <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-[#d9e3f7] bg-white text-[#3056c4] shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
                     <i aria-hidden="true" className="fa-regular fa-bell-slash text-[18px]" />
                   </div>

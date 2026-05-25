@@ -25,9 +25,23 @@ export default function ForgotPasswordPage() {
         method: "POST",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const contentType = response.headers.get("content-type") ?? "";
+      let payload: { message?: string; success?: boolean } | null = null;
 
-      if (!response.ok || !payload.success) {
+      if (contentType.includes("application/json")) {
+        payload = (await response.json()) as { message?: string; success?: boolean };
+      } else {
+        const fallbackText = await response.text();
+        throw new Error(
+          response.ok
+            ? "The server returned an unexpected response. Please try again."
+            : fallbackText.includes("<!DOCTYPE")
+              ? "The server encountered an unexpected error. Please try again."
+              : "Unable to send the password reset email.",
+        );
+      }
+
+      if (!payload || !response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to send the password reset email.");
       }
 

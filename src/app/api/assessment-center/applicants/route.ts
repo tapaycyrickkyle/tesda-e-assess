@@ -193,6 +193,7 @@ export async function PATCH(request: Request) {
 
   const nextStatus: ApplicationSubmissionStatus =
     action === "complete" ? "completed" : action === "reject" ? "rejected" : "cancelled";
+  const normalizedReason = nextStatus === "completed" ? null : reason || null;
 
   const { data: submission, error: submissionError } = await adminSupabase
     .from("applicant_application_submissions")
@@ -221,7 +222,7 @@ export async function PATCH(request: Request) {
   const { error: updateError } = await adminSupabase
     .from("applicant_application_submissions")
     .update({
-      latest_status_reason: reason || null,
+      latest_status_reason: normalizedReason,
       latest_status_updated_at: processedAt,
       updated_at: processedAt,
       workflow_status: nextStatus,
@@ -270,7 +271,7 @@ export async function PATCH(request: Request) {
                 : "Application Cancelled",
         },
       ],
-      reason,
+      reason: normalizedReason,
       submissionId: submission.id,
       toStatus: nextStatus,
     });
@@ -290,7 +291,7 @@ export async function PATCH(request: Request) {
         : nextStatus === "rejected"
           ? "Submission marked as rejected."
           : "Submission marked as cancelled.",
-    reason: reason || null,
+    reason: normalizedReason,
     workflowStatus: nextStatus,
   });
 }

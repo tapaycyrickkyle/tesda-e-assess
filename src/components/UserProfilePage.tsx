@@ -111,26 +111,31 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
         {errorMessage ? <NotificationBanner className="mb-5" message={errorMessage} variant="error" /> : null}
         {successMessage ? <NotificationBanner className="mb-5" message={successMessage} variant="success" /> : null}
 
-        <section className="ui-surface mb-5 p-4">
+        <section className="ui-surface-highlight mb-5 p-5">
           <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Account Overview</p>
-          <div className="mt-3">
+          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="ui-section-title text-[#0b1c30]">{profileView.displayName}</h2>
               <p className="mt-1 text-[14px] leading-[1.55] text-[#444653]">{currentUser.email}</p>
               <p className="mt-2 text-[12px] text-[#747685]">Email address and account role are managed separately and cannot be edited here.</p>
             </div>
+            <span className="ui-badge ui-badge-accent">
+              {currentUser.role.replace(/_/g, " ")}
+            </span>
           </div>
         </section>
 
         <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {profileView.sections.map((section) => (
-            <article key={section.title} className="ui-surface p-4">
+            <article key={section.title} className="ui-surface p-5">
               <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{section.title}</p>
-              <div className="mt-4 space-y-3">
+              <div className="mt-3">
                 {section.fields.map((field) => (
-                  <div key={field.label} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">{field.label}</p>
-                    <p className="mt-1.5 text-[14px] font-semibold leading-[1.55] text-[#0b1c30]">{field.value}</p>
+                  <div key={field.label} className="ui-list-row">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">{field.label}</p>
+                      <p className="mt-1 text-[14px] font-semibold leading-[1.55] text-[#0b1c30]">{field.value}</p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -138,7 +143,7 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
           ))}
         </section>
 
-        <section className="ui-surface mt-5 p-4">
+        <section className="ui-surface mt-5 p-5">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Edit Details</p>
@@ -146,7 +151,7 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
                 {isAssessmentCenter ? "Update assessment center information" : "Update personal account information"}
               </h2>
             </div>
-            <span className="rounded-full border border-[#d9e3f7] bg-[#f8fbff] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#3056c4]">
+            <span className="ui-badge ui-badge-accent">
               {currentUser.role.replace(/_/g, " ")}
             </span>
           </div>

@@ -575,33 +575,36 @@ export default function AdminAssessmentCenterPage() {
             </div>
 
             <div className="ui-modal-section space-y-3 px-6 py-3.5 sm:px-7">
-              <div className="rounded-lg border border-[#d9e3f7] bg-white p-3.5">
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-xl bg-[#f8fbff] px-3.5 py-3">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Address</p>
-                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.address}</p>
-                  </div>
-                  <div className="rounded-xl bg-[#f8fbff] px-3.5 py-3">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Center Head</p>
-                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.manager}</p>
-                  </div>
-                  <div className="rounded-xl bg-[#f8fbff] px-3.5 py-3">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact</p>
-                    <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">{selectedCenter.contact}</p>
-                  </div>
-                  <div className="rounded-xl bg-[#f8fbff] px-3.5 py-3">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Login Email</p>
-                    <p className="mt-1.5 break-all text-[14px] leading-[1.55] text-[#0b1c30]">
-                      {selectedCenter.center_email ?? "Not available"}
-                    </p>
+              <div className="grid gap-x-6 sm:grid-cols-2">
+                <div className="ui-list-row">
+                  <div className="min-w-0">
+                    <p className="ui-meta-label">Address</p>
+                    <p className="ui-meta-value">{selectedCenter.address}</p>
                   </div>
                 </div>
-
-                <div className="mt-3 rounded-xl bg-[#f8fbff] px-3.5 py-3">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Created</p>
-                  <p className="mt-1.5 text-[14px] leading-[1.55] text-[#0b1c30]">
-                    {formatCenterCreatedAt(selectedCenter.created_at)}
-                  </p>
+                <div className="ui-list-row">
+                  <div className="min-w-0">
+                    <p className="ui-meta-label">Center Head</p>
+                    <p className="ui-meta-value">{selectedCenter.manager}</p>
+                  </div>
+                </div>
+                <div className="ui-list-row">
+                  <div className="min-w-0">
+                    <p className="ui-meta-label">Contact</p>
+                    <p className="ui-meta-value">{selectedCenter.contact}</p>
+                  </div>
+                </div>
+                <div className="ui-list-row">
+                  <div className="min-w-0">
+                    <p className="ui-meta-label">Login Email</p>
+                    <p className="ui-meta-value break-all">{selectedCenter.center_email ?? "Not available"}</p>
+                  </div>
+                </div>
+                <div className="ui-list-row sm:col-span-2">
+                  <div className="min-w-0">
+                    <p className="ui-meta-label">Created</p>
+                    <p className="ui-meta-value">{formatCenterCreatedAt(selectedCenter.created_at)}</p>
+                  </div>
                 </div>
               </div>
 

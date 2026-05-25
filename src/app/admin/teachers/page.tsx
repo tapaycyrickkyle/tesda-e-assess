@@ -484,34 +484,44 @@ export default function AdminTeacherApprovalsPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 bg-[#f8fbff] px-6 py-5 sm:px-7 lg:grid-cols-[minmax(0,1fr)_340px]">
+            <div className="grid grid-cols-1 gap-5 bg-[#f8fbff] px-6 py-5 sm:px-7 lg:grid-cols-[minmax(0,1fr)_340px]">
               <div className="space-y-5">
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Email</p>
-                    <p className="mt-2 break-words text-[14px] font-medium text-[#0b1c30]">{selectedRecord.email}</p>
+                <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2">
+                  <div className="ui-list-row">
+                    <div className="min-w-0">
+                      <p className="ui-meta-label">Email</p>
+                      <p className="ui-meta-value break-words">{selectedRecord.email}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Contact Number</p>
-                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.contact_number}</p>
+                  <div className="ui-list-row">
+                    <div className="min-w-0">
+                      <p className="ui-meta-label">Contact Number</p>
+                      <p className="ui-meta-value">{selectedRecord.contact_number}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Institution</p>
-                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.institution_name}</p>
+                  <div className="ui-list-row">
+                    <div className="min-w-0">
+                      <p className="ui-meta-label">Institution</p>
+                      <p className="ui-meta-value">{selectedRecord.institution_name}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Position / Role</p>
-                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{selectedRecord.position_title}</p>
+                  <div className="ui-list-row">
+                    <div className="min-w-0">
+                      <p className="ui-meta-label">Position / Role</p>
+                      <p className="ui-meta-value">{selectedRecord.position_title}</p>
+                    </div>
                   </div>
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Submitted</p>
-                    <p className="mt-2 text-[14px] font-medium text-[#0b1c30]">{formatDate(selectedRecord.created_at)}</p>
+                  <div className="ui-list-row sm:col-span-2">
+                    <div className="min-w-0">
+                      <p className="ui-meta-label">Submitted</p>
+                      <p className="ui-meta-value">{formatDate(selectedRecord.created_at)}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-4">
+                <div className="border-t border-[#e8eef8] pt-4">
                   <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Review Decision</p>
-                  <p className="mt-2 text-[14px] leading-[1.6] text-[#5d5f5f]">
+                  <p className="mt-2 max-w-[44rem] text-[14px] leading-[1.6] text-[#5d5f5f]">
                     Open the uploaded credential preview, confirm the teacher details, then approve or reject this request.
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2">
@@ -529,7 +539,7 @@ export default function AdminTeacherApprovalsPage() {
               </div>
 
               <div className="space-y-3">
-                <div className="rounded-xl border border-[#d9e3f7] bg-white p-4">
+                <div className="rounded-xl bg-white p-4 shadow-[inset_0_0_0_1px_rgba(217,227,247,0.72)]">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Credential Preview</p>
@@ -537,7 +547,7 @@ export default function AdminTeacherApprovalsPage() {
                     </div>
                     {selectedRecord.verification_document_url ? (
                       <a
-                        className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-2 rounded-full border border-[#d9e3f7] bg-white px-4 text-[12px] font-bold whitespace-nowrap text-[#002576] transition hover:bg-[#eff4ff]"
+                        className="inline-flex min-h-[38px] shrink-0 items-center justify-center gap-2 rounded-lg border border-[#d9e3f7] bg-white px-4 text-[12px] font-bold whitespace-nowrap text-[#002576] transition hover:bg-[#eff4ff]"
                         href={selectedRecord.verification_document_url}
                         rel="noreferrer"
                         target="_blank"
@@ -548,7 +558,7 @@ export default function AdminTeacherApprovalsPage() {
                     ) : null}
                   </div>
 
-                  <div className="mt-4 overflow-hidden rounded-lg border border-[#e3ebfb] bg-[#fbfdff]">
+                  <div className="mt-4 overflow-hidden rounded-lg bg-[#fbfdff] shadow-[inset_0_0_0_1px_rgba(227,235,251,0.9)]">
                     {selectedRecord.verification_document_url ? (
                       isImageDocument(selectedRecord) ? (
                         // Signed storage URLs are short-lived and remote, so a plain img preview is the safer fit here.

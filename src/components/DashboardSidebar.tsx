@@ -99,7 +99,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
   };
 
   const accountLinkClassName =
-    "flex w-full items-center gap-2.5 rounded-lg px-5 py-2.5 text-left transition-all hover:bg-white/12 hover:text-white";
+    "flex w-full items-center gap-2.5 rounded-xl px-4 py-3 text-left transition-all hover:bg-white/10 hover:text-white";
 
   const renderAvatar = (sizeClassName: string, textClassName: string) => {
     if (resolvedAvatarUrl && canShowAvatar) {
@@ -128,7 +128,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
 
   return (
     <>
-      <div className="sticky top-0 z-30 border-b border-[#d9e3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,251,255,0.95)_100%)] backdrop-blur lg:hidden">
+      <div className="sticky top-0 z-30 border-b border-[#d9e3f7] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(244,248,255,0.94)_100%)] backdrop-blur lg:hidden">
         <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
             <button
               aria-expanded={isMobileNavOpen}
@@ -188,7 +188,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
           <div
             aria-labelledby="mobile-sidebar-title"
             aria-modal="true"
-            className={`absolute left-0 top-0 flex h-full w-[86%] max-w-[320px] flex-col border-r border-[#2f61c7] bg-[#0038a8] pb-4 pt-5 shadow-[0_14px_34px_rgba(15,23,42,0.14)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            className={`absolute left-0 top-0 flex h-full w-[86%] max-w-[320px] flex-col border-r border-[#285ebf] bg-[linear-gradient(180deg,#0038a8_0%,#0b2f7d_100%)] pb-4 pt-5 shadow-[0_18px_40px_rgba(15,23,42,0.22)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isMobileNavOpen ? "translate-x-0" : "-translate-x-full"
             }`}
             role="dialog"
@@ -221,17 +221,17 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
               </button>
             </div>
 
-            <nav aria-label={`${portalLabel} navigation`} className="flex-1 space-y-1 px-2">
+            <nav aria-label={`${portalLabel} navigation`} className="flex-1 space-y-1.5 px-3">
               {navigationItems.map((item) => {
                 const isActive = activeItemHref === item.href;
 
                 return (
                   <Link
                     key={item.key}
-                    className={`flex w-full items-center gap-3 rounded-lg px-5 py-3 text-left text-[13px] font-medium transition-all ${
+                    className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[13px] font-medium transition-all ${
                       isActive
                         ? "bg-white/16 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
-                        : "text-[#d9e7ff] hover:bg-white/12 hover:text-white"
+                        : "text-[#d9e7ff] hover:bg-white/10 hover:text-white"
                     }`}
                     href={item.href}
                     onClick={closeMobileNav}
@@ -243,7 +243,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
               })}
         </nav>
 
-        <div className="mt-auto px-2 pt-4">
+        <div className="mt-auto px-3 pt-4">
           {accountItem ? (
             <Link className={accountLinkClassName} href={accountItem.href} onClick={closeMobileNav}>
               {renderAvatar("h-9 w-9", "text-[13px] font-bold")}
@@ -254,7 +254,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
                 </Link>
               ) : null}
               <button
-                className="flex w-full items-center gap-3 rounded-lg px-5 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isLoggingOut}
                 onClick={() => {
                   setIsMobileNavOpen(false);
@@ -269,7 +269,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
           </div>
       </div>
 
-      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col border-r border-[#2f61c7] bg-[#0038a8] pb-4 pt-6 lg:flex">
+      <aside className="fixed left-0 top-0 z-40 hidden h-full w-64 flex-col border-r border-[#285ebf] bg-[linear-gradient(180deg,#0038a8_0%,#0b2f7d_100%)] pb-5 pt-6 lg:flex">
         <div className="mb-5 px-6">
           <div className="mb-4 flex items-center gap-3">
             <Image
@@ -287,17 +287,17 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
           </div>
         </div>
 
-        <nav className="flex-1 space-y-1 px-2">
+        <nav className="flex-1 space-y-1.5 px-3">
           {navigationItems.map((item) => {
             const isActive = activeItemHref === item.href;
 
             return (
               <Link
                 key={item.key}
-                className={`flex w-full items-center gap-3 rounded-lg px-6 py-3 text-left text-[13px] font-medium transition-all ${
+                className={`flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[13px] font-medium transition-all ${
                   isActive
                     ? "bg-white/16 text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.18)]"
-                    : "text-[#d9e7ff] hover:bg-white/12 hover:text-white"
+                    : "text-[#d9e7ff] hover:bg-white/10 hover:text-white"
                 }`}
                 href={item.href}
               >
@@ -308,7 +308,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
           })}
         </nav>
 
-        <div className="mt-auto px-2 pt-4">
+        <div className="mt-auto px-3 pt-4">
           {accountItem ? (
             <Link className={accountLinkClassName} href={accountItem.href}>
               {renderAvatar("h-9 w-9", "text-[13px] font-bold")}
@@ -319,7 +319,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
             </Link>
           ) : null}
           <button
-            className="flex w-full items-center gap-3 rounded-lg px-6 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isLoggingOut}
             onClick={() => setIsLogoutConfirmOpen(true)}
             type="button"
@@ -342,11 +342,9 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
         </div>
 
         <div className="ui-modal-section space-y-3 px-6 py-4">
-          <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-            <p className="text-[13px] leading-[1.6] text-[#0b1c30]">
-              You will be returned to the main login page and need to sign in again to continue.
-            </p>
-          </div>
+          <p className="text-[13px] leading-[1.6] text-[#0b1c30]">
+            You will be returned to the main login page and need to sign in again to continue.
+          </p>
 
           <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
             <button

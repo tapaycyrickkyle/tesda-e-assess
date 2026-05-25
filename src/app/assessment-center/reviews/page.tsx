@@ -196,6 +196,10 @@ function isReasonRequired(action: StatusAction) {
   return action === "cancel" || action === "reject";
 }
 
+function shouldShowReasonField(action: StatusAction) {
+  return action !== "complete";
+}
+
 function getActionTheme(action: StatusAction) {
   if (action === "complete") {
     return {
@@ -494,7 +498,7 @@ export default function AssessmentCenterApplicantsPage() {
           <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#444653]`}>
             {getStatusDescription(applicant.workflow_status)}
           </p>
-          {applicant.latest_status_reason ? (
+          {applicant.workflow_status !== "completed" && applicant.latest_status_reason ? (
             <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#30435f]`}>
               Reason: {applicant.latest_status_reason}
             </p>
@@ -1130,21 +1134,23 @@ export default function AssessmentCenterApplicantsPage() {
                 <p className="mt-2 text-[12px] leading-[1.5] text-[#30435f]">{actionTheme.helperText}</p>
               </div>
 
-              <label className="block">
-                <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                  Reason {isReasonRequired(pendingStatusUpdate.action) ? "(Required)" : "(Optional)"}
-                </span>
-                <textarea
-                  className="mt-2 min-h-[112px] w-full rounded-lg border border-[#d9e3f7] bg-white px-3 py-2.5 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                  onChange={(event) => setStatusReason(event.target.value)}
-                  placeholder={
-                    isReasonRequired(pendingStatusUpdate.action)
-                      ? "Explain the rejection or cancellation reason."
-                      : "Add any helpful note for the recorded outcome."
-                  }
-                  value={statusReason}
-                />
-              </label>
+              {shouldShowReasonField(pendingStatusUpdate.action) ? (
+                <label className="block">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+                    Reason {isReasonRequired(pendingStatusUpdate.action) ? "(Required)" : "(Optional)"}
+                  </span>
+                  <textarea
+                    className="mt-2 min-h-[112px] w-full rounded-lg border border-[#d9e3f7] bg-white px-3 py-2.5 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setStatusReason(event.target.value)}
+                    placeholder={
+                      isReasonRequired(pendingStatusUpdate.action)
+                        ? "Explain the rejection or cancellation reason."
+                        : "Add any helpful note for the recorded outcome."
+                    }
+                    value={statusReason}
+                  />
+                </label>
+              ) : null}
 
               {isReasonRequired(pendingStatusUpdate.action) ? (
                 <div className="rounded-lg border border-[#f1d8bf] bg-[#fff8e8] px-4 py-3">
@@ -1237,7 +1243,7 @@ export default function AssessmentCenterApplicantsPage() {
                         <div className="min-w-0">
                           <p className="truncate text-[16px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
                           <p className="mt-1 truncate text-[13px] text-[#5d5f5f]">{applicant.qualification}</p>
-                          {applicant.latest_status_reason ? (
+                          {applicant.workflow_status !== "completed" && applicant.latest_status_reason ? (
                             <p className="mt-1 text-[12px] leading-[1.5] text-[#30435f]">Reason: {applicant.latest_status_reason}</p>
                           ) : null}
                         </div>
