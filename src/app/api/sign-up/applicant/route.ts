@@ -15,6 +15,7 @@ type ApplicantSignUpPayload = {
   email?: string;
   firstName?: string;
   middleName?: string;
+  nameExtension?: string;
   password?: string;
   surname?: string;
 };
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
   const body = (await request.json()) as ApplicantSignUpPayload;
   const firstName = body.firstName?.trim() ?? "";
   const middleName = body.middleName?.trim() ?? "";
+  const nameExtension = body.nameExtension?.trim() ?? "";
   const surname = body.surname?.trim() ?? "";
   const email = normalizeEmail(body.email);
   const rawContactNumber = body.contactNumber ?? "";
@@ -72,7 +74,7 @@ export async function POST(request: Request) {
       password,
       user_metadata: {
         first_name: firstName,
-        full_name: buildFullName({ firstName, lastName: surname, middleName }),
+        full_name: buildFullName({ firstName, lastName: surname, middleName, nameExtension }),
         role: "applicant",
       },
     });
@@ -98,9 +100,10 @@ export async function POST(request: Request) {
       contactNumber,
       email,
       firstName,
-      fullName: buildFullName({ firstName, lastName: surname, middleName }),
+      fullName: buildFullName({ firstName, lastName: surname, middleName, nameExtension }),
       lastName: surname,
       middleName,
+      nameExtension,
       role: "applicant",
     });
 

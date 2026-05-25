@@ -76,7 +76,7 @@ const assignCenterButtonClass =
 const tabInlineCountClass =
   "pointer-events-none absolute -right-1 -top-0.5 inline-flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[#d92d20] text-[9px] font-bold leading-none text-white shadow-[0_6px_16px_rgba(217,45,32,0.22)]";
 const summaryCardClass =
-  "flex min-h-[120px] flex-col rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
+  "flex min-h-[120px] flex-col rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 const summaryIconClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 
@@ -452,7 +452,7 @@ export default function AdminApplicantsPage() {
             </div>
           </div>
 
-          <div className="mt-4 rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
+          <div className="mt-4 border-t border-[#e7edf4] px-4 py-3 sm:px-0">
               <div className="flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-4">
               <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:w-full xl:max-w-[520px]">
                 <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">
@@ -712,7 +712,7 @@ export default function AdminApplicantsPage() {
               <div className="max-h-[440px] space-y-2 overflow-y-auto pr-1">
                 {filteredBulkApplicants.map((applicant) => (
                   <div
-                    className="grid gap-3 rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)] md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                    className="grid gap-3 border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
                     key={applicant.id}
                   >
                     <div className="min-w-0">
@@ -739,7 +739,7 @@ export default function AdminApplicantsPage() {
                 ))}
 
                 {filteredBulkApplicants.length === 0 ? (
-                  <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-6 text-center text-[13px] text-[#747685]">
+                  <div className="px-4 py-6 text-center text-[13px] text-[#747685]">
                     No applicants found.
                   </div>
                 ) : null}
@@ -776,7 +776,7 @@ export default function AdminApplicantsPage() {
                 <NotificationBanner compact message={assignmentError} variant="error" />
               ) : null}
 
-              <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-3.5">
+              <div className="border-t border-[#dbe6fb] pt-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#4563a5]">Assigning</p>
                 <div className="mt-2.5 min-w-0">
                   <p className="text-[15px] font-bold text-[#0b1c30]">{assignmentTarget.title}</p>
@@ -824,13 +824,6 @@ export default function AdminApplicantsPage() {
                     </div>
                   </label>
 
-                  {selectedCenter ? (
-                    <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Selected Center</p>
-                      <p className="mt-2.5 text-[15px] font-bold text-[#0b1c30]">{selectedCenter.name}</p>
-                      <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{selectedCenter.address}</p>
-                    </div>
-                  ) : null}
                 </div>
               </div>
 
@@ -875,7 +868,7 @@ export default function AdminApplicantsPage() {
                 <NotificationBanner compact message={assignmentError} variant="error" />
               ) : null}
 
-              <div className="rounded-lg border border-[#cfe0ff] bg-[#eef4ff] px-4 py-4">
+              <div className="border-t border-[#dbe6fb] pt-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#4563a5]">Assigning</p>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{assignmentTarget.title}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#44506a]">{assignmentTarget.description}</p>
@@ -884,13 +877,13 @@ export default function AdminApplicantsPage() {
                 </p>
               </div>
 
-              <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-4">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Selected Center</p>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{selectedCenter.name}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{selectedCenter.address}</p>
               </div>
 
-              <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-4">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <p className="text-[13px] leading-[1.6] text-[#0b1c30]">
                   {assignmentTarget.type === "individual"
                     ? `Assign this applicant to ${selectedCenter.name}?`
@@ -934,7 +927,7 @@ export default function AdminApplicantsPage() {
 
 function EmptyState({ body, icon, title }: { body: string; icon: string; title: string }) {
   return (
-    <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center">
+    <div className="px-4 py-8 text-center">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
         <i aria-hidden="true" className={`fa-solid ${icon} text-[18px]`} />
       </div>

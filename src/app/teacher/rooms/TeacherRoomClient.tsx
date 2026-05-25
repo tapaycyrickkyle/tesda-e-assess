@@ -4,15 +4,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { qualificationOptions } from "@/lib/application-form";
 import { getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
-
-const qualificationOptions = [
-  "Computer Systems Servicing NC II",
-  "Cookery NC II",
-  "Automotive Servicing NC I",
-  "Health Care Services NC II",
-  "Visual Graphic Design NC III",
-];
 
 type CreateRoomResponse = {
   success: boolean;
@@ -183,7 +176,7 @@ export default function TeacherRoomClient({
                 </div>
               </div>
 
-              <div className="rounded-lg border border-[#d9e3f7] bg-[#f8fbff] p-3">
+              <div className="rounded-lg border border-[#d9e3f7] bg-white p-3">
                 <div className="flex items-center justify-between gap-3 border-b border-[#d9e3f7] pb-2.5">
                   <span className="flex items-center gap-2 text-[13px] font-semibold text-[#5d5f5f]">
                     <i aria-hidden="true" className="fa-solid fa-hashtag text-[14px] text-[#5d5f5f]" />
@@ -347,13 +340,13 @@ export default function TeacherRoomClient({
               </div>
             </div>
 
-            <div className="rounded-xl border border-[#d9e3f7] bg-[#f8fbff] p-4">
+            <div className="space-y-4">
               <div>
                 <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-[#747685]">Room Name</p>
                 <p className="mt-1.5 text-[17px] font-bold leading-[1.35] text-[#0b1c30]">{createdRoom.name}</p>
               </div>
 
-              <div className="mt-4 rounded-lg border border-[#cfe0ff] bg-white p-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+              <div className="border-t border-[#e7edf4] pt-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="min-w-0">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.06em] text-[#747685]">Join Code</p>

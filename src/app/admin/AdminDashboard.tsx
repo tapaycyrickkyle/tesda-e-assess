@@ -138,7 +138,7 @@ export default async function AdminDashboard() {
           <div className={statCardClass}>
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Under Review at Centers</p>
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{centerQueue.length}</p>
-            <p className="mt-2 text-[13px] text-[#747685]">Submissions currently with assessment centers for review and outcome processing.</p>
+            <p className="mt-2 text-[13px] text-[#747685]">Submissions currently with assessment centers for review and status processing.</p>
           </div>
           <div className={statCardClass}>
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Assessment Centers</p>
@@ -164,7 +164,7 @@ export default async function AdminDashboard() {
 
             <div className="mt-5 space-y-3">
               {pendingTeacherApprovals.slice(0, 5).map((record) => (
-                <div key={record.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div key={record.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <p className="text-[14px] font-bold text-[#0b1c30]">{record.full_name}</p>
@@ -183,7 +183,7 @@ export default async function AdminDashboard() {
               ))}
 
               {pendingTeacherApprovals.length === 0 ? (
-                <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <div className="px-1 py-5">
                   <p className="text-[14px] leading-[1.6] text-[#444653]">
                     No teacher approval requests are waiting right now.
                   </p>
@@ -208,7 +208,7 @@ export default async function AdminDashboard() {
 
             <div className="mt-5 space-y-3">
               {tesdaQueue.slice(0, 5).map((submission) => (
-                <div key={submission.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div key={submission.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="min-w-0">
                       <p className="text-[14px] font-bold text-[#0b1c30]">{submission.applicant_name}</p>
@@ -222,7 +222,7 @@ export default async function AdminDashboard() {
               ))}
 
               {tesdaQueue.length === 0 ? (
-                <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <div className="px-1 py-5">
                   <p className="text-[14px] leading-[1.6] text-[#444653]">
                     No applicant submissions are waiting for TESDA assignment right now.
                   </p>
@@ -232,7 +232,7 @@ export default async function AdminDashboard() {
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <Link
-                className="rounded-lg border border-[#d9e3f7] bg-[#fbfdff] px-4 py-4 transition hover:border-[#bfd0f2] hover:bg-white"
+                className="border-t border-[#e7edf4] px-1 py-4 transition hover:border-[#bfd0f2]"
                 href="/admin/assignments"
               >
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned Queue</p>
@@ -240,7 +240,7 @@ export default async function AdminDashboard() {
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">Applicants currently with assessment centers.</p>
               </Link>
               <Link
-                className="rounded-lg border border-[#d9e3f7] bg-[#fbfdff] px-4 py-4 transition hover:border-[#bfd0f2] hover:bg-white"
+                className="border-t border-[#e7edf4] px-1 py-4 transition hover:border-[#bfd0f2]"
                 href="/admin/centers"
               >
                 <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Finalized Records</p>
@@ -268,7 +268,7 @@ export default async function AdminDashboard() {
 
             <div className="mt-5 space-y-3">
               {recentWorkflowActivity.map((entry) => (
-                <div key={entry.id} className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3">
+                <div key={entry.id} className="border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
@@ -289,7 +289,7 @@ export default async function AdminDashboard() {
               ))}
 
               {recentWorkflowActivity.length === 0 ? (
-                <div className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-4 py-5">
+                <div className="px-1 py-5">
                   <p className="text-[14px] leading-[1.6] text-[#444653]">
                     Workflow history will appear here after submissions start moving through the new audit trail.
                   </p>

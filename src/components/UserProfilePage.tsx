@@ -52,6 +52,7 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
             institutionType: isTeacher ? profileForm.institutionType : undefined,
             lastName: profileForm.lastName,
             middleName: profileForm.middleName,
+            nameExtension: profileForm.nameExtension,
             positionTitle: isTeacher ? profileForm.positionTitle : undefined,
           };
 
@@ -235,6 +236,17 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
                     onChange={handleProfileChange}
                     type="text"
                     value={profileForm.middleName}
+                  />
+                </label>
+                <label className="block">
+                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Name Extension</span>
+                  <input
+                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    name="nameExtension"
+                    onChange={handleProfileChange}
+                    placeholder="Jr., Sr., III"
+                    type="text"
+                    value={profileForm.nameExtension}
                   />
                 </label>
                 <label className="block">

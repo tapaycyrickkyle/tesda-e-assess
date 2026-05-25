@@ -13,6 +13,7 @@ type ProfileSyncInput = {
   institutionType?: string | null;
   lastName?: string | null;
   middleName?: string | null;
+  nameExtension?: string | null;
   positionTitle?: string | null;
   role: RegistrationRole;
 };
@@ -102,12 +103,21 @@ export function buildFullName({
   firstName,
   lastName,
   middleName,
+  nameExtension,
 }: {
   firstName: string;
   lastName: string;
   middleName?: string | null;
+  nameExtension?: string | null;
 }) {
-  return [firstName.trim(), normalizeOptionalText(middleName), lastName.trim()].filter(Boolean).join(" ");
+  return [
+    firstName.trim(),
+    normalizeOptionalText(middleName),
+    lastName.trim(),
+    normalizeOptionalText(nameExtension),
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function formatSupabaseError(error: {
@@ -143,6 +153,7 @@ export async function syncProfileRecord(input: ProfileSyncInput) {
     institution_type: normalizeOptionalText(input.institutionType ?? null),
     last_name: normalizeOptionalText(input.lastName ?? null),
     middle_name: normalizeOptionalText(input.middleName ?? null),
+    name_extension: normalizeOptionalText(input.nameExtension ?? null),
     position_title: normalizeOptionalText(input.positionTitle ?? null),
     role: input.role,
   };

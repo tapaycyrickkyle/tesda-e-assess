@@ -12,6 +12,7 @@ import {
   educationalAttainmentOptions,
   employmentStatusOptions,
   normalizeApplicationFormData,
+  qualificationOptions,
   sexOptions,
   type ApplicantApplicationFormData,
   type ApplicationSubmissionRecord,
@@ -20,11 +21,13 @@ import {
   type TrainingItem,
   type WorkExperienceItem,
 } from "@/lib/application-form";
+import type { ApplicantProfileDefaults } from "@/lib/user-profile";
 
 type ApplicationMode = "individual" | "room";
 
 type ApplicantApplicationFormClientProps = {
   applicantEmail: string;
+  applicantProfile: ApplicantProfileDefaults | null;
   existingSubmission: ApplicationSubmissionRecord | null;
   isReadOnly?: boolean;
   mode: ApplicationMode;
@@ -117,20 +120,28 @@ function extractMiddleInitial(value: string) {
 
 function mergeInitialFormData(
   applicantEmail: string,
+  applicantProfile: ApplicantProfileDefaults | null,
   existingSubmission: ApplicationSubmissionRecord | null,
   room: ApplicantApplicationFormClientProps["room"],
 ) {
   const emptyState = createEmptyApplicationFormData();
   const existingFormData = existingSubmission ? normalizeApplicationFormData(existingSubmission.form_data) : emptyState;
 
+  const resolvedMiddleName = existingFormData.middleName || applicantProfile?.middleName || "";
+
   return {
     ...emptyState,
     ...existingFormData,
     applicationDate: existingFormData.applicationDate || getTodayDateValue(),
     emailAddress: existingFormData.emailAddress || applicantEmail,
-    middleInitial: extractMiddleInitial(existingFormData.middleName) || existingFormData.middleInitial,
+    firstName: existingFormData.firstName || applicantProfile?.firstName || "",
+    middleInitial: extractMiddleInitial(resolvedMiddleName) || existingFormData.middleInitial,
+    middleName: resolvedMiddleName,
+    mobileNumber: existingFormData.mobileNumber || applicantProfile?.contactNumber || "",
+    nameExtension: existingFormData.nameExtension || applicantProfile?.nameExtension || "",
     qualificationTitle: room?.qualification || existingFormData.qualificationTitle || "",
     schoolName: existingFormData.schoolName || room?.name || "",
+    surname: existingFormData.surname || applicantProfile?.lastName || "",
     trainings: existingFormData.trainings.length > 0 ? existingFormData.trainings : [emptyTrainingItem()],
     workExperiences:
       existingFormData.workExperiences.length > 0 ? existingFormData.workExperiences : [emptyWorkExperienceItem()],
@@ -178,6 +189,7 @@ const formSteps: FormStep[] = [
 
 export default function ApplicantApplicationFormClient({
   applicantEmail,
+  applicantProfile,
   existingSubmission,
   isReadOnly = false,
   mode,
@@ -185,8 +197,8 @@ export default function ApplicantApplicationFormClient({
   room,
 }: ApplicantApplicationFormClientProps) {
   const initialFormData = useMemo(
-    () => mergeInitialFormData(applicantEmail, existingSubmission, room),
-    [applicantEmail, existingSubmission, room],
+    () => mergeInitialFormData(applicantEmail, applicantProfile, existingSubmission, room),
+    [applicantEmail, applicantProfile, existingSubmission, room],
   );
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialFormData);
@@ -197,6 +209,9 @@ export default function ApplicantApplicationFormClient({
   const activeStep = formSteps[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === formSteps.length - 1;
+  const qualificationSelectOptions = formData.qualificationTitle && !qualificationOptions.includes(formData.qualificationTitle)
+    ? [formData.qualificationTitle, ...qualificationOptions]
+    : [...qualificationOptions];
   const isUpdatedSubmission = successMessage.toLowerCase().includes("updated");
   const successModalTitle = isUpdatedSubmission ? "Application Updated" : "Application Submitted";
   const successModalDetail =
@@ -363,11 +378,12 @@ export default function ApplicantApplicationFormClient({
                   placeholder="Enter the school, center, or company"
                   value={formData.schoolName}
                 />
-                <TextField
+                <SelectField
                   disabled={isReadOnly || Boolean(room)}
                   label="Assessment Applied For"
                   onChange={(value) => updateField("qualificationTitle", value)}
-                  placeholder="Enter the qualification or assessment title"
+                  options={qualificationSelectOptions}
+                  placeholder="Select a qualification"
                   value={formData.qualificationTitle}
                 />
               </div>
@@ -393,7 +409,7 @@ export default function ApplicantApplicationFormClient({
                 />
 
                 <OptionGroup
-                  columnsClassName="grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
+                  columnsClassName="grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3"
                   disabled={isReadOnly}
                   label="Client Type"
                   onChange={(value) => updateField("clientType", value)}
@@ -968,29 +984,37 @@ function SectionCard({
   title?: string;
 }) {
   return (
-    <section className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5 sm:py-5">
+    <section className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:px-5 sm:py-5">
       {title || description ? (
-        <div className="mb-4 border-b border-[#edf2fd] pb-4">
+        <div className="mb-5 pb-1">
           {title ? <h2 className="ui-section-title text-[#002576]">{title}</h2> : null}
           {description ? <p className="mt-1.5 max-w-3xl text-[14px] leading-[1.6] text-[#556079]">{description}</p> : null}
         </div>
       ) : null}
-      <div className="space-y-4">{children}</div>
+      <div className="space-y-5">{children}</div>
     </section>
   );
 }
 
 function SubsectionCard({
   children,
+  description,
+  title,
 }: {
   children: ReactNode;
   description?: string;
   title?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#e3ebfb] bg-[#fbfdff] px-4 py-3.5 sm:px-4 sm:py-4">
+    <section className="border-t border-[#e7edf4] pt-5 first:border-t-0 first:pt-0">
+      {title || description ? (
+        <div className="mb-4">
+          {title ? <h3 className="text-[16px] font-semibold leading-[1.35] text-[#1e293b]">{title}</h3> : null}
+          {description ? <p className="mt-1.5 max-w-3xl text-[13px] leading-[1.6] text-[#64748b]">{description}</p> : null}
+        </div>
+      ) : null}
       <div className="space-y-3.5">{children}</div>
-    </div>
+    </section>
   );
 }
 
@@ -1031,6 +1055,47 @@ function TextField({
   );
 }
 
+function SelectField({
+  disabled = false,
+  label,
+  onChange,
+  options,
+  placeholder,
+  value,
+}: {
+  disabled?: boolean;
+  label: string;
+  onChange: (value: string) => void;
+  options: readonly string[];
+  placeholder: string;
+  value: string;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-[0.04em] text-[#4c5e7a]">{label}</span>
+      <div className="group relative">
+        <select
+          className="min-h-[44px] w-full appearance-none rounded-lg border border-[#c8d5ee] bg-white px-3.5 py-2.5 pr-10 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b]"
+          disabled={disabled}
+          onChange={(event) => onChange(event.target.value)}
+          value={value}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+        <i
+          aria-hidden="true"
+          className="fa-solid fa-chevron-down pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+        />
+      </div>
+    </label>
+  );
+}
+
 function OptionGroup({
   columnsClassName = "grid-cols-1 sm:grid-cols-2",
   disabled = false,
@@ -1056,7 +1121,7 @@ function OptionGroup({
           return (
             <button
               key={option}
-              className={`inline-flex min-h-[40px] items-center justify-center rounded-lg border px-3.5 py-2 text-center text-[13px] font-semibold transition ${
+              className={`inline-flex min-h-[40px] items-center justify-center rounded-lg border px-3 py-2 text-center text-[13px] leading-[1.35] font-semibold whitespace-normal break-words transition ${
                 isActive
                   ? "border-[#002576] bg-[#002576] text-white"
                   : "border-[#c8d5ee] bg-white text-[#24364c] hover:border-[#8ea8e6] hover:bg-[#f8fbff]"

@@ -190,7 +190,7 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
   return (
     <>
       {renderedCards.length === 0 ? (
-        <section className="rounded-xl border border-[#d9e3f7] bg-[linear-gradient(180deg,#fbfdff_0%,#f5f8ff_100%)] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+        <section className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
             <i aria-hidden="true" className="fa-solid fa-file-circle-plus text-[18px]" />
           </div>
@@ -357,11 +357,9 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-lg bg-[#f8fbff] px-3.5 py-3">
-                      <p className="text-[12px] leading-[1.55] text-[#747685]">
-                        Timeline history will appear here once this submission moves through the workflow.
-                      </p>
-                    </div>
+                    <p className="text-[12px] leading-[1.55] text-[#747685]">
+                      Timeline history will appear here once this submission moves through the workflow.
+                    </p>
                   )}
                   {selectedDetailsCard.timeline.length > 4 ? (
                     <p className="text-[11px] font-medium text-[#747685]">

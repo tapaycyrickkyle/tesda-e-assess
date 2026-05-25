@@ -87,7 +87,7 @@ export default async function AdminReportsPage() {
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{roomCount}</p>
           </article>
           <article className="ui-surface p-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Closed Outcomes</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Closed Statuses</p>
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{closedCount}</p>
           </article>
         </section>
