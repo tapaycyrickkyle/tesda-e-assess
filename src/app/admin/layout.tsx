@@ -24,6 +24,12 @@ const adminSidebarItems = [
     href: "/admin/centers",
   },
   {
+    key: "programs",
+    label: "Programs",
+    icon: "fa-solid fa-list-check",
+    href: "/admin/programs",
+  },
+  {
     key: "reports",
     label: "Reports",
     icon: "fa-solid fa-file-export",

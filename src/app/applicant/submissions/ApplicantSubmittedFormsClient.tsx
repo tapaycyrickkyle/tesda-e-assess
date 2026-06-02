@@ -44,20 +44,17 @@ type SubmissionCard = {
       | "draft"
       | "submitted_to_teacher"
       | "submitted_to_admin"
+      | "needs_applicant_update"
       | "assigned"
       | "under_review"
+      | "for_result_encoding"
+      | "passed"
+      | "not_passed"
       | "completed"
       | "rejected"
       | "cancelled"
       | "withdrawn";
   };
-  timeline: Array<{
-    actor: string;
-    description: string;
-    id: string;
-    label: string;
-    recordedAt: string;
-  }>;
   withdrawLock: {
     isLocked: boolean;
     message: string | null;
@@ -66,7 +63,6 @@ type SubmissionCard = {
 
 const actionButtonBaseClass =
   "inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition";
-const pillBaseClass = "ui-badge normal-case tracking-[0.02em]";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -76,15 +72,6 @@ function formatDateTime(value: string) {
     month: "long",
     year: "numeric",
   }).format(new Date(value));
-}
-
-function renderPill({ className, iconClassName, label }: { className: string; iconClassName?: string; label: string }) {
-  return (
-    <span className={`${pillBaseClass} ${className}`}>
-      {iconClassName ? <i aria-hidden="true" className={`${iconClassName} text-[11px]`} /> : null}
-      {label}
-    </span>
-  );
 }
 
 function buildEditHref(submission: SubmissionCard["submission"]) {
@@ -98,6 +85,24 @@ function buildEditHref(submission: SubmissionCard["submission"]) {
 function buildApplicationSubmissionPdfUrl(submissionId: string, options?: { download?: boolean }) {
   const baseUrl = `/api/application-submissions/${submissionId}/pdf`;
   return options?.download ? `${baseUrl}?download=1` : baseUrl;
+}
+
+function splitCorrectionNote(message: string) {
+  const marker = "\n\nCorrection note:";
+
+  if (!message.includes(marker)) {
+    return {
+      correctionNote: null,
+      summary: message,
+    };
+  }
+
+  const [summary, note] = message.split(marker);
+
+  return {
+    correctionNote: note?.trim() ?? null,
+    summary: summary.trim(),
+  };
 }
 
 function buildWithdrawnCard(card: SubmissionCard): SubmissionCard {
@@ -142,6 +147,9 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
     withdrawnSubmissionIds.includes(card.submission.id) ? buildWithdrawnCard(card) : card,
   );
   const selectedDetailsCard = renderedCards.find((card) => card.submission.id === selectedDetailsSubmissionId) ?? null;
+  const correctionMessageParts = selectedDetailsCard
+    ? splitCorrectionNote(selectedDetailsCard.statusDetails.nextStep)
+    : null;
 
   const handleWithdraw = async () => {
     if (!selectedSubmission) {
@@ -215,45 +223,24 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
         </section>
       ) : (
         <section className="grid grid-cols-1 gap-2.5">
-          {renderedCards.map(({ assessmentBadge, editLock, sourceBadge, statusBadge, submission }) => {
-            const showStatusBadge =
-              submission.workflow_status !== "assigned" &&
-              submission.workflow_status !== "under_review" &&
-              submission.workflow_status !== "submitted_to_admin";
-
+          {renderedCards.map(({ statusDetails, submission }) => {
             return (
               <article
                 key={submission.id}
-                className="rounded-xl border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)]"
+                className="rounded-xl border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fcfdff_100%)] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition"
               >
                 <div className="px-4 py-3.5 sm:px-5">
                   <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="min-w-0 space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          {renderPill(sourceBadge)}
-                          {showStatusBadge ? renderPill(statusBadge) : null}
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-[18px] font-bold leading-[1.25] text-[#0b1c30]">{submission.qualification_title}</p>
-                          <p className="text-[13px] leading-[1.5] text-[#444653]">
-                            Submitted under <span className="font-semibold text-[#0b1c30]">{submission.applicant_name}</span>.
-                          </p>
-                        </div>
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                      <div className="min-w-0 space-y-1">
+                        <p className="text-[18px] font-bold leading-[1.25] text-[#0b1c30]">{submission.qualification_title}</p>
+                        <p className="text-[13px] leading-[1.55] text-[#444653]">
+                          Submitted on <span className="font-semibold text-[#0b1c30]">{formatDateTime(submission.submitted_at)}</span>
+                        </p>
+                        <p className="text-[13px] leading-[1.55] text-[#444653]">
+                          Current status: <span className="font-semibold text-[#0b1c30]">{statusDetails.currentStatus}</span>
+                        </p>
                       </div>
-
-                      <div className="flex flex-wrap items-center gap-2 lg:max-w-[420px] lg:justify-end">
-                        {renderPill(assessmentBadge)}
-                        {renderPill({
-                          className: editLock.isLocked
-                            ? "border border-[#d6dce9] bg-[#f7f9fc] text-[#7a879d]"
-                            : "border border-[#d4def2] bg-[#f8fbff] text-[#3056c4]",
-                          label: editLock.isLocked ? "Editing Locked" : "Editable",
-                        })}
-                      </div>
-                    </div>
-
-                    <div className="flex justify-start border-t border-[#e8eef8] pt-3 lg:justify-end">
                       <button
                         aria-haspopup="dialog"
                         className="inline-flex min-h-[38px] items-center justify-center gap-2 rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
@@ -280,15 +267,7 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
           <div>
             <div className="flex items-start justify-between gap-4 border-b border-[#e6edf9] px-5 py-4 sm:px-6">
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  {renderPill(selectedDetailsCard.sourceBadge)}
-                  {selectedDetailsCard.submission.workflow_status !== "assigned" &&
-                  selectedDetailsCard.submission.workflow_status !== "under_review" &&
-                  selectedDetailsCard.submission.workflow_status !== "submitted_to_admin"
-                    ? renderPill(selectedDetailsCard.statusBadge)
-                    : null}
-                </div>
-                <h2 className="mt-3 text-[22px] font-bold leading-[1.2] text-[#0b1c30]">
+                <h2 className="text-[22px] font-bold leading-[1.2] text-[#0b1c30]">
                   {selectedDetailsCard.submission.qualification_title}
                 </h2>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
@@ -319,6 +298,24 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                     {selectedDetailsCard.statusDetails.currentStatus}
                   </p>
                 </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Submission Type</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedDetailsCard.sourceBadge.label}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assessment Center</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedDetailsCard.assessmentBadge.label}
+                  </p>
+                </div>
+                <div className="sm:col-span-2">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Edit Availability</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedDetailsCard.editLock.isLocked ? "Editing Locked" : "Editable"}
+                  </p>
+                </div>
               </div>
 
               <div className="mt-4 flex items-start gap-3 border-t border-[#eef3fb] pt-4">
@@ -331,45 +328,22 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                     {selectedDetailsCard.statusDetails.updateSummary}
                   </p>
                   <p className="mt-0.5 text-[13px] leading-[1.55] text-[#30435f]">
-                    {selectedDetailsCard.statusDetails.nextStep}
+                    {correctionMessageParts?.summary ?? selectedDetailsCard.statusDetails.nextStep}
                   </p>
-                </div>
-              </div>
-
-              <div className="mt-4 border-t border-[#eef3fb] pt-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Timeline</p>
-                  <span className="text-[11px] font-semibold text-[#747685]">Latest first</span>
-                </div>
-                <div className="mt-3 space-y-3">
-                  {selectedDetailsCard.timeline.length > 0 ? (
-                    selectedDetailsCard.timeline.slice(0, 4).map((entry) => (
-                      <div
-                        key={entry.id}
-                        className="border-l-2 border-[#d9e3f7] pl-3 first:pt-0 not-first:border-t not-first:border-[#eef3fb] not-first:pt-3"
-                      >
-                        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                          <p className="text-[13px] font-semibold text-[#0b1c30]">{entry.label}</p>
-                          <p className="text-[11px] font-semibold text-[#747685]">{formatDateTime(entry.recordedAt)}</p>
-                        </div>
-                        <p className="mt-1 text-[12px] leading-[1.55] text-[#30435f]">{entry.description}</p>
-                        <p className="mt-1 text-[11px] font-medium text-[#747685]">By {entry.actor}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-[12px] leading-[1.55] text-[#747685]">
-                      Timeline history will appear here once this submission moves through the workflow.
-                    </p>
-                  )}
-                  {selectedDetailsCard.timeline.length > 4 ? (
-                    <p className="text-[11px] font-medium text-[#747685]">
-                      Showing the 4 most recent events out of {selectedDetailsCard.timeline.length}.
-                    </p>
+                  {correctionMessageParts?.correctionNote ? (
+                    <div className="mt-3 rounded-lg border border-[#f1d8bf] bg-[#fff8e8] px-3.5 py-3">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#8a5200]">
+                        Correction Note
+                      </p>
+                      <p className="mt-1.5 text-[13px] leading-[1.55] text-[#6b4a16]">
+                        {correctionMessageParts.correctionNote}
+                      </p>
+                    </div>
                   ) : null}
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-2 border-t border-[#eef3fb] pt-4 sm:flex-row sm:flex-wrap">
+              <div className="mt-4 flex flex-col gap-2 border-t border-[#eef3fb] pt-4 sm:flex-row sm:flex-wrap sm:justify-end">
                 {selectedDetailsCard.editLock.isLocked ? (
                   <span className={`${actionButtonBaseClass} border border-[#d6dce9] bg-[#f7f9fc] text-[#7a879d]`}>
                     Editing Locked

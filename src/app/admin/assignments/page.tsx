@@ -1,9 +1,10 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
-import { useEffect, useMemo, useState } from "react";
+import { formatAssessmentDate } from "@/lib/assessment-date";
 import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 
@@ -11,24 +12,31 @@ type AssignedApplicant = {
   applicant_name: string;
   applicant_reference: string;
   assigned_at: string;
-  assignment_batch?: string | null;
-  assignment_title?: string | null;
+  assessment_date: string | null;
   assessment_center_id: string;
+  assessor: string | null;
+  assignment_batch: string | null;
+  assignment_group_key: string | null;
+  assignment_group_number: number | null;
+  assignment_title: string | null;
   center_name: string;
   id: string;
   qualification: string;
   workflow_status: ApplicationSubmissionStatus;
 };
 
+type QueueTab = "active" | "closed";
+
 type BulkAssignment = {
-  activeApplicantCount: number;
-  assignmentIds: string[];
   applicantCount: number;
+  applicants: AssignedApplicant[];
   assignedAt: string;
+  assessmentDate: string | null;
+  assessor: string | null;
   batchCode: string;
-  closedApplicantCount: number;
   centerName: string;
-  hasProcessedApplicants: boolean;
+  groupKey: string;
+  groupNumber: number | null;
   id: string;
   qualification: string;
   title: string;
@@ -38,78 +46,69 @@ type AssessmentCenterSummary = {
   applicantCount: number;
   batchCount: number;
   id: string;
-  individualCount: number;
   latestAssignedAt: string;
   name: string;
   pendingCount: number;
   processedCount: number;
 };
 
-type AssignmentQueueTab = "active" | "closed";
+type RemovalTarget = {
+  assignmentIds: string[];
+  centerName: string;
+  description: string;
+  title: string;
+};
 
-type RemovalTarget =
-  | {
-      assignmentIds: string[];
-      centerName: string;
-      count: 1;
-      description: string;
-      title: string;
-      type: "individual";
-    }
-  | {
-      assignmentIds: string[];
-      centerName: string;
-      count: number;
-      description: string;
-      title: string;
-      type: "bulk";
-    };
-
-const formatAssignedDate = (value: string) =>
-  new Date(value).toLocaleString([], {
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
+type ScheduleTarget = {
+  assessmentDate: string;
+  assessor: string;
+  assignmentIds: string[];
+  title: string;
+};
 
 const cardTitleClass = "text-[18px] font-bold leading-[1.2] text-[#0b1c30]";
-const assignedMetaCardClass =
-  "flex min-h-[48px] w-full flex-col justify-center border-t border-[#e7edf4] pt-2.5 text-left sm:min-w-[188px] sm:w-auto";
 const secondaryActionButtonClass =
   "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff] sm:min-w-[96px] sm:w-auto";
+const primaryActionButtonClass =
+  "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg bg-[#002576] px-3.5 text-[12px] font-bold text-white transition hover:bg-[#0038a8] sm:min-w-[108px] sm:w-auto";
 const destructiveActionButtonClass =
   "inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#e4bcbc] bg-[#fff5f5] px-3.5 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#ffeaea] sm:min-w-[96px] sm:w-auto";
 const summaryCardClass =
   "flex min-h-[120px] flex-col rounded-lg border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 const summaryIconClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
-const centerActiveStatuses: ApplicationSubmissionStatus[] = ["assigned", "under_review"];
-const centerClosedStatuses: ApplicationSubmissionStatus[] = ["completed", "rejected", "cancelled", "withdrawn"];
 
-function isCenterActiveStatus(status: ApplicationSubmissionStatus) {
-  return centerActiveStatuses.includes(status);
+const activeStatuses: ApplicationSubmissionStatus[] = ["assigned", "under_review"];
+const closedStatuses: ApplicationSubmissionStatus[] = ["passed", "not_passed", "completed"];
+
+function isActiveStatus(status: ApplicationSubmissionStatus) {
+  return activeStatuses.includes(status);
 }
 
-function isCenterClosedStatus(status: ApplicationSubmissionStatus) {
-  return centerClosedStatuses.includes(status);
+function isClosedStatus(status: ApplicationSubmissionStatus) {
+  return closedStatuses.includes(status);
+}
+
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
 }
 
 function getStatusBadgeClass(status: ApplicationSubmissionStatus) {
-  if (status === "completed") {
+  if (status === "passed" || status === "completed") {
     return "bg-[#e8f7ee] text-[#166534]";
   }
 
-  if (status === "rejected" || status === "cancelled" || status === "withdrawn") {
+  if (status === "not_passed" || status === "rejected" || status === "cancelled" || status === "withdrawn") {
     return "bg-[#fff1f1] text-[#b42318]";
   }
 
-  if (status === "assigned" || status === "under_review") {
-    return "bg-[#eef4ff] text-[#3056c4]";
-  }
-
-  return "bg-[#fff4db] text-[#8a5200]";
+  return "bg-[#eef4ff] text-[#3056c4]";
 }
 
 export default function AdminAssignedApplicantsPage() {
@@ -120,29 +119,27 @@ export default function AdminAssignedApplicantsPage() {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isRemovingAssignment, setIsRemovingAssignment] = useState(false);
-  const [removalError, setRemovalError] = useState("");
-  const [removalSuccess, setRemovalSuccess] = useState("");
+  const [isSavingSchedule, setIsSavingSchedule] = useState(false);
+  const [queueTab, setQueueTab] = useState<QueueTab>("active");
   const [removalTarget, setRemovalTarget] = useState<RemovalTarget | null>(null);
+  const [scheduleTarget, setScheduleTarget] = useState<ScheduleTarget | null>(null);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleAssessor, setScheduleAssessor] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedBulkAssignment, setSelectedBulkAssignment] = useState<BulkAssignment | null>(null);
   const [selectedCenterId, setSelectedCenterId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [individualCourseFilter, setIndividualCourseFilter] = useState("all");
   const [bulkProgramFilter, setBulkProgramFilter] = useState("all");
-  const [queueTab, setQueueTab] = useState<AssignmentQueueTab>("active");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
 
   useEffect(() => {
-    if (!removalSuccess) {
+    if (!feedbackMessage) {
       return;
     }
 
-    const timeoutId = window.setTimeout(() => {
-      setRemovalSuccess("");
-    }, 4500);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [removalSuccess]);
+    const timeoutId = window.setTimeout(() => setFeedbackMessage(""), 4500);
+    return () => window.clearTimeout(timeoutId);
+  }, [feedbackMessage]);
 
   useEffect(() => {
     let cancelled = false;
@@ -180,26 +177,26 @@ export default function AdminAssignedApplicantsPage() {
     };
 
     void loadApplicants();
-
     return () => {
       cancelled = true;
     };
   }, []);
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+
   const centerSummaries = useMemo(() => {
-    const centerMap = new Map<string, AssessmentCenterSummary & { batchCodes: Set<string> }>();
+    const centerMap = new Map<string, AssessmentCenterSummary & { groupKeys: Set<string> }>();
 
     applicants.forEach((applicant) => {
       const existing = centerMap.get(applicant.assessment_center_id);
+      const groupKey = applicant.assignment_group_key ?? applicant.assignment_batch ?? "";
 
-        if (existing) {
-          existing.applicantCount += 1;
-          existing.pendingCount += isCenterActiveStatus(applicant.workflow_status) ? 1 : 0;
-          existing.processedCount += isCenterClosedStatus(applicant.workflow_status) ? 1 : 0;
-          existing.individualCount += applicant.assignment_batch ? 0 : 1;
-        if (applicant.assignment_batch) {
-          existing.batchCodes.add(applicant.assignment_batch);
+      if (existing) {
+        existing.applicantCount += 1;
+        existing.pendingCount += isActiveStatus(applicant.workflow_status) ? 1 : 0;
+        existing.processedCount += isClosedStatus(applicant.workflow_status) ? 1 : 0;
+        if (groupKey) {
+          existing.groupKeys.add(groupKey);
         }
         if (new Date(applicant.assigned_at).getTime() > new Date(existing.latestAssignedAt).getTime()) {
           existing.latestAssignedAt = applicant.assigned_at;
@@ -209,21 +206,20 @@ export default function AdminAssignedApplicantsPage() {
 
       centerMap.set(applicant.assessment_center_id, {
         applicantCount: 1,
-        batchCodes: new Set(applicant.assignment_batch ? [applicant.assignment_batch] : []),
         batchCount: 0,
+        groupKeys: new Set(groupKey ? [groupKey] : []),
         id: applicant.assessment_center_id,
-        individualCount: applicant.assignment_batch ? 0 : 1,
         latestAssignedAt: applicant.assigned_at,
         name: applicant.center_name,
-        pendingCount: isCenterActiveStatus(applicant.workflow_status) ? 1 : 0,
-        processedCount: isCenterClosedStatus(applicant.workflow_status) ? 1 : 0,
+        pendingCount: isActiveStatus(applicant.workflow_status) ? 1 : 0,
+        processedCount: isClosedStatus(applicant.workflow_status) ? 1 : 0,
       });
     });
 
     return Array.from(centerMap.values())
-      .map(({ batchCodes, ...center }) => ({
+      .map(({ groupKeys, ...center }) => ({
         ...center,
-        batchCount: batchCodes.size,
+        batchCount: groupKeys.size,
       }))
       .sort((left, right) => left.name.localeCompare(right.name));
   }, [applicants]);
@@ -239,50 +235,45 @@ export default function AdminAssignedApplicantsPage() {
   );
 
   const individualApplicants = useMemo(
-    () => selectedCenterApplicants.filter((applicant) => !applicant.assignment_batch),
+    () => selectedCenterApplicants.filter((applicant) => !applicant.assignment_group_key),
     [selectedCenterApplicants],
   );
 
   const bulkAssignments = useMemo(() => {
-    const batchMap = new Map<string, BulkAssignment>();
+    const assignmentMap = new Map<string, BulkAssignment>();
 
     selectedCenterApplicants
-      .filter((applicant) => applicant.assignment_batch)
+      .filter((applicant) => Boolean(applicant.assignment_group_key))
       .forEach((applicant) => {
-        const batchCode = applicant.assignment_batch ?? "";
-        const assignmentTitle = applicant.assignment_title?.trim() || batchCode;
-        const groupingKey = `${batchCode}:${assignmentTitle}:${applicant.center_name}`;
-        const existing = batchMap.get(groupingKey);
+        const groupKey = applicant.assignment_group_key ?? applicant.id;
+        const existing = assignmentMap.get(groupKey);
 
         if (existing) {
+          existing.applicants.push(applicant);
           existing.applicantCount += 1;
-          existing.activeApplicantCount += isCenterActiveStatus(applicant.workflow_status) ? 1 : 0;
-          existing.assignmentIds.push(applicant.id);
-          existing.closedApplicantCount += isCenterClosedStatus(applicant.workflow_status) ? 1 : 0;
-          existing.hasProcessedApplicants =
-            existing.hasProcessedApplicants || applicant.workflow_status !== "assigned";
           if (new Date(applicant.assigned_at).getTime() > new Date(existing.assignedAt).getTime()) {
             existing.assignedAt = applicant.assigned_at;
           }
           return;
         }
 
-        batchMap.set(groupingKey, {
-          activeApplicantCount: isCenterActiveStatus(applicant.workflow_status) ? 1 : 0,
-          assignmentIds: [applicant.id],
+        assignmentMap.set(groupKey, {
           applicantCount: 1,
+          applicants: [applicant],
           assignedAt: applicant.assigned_at,
-          batchCode,
-          closedApplicantCount: isCenterClosedStatus(applicant.workflow_status) ? 1 : 0,
+          assessmentDate: applicant.assessment_date,
+          assessor: applicant.assessor,
+          batchCode: applicant.assignment_batch ?? "Batch",
           centerName: applicant.center_name,
-          hasProcessedApplicants: applicant.workflow_status !== "assigned",
-          id: applicant.id,
+          groupKey,
+          groupNumber: applicant.assignment_group_number,
+          id: groupKey,
           qualification: applicant.qualification,
-          title: assignmentTitle,
+          title: applicant.assignment_title ?? applicant.assignment_batch ?? "Batch Assignment",
         });
       });
 
-    return Array.from(batchMap.values()).sort(
+    return Array.from(assignmentMap.values()).sort(
       (left, right) => new Date(right.assignedAt).getTime() - new Date(left.assignedAt).getTime(),
     );
   }, [selectedCenterApplicants]);
@@ -291,7 +282,6 @@ export default function AdminAssignedApplicantsPage() {
     () => ["all", ...new Set(individualApplicants.map((applicant) => applicant.qualification))],
     [individualApplicants],
   );
-
   const bulkProgramOptions = useMemo(
     () => ["all", ...new Set(bulkAssignments.map((assignment) => assignment.qualification))],
     [bulkAssignments],
@@ -304,9 +294,8 @@ export default function AdminAssignedApplicantsPage() {
         const matchesSearch =
           normalizedSearchQuery.length === 0 ||
           applicant.applicant_name.toLowerCase().includes(normalizedSearchQuery) ||
-          applicant.qualification.toLowerCase().includes(normalizedSearchQuery) ||
-          applicant.center_name.toLowerCase().includes(normalizedSearchQuery);
-        const matchesQueue = queueTab === "active" ? isCenterActiveStatus(applicant.workflow_status) : isCenterClosedStatus(applicant.workflow_status);
+          applicant.qualification.toLowerCase().includes(normalizedSearchQuery);
+        const matchesQueue = queueTab === "active" ? isActiveStatus(applicant.workflow_status) : isClosedStatus(applicant.workflow_status);
 
         return matchesCourse && matchesSearch && matchesQueue;
       }),
@@ -319,68 +308,50 @@ export default function AdminAssignedApplicantsPage() {
         const matchesProgram = bulkProgramFilter === "all" || assignment.qualification === bulkProgramFilter;
         const matchesSearch =
           normalizedSearchQuery.length === 0 ||
-          assignment.batchCode.toLowerCase().includes(normalizedSearchQuery) ||
           assignment.title.toLowerCase().includes(normalizedSearchQuery) ||
-          assignment.qualification.toLowerCase().includes(normalizedSearchQuery) ||
-          assignment.centerName.toLowerCase().includes(normalizedSearchQuery);
+          assignment.batchCode.toLowerCase().includes(normalizedSearchQuery) ||
+          assignment.qualification.toLowerCase().includes(normalizedSearchQuery);
         const matchesQueue =
-          queueTab === "active" ? assignment.activeApplicantCount > 0 : assignment.closedApplicantCount > 0;
+          queueTab === "active"
+            ? assignment.applicants.some((applicant) => isActiveStatus(applicant.workflow_status))
+            : assignment.applicants.some((applicant) => isClosedStatus(applicant.workflow_status));
 
         return matchesProgram && matchesSearch && matchesQueue;
       }),
     [bulkAssignments, bulkProgramFilter, normalizedSearchQuery, queueTab],
   );
 
-  const selectedBulkApplicants = useMemo(
-    () =>
-      selectedBulkAssignment
-        ? applicants
-            .filter((applicant) => selectedBulkAssignment.assignmentIds.includes(applicant.id))
-            .sort((left, right) => left.applicant_name.localeCompare(right.applicant_name))
-        : [],
-    [applicants, selectedBulkAssignment],
-  );
+  const selectedBulkApplicants = useMemo(() => selectedBulkAssignment?.applicants ?? [], [selectedBulkAssignment]);
+
   const filteredSelectedBulkApplicants = useMemo(
     () =>
       selectedBulkApplicants.filter((applicant) => {
         const matchesSearch = applicant.applicant_name.toLowerCase().includes(bulkSearch.trim().toLowerCase());
-        const matchesQueue = queueTab === "active" ? isCenterActiveStatus(applicant.workflow_status) : isCenterClosedStatus(applicant.workflow_status);
-
+        const matchesQueue = queueTab === "active" ? isActiveStatus(applicant.workflow_status) : isClosedStatus(applicant.workflow_status);
         return matchesSearch && matchesQueue;
       }),
     [bulkSearch, queueTab, selectedBulkApplicants],
   );
 
-  const closeRemovalFlow = () => {
-    if (isRemovingAssignment) {
-      return;
-    }
-
-    setRemovalTarget(null);
-    setRemovalError("");
-  };
-
   const openCenterView = (centerId: string) => {
     setSelectedCenterId(centerId);
     setActiveTab("individual");
+    setQueueTab("active");
     setSearchQuery("");
     setBulkSearch("");
     setIndividualCourseFilter("all");
     setBulkProgramFilter("all");
-    setQueueTab("active");
-    setSelectedBulkAssignment(null);
-    setIsBulkModalOpen(false);
   };
 
   const returnToCenterDirectory = () => {
     setSelectedCenterId(null);
+    setSelectedBulkAssignment(null);
+    setIsBulkModalOpen(false);
     setSearchQuery("");
     setBulkSearch("");
     setIndividualCourseFilter("all");
     setBulkProgramFilter("all");
     setQueueTab("active");
-    setSelectedBulkAssignment(null);
-    setIsBulkModalOpen(false);
   };
 
   const handleRemoveAssignment = async () => {
@@ -389,7 +360,7 @@ export default function AdminAssignedApplicantsPage() {
     }
 
     setIsRemovingAssignment(true);
-    setRemovalError("");
+    setError("");
 
     try {
       const response = await fetch("/api/admin/assessment-center-assignments", {
@@ -407,26 +378,64 @@ export default function AdminAssignedApplicantsPage() {
         throw new Error(payload.message ?? "Unable to remove assignment.");
       }
 
-      const nextApplicants = applicants.filter((applicant) => !removalTarget.assignmentIds.includes(applicant.id));
-      setApplicants(nextApplicants);
-      if (removalTarget.type === "bulk") {
-        setIsBulkModalOpen(false);
-        setSelectedBulkAssignment(null);
-        setBulkSearch("");
-      }
-      if (selectedCenterId && !nextApplicants.some((applicant) => applicant.assessment_center_id === selectedCenterId)) {
-        returnToCenterDirectory();
-      }
-      setRemovalSuccess(
-        removalTarget.type === "individual"
-          ? `${removalTarget.title} was returned to the submitted queue.`
-          : `${removalTarget.count} applicants from ${removalTarget.title} were returned to the submitted queue.`,
-      );
+      const removedIds = new Set(removalTarget.assignmentIds);
+      setApplicants((currentApplicants) => currentApplicants.filter((applicant) => !removedIds.has(applicant.id)));
       setRemovalTarget(null);
+      setFeedbackMessage(payload.message ?? "Assignment removed successfully.");
     } catch (removeError) {
-      setRemovalError(removeError instanceof Error ? removeError.message : "Unable to remove assignment.");
+      setError(removeError instanceof Error ? removeError.message : "Unable to remove assignment.");
     } finally {
       setIsRemovingAssignment(false);
+    }
+  };
+
+  const handleSaveSchedule = async () => {
+    if (!scheduleTarget || !scheduleDate || !scheduleAssessor.trim()) {
+      return;
+    }
+
+    setIsSavingSchedule(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/admin/assessment-center-assignments", {
+        body: JSON.stringify({
+          action: "update_schedule",
+          assessmentDate: scheduleDate,
+          assessor: scheduleAssessor.trim(),
+          assignmentIds: scheduleTarget.assignmentIds,
+        }),
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "PATCH",
+      });
+
+      const payload = (await response.json()) as { message?: string; success?: boolean };
+
+      if (!response.ok || !payload.success) {
+        throw new Error(payload.message ?? "Unable to update the assignment schedule.");
+      }
+
+      const updatedIds = new Set(scheduleTarget.assignmentIds);
+      setApplicants((currentApplicants) =>
+        currentApplicants.map((applicant) =>
+          updatedIds.has(applicant.id)
+            ? {
+                ...applicant,
+                assessment_date: scheduleDate,
+                assessor: scheduleAssessor.trim(),
+              }
+            : applicant,
+        ),
+      );
+      setScheduleTarget(null);
+      setFeedbackMessage(payload.message ?? "Assignment schedule updated successfully.");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Unable to update the assignment schedule.");
+    } finally {
+      setIsSavingSchedule(false);
     }
   };
 
@@ -439,8 +448,8 @@ export default function AdminAssignedApplicantsPage() {
               <h1 className="ui-page-title text-[#002576]">Assignments</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
                 {selectedCenterSummary
-                  ? `Review the assignments currently routed to ${selectedCenterSummary.name}.`
-                  : "Open an assessment center to review its individual and bulk assignment queues."}
+                  ? `Review schedules, reschedule assignments, and manage correction requests for ${selectedCenterSummary.name}.`
+                  : "Open an assessment center to review its individual and grouped bulk assignments."}
               </p>
             </div>
 
@@ -449,19 +458,16 @@ export default function AdminAssignedApplicantsPage() {
                 <div className={summaryCardClass}>
                   <div className="flex min-h-[44px] items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Individual</p>
-                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">
-                        Direct assignments
-                      </p>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Active</p>
+                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">Still in progress</p>
                     </div>
                     <span aria-hidden="true" className={`${summaryIconClass} text-[#002576]`}>
-                      <i className="fa-solid fa-user" />
+                      <i className="fa-solid fa-calendar-check" />
                     </span>
                   </div>
-
                   <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
                     <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
-                      {individualApplicants.length.toLocaleString()}
+                      {selectedCenterSummary.pendingCount}
                     </p>
                   </div>
                 </div>
@@ -469,19 +475,16 @@ export default function AdminAssignedApplicantsPage() {
                 <div className={summaryCardClass}>
                   <div className="flex min-h-[44px] items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Bulk</p>
-                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">
-                        Assigned batches
-                      </p>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Groups</p>
+                      <p className="mt-1 text-[10px] font-medium leading-[1.35] text-[#747685] sm:text-[11px]">Grouped bulk batches</p>
                     </div>
                     <span aria-hidden="true" className={`${summaryIconClass} text-[#3056c4]`}>
                       <i className="fa-solid fa-layer-group" />
                     </span>
                   </div>
-
                   <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
                     <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
-                      {bulkAssignments.length.toLocaleString()}
+                      {selectedCenterSummary.batchCount}
                     </p>
                   </div>
                 </div>
@@ -490,374 +493,298 @@ export default function AdminAssignedApplicantsPage() {
           </div>
         </section>
 
-        <section className="mb-3">
-          {selectedCenterSummary ? (
-            <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr] md:items-center">
-              <div className="flex justify-start">
-                <button
-                  className="inline-flex min-h-[38px] items-center gap-2 rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#eff4ff]"
-                  onClick={returnToCenterDirectory}
-                  type="button"
-                >
-                  <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
-                  Back to Centers
-                </button>
-              </div>
-
-              <div className="flex justify-center md:col-start-2">
-                <div className="inline-flex w-[240px] max-w-full items-center rounded-full border border-[#d9e3f7] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
-                  <button
-                    className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
-                      activeTab === "individual"
-                        ? "bg-[#002576] font-bold text-white"
-                        : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                    }`}
-                    onClick={() => setActiveTab("individual")}
-                    type="button"
-                    >
-                      <span className="flex items-center justify-center">
-                        <span>Individual</span>
-                      </span>
-                    </button>
-                    <button
-                    className={`relative min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
-                      activeTab === "bulk"
-                        ? "bg-[#002576] font-bold text-white"
-                        : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
-                    }`}
-                    onClick={() => setActiveTab("bulk")}
-                    type="button"
-                    >
-                      <span className="flex items-center justify-center">
-                        <span>Bulk</span>
-                      </span>
-                    </button>
-                </div>
-              </div>
-
-              <div className="hidden md:block" aria-hidden="true" />
-            </div>
-          ) : null}
-
-          {selectedCenterSummary ? (
-            <>
-              <div className="mt-4 border-t border-[#e7edf4] px-4 py-3 sm:px-0">
-                  <div className="grid min-w-0 grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.25fr)_240px_280px] xl:items-end xl:gap-4">
-                    <label className="block min-w-0 xl:w-full xl:max-w-[520px]">
-                      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                        Search
-                      </span>
-                      <div className="group relative min-w-0 flex-1">
-                        <i
-                          aria-hidden="true"
-                          className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                        />
-                        <input
-                          className="w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                          onChange={(event) => setSearchQuery(event.target.value)}
-                          placeholder={activeTab === "individual" ? "Search assigned applicants..." : "Search assigned batches..."}
-                          type="text"
-                          value={searchQuery}
-                        />
-                      </div>
-                    </label>
-
-                    <label className="block min-w-0 xl:w-full">
-                      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                        Queue
-                      </span>
-                      <span className="sr-only">Filter by queue</span>
-                      <div className="relative min-w-0 flex-1">
-                        <select
-                          className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                          onChange={(event) => setQueueTab(event.target.value as AssignmentQueueTab)}
-                          value={queueTab}
-                        >
-                          <option value="active">Active Assignments</option>
-                          <option value="closed">Closed Statuses</option>
-                        </select>
-                        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                          <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
-                        </span>
-                      </div>
-                    </label>
-
-                    <label className="block min-w-0 xl:w-full">
-                      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                        Program Filter
-                      </span>
-                      <span className="sr-only">Filter by program</span>
-                      <div className="relative min-w-0 flex-1">
-                        <select
-                          className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                          onChange={(event) =>
-                            activeTab === "individual"
-                              ? setIndividualCourseFilter(event.target.value)
-                              : setBulkProgramFilter(event.target.value)
-                          }
-                          value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
-                        >
-                          {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
-                            <option key={option} value={option}>
-                              {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
-                            </option>
-                          ))}
-                        </select>
-                        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                          <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
-                        </span>
-                      </div>
-                    </label>
-                </div>
-              </div>
-            </>
-          ) : null}
-        </section>
-
-        {error ? (
-          <NotificationBanner className="mb-4" message={error} variant="error" />
-        ) : null}
+        {error ? <NotificationBanner className="mb-4" message={error} variant="error" /> : null}
 
         {isLoading ? (
-          <div className="px-4 py-8 text-center">
+          <div className="rounded-xl border border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
               <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
             </div>
             <p className="mt-4 text-[14px] font-semibold text-[#0b1c30]">Loading assigned applicants...</p>
-            <p className="mt-1 text-[13px] text-[#747685]">Pulling the latest routing history from assessment centers.</p>
           </div>
         ) : !selectedCenterSummary ? (
-          <section>
-            {centerSummaries.length === 0 ? (
-              <div className="px-4 py-8 text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
-                  <i aria-hidden="true" className="fa-solid fa-building text-[18px]" />
-                </div>
-                <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">No assessment centers have assigned applicants yet</p>
-                <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                  Centers will appear here after applicants are routed from the submitted queue.
-                </p>
+          centerSummaries.length === 0 ? (
+            <section className="rounded-xl border border-dashed border-[#d9e3f7] bg-[#fbfdff] px-4 py-8 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
+                <i aria-hidden="true" className="fa-solid fa-calendar-check text-[18px]" />
               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
-                {centerSummaries.map((center) => (
+              <p className="mt-4 text-[16px] font-semibold text-[#0b1c30]">No assignments yet</p>
+              <p className="mt-2 text-[14px] leading-[1.6] text-[#5d5f5f]">
+                Assigned applicants will appear here after the admin queue routes them to an assessment center.
+              </p>
+            </section>
+          ) : (
+            <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {centerSummaries.map((center) => (
+                <button
+                  key={center.id}
+                  className="rounded-xl border border-[#d9e3f7] bg-white p-4 text-left shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
+                  onClick={() => openCenterView(center.id)}
+                  type="button"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className={cardTitleClass}>{center.name}</p>
+                      <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
+                        {center.applicantCount} assigned applicants | {center.batchCount} bulk groups
+                      </p>
+                      <p className="mt-1 text-[12px] text-[#747685]">Latest assignment {formatDateTime(center.latestAssignedAt)}</p>
+                    </div>
+                    <span className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#eef4ff] px-3 text-[12px] font-bold text-[#093cab]">
+                      Open
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="inline-flex min-h-[30px] items-center justify-center rounded-full bg-[#f8fbff] px-3 text-[11px] font-bold text-[#3056c4]">
+                      {center.pendingCount} Active
+                    </span>
+                    <span className="inline-flex min-h-[30px] items-center justify-center rounded-full bg-[#eef4ff] px-3 text-[11px] font-bold text-[#3056c4]">
+                      {center.processedCount} Closed
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </section>
+          )
+        ) : (
+          <>
+            <section className="mb-3 grid gap-3 md:grid-cols-[auto_1fr] md:items-center">
+              <button
+                className="inline-flex min-h-[38px] items-center gap-2 rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#eff4ff]"
+                onClick={returnToCenterDirectory}
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-arrow-left text-[11px]" />
+                Back to Centers
+              </button>
+              <div className="flex flex-wrap gap-2 md:justify-end">
+                {(["active", "closed"] as const).map((tab) => (
                   <button
-                    key={center.id}
-                    className="rounded-xl border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] p-4 text-left shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
-                    onClick={() => openCenterView(center.id)}
+                    key={tab}
+                    className={`inline-flex min-h-[36px] items-center justify-center rounded-full border px-4 text-[12px] font-bold transition ${
+                      queueTab === tab ? "border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]" : "border-[#d9e3f7] bg-white text-[#5d5f5f] hover:bg-[#f8fbff]"
+                    }`}
+                    onClick={() => setQueueTab(tab)}
                     type="button"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Assessment Center</p>
-                        <h2 className="mt-2 text-[22px] font-bold leading-[1.2] text-[#0b1c30]">{center.name}</h2>
-                        <p className="mt-2 text-[13px] leading-[1.55] text-[#4c5d79]">
-                          Latest assignment {formatAssignedDate(center.latestAssignedAt)}
-                        </p>
-                        <div className="mt-3 flex flex-wrap items-center gap-2">
-                          <span className="inline-flex min-h-[30px] items-center justify-center rounded-full bg-[#fff1f1] px-3 text-[11px] font-bold text-[#b42318]">
-                            {center.pendingCount} Active
-                          </span>
-                          <span className="inline-flex min-h-[30px] items-center justify-center rounded-full bg-[#eef4ff] px-3 text-[11px] font-bold text-[#3056c4]">
-                            {center.processedCount} Closed
-                          </span>
-                        </div>
-                      </div>
-                      <span className="inline-flex min-h-[38px] items-center justify-center rounded-full bg-[#eef4ff] px-3 text-[12px] font-bold text-[#093cab]">
-                        Open
-                      </span>
-                    </div>
+                    {tab === "active" ? "Under Review" : "Completed"}
                   </button>
                 ))}
               </div>
-            )}
-          </section>
-        ) : (
-          <section>
-            {activeTab === "individual" ? (
-              <div className="grid grid-cols-1 gap-2.5">
-                {filteredIndividualApplicants.map((applicant) => (
-                  <article
-                    className="rounded-xl border border-[#d9e3f7] bg-[linear-gradient(180deg,#ffffff_0%,#fbfdff_100%)] px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[linear-gradient(180deg,#ffffff_0%,#f8fbff_100%)] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] sm:px-5"
-                    key={applicant.id}
-                  >
-                    <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-                      <div className="min-w-0">
-                        <p className={cardTitleClass}>{applicant.applicant_name}</p>
-                        <p className="mt-1 text-[14px] font-medium text-[#444653]">{applicant.qualification}</p>
-                      </div>
+            </section>
 
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap xl:justify-end">
-                        <div className={assignedMetaCardClass}>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
-                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
-                            {formatAssignedDate(applicant.assigned_at)}
-                          </p>
-                        </div>
-                        {queueTab === "closed" || applicant.workflow_status !== "assigned" ? (
-                          <span
-                            className={`inline-flex min-h-[36px] min-w-[96px] items-center justify-center rounded-lg px-3.5 text-[12px] font-bold ${getStatusBadgeClass(applicant.workflow_status)}`}
-                          >
-                            {getApplicationSubmissionStatusLabel(applicant.workflow_status)}
-                          </span>
-                        ) : null}
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          View PDF
-                        </a>
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                        >
-                          Download
-                        </a>
-                        {queueTab === "active" && applicant.workflow_status === "assigned" ? (
-                          <button
-                            className={destructiveActionButtonClass}
-                            onClick={() =>
-                              setRemovalTarget({
-                                assignmentIds: [applicant.id],
-                                centerName: applicant.center_name,
-                                count: 1,
-                                description: applicant.qualification,
-                                title: applicant.applicant_name,
-                                type: "individual",
-                              })
-                            }
-                            type="button"
-                          >
-                            Remove
-                          </button>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
-                ))}
-
-                {filteredIndividualApplicants.length === 0 ? (
-                  <div className="px-4 py-8 text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
-                      <i
-                        aria-hidden="true"
-                        className={`fa-solid ${individualApplicants.length === 0 ? "fa-user-group" : "fa-filter-circle-xmark"} text-[18px]`}
-                      />
-                    </div>
-                    <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
-                      {individualApplicants.length === 0
-                        ? "No individual applicants have been assigned yet"
-                        : queueTab === "active"
-                          ? "No active individual assignments match the current filters"
-                          : "No closed individual statuses match the current filters"}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                      {individualApplicants.length === 0
-                        ? "Individual applicant assignments will appear here after the admin routes them to a center."
-                        : queueTab === "active"
-                          ? "Try another search or clear the filters to view all active individual assignments."
-                          : "Try another search or clear the filters to view all closed individual statuses."}
-                    </p>
-                  </div>
-                ) : null}
+            <section className="mb-3">
+              <div className="flex justify-center">
+                <div className="inline-flex w-[240px] max-w-full items-center rounded-full border border-[#d9e3f7] bg-white p-1 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
+                  {(["individual", "bulk"] as const).map((tab) => (
+                    <button
+                      key={tab}
+                      className={`min-w-0 flex-1 rounded-full px-3.5 py-2 text-[13px] transition sm:px-4 ${
+                        activeTab === tab ? "bg-[#002576] font-bold text-white" : "font-semibold text-[#5d5f5f] hover:bg-[#eff4ff]"
+                      }`}
+                      onClick={() => setActiveTab(tab)}
+                      type="button"
+                    >
+                      {tab === "individual" ? "Individual" : "Bulk"}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-2.5">
-                {filteredBulkAssignments.map((assignment) => (
-                  <article
-                    key={`${assignment.batchCode}-${assignment.title}-${assignment.centerName}`}
-                    className="rounded-lg border border-[#d9e3f7] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
-                  >
-                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                      <div className="min-w-0">
-                        <p className={cardTitleClass}>{assignment.title}</p>
-                        <p className="mt-2 text-[14px] font-medium text-[#444653]">{assignment.qualification}</p>
-                      </div>
 
-                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:flex-wrap xl:justify-end">
-                        <div className={assignedMetaCardClass}>
-                          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
-                          <p className="mt-0.5 text-[13px] font-semibold text-[#0b1c30]">
-                            {formatAssignedDate(assignment.assignedAt)}
-                          </p>
+              <div className="mt-3 flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-4">
+                <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:w-full xl:max-w-[520px]">
+                  <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">Search</span>
+                  <input
+                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder={activeTab === "individual" ? "Search assigned applicants..." : "Search assigned groups..."}
+                    type="text"
+                    value={searchQuery}
+                  />
+                </label>
+
+                <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:ml-auto xl:w-full xl:max-w-[360px]">
+                  <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[108px]">Program Filter</span>
+                  <div className="relative min-w-0 flex-1">
+                    <select
+                      className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      onChange={(event) =>
+                        activeTab === "individual"
+                          ? setIndividualCourseFilter(event.target.value)
+                          : setBulkProgramFilter(event.target.value)
+                      }
+                      value={activeTab === "individual" ? individualCourseFilter : bulkProgramFilter}
+                    >
+                      {(activeTab === "individual" ? individualCourseOptions : bulkProgramOptions).map((option) => (
+                        <option key={option} value={option}>
+                          {option === "all" ? `All ${activeTab === "individual" ? "Courses" : "Programs"}` : option}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </label>
+              </div>
+            </section>
+
+            <section>
+              {activeTab === "individual" ? (
+                <div className="grid grid-cols-1 gap-2.5">
+                  {filteredIndividualApplicants.map((applicant) => (
+                    <article
+                      key={applicant.id}
+                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
+                    >
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                          <div className="min-w-0">
+                            <p className={cardTitleClass}>{applicant.applicant_name}</p>
+                            <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{applicant.qualification}</p>
+                            <p className="mt-1 text-[12px] text-[#747685]">
+                              Assigned {formatDateTime(applicant.assigned_at)} | Assessment {formatAssessmentDate(applicant.assessment_date)} | Assessor {applicant.assessor ?? "Not set"}
+                            </p>
+                          </div>
+                          {applicant.workflow_status !== "under_review" && applicant.workflow_status !== "completed" ? (
+                            <span
+                              className={`inline-flex min-h-[34px] items-center justify-center rounded-lg px-3 text-[12px] font-bold ${getStatusBadgeClass(applicant.workflow_status)}`}
+                            >
+                              {getApplicationSubmissionStatusLabel(applicant.workflow_status)}
+                            </span>
+                          ) : null}
                         </div>
-                        {queueTab === "closed" ? (
-                          <span className="inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#d6dce9] bg-[#f7f9fc] px-4 text-[12px] font-bold text-[#5e6b82] sm:min-w-[128px] sm:w-auto">
-                            {assignment.closedApplicantCount} Closed
-                          </span>
-                        ) : null}
-                        <button
-                          className={secondaryActionButtonClass}
-                          onClick={() => {
-                            setSelectedBulkAssignment(assignment);
-                            setBulkSearch("");
-                            setIsBulkModalOpen(true);
-                          }}
-                          type="button"
-                        >
-                          Open
-                        </button>
-                        {queueTab === "active" && !assignment.hasProcessedApplicants ? (
+
+                        <div className="flex flex-wrap justify-end gap-2">
+                          <a
+                            className={secondaryActionButtonClass}
+                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            View PDF
+                          </a>
+                          <a
+                            className={secondaryActionButtonClass}
+                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
+                          >
+                            Download
+                          </a>
+                          {isActiveStatus(applicant.workflow_status) ? (
+                            <>
+                              <button
+                                className={primaryActionButtonClass}
+                                onClick={() => {
+                                  setScheduleTarget({
+                                    assessmentDate: applicant.assessment_date ?? "",
+                                    assessor: applicant.assessor ?? "",
+                                    assignmentIds: [applicant.id],
+                                    title: applicant.applicant_name,
+                                  });
+                                  setScheduleDate(applicant.assessment_date ?? "");
+                                  setScheduleAssessor(applicant.assessor ?? "");
+                                }}
+                                type="button"
+                              >
+                                Edit Schedule
+                              </button>
+                            </>
+                          ) : null}
+                          {applicant.workflow_status === "assigned" ? (
+                            <button
+                              className={destructiveActionButtonClass}
+                              onClick={() =>
+                                setRemovalTarget({
+                                  assignmentIds: [applicant.id],
+                                  centerName: applicant.center_name,
+                                  description: applicant.qualification,
+                                  title: applicant.applicant_name,
+                                })
+                              }
+                              type="button"
+                            >
+                              Remove
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-2.5">
+                  {filteredBulkAssignments.map((assignment) => (
+                    <article
+                      key={assignment.id}
+                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
+                    >
+                      <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                          <div className="min-w-0">
+                            <p className={cardTitleClass}>{assignment.title}</p>
+                            <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{assignment.qualification}</p>
+                            <p className="mt-1 text-[12px] text-[#747685]">
+                              Assigned {formatDateTime(assignment.assignedAt)} | Assessment {formatAssessmentDate(assignment.assessmentDate)} | Assessor {assignment.assessor ?? "Not set"}
+                            </p>
+                          </div>
                           <button
-                            className={destructiveActionButtonClass}
+                            className={secondaryActionButtonClass}
                             onClick={() => {
-                              setRemovalTarget({
-                                assignmentIds: assignment.assignmentIds,
-                                centerName: assignment.centerName,
-                                count: assignment.applicantCount,
-                                description: assignment.qualification,
-                                title: assignment.title,
-                                type: "bulk",
-                              });
+                              setSelectedBulkAssignment(assignment);
+                              setBulkSearch("");
+                              setIsBulkModalOpen(true);
                             }}
                             type="button"
                           >
-                            Remove
+                            Open
                           </button>
-                        ) : queueTab === "active" ? (
-                          <span className="inline-flex min-h-[36px] w-full items-center justify-center rounded-lg border border-[#d6dce9] bg-[#f7f9fc] px-4 text-[12px] font-bold text-[#7a879d] sm:min-w-[104px] sm:w-auto">
-                            Processing
-                          </span>
-                        ) : null}
-                      </div>
-                    </div>
-                  </article>
-                ))}
+                        </div>
 
-                {filteredBulkAssignments.length === 0 ? (
-                  <div className="px-4 py-8 text-center">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
-                      <i
-                        aria-hidden="true"
-                        className={`fa-solid ${bulkAssignments.length === 0 ? "fa-layer-group" : "fa-filter-circle-xmark"} text-[18px]`}
-                      />
-                    </div>
-                    <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
-                      {bulkAssignments.length === 0
-                        ? "No bulk batches have been assigned yet"
-                        : queueTab === "active"
-                          ? "No active batch assignments match the current filters"
-                          : "No closed batch statuses match the current filters"}
-                    </p>
-                    <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
-                      {bulkAssignments.length === 0
-                        ? "Bulk school assignments will appear here after the admin routes them to a center."
-                        : queueTab === "active"
-                          ? "Try another search or clear the filters to view all active batch assignments."
-                          : "Try another search or clear the filters to view all closed batch statuses."}
-                    </p>
-                  </div>
-                ) : null}
-              </div>
-            )}
-          </section>
+                        <div className="flex flex-wrap gap-2">
+                          {assignment.applicants.some((applicant) => isActiveStatus(applicant.workflow_status)) ? (
+                            <button
+                              className={primaryActionButtonClass}
+                              onClick={() => {
+                                setScheduleTarget({
+                                  assessmentDate: assignment.assessmentDate ?? "",
+                                  assessor: assignment.assessor ?? "",
+                                  assignmentIds: assignment.applicants.map((applicant) => applicant.id),
+                                  title: assignment.title,
+                                });
+                                setScheduleDate(assignment.assessmentDate ?? "");
+                                setScheduleAssessor(assignment.assessor ?? "");
+                              }}
+                              type="button"
+                            >
+                              Edit Schedule
+                            </button>
+                          ) : null}
+                          {assignment.applicants.every((applicant) => applicant.workflow_status === "assigned") ? (
+                            <button
+                              className={destructiveActionButtonClass}
+                              onClick={() =>
+                                setRemovalTarget({
+                                  assignmentIds: assignment.applicants.map((applicant) => applicant.id),
+                                  centerName: assignment.centerName,
+                                  description: assignment.qualification,
+                                  title: assignment.title,
+                                })
+                              }
+                              type="button"
+                            >
+                              Remove
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
+          </>
         )}
       </div>
 
       <AnimatedModal
-        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[680px] overflow-y-auto rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[720px] overflow-y-auto rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={Boolean(isBulkModalOpen && selectedBulkAssignment)}
       >
         {selectedBulkAssignment ? (
@@ -866,7 +793,7 @@ export default function AdminAssignedApplicantsPage() {
               <div>
                 <h2 className="ui-section-title text-[#0b1c30]">{selectedBulkAssignment.title}</h2>
                 <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
-                  Assigned applicants in this batch routed to {selectedBulkAssignment.centerName}.
+                  Assigned applicants in this grouped batch routed to {selectedBulkAssignment.centerName}.
                 </p>
               </div>
               <button
@@ -889,57 +816,50 @@ export default function AdminAssignedApplicantsPage() {
               </div>
 
               <label className="mb-3 block">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                  Search Applicants
-                </span>
-                <div className="group relative">
-                  <i
-                    aria-hidden="true"
-                    className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                  />
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white py-3 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    onChange={(event) => setBulkSearch(event.target.value)}
-                    placeholder="Search applicants..."
-                    type="text"
-                    value={bulkSearch}
-                  />
-                </div>
+                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Search Applicants</span>
+                <input
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  onChange={(event) => setBulkSearch(event.target.value)}
+                  placeholder="Search applicants..."
+                  type="text"
+                  value={bulkSearch}
+                />
               </label>
 
-              <div className="max-h-[440px] space-y-2 overflow-y-auto pr-1">
+              <div className="max-h-[460px] space-y-2 overflow-y-auto pr-1">
                 {filteredSelectedBulkApplicants.map((applicant) => (
                   <div
-                    className="grid gap-3 border-t border-[#e7edf4] px-1 py-3 first:border-t-0 first:pt-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+                    className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)]"
                     key={applicant.id}
                   >
-                    <div className="min-w-0">
-                      <p className="truncate text-[14px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2 md:justify-end">
-                      <a
-                        className="inline-flex min-w-[104px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                        href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        View PDF
-                      </a>
-                      <a
-                        className="inline-flex min-w-[104px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                        href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                      >
-                        Download
-                      </a>
+                    <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+                      <div className="min-w-0">
+                        <p className="truncate text-[16px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
+                        <p className="mt-1 truncate text-[13px] text-[#5d5f5f]">{applicant.qualification}</p>
+                        <p className="mt-1 text-[12px] text-[#747685]">
+                          Assessment {formatAssessmentDate(applicant.assessment_date)} | Assessor {applicant.assessor ?? "Not set"}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 md:justify-end">
+                        <a
+                          className={secondaryActionButtonClass}
+                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          View PDF
+                        </a>
+                        <a
+                          className={secondaryActionButtonClass}
+                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
+                        >
+                          Download
+                        </a>
+                      </div>
                     </div>
                   </div>
                 ))}
-
-                {filteredSelectedBulkApplicants.length === 0 ? (
-                  <div className="px-4 py-6 text-center text-[13px] text-[#747685]">
-                    No applicants in this batch match the current queue or search.
-                  </div>
-                ) : null}
               </div>
             </div>
           </>
@@ -959,36 +879,14 @@ export default function AdminAssignedApplicantsPage() {
                 This will return the assignment to the submitted queue so it can be routed again.
               </p>
             </div>
-
             <div className="ui-modal-section space-y-4 px-6 py-5 sm:px-7">
-              {removalError ? (
-                <NotificationBanner compact message={removalError} variant="error" />
-              ) : null}
-
-              <div className="border-t border-[#f0d5d5] pt-4">
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#b24c4c]">Removing</p>
-                <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.title}</p>
-                <p className="mt-1 text-[13px] leading-[1.55] text-[#5d4a4a]">{removalTarget.description}</p>
-                <p className="mt-2 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#b24c4c]">
-                  {removalTarget.count} {removalTarget.count === 1 ? "Applicant" : "Applicants"}
-                </p>
-              </div>
-
-              <div className="border-t border-[#e7edf4] pt-4">
-                <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#747685]">Current Center</p>
-                <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{removalTarget.centerName}</p>
-                <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
-                  {removalTarget.type === "individual"
-                    ? "This applicant will be removed from the current center and shown again on the Submitted Applicants page."
-                    : "This batch will be removed from the current center and all applicants in it will be shown again on the Submitted Applicants page."}
-                </p>
-              </div>
-
+              <p className="text-[15px] font-bold text-[#0b1c30]">{removalTarget.title}</p>
+              <p className="text-[13px] leading-[1.55] text-[#444653]">{removalTarget.description}</p>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <button
-                  className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                  className={secondaryActionButtonClass}
                   disabled={isRemovingAssignment}
-                  onClick={closeRemovalFlow}
+                  onClick={() => setRemovalTarget(null)}
                   type="button"
                 >
                   Cancel
@@ -1007,11 +905,67 @@ export default function AdminAssignedApplicantsPage() {
         ) : null}
       </AnimatedModal>
 
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[520px] overflow-y-auto rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        open={Boolean(scheduleTarget)}
+        zIndexClassName="z-[60]"
+      >
+        {scheduleTarget ? (
+          <>
+            <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+              <h2 className="ui-section-title text-[#0b1c30]">Edit Schedule</h2>
+              <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
+                Update the assessment date or assessor for this assignment.
+              </p>
+            </div>
+            <div className="ui-modal-section space-y-4 px-6 py-5 sm:px-7">
+              <p className="text-[15px] font-bold text-[#0b1c30]">{scheduleTarget.title}</p>
+              <label className="block">
+                <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Assessment Date</span>
+                <input
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  onChange={(event) => setScheduleDate(event.target.value)}
+                  type="date"
+                  value={scheduleDate}
+                />
+              </label>
+              <label className="block">
+                <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Assessor</span>
+                <input
+                  className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  onChange={(event) => setScheduleAssessor(event.target.value)}
+                  type="text"
+                  value={scheduleAssessor}
+                />
+              </label>
+              <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button
+                  className={secondaryActionButtonClass}
+                  disabled={isSavingSchedule}
+                  onClick={() => setScheduleTarget(null)}
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  className={primaryActionButtonClass}
+                  disabled={isSavingSchedule || !scheduleDate || !scheduleAssessor.trim()}
+                  onClick={handleSaveSchedule}
+                  type="button"
+                >
+                  {isSavingSchedule ? "Saving..." : "Save Schedule"}
+                </button>
+              </div>
+            </div>
+          </>
+        ) : null}
+      </AnimatedModal>
+
       <NotificationToast
-        message={removalSuccess}
-        onClose={() => setRemovalSuccess("")}
-        open={Boolean(removalSuccess)}
-        title="Assignment Removed"
+        message={feedbackMessage}
+        onClose={() => setFeedbackMessage("")}
+        open={Boolean(feedbackMessage)}
+        title="Assignments Updated"
         variant="success"
       />
     </main>

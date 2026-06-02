@@ -42,8 +42,12 @@ export type ApplicationSubmissionStatus =
   | "draft"
   | "submitted_to_teacher"
   | "submitted_to_admin"
+  | "needs_applicant_update"
   | "assigned"
   | "under_review"
+  | "for_result_encoding"
+  | "passed"
+  | "not_passed"
   | "completed"
   | "rejected"
   | "cancelled"
@@ -360,10 +364,18 @@ export function getApplicationSubmissionStatusLabel(status: ApplicationSubmissio
       return "Submitted to Teacher";
     case "submitted_to_admin":
       return "Submitted to TESDA";
+    case "needs_applicant_update":
+      return "Needs Applicant Update";
     case "assigned":
-      return "Under Review at Assessment Center";
+      return "Assigned to Assessment Center";
     case "under_review":
       return "Under Review at Assessment Center";
+    case "for_result_encoding":
+      return "Ready for Result Encoding";
+    case "passed":
+      return "Passed";
+    case "not_passed":
+      return "Failed";
     case "completed":
       return "Completed";
     case "rejected":

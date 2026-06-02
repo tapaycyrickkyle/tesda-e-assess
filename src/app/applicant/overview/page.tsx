@@ -36,6 +36,10 @@ function getSubmissionStatusText(submission: DashboardSubmission) {
       : "Under Review at Assessment Center";
   }
 
+  if (submission.workflow_status === "needs_applicant_update") {
+    return "Needs Applicant Update";
+  }
+
   return getApplicationSubmissionStatusLabel(submission.workflow_status);
 }
 
@@ -48,6 +52,10 @@ function getSubmissionUpdateText(submission: DashboardSubmission) {
 
   if (terminalStatuses.includes(submission.workflow_status)) {
     return "This submission is finalized and stays available as a record.";
+  }
+
+  if (submission.workflow_status === "needs_applicant_update") {
+    return "TESDA returned this submission for correction. Update the form and resubmit it to continue processing.";
   }
 
   if (submission.workflow_status === "submitted_to_teacher") {
@@ -68,6 +76,10 @@ function getRoomStatusText(status?: ApplicationSubmissionStatus, assessmentCente
     return "Submitted to TESDA";
   }
 
+  if (status === "needs_applicant_update") {
+    return "Needs Applicant Update";
+  }
+
   if (status === "submitted_to_teacher") {
     return "Submitted to Teacher";
   }
@@ -86,6 +98,10 @@ function getRoomActionLabel(status?: ApplicationSubmissionStatus) {
 
   if (status === "submitted_to_teacher") {
     return "Continue Application";
+  }
+
+  if (status === "needs_applicant_update") {
+    return "Update Submission";
   }
 
   return "Open Submission";

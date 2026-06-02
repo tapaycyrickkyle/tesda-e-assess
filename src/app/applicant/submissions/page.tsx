@@ -8,11 +8,6 @@ import {
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
-import {
-  getWorkflowEventLabel,
-  loadSubmissionHistoryByIds,
-  type SubmissionHistoryEntry,
-} from "@/lib/workflow-history";
 
 type SubmissionListItem = {
   assigned_at?: string | null;
@@ -35,15 +30,7 @@ type SubmissionStatusDetails = {
   updateSummary: string;
 };
 
-type TimelineEntry = {
-  actor: string;
-  description: string;
-  id: string;
-  label: string;
-  recordedAt: string;
-};
-
-const terminalStatuses: ApplicationSubmissionStatus[] = ["completed", "rejected", "cancelled", "withdrawn"];
+const terminalStatuses: ApplicationSubmissionStatus[] = ["passed", "not_passed", "completed", "rejected", "cancelled", "withdrawn"];
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -55,48 +42,6 @@ function formatDateTime(value: string) {
   }).format(new Date(value));
 }
 
-function formatTimelineActor(actorRole: string | null) {
-  switch (actorRole) {
-    case "admin":
-      return "TESDA";
-    case "applicant":
-      return "Applicant";
-    case "assessment_center":
-      return "Assessment Center";
-    case "teacher":
-      return "Teacher";
-    default:
-      return "System";
-  }
-}
-
-function getApplicantTimelineDescription(event: SubmissionHistoryEntry) {
-  switch (event.event_type) {
-    case "applicant_submitted":
-      return "The applicant submitted this form directly to TESDA.";
-    case "applicant_submitted_to_teacher":
-      return "The applicant submitted this room-based form to the teacher queue.";
-    case "applicant_resubmitted":
-      return "The applicant edited the submission and sent it back through the same route.";
-    case "teacher_forwarded_to_admin":
-      return "The teacher reviewed the room batch and forwarded it to TESDA.";
-    case "admin_assigned_to_center":
-      return "TESDA routed this submission to an assessment center.";
-    case "admin_returned_to_queue":
-      return "TESDA removed the center assignment and returned the submission to the main queue.";
-    case "applicant_withdrew":
-      return "The applicant withdrew the submission before final center processing.";
-    case "assessment_center_completed":
-      return "The assessment center recorded a completed outcome.";
-    case "assessment_center_rejected":
-      return "The assessment center recorded a rejected outcome.";
-    case "assessment_center_cancelled":
-      return "The assessment center recorded a cancelled outcome.";
-    default:
-      return event.to_status ? `Status updated to ${getApplicationSubmissionStatusLabel(event.to_status)}.` : "Workflow updated.";
-  }
-}
-
 function getAssessmentCenterBadge(submission: SubmissionListItem) {
   if (submission.assessment_center_name) {
     return {
@@ -106,7 +51,12 @@ function getAssessmentCenterBadge(submission: SubmissionListItem) {
     };
   }
 
-  if (submission.assigned_at || submission.workflow_status === "assigned" || submission.workflow_status === "under_review") {
+  if (
+    submission.assigned_at ||
+    submission.workflow_status === "assigned" ||
+    submission.workflow_status === "under_review" ||
+    submission.workflow_status === "for_result_encoding"
+  ) {
     return {
       className: "border border-[#cfe0ff] bg-[#eef4ff] text-[#0038a8]",
       iconClassName: "fa-solid fa-building",
@@ -122,19 +72,19 @@ function getAssessmentCenterBadge(submission: SubmissionListItem) {
 }
 
 function getStatusBadge(submission: SubmissionListItem) {
-  if (submission.workflow_status === "completed") {
+  if (submission.workflow_status === "passed" || submission.workflow_status === "completed") {
     return {
       className: "border border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
       iconClassName: "fa-solid fa-circle-check",
-      label: "Completed",
+      label: submission.workflow_status === "passed" ? "Passed" : "Completed",
     };
   }
 
-  if (submission.workflow_status === "rejected") {
+  if (submission.workflow_status === "not_passed" || submission.workflow_status === "rejected") {
     return {
       className: "border border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
       iconClassName: "fa-solid fa-circle-xmark",
-      label: "Rejected",
+      label: submission.workflow_status === "not_passed" ? "Failed" : "Rejected",
     };
   }
 
@@ -151,6 +101,22 @@ function getStatusBadge(submission: SubmissionListItem) {
       className: "border border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]",
       iconClassName: "fa-solid fa-clipboard-check",
       label: "Under Review",
+    };
+  }
+
+  if (submission.workflow_status === "for_result_encoding") {
+    return {
+      className: "border border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]",
+      iconClassName: "fa-solid fa-pen-to-square",
+      label: "Result Encoding",
+    };
+  }
+
+  if (submission.workflow_status === "needs_applicant_update") {
+    return {
+      className: "border border-[#f1d8bf] bg-[#fff8e8] text-[#8a5200]",
+      iconClassName: "fa-solid fa-pen-to-square",
+      label: "Needs Applicant Update",
     };
   }
 
@@ -228,6 +194,34 @@ function getSubmissionStatusDetails(submission: SubmissionListItem): SubmissionS
     };
   }
 
+  if (submission.workflow_status === "for_result_encoding") {
+    return {
+      currentStatus: "Waiting for Result Encoding",
+      nextStep: submission.assessment_center_name
+        ? `Wait for ${submission.assessment_center_name} to encode your final assessment result.`
+        : "Wait for the assigned assessment center to encode your final assessment result.",
+      updateSummary: "Assessment completed and queued for result encoding",
+    };
+  }
+
+  if (submission.workflow_status === "passed") {
+    return {
+      currentStatus: "Passed",
+      nextStep: "No action is needed. Your final assessment result has been recorded.",
+      updateSummary: "Current record: Passed",
+    };
+  }
+
+  if (submission.workflow_status === "needs_applicant_update") {
+    return {
+      currentStatus: "Needs Applicant Update",
+      nextStep: submission.latest_status_reason
+        ? `TESDA has requested revisions to this submission. Please review the correction note below, update the form, and resubmit it to continue processing.\n\nCorrection note: ${submission.latest_status_reason}`
+        : "TESDA has requested revisions to this submission. Please update the form and resubmit it to continue processing.",
+      updateSummary: "Returned by TESDA for revision",
+    };
+  }
+
   return {
     currentStatus: "Submitted to TESDA",
     nextStep:
@@ -257,7 +251,6 @@ export default async function ApplicantSubmittedFormsPage() {
   const submissionIds = (submissions ?? []).map((submission) => submission.id);
   const roomIds = [...new Set((submissions ?? []).map((submission) => submission.room_id).filter(Boolean))];
   const assignmentMap = await getSubmissionAssignmentInfoByIds(submissionIds);
-  const historyBySubmissionId = await loadSubmissionHistoryByIds(submissionIds);
   const { data: rooms } =
     roomIds.length > 0
       ? await supabase.from("rooms").select("id, name").in("id", roomIds)
@@ -284,8 +277,12 @@ export default async function ApplicantSubmittedFormsPage() {
       assignment: submission.assigned_at
         ? {
             assigned_at: submission.assigned_at,
+            assessment_date: null,
+            assessor: null,
             assessment_center_id: "",
             assessment_center_name: submission.assessment_center_name ?? null,
+            assignment_group_key: null,
+            assignment_group_number: null,
           }
         : null,
       submissionSource: submission.submission_source,
@@ -309,22 +306,16 @@ export default async function ApplicantSubmittedFormsPage() {
       statusDetails: getSubmissionStatusDetails(submission),
       statusBadge: getStatusBadge(submission),
       submission,
-      timeline: (historyBySubmissionId.get(submission.id) ?? []).map(
-        (entry) =>
-          ({
-            actor: formatTimelineActor(entry.actor_role),
-            description: getApplicantTimelineDescription(entry),
-            id: entry.id,
-            label: getWorkflowEventLabel(entry),
-            recordedAt: entry.created_at,
-          }) satisfies TimelineEntry,
-      ),
       withdrawLock: getApplicantSubmissionWithdrawalLock({
         assignment: submission.assigned_at
           ? {
               assigned_at: submission.assigned_at,
+              assessment_date: null,
+              assessor: null,
               assessment_center_id: "",
               assessment_center_name: submission.assessment_center_name ?? null,
+              assignment_group_key: null,
+              assignment_group_number: null,
             }
           : null,
         workflowStatus: submission.workflow_status,

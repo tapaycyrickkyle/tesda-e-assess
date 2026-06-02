@@ -3,8 +3,12 @@ import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export type SubmissionAssignmentInfo = {
   assigned_at: string;
+  assessment_date: string | null;
+  assessor: string | null;
   assessment_center_id: string;
   assessment_center_name: string | null;
+  assignment_group_key: string | null;
+  assignment_group_number: number | null;
 };
 
 type SubmissionEditLockParams = {
@@ -33,7 +37,9 @@ async function loadSubmissionAssignmentInfoByIds(submissionIds: string[]) {
   const supabase = createSupabaseAdminClient();
   const { data: assignments, error: assignmentsError } = await supabase
     .from("assessment_center_applicants")
-    .select("assessment_center_id, applicant_reference, assigned_at")
+    .select(
+      "assessment_center_id, applicant_reference, assigned_at, assessment_date, assessor, assignment_group_key, assignment_group_number",
+    )
     .in("applicant_reference", normalizedSubmissionIds);
 
   if (assignmentsError || !assignments) {
@@ -51,8 +57,12 @@ async function loadSubmissionAssignmentInfoByIds(submissionIds: string[]) {
   for (const assignment of assignments) {
     assignmentMap.set(assignment.applicant_reference, {
       assigned_at: assignment.assigned_at,
+      assessment_date: assignment.assessment_date ?? null,
+      assessor: assignment.assessor ?? null,
       assessment_center_id: assignment.assessment_center_id,
       assessment_center_name: centerNameById.get(assignment.assessment_center_id) ?? null,
+      assignment_group_key: assignment.assignment_group_key ?? null,
+      assignment_group_number: assignment.assignment_group_number ?? null,
     });
   }
 
@@ -92,7 +102,14 @@ export function getApplicantSubmissionEditLock({
   submissionSource,
   workflowStatus,
 }: SubmissionEditLockParams) {
-  if (workflowStatus === "completed" || workflowStatus === "rejected" || workflowStatus === "cancelled" || workflowStatus === "withdrawn") {
+  if (
+    workflowStatus === "passed" ||
+    workflowStatus === "not_passed" ||
+    workflowStatus === "completed" ||
+    workflowStatus === "rejected" ||
+    workflowStatus === "cancelled" ||
+    workflowStatus === "withdrawn"
+  ) {
     return {
       isLocked: true,
       message: `This submission is already ${workflowStatus} and can no longer be edited.`,
@@ -105,6 +122,13 @@ export function getApplicantSubmissionEditLock({
       message: assignment.assessment_center_name
         ? `This submission is already assigned to ${assignment.assessment_center_name} and can no longer be edited.`
         : "This submission is already assigned to an assessment center and can no longer be edited.",
+    };
+  }
+
+  if (workflowStatus === "needs_applicant_update") {
+    return {
+      isLocked: false,
+      message: null,
     };
   }
 
@@ -126,6 +150,8 @@ export function getApplicantSubmissionWithdrawalLock({
   workflowStatus,
 }: Omit<SubmissionEditLockParams, "submissionSource">) {
   if (
+    workflowStatus === "passed" ||
+    workflowStatus === "not_passed" ||
     workflowStatus === "completed" ||
     workflowStatus === "rejected" ||
     workflowStatus === "cancelled" ||
@@ -137,7 +163,12 @@ export function getApplicantSubmissionWithdrawalLock({
     };
   }
 
-  if (assignment || workflowStatus === "assigned" || workflowStatus === "under_review") {
+  if (
+    assignment ||
+    workflowStatus === "assigned" ||
+    workflowStatus === "under_review" ||
+    workflowStatus === "for_result_encoding"
+  ) {
     return {
       isLocked: true,
       message: "This submission is already being processed by an assessment center and can no longer be withdrawn.",

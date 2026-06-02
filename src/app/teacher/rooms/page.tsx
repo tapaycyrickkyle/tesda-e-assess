@@ -1,16 +1,19 @@
 import TeacherRoomClient from "@/app/teacher/rooms/TeacherRoomClient";
 import { getCurrentAppUser } from "@/lib/current-user";
+import { loadActiveProgramTitles } from "@/lib/programs";
 import { getRoomSubmissionStatus, type RoomRecord } from "@/lib/rooms";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export default async function TeacherRoomPage() {
   let initialRooms: RoomRecord[] = [];
   let initialLoadError = "";
+  let qualificationOptions: string[] = [];
   let teacherInstitutionName = "";
 
   const currentUser = await getCurrentAppUser();
 
   if (currentUser?.role === "teacher") {
+    qualificationOptions = await loadActiveProgramTitles();
     const supabase = createSupabaseAdminClient();
     const [{ data, error }, { data: profile }] = await Promise.all([
       supabase
@@ -86,6 +89,7 @@ export default async function TeacherRoomPage() {
     <TeacherRoomClient
       initialLoadError={initialLoadError}
       initialRooms={initialRooms}
+      qualificationOptions={qualificationOptions}
       teacherInstitutionName={teacherInstitutionName}
     />
   );

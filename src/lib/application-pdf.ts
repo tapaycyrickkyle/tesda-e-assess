@@ -623,7 +623,7 @@ async function generateFillableApplicationPdf(
   const competencyAssessments = formData.competencyAssessments.filter(hasCompetency);
   configureAllTextFields(form);
 
-  setTextField(form, "Date of Application", formatDisplayDate(formData.applicationDate), {
+  setTextField(form, "Date of Application", "", {
     alignment: TextAlignment.Center,
     fontSize: DATE_OF_APPLICATION_FONT_SIZE,
   });

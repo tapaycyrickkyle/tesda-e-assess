@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { formatAssessmentDate } from "@/lib/assessment-date";
 import {
   getAssessmentCenterLinkMessage,
   resolveAssessmentCenterForUser,
@@ -13,7 +14,10 @@ type CenterAssignment = {
   applicant_name: string;
   applicant_reference: string;
   assigned_at: string;
+  assessment_date?: string | null;
+  assessor?: string | null;
   assignment_batch?: string | null;
+  assignment_group_key?: string | null;
   id: string;
   qualification: string;
   workflow_status: ApplicationSubmissionStatus;
@@ -97,15 +101,15 @@ function buildDashboardDateFilterHref(dateFilter: DashboardDateFilter) {
 }
 
 function getStatusBadgeClass(status: ApplicationSubmissionStatus) {
-  if (status === "completed") {
+  if (status === "passed" || status === "completed") {
     return "bg-[#edf9f1] text-[#166534]";
   }
 
-  if (status === "rejected" || status === "cancelled" || status === "withdrawn") {
+  if (status === "not_passed" || status === "rejected" || status === "cancelled" || status === "withdrawn") {
     return "bg-[#fff4f4] text-[#b42318]";
   }
 
-  if (status === "assigned" || status === "under_review") {
+  if (status === "assigned" || status === "under_review" || status === "for_result_encoding") {
     return "bg-[#eef4ff] text-[#3056c4]";
   }
 
@@ -134,7 +138,7 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
       const adminSupabase = createSupabaseAdminClient();
       const { data: assignmentRows, error: assignmentsError } = await adminSupabase
         .from("assessment_center_applicants")
-        .select("id, applicant_name, applicant_reference, qualification, assignment_batch, assigned_at")
+        .select("id, applicant_name, applicant_reference, qualification, assignment_batch, assignment_group_key, assessment_date, assessor, assigned_at")
         .eq("assessment_center_id", centerResult.center.id)
         .order("assigned_at", { ascending: false });
 
@@ -170,16 +174,23 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
 
   const filteredAssignments = assignments.filter((assignment) => matchesAssignedDateFilter(assignment.assigned_at, dateFilter));
   const underReviewCount = filteredAssignments.filter(
-    (assignment) => assignment.workflow_status === "assigned" || assignment.workflow_status === "under_review",
+    (assignment) =>
+      assignment.workflow_status === "assigned" ||
+      assignment.workflow_status === "under_review" ||
+      assignment.workflow_status === "for_result_encoding",
   ).length;
   const processedCount = filteredAssignments.filter(
     (assignment) =>
+      assignment.workflow_status === "passed" ||
+      assignment.workflow_status === "not_passed" ||
       assignment.workflow_status === "completed" ||
       assignment.workflow_status === "rejected" ||
       assignment.workflow_status === "cancelled" ||
       assignment.workflow_status === "withdrawn",
   ).length;
-  const bulkBatchCount = new Set(filteredAssignments.map((assignment) => assignment.assignment_batch).filter(Boolean)).size;
+  const bulkBatchCount = new Set(
+    filteredAssignments.map((assignment) => assignment.assignment_group_key ?? assignment.assignment_batch).filter(Boolean),
+  ).size;
 
   return (
     <main className="ui-portal-main pb-8 pt-8">
@@ -234,12 +245,12 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
           <div className="rounded-xl border border-[#d9e3f7] bg-[#eef4ff] px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#3056c4]">Under Review</p>
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{underReviewCount}</p>
-            <p className="mt-2 text-[13px] text-[#4563a5]">Submissions currently with your center for review and status processing.</p>
+            <p className="mt-2 text-[13px] text-[#4563a5]">Submissions currently under review or waiting for result encoding.</p>
           </div>
           <div className="rounded-xl border border-[#cce9d8] bg-[#edf9f1] px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#166534]">Closed</p>
             <p className="mt-2 text-[28px] font-bold leading-none text-[#0b1c30]">{processedCount}</p>
-            <p className="mt-2 text-[13px] text-[#3d6b4d]">Submissions already marked completed, rejected, or cancelled.</p>
+            <p className="mt-2 text-[13px] text-[#3d6b4d]">Submissions already finalized with a recorded assessment outcome.</p>
           </div>
           <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Bulk Batches</p>
@@ -270,6 +281,9 @@ export default async function AssessmentCenterDashboardPage({ searchParams }: As
                     <p className="text-[14px] font-bold text-[#0b1c30]">{assignment.applicant_name}</p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
                       {assignment.qualification} | Assigned {formatDateTime(assignment.assigned_at)}
+                    </p>
+                    <p className="mt-1 text-[12px] text-[#747685]">
+                      Assessment {formatAssessmentDate(assignment.assessment_date)} | Assessor {assignment.assessor ?? "Not set"}
                     </p>
                   </div>
                   <span

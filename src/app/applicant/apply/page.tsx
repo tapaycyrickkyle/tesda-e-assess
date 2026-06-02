@@ -82,7 +82,7 @@ function ApplicationPathCard({ description, href, icon, onClick, title }: Applic
   );
 
   const className =
-    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:border-[#8eacf0] hover:bg-[#f8fbff] hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
+    "group relative flex min-h-[228px] flex-col items-center justify-center overflow-hidden rounded-lg border border-[#d9e3f7] bg-white px-6 py-6 text-center shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:border-[#8eacf0] hover:bg-[#f8fbff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#002576]";
 
   if (onClick) {
     return (

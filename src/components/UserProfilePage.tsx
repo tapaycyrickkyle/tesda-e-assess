@@ -1,8 +1,9 @@
 "use client";
 
-import { startTransition, useState, type ChangeEvent, type FormEvent } from "react";
+import { startTransition, useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import NotificationBanner from "@/components/notifications/NotificationBanner";
+import AnimatedModal from "@/components/AnimatedModal";
+import NotificationModal from "@/components/notifications/NotificationModal";
 import type { CurrentAppUser } from "@/lib/current-user";
 import type { UserProfileView } from "@/lib/user-profile";
 
@@ -21,20 +22,91 @@ function getRoleHeading(role: CurrentAppUser["role"]) {
 
 export default function UserProfilePage({ currentUser, profileView }: UserProfilePageProps) {
   const router = useRouter();
-  const [assessmentCenterForm, setAssessmentCenterForm] = useState(
-    profileView.editor.assessmentCenter ?? {
-      address: "",
-      contact: "",
-      manager: "",
-      name: "",
-    },
-  );
+  const initialAssessmentCenterForm = profileView.editor.assessmentCenter ?? {
+    address: "",
+    contact: "",
+    manager: "",
+    name: "",
+  };
+  const initialProfileForm = profileView.editor.profile;
+  const [assessmentCenterForm, setAssessmentCenterForm] = useState(initialAssessmentCenterForm);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [profileForm, setProfileForm] = useState(profileView.editor.profile);
+  const [profileForm, setProfileForm] = useState(initialProfileForm);
   const [successMessage, setSuccessMessage] = useState("");
+  const [dismissedWarningMessage, setDismissedWarningMessage] = useState<string | null>(null);
   const isAssessmentCenter = currentUser.role === "assessment_center";
   const isTeacher = currentUser.role === "teacher";
+  const editableSectionTitles = new Set(
+    isAssessmentCenter ? ["Account Details", "Assessment Center Details"] : ["Account Details", "Personal Information"],
+  );
+  const warningMessage =
+    profileView.notice && profileView.notice !== dismissedWarningMessage ? profileView.notice : "";
+
+  useEffect(() => {
+    if (!errorMessage) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setErrorMessage("");
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [errorMessage]);
+
+  useEffect(() => {
+    if (!successMessage) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setSuccessMessage("");
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [successMessage]);
+
+  useEffect(() => {
+    if (!warningMessage) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setDismissedWarningMessage(profileView.notice ?? null);
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [profileView.notice, warningMessage]);
+
+  const activeNotification = useMemo(() => {
+    if (errorMessage) {
+      return {
+        message: errorMessage,
+        title: "Profile Error",
+        variant: "error" as const,
+      };
+    }
+
+    if (successMessage) {
+      return {
+        message: successMessage,
+        title: "Profile Updated",
+        variant: "success" as const,
+      };
+    }
+
+    if (warningMessage) {
+      return {
+        message: warningMessage,
+        title: "Profile Notice",
+        variant: "warning" as const,
+      };
+    }
+
+    return null;
+  }, [errorMessage, successMessage, warningMessage]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,6 +144,7 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
       }
 
       setSuccessMessage(result.message ?? "Account updated successfully.");
+      setIsEditing(false);
       startTransition(() => {
         router.refresh();
       });
@@ -98,6 +171,21 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
     }));
   }
 
+  function handleOpenEdit() {
+    setErrorMessage("");
+    setSuccessMessage("");
+    setProfileForm(initialProfileForm);
+    setAssessmentCenterForm(initialAssessmentCenterForm);
+    setIsEditing(true);
+  }
+
+  function handleCloseEdit() {
+    setErrorMessage("");
+    setProfileForm(initialProfileForm);
+    setAssessmentCenterForm(initialAssessmentCenterForm);
+    setIsEditing(false);
+  }
+
   return (
     <main className="ui-portal-main pb-8 pt-8">
       <div className="ui-page-content-narrow">
@@ -108,10 +196,6 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
           </p>
         </section>
 
-        {profileView.notice ? <NotificationBanner className="mb-5" message={profileView.notice} variant="warning" /> : null}
-        {errorMessage ? <NotificationBanner className="mb-5" message={errorMessage} variant="error" /> : null}
-        {successMessage ? <NotificationBanner className="mb-5" message={successMessage} variant="success" /> : null}
-
         <section className="ui-surface-highlight mb-5 p-5">
           <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Account Overview</p>
           <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -120,16 +204,24 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
               <p className="mt-1 text-[14px] leading-[1.55] text-[#444653]">{currentUser.email}</p>
               <p className="mt-2 text-[12px] text-[#747685]">Email address and account role are managed separately and cannot be edited here.</p>
             </div>
-            <span className="ui-badge ui-badge-accent">
-              {currentUser.role.replace(/_/g, " ")}
-            </span>
           </div>
         </section>
 
         <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
           {profileView.sections.map((section) => (
             <article key={section.title} className="ui-surface p-5">
-              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{section.title}</p>
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">{section.title}</p>
+                {editableSectionTitles.has(section.title) ? (
+                  <button
+                    className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                    onClick={handleOpenEdit}
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                ) : null}
+              </div>
               <div className="mt-3">
                 {section.fields.map((field) => (
                   <div key={field.label} className="ui-list-row">
@@ -144,164 +236,189 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
           ))}
         </section>
 
-        <section className="ui-surface mt-5 p-5">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Edit Details</p>
-              <h2 className="mt-2 text-[20px] font-semibold text-[#0b1c30]">
-                {isAssessmentCenter ? "Update assessment center information" : "Update personal account information"}
-              </h2>
+        <AnimatedModal
+          contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[760px] overflow-y-auto rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+          open={isEditing}
+          zIndexClassName="z-[60]"
+        >
+          <form onSubmit={handleSubmit}>
+            <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Edit Details</p>
+                  <h2 className="mt-2 text-[20px] font-semibold text-[#0b1c30]">
+                    {isAssessmentCenter ? "Update assessment center information" : "Update personal account information"}
+                  </h2>
+                </div>
+                <button
+                  aria-label="Close edit details modal"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d9e3f7] bg-white text-[16px] text-[#5d5f5f] transition hover:bg-[#eff4ff] hover:text-[#002576]"
+                  disabled={isSaving}
+                  onClick={handleCloseEdit}
+                  type="button"
+                >
+                  <i aria-hidden="true" className="fa-solid fa-xmark" />
+                </button>
+              </div>
+              <p className="mt-2 text-[13px] leading-[1.55] text-[#5d5f5f]">
+                Update the current saved details below, then save the changes when you are ready.
+              </p>
             </div>
-            <span className="ui-badge ui-badge-accent">
-              {currentUser.role.replace(/_/g, " ")}
-            </span>
-          </div>
 
-          <form className="mt-5 space-y-4" onSubmit={handleSubmit}>
-            {isAssessmentCenter ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Center Name</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="name"
-                    onChange={handleAssessmentCenterChange}
-                    required
-                    type="text"
-                    value={assessmentCenterForm.name}
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Manager</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="manager"
-                    onChange={handleAssessmentCenterChange}
-                    required
-                    type="text"
-                    value={assessmentCenterForm.manager}
-                  />
-                </label>
-                <label className="block md:col-span-2">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Contact</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="contact"
-                    onChange={handleAssessmentCenterChange}
-                    required
-                    type="text"
-                    value={assessmentCenterForm.contact}
-                  />
-                </label>
-                <label className="block md:col-span-2">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Address</span>
-                  <textarea
-                    className="min-h-[108px] w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="address"
-                    onChange={handleAssessmentCenterChange}
-                    required
-                    value={assessmentCenterForm.address}
-                  />
-                </label>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">First Name</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="firstName"
-                    onChange={handleProfileChange}
-                    required
-                    type="text"
-                    value={profileForm.firstName}
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Last Name</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="lastName"
-                    onChange={handleProfileChange}
-                    required
-                    type="text"
-                    value={profileForm.lastName}
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Middle Name</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="middleName"
-                    onChange={handleProfileChange}
-                    type="text"
-                    value={profileForm.middleName}
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Name Extension</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="nameExtension"
-                    onChange={handleProfileChange}
-                    placeholder="Jr., Sr., III"
-                    type="text"
-                    value={profileForm.nameExtension}
-                  />
-                </label>
-                <label className="block">
-                  <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Contact Number</span>
-                  <input
-                    className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    name="contactNumber"
-                    onChange={handleProfileChange}
-                    placeholder="09123456789"
-                    type="text"
-                    value={profileForm.contactNumber}
-                  />
-                </label>
+            <div className="ui-modal-section px-6 py-5 sm:px-7">
+              {isAssessmentCenter ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Center Name</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="name"
+                      onChange={handleAssessmentCenterChange}
+                      required
+                      type="text"
+                      value={assessmentCenterForm.name}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Manager</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="manager"
+                      onChange={handleAssessmentCenterChange}
+                      required
+                      type="text"
+                      value={assessmentCenterForm.manager}
+                    />
+                  </label>
+                  <label className="block md:col-span-2">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Contact</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="contact"
+                      onChange={handleAssessmentCenterChange}
+                      required
+                      type="text"
+                      value={assessmentCenterForm.contact}
+                    />
+                  </label>
+                  <label className="block md:col-span-2">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Address</span>
+                    <textarea
+                      className="min-h-[108px] w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="address"
+                      onChange={handleAssessmentCenterChange}
+                      required
+                      value={assessmentCenterForm.address}
+                    />
+                  </label>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">First Name</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="firstName"
+                      onChange={handleProfileChange}
+                      required
+                      type="text"
+                      value={profileForm.firstName}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Last Name</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="lastName"
+                      onChange={handleProfileChange}
+                      required
+                      type="text"
+                      value={profileForm.lastName}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Middle Name</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="middleName"
+                      onChange={handleProfileChange}
+                      type="text"
+                      value={profileForm.middleName}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Name Extension</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="nameExtension"
+                      onChange={handleProfileChange}
+                      placeholder="Jr., Sr., III"
+                      type="text"
+                      value={profileForm.nameExtension}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Contact Number</span>
+                    <input
+                      className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                      name="contactNumber"
+                      onChange={handleProfileChange}
+                      placeholder="09123456789"
+                      type="text"
+                      value={profileForm.contactNumber}
+                    />
+                  </label>
 
-                {isTeacher ? (
-                  <>
-                    <label className="block md:col-span-2">
-                      <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Institution Name</span>
-                      <input
-                        className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                        name="institutionName"
-                        onChange={handleProfileChange}
-                        type="text"
-                        value={profileForm.institutionName}
-                      />
-                    </label>
-                    <label className="block">
-                      <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Institution Type</span>
-                      <select
-                        className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                        name="institutionType"
-                        onChange={handleProfileChange}
-                        value={profileForm.institutionType}
-                      >
-                        <option value="">Select institution type</option>
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
-                      </select>
-                    </label>
-                    <label className="block">
-                      <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Position Title</span>
-                      <input
-                        className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                        name="positionTitle"
-                        onChange={handleProfileChange}
-                        type="text"
-                        value={profileForm.positionTitle}
-                      />
-                    </label>
-                  </>
-                ) : null}
-              </div>
-            )}
+                  {isTeacher ? (
+                    <>
+                      <label className="block md:col-span-2">
+                        <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Institution Name</span>
+                        <input
+                          className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                          name="institutionName"
+                          onChange={handleProfileChange}
+                          type="text"
+                          value={profileForm.institutionName}
+                        />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Institution Type</span>
+                        <select
+                          className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                          name="institutionType"
+                          onChange={handleProfileChange}
+                          value={profileForm.institutionType}
+                        >
+                          <option value="">Select institution type</option>
+                          <option value="public">Public</option>
+                          <option value="private">Private</option>
+                        </select>
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-[13px] font-bold text-[#0b1c30]">Position Title</span>
+                        <input
+                          className="w-full rounded-lg border border-[#d9e3f7] bg-white px-4 py-3 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                          name="positionTitle"
+                          onChange={handleProfileChange}
+                          type="text"
+                          value={profileForm.positionTitle}
+                        />
+                      </label>
+                    </>
+                  ) : null}
+                </div>
+              )}
+            </div>
 
-            <div className="flex flex-col gap-2 border-t border-[#e3ebfb] pt-4 sm:flex-row sm:justify-end">
+            <div className="flex flex-col gap-2 border-t border-[#e3ebfb] px-6 py-5 sm:flex-row sm:justify-end sm:px-7">
+              <button
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-5 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-70"
+                disabled={isSaving}
+                onClick={handleCloseEdit}
+                type="button"
+              >
+                Cancel
+              </button>
               <button
                 className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#0038a8] px-5 text-[14px] font-bold text-white transition hover:bg-[#002576] disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isSaving}
@@ -311,7 +428,14 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
               </button>
             </div>
           </form>
-        </section>
+        </AnimatedModal>
+
+        <NotificationModal
+          message={activeNotification?.message ?? ""}
+          open={Boolean(activeNotification)}
+          title={activeNotification?.title ?? ""}
+          variant={activeNotification?.variant ?? "info"}
+        />
       </div>
     </main>
   );
