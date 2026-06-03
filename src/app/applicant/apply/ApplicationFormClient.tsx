@@ -12,7 +12,6 @@ import {
   educationalAttainmentOptions,
   employmentStatusOptions,
   normalizeApplicationFormData,
-  qualificationOptions,
   sexOptions,
   type ApplicantApplicationFormData,
   type ApplicationSubmissionRecord,
@@ -31,6 +30,7 @@ type ApplicantApplicationFormClientProps = {
   existingSubmission: ApplicationSubmissionRecord | null;
   isReadOnly?: boolean;
   mode: ApplicationMode;
+  qualificationOptions: string[];
   readOnlyMessage?: string | null;
   room:
     | {
@@ -193,6 +193,7 @@ export default function ApplicantApplicationFormClient({
   existingSubmission,
   isReadOnly = false,
   mode,
+  qualificationOptions,
   readOnlyMessage = null,
   room,
 }: ApplicantApplicationFormClientProps) {
@@ -209,7 +210,9 @@ export default function ApplicantApplicationFormClient({
   const activeStep = formSteps[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === formSteps.length - 1;
-  const qualificationSelectOptions = formData.qualificationTitle && !qualificationOptions.includes(formData.qualificationTitle)
+  const qualificationSelectOptions =
+    formData.qualificationTitle &&
+    !qualificationOptions.some((option) => option === formData.qualificationTitle)
     ? [formData.qualificationTitle, ...qualificationOptions]
     : [...qualificationOptions];
   const isUpdatedSubmission = successMessage.toLowerCase().includes("updated");
@@ -433,6 +436,7 @@ export default function ApplicantApplicationFormClient({
                   label="Surname"
                   onChange={(value) => updateField("surname", value)}
                   placeholder="Surname"
+                  readOnly
                   value={formData.surname}
                 />
                 <TextField
@@ -440,6 +444,7 @@ export default function ApplicantApplicationFormClient({
                   label="First Name"
                   onChange={(value) => updateField("firstName", value)}
                   placeholder="First name"
+                  readOnly
                   value={formData.firstName}
                 />
                 <TextField
@@ -447,6 +452,7 @@ export default function ApplicantApplicationFormClient({
                   label="Middle Name"
                   onChange={updateMiddleName}
                   placeholder="Middle name"
+                  readOnly
                   value={formData.middleName}
                 />
                 <TextField
@@ -1023,6 +1029,7 @@ function TextField({
   label,
   onChange,
   placeholder,
+  readOnly = false,
   type = "text",
   uppercase = true,
   value,
@@ -1031,6 +1038,7 @@ function TextField({
   label: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  readOnly?: boolean;
   type?: string;
   uppercase?: boolean;
   value: string;
@@ -1042,12 +1050,13 @@ function TextField({
     <label className="block">
       <span className="mb-1.5 block text-[12px] font-bold uppercase tracking-[0.04em] text-[#4c5e7a]">{label}</span>
       <input
-        className={`min-h-[44px] w-full rounded-lg border border-[#c8d5ee] bg-white px-3.5 py-2.5 text-[14px] text-[#0b1c30] outline-none transition placeholder:text-[#94a0b5] focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b] ${
+        className={`min-h-[44px] w-full rounded-lg border border-[#c8d5ee] bg-white px-3.5 py-2.5 text-[14px] text-[#0b1c30] outline-none transition placeholder:text-[#94a0b5] focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b] read-only:bg-[#f8fbff] read-only:text-[#44506a] ${
           shouldUppercase ? "uppercase" : ""
         }`}
         disabled={disabled}
         onChange={(event) => onChange(shouldUppercase ? event.target.value.toUpperCase() : event.target.value)}
         placeholder={placeholder}
+        readOnly={readOnly}
         type={type}
         value={displayValue}
       />

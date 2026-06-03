@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
-import { qualificationOptions } from "@/lib/application-form";
 import { getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
 
 type CreateRoomResponse = {
@@ -16,12 +15,14 @@ type CreateRoomResponse = {
 type TeacherRoomClientProps = {
   initialRooms: RoomRecord[];
   initialLoadError?: string;
+  qualificationOptions: string[];
   teacherInstitutionName: string;
 };
 
 export default function TeacherRoomClient({
   initialRooms,
   initialLoadError,
+  qualificationOptions,
   teacherInstitutionName,
 }: TeacherRoomClientProps) {
   const [qualification, setQualification] = useState("");
@@ -151,7 +152,7 @@ export default function TeacherRoomClient({
           {sortedRooms.map((room) => (
             <article
               key={room.id}
-              className="relative mx-auto w-full max-w-[340px] overflow-hidden rounded-xl border border-[#d9e3f7] bg-white px-4 pb-4 pt-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+              className="relative mx-auto w-full max-w-[340px] overflow-hidden rounded-xl border border-[#d9e3f7] bg-white px-4 pb-4 pt-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition"
             >
               <div className="absolute inset-x-0 top-0 h-1 bg-[#002576]" />
 
@@ -296,6 +297,11 @@ export default function TeacherRoomClient({
                       className="fa-solid fa-chevron-down pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
                     />
                   </div>
+                  {qualificationOptions.length === 0 ? (
+                    <p className="text-[11px] font-medium text-[#93000a]">
+                      No active programs are available right now. Ask the admin to enable a program first.
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
@@ -313,7 +319,7 @@ export default function TeacherRoomClient({
                 </button>
                 <button
                   className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#002576] px-5 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-                  disabled={isSubmitting || !teacherInstitutionName.trim() || !qualification}
+                  disabled={isSubmitting || !teacherInstitutionName.trim() || !qualification || qualificationOptions.length === 0}
                   type="submit"
                 >
                   {isSubmitting ? "Creating..." : "Create Room"}

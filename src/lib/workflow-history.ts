@@ -1,3 +1,4 @@
+import { formatAssessmentDate } from "@/lib/assessment-date";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 import type { UserRole } from "@/lib/auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
@@ -51,7 +52,11 @@ export type SubmissionReportRow = {
   applicant_email: string;
   applicant_name: string;
   assigned_at: string | null;
+  assessment_date: string | null;
   assessment_center_name: string | null;
+  assessor: string | null;
+  assignment_group_key: string | null;
+  assignment_group_number: number | null;
   id: string;
   latest_status_reason: string | null;
   latest_status_updated_at: string | null;
@@ -290,6 +295,10 @@ export function getWorkflowEventLabel(event: Pick<SubmissionHistoryEntry, "event
       return "Submitted to Teacher";
     case "applicant_resubmitted":
       return "Resubmitted";
+    case "admin_requested_applicant_update":
+      return "Returned for Applicant Update";
+    case "admin_rescheduled_assessment":
+      return "Assessment Rescheduled";
     case "teacher_forwarded_to_admin":
       return "Forwarded to TESDA";
     case "admin_assigned_to_center":
@@ -300,6 +309,12 @@ export function getWorkflowEventLabel(event: Pick<SubmissionHistoryEntry, "event
       return "Withdrawn";
     case "assessment_center_completed":
       return "Completed";
+    case "assessment_center_sent_for_result_encoding":
+      return "Moved to Result Encoding";
+    case "assessment_center_passed":
+      return "Passed";
+    case "assessment_center_not_passed":
+      return "Failed";
     case "assessment_center_rejected":
       return "Rejected";
     case "assessment_center_cancelled":
@@ -321,6 +336,10 @@ export function getWorkflowEventDescription(event: SubmissionHistoryEntry) {
       return "The applicant submitted this room-based form to the teacher queue.";
     case "applicant_resubmitted":
       return "The applicant edited the submission and sent it back through the same route.";
+    case "admin_requested_applicant_update":
+      return "TESDA returned this submission to the applicant for correction before further processing.";
+    case "admin_rescheduled_assessment":
+      return "TESDA updated the assigned assessment date or assessor.";
     case "teacher_forwarded_to_admin":
       return "The teacher reviewed the room batch and forwarded it to TESDA.";
     case "admin_assigned_to_center":
@@ -331,6 +350,12 @@ export function getWorkflowEventDescription(event: SubmissionHistoryEntry) {
       return "The applicant withdrew the submission before final center processing.";
     case "assessment_center_completed":
       return "The assessment center recorded a completed outcome.";
+    case "assessment_center_sent_for_result_encoding":
+      return "The assessment center finished reviewing the PDF and moved this submission to result encoding.";
+    case "assessment_center_passed":
+      return "The assessment center recorded a passed outcome.";
+    case "assessment_center_not_passed":
+      return "The assessment center recorded a not-passed outcome.";
     case "assessment_center_rejected":
       return "The assessment center recorded a rejected outcome.";
     case "assessment_center_cancelled":
@@ -368,7 +393,9 @@ export async function loadApplicationSubmissionReportRows() {
         .order("submitted_at", { ascending: false }),
       supabase
         .from("assessment_center_applicants")
-        .select("applicant_reference, assigned_at, assessment_center_id"),
+        .select(
+          "applicant_reference, assigned_at, assessment_center_id, assessment_date, assessor, assignment_group_key, assignment_group_number",
+        ),
       supabase.from("rooms").select("id, name"),
       supabase.from("assessment_centers").select("id, name"),
     ]);
@@ -384,7 +411,11 @@ export async function loadApplicationSubmissionReportRows() {
       assignment.applicant_reference,
       {
         assigned_at: assignment.assigned_at,
+        assessment_date: assignment.assessment_date ?? null,
         assessment_center_name: centerNameById.get(assignment.assessment_center_id) ?? null,
+        assessor: assignment.assessor ?? null,
+        assignment_group_key: assignment.assignment_group_key ?? null,
+        assignment_group_number: assignment.assignment_group_number ?? null,
       },
     ]),
   );
@@ -395,7 +426,11 @@ export async function loadApplicationSubmissionReportRows() {
         applicant_email: submission.applicant_email,
         applicant_name: submission.applicant_name,
         assigned_at: assignmentBySubmissionId.get(submission.id)?.assigned_at ?? null,
+        assessment_date: assignmentBySubmissionId.get(submission.id)?.assessment_date ?? null,
         assessment_center_name: assignmentBySubmissionId.get(submission.id)?.assessment_center_name ?? null,
+        assessor: assignmentBySubmissionId.get(submission.id)?.assessor ?? null,
+        assignment_group_key: assignmentBySubmissionId.get(submission.id)?.assignment_group_key ?? null,
+        assignment_group_number: assignmentBySubmissionId.get(submission.id)?.assignment_group_number ?? null,
         id: submission.id,
         latest_status_reason: submission.latest_status_reason ?? null,
         latest_status_updated_at: submission.latest_status_updated_at ?? null,
@@ -421,7 +456,10 @@ export async function buildApplicationSubmissionReportCsv() {
     "Submitted At",
     "Teacher Forwarded At",
     "Assigned At",
+    "Assessment Date",
     "Assessment Center",
+    "Assessor",
+    "Assignment Group",
     "Workflow Status",
     "Latest Status Label",
     "Latest Status Reason",
@@ -439,7 +477,10 @@ export async function buildApplicationSubmissionReportCsv() {
       row.submitted_at,
       row.teacher_forwarded_at,
       row.assigned_at,
+      row.assessment_date ? formatAssessmentDate(row.assessment_date) : null,
       row.assessment_center_name,
+      row.assessor,
+      row.assignment_group_number ? `Batch ${row.assignment_group_number}` : null,
       row.workflow_status,
       getApplicationSubmissionStatusLabel(row.workflow_status),
       row.latest_status_reason,

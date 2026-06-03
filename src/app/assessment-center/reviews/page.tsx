@@ -1,9 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import { useEffect, useMemo, useState } from "react";
+import { formatAssessmentDate } from "@/lib/assessment-date";
 import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 
@@ -11,7 +13,11 @@ type AssignedApplicant = {
   applicant_name: string;
   applicant_reference: string;
   assigned_at: string;
+  assessment_date?: string | null;
+  assessor?: string | null;
   assignment_batch?: string | null;
+  assignment_group_key?: string | null;
+  assignment_group_number?: number | null;
   assignment_title?: string | null;
   id: string;
   latest_status_reason?: string | null;
@@ -22,18 +28,20 @@ type AssignedApplicant = {
 type BulkAssignment = {
   applicantCount: number;
   assignedAt: string;
+  assessmentDate?: string | null;
+  assessor?: string | null;
   batchCode: string;
-  closedCount: number;
+  finalizedCount: number;
+  resultEncodingCount: number;
   id: string;
   qualification: string;
   submissionIds: string[];
   title: string;
-  underReviewCount: number;
+  reviewCount: number;
 };
 
-type QueueTab = "closed" | "under_review";
-type DateFilter = "all" | "this_month" | "this_week" | "today";
-type StatusAction = "cancel" | "complete" | "reject";
+type QueueTab = "for_result_encoding" | "under_review";
+type StatusAction = "move_to_result_encoding" | "not_pass" | "pass";
 type PendingStatusUpdate =
   | {
       action: StatusAction;
@@ -52,10 +60,21 @@ type PendingStatusUpdate =
       type: "bulk";
     };
 
-const closedStatuses: ApplicationSubmissionStatus[] = ["completed", "rejected", "cancelled", "withdrawn"];
+const finalizedStatuses: ApplicationSubmissionStatus[] = [
+  "passed",
+  "not_passed",
+  "completed",
+  "rejected",
+  "cancelled",
+  "withdrawn",
+];
 
-function isClosedStatus(status: ApplicationSubmissionStatus) {
-  return closedStatuses.includes(status);
+function isFinalizedStatus(status: ApplicationSubmissionStatus) {
+  return finalizedStatuses.includes(status);
+}
+
+function isResultEncodingStatus(status: ApplicationSubmissionStatus) {
+  return status === "for_result_encoding";
 }
 
 function isActionableCenterStatus(status: ApplicationSubmissionStatus) {
@@ -67,37 +86,7 @@ function matchesQueueStatus(status: ApplicationSubmissionStatus, queueTab: Queue
     return isActionableCenterStatus(status);
   }
 
-  return isClosedStatus(status);
-}
-
-function matchesAssignedDateFilter(value: string, dateFilter: DateFilter) {
-  if (dateFilter === "all") {
-    return true;
-  }
-
-  const assignedAt = new Date(value);
-
-  if (Number.isNaN(assignedAt.getTime())) {
-    return false;
-  }
-
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  if (dateFilter === "today") {
-    return assignedAt >= startOfToday;
-  }
-
-  if (dateFilter === "this_week") {
-    const startOfWeek = new Date(startOfToday);
-    const day = startOfWeek.getDay();
-    const diff = day === 0 ? 6 : day - 1;
-    startOfWeek.setDate(startOfWeek.getDate() - diff);
-    return assignedAt >= startOfWeek;
-  }
-
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  return assignedAt >= startOfMonth;
+  return isResultEncodingStatus(status);
 }
 
 const formatAssignedDate = (value: string) =>
@@ -121,19 +110,19 @@ const summaryIconClass =
   "inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#d9e3f7] bg-white text-[13px] shadow-[0_1px_2px_rgba(15,23,42,0.05)]";
 
 function getStatusBadge(status: ApplicationSubmissionStatus) {
-  if (status === "completed") {
+  if (status === "passed" || status === "completed") {
     return {
       className: "border border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
       iconClassName: "fa-solid fa-circle-check",
-      label: "Completed",
+      label: status === "passed" ? "Passed" : "Completed",
     };
   }
 
-  if (status === "rejected") {
+  if (status === "not_passed" || status === "rejected") {
     return {
       className: "border border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
       iconClassName: "fa-solid fa-circle-xmark",
-      label: "Rejected",
+      label: status === "not_passed" ? "Failed" : "Rejected",
     };
   }
 
@@ -153,6 +142,14 @@ function getStatusBadge(status: ApplicationSubmissionStatus) {
     };
   }
 
+  if (status === "for_result_encoding") {
+    return {
+      className: "border border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]",
+      iconClassName: "fa-solid fa-pen-to-square",
+      label: "Result Encoding",
+    };
+  }
+
   return {
     className: "border border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]",
     iconClassName: "fa-solid fa-file-circle-check",
@@ -162,15 +159,19 @@ function getStatusBadge(status: ApplicationSubmissionStatus) {
 
 function getStatusDescription(status: ApplicationSubmissionStatus) {
   if (status === "assigned" || status === "under_review") {
-    return "Your center has started reviewing this submission. Record the final status when the assessment is finished.";
+    return "Review the applicant PDF and use the information for your assessment-center process before moving the submission to result encoding.";
   }
 
-  if (status === "completed") {
-    return "Assessment has been completed and the applicant record is now read-only on the applicant side.";
+  if (status === "for_result_encoding") {
+    return "The assessment is finished. Record whether the applicant passed or not passed.";
   }
 
-  if (status === "rejected") {
-    return "The applicant was reviewed and marked as rejected by this center.";
+  if (status === "passed") {
+    return "The applicant passed the assessment and the final result is now recorded.";
+  }
+
+  if (status === "not_passed") {
+    return "The applicant failed the assessment and the final result is now recorded.";
   }
 
   if (status === "cancelled") {
@@ -181,70 +182,72 @@ function getStatusDescription(status: ApplicationSubmissionStatus) {
 }
 
 function getActionButtonLabel(action: StatusAction) {
-  if (action === "complete") {
-    return "Complete";
+  if (action === "move_to_result_encoding") {
+    return "Move to Result Encoding";
   }
 
-  if (action === "reject") {
-    return "Reject";
+  if (action === "pass") {
+    return "Passed";
   }
 
-  return "Cancel";
+  return "Failed";
 }
 
-function isReasonRequired(action: StatusAction) {
-  return action === "cancel" || action === "reject";
+function isReasonRequired() {
+  return false;
 }
 
 function shouldShowReasonField(action: StatusAction) {
-  return action !== "complete";
+  return action === "not_pass";
 }
 
 function getActionTheme(action: StatusAction) {
-  if (action === "complete") {
+  if (action === "move_to_result_encoding") {
     return {
-      badgeClassName: "border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
-      buttonClassName: "bg-[#2f8f5b] text-white hover:bg-[#27794d]",
-      helperText: "Use this when the center finished the assessment successfully.",
+      badgeClassName: "border-[#d9e3f7] bg-[#eef4ff] text-[#3056c4]",
+      buttonClassName: "bg-[#002576] text-white hover:bg-[#0038a8]",
+      helperText: "Use this after reviewing the PDF and finishing the assessment so the applicant can be finalized in Result Encoding.",
     };
   }
 
-  if (action === "reject") {
+  if (action === "pass") {
     return {
-      badgeClassName: "border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
-      buttonClassName: "bg-[#b42318] text-white hover:bg-[#991b1b]",
-      helperText: "A reason is required so the applicant understands why the submission was rejected.",
+      badgeClassName: "border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
+      buttonClassName: "bg-[#2f8f5b] text-white hover:bg-[#27794d]",
+      helperText: "Use this when the applicant passed the assessment.",
     };
   }
 
   return {
-    badgeClassName: "border-[#f1d8bf] bg-[#fff8e8] text-[#8a5200]",
-    buttonClassName: "bg-[#8a5200] text-white hover:bg-[#734400]",
-    helperText: "A reason is required so the cancellation is documented clearly.",
+    badgeClassName: "border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
+    buttonClassName: "bg-[#b42318] text-white hover:bg-[#991b1b]",
+    helperText: "Use this when the applicant did not pass the assessment. Add an optional note if your center needs one.",
   };
 }
 
 export default function AssessmentCenterApplicantsPage() {
+  const pathname = usePathname();
+  const isResultEncodingView = pathname === "/assessment-center/closed";
+  const currentQueueTab: QueueTab = isResultEncodingView ? "for_result_encoding" : "under_review";
   const [activeTab, setActiveTab] = useState<"bulk" | "individual">("individual");
   const [applicants, setApplicants] = useState<AssignedApplicant[]>([]);
   const [bulkProgramFilter, setBulkProgramFilter] = useState("all");
   const [bulkSearch, setBulkSearch] = useState("");
   const [centerName, setCenterName] = useState("");
-  const [dateFilter, setDateFilter] = useState<DateFilter>("all");
   const [error, setError] = useState("");
   const [individualCourseFilter, setIndividualCourseFilter] = useState("all");
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingStatusUpdate, setPendingStatusUpdate] = useState<PendingStatusUpdate | null>(null);
-  const [queueTab, setQueueTab] = useState<QueueTab>("under_review");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedApplicantDetailsId, setSelectedApplicantDetailsId] = useState<string | null>(null);
   const [selectedBulkAssignment, setSelectedBulkAssignment] = useState<BulkAssignment | null>(null);
   const [statusReason, setStatusReason] = useState("");
   const [statusSuccess, setStatusSuccess] = useState("");
   const [updatingAction, setUpdatingAction] = useState<StatusAction | null>(null);
   const [updatingBulkAssignmentId, setUpdatingBulkAssignmentId] = useState<string | null>(null);
   const [updatingSubmissionId, setUpdatingSubmissionId] = useState<string | null>(null);
-  const tabInlineCountClass = queueTab === "under_review" ? reviewTabInlineCountClass : closedTabInlineCountClass;
+  const tabInlineCountClass = currentQueueTab === "under_review" ? reviewTabInlineCountClass : closedTabInlineCountClass;
 
   useEffect(() => {
     let cancelled = false;
@@ -306,7 +309,7 @@ export default function AssessmentCenterApplicantsPage() {
 
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
   const individualApplicants = useMemo(
-    () => applicants.filter((applicant) => !applicant.assignment_batch),
+    () => applicants.filter((applicant) => !applicant.assignment_group_key),
     [applicants],
   );
 
@@ -314,18 +317,19 @@ export default function AssessmentCenterApplicantsPage() {
     const batchMap = new Map<string, BulkAssignment>();
 
     applicants
-      .filter((applicant) => applicant.assignment_batch)
+      .filter((applicant) => applicant.assignment_group_key)
       .forEach((applicant) => {
         const batchCode = applicant.assignment_batch ?? "";
         const title = applicant.assignment_title?.trim() || batchCode;
-        const key = `${batchCode}:${title}`;
+        const key = applicant.assignment_group_key?.trim() || `${batchCode}:${title}`;
         const existing = batchMap.get(key);
 
         if (existing) {
           existing.submissionIds.push(applicant.applicant_reference);
           existing.applicantCount += 1;
-          existing.underReviewCount += isActionableCenterStatus(applicant.workflow_status) ? 1 : 0;
-          existing.closedCount += isClosedStatus(applicant.workflow_status) ? 1 : 0;
+          existing.reviewCount += isActionableCenterStatus(applicant.workflow_status) ? 1 : 0;
+          existing.resultEncodingCount += isResultEncodingStatus(applicant.workflow_status) ? 1 : 0;
+          existing.finalizedCount += isFinalizedStatus(applicant.workflow_status) ? 1 : 0;
           if (new Date(applicant.assigned_at).getTime() > new Date(existing.assignedAt).getTime()) {
             existing.assignedAt = applicant.assigned_at;
           }
@@ -335,13 +339,16 @@ export default function AssessmentCenterApplicantsPage() {
         batchMap.set(key, {
           applicantCount: 1,
           assignedAt: applicant.assigned_at,
+          assessmentDate: applicant.assessment_date ?? null,
+          assessor: applicant.assessor ?? null,
           batchCode,
-          closedCount: isClosedStatus(applicant.workflow_status) ? 1 : 0,
+          finalizedCount: isFinalizedStatus(applicant.workflow_status) ? 1 : 0,
           id: key,
           qualification: applicant.qualification,
+          resultEncodingCount: isResultEncodingStatus(applicant.workflow_status) ? 1 : 0,
           submissionIds: [applicant.applicant_reference],
           title,
-          underReviewCount: isActionableCenterStatus(applicant.workflow_status) ? 1 : 0,
+          reviewCount: isActionableCenterStatus(applicant.workflow_status) ? 1 : 0,
         });
       });
 
@@ -360,6 +367,19 @@ export default function AssessmentCenterApplicantsPage() {
     [bulkAssignments],
   );
 
+  const visibleIndividualCount = useMemo(
+    () => individualApplicants.filter((applicant) => matchesQueueStatus(applicant.workflow_status, currentQueueTab)).length,
+    [currentQueueTab, individualApplicants],
+  );
+
+  const visibleBulkCount = useMemo(
+    () =>
+      bulkAssignments.filter((assignment) =>
+        currentQueueTab === "under_review" ? assignment.reviewCount > 0 : assignment.resultEncodingCount > 0,
+      ).length,
+    [bulkAssignments, currentQueueTab],
+  );
+
   const filteredIndividualApplicants = useMemo(
     () =>
       individualApplicants.filter((applicant) => {
@@ -368,12 +388,11 @@ export default function AssessmentCenterApplicantsPage() {
           normalizedSearchQuery.length === 0 ||
           applicant.applicant_name.toLowerCase().includes(normalizedSearchQuery) ||
           applicant.qualification.toLowerCase().includes(normalizedSearchQuery);
-        const matchesQueue = matchesQueueStatus(applicant.workflow_status, queueTab);
-        const matchesDate = matchesAssignedDateFilter(applicant.assigned_at, dateFilter);
+        const matchesQueue = matchesQueueStatus(applicant.workflow_status, currentQueueTab);
 
-        return matchesCourse && matchesSearch && matchesQueue && matchesDate;
+        return matchesCourse && matchesSearch && matchesQueue;
       }),
-    [individualApplicants, individualCourseFilter, normalizedSearchQuery, queueTab, dateFilter],
+    [currentQueueTab, individualApplicants, individualCourseFilter, normalizedSearchQuery],
   );
 
   const filteredBulkAssignments = useMemo(
@@ -386,20 +405,19 @@ export default function AssessmentCenterApplicantsPage() {
           assignment.batchCode.toLowerCase().includes(normalizedSearchQuery) ||
           assignment.qualification.toLowerCase().includes(normalizedSearchQuery);
         const matchesQueue =
-          (queueTab === "under_review" && assignment.underReviewCount > 0) ||
-          (queueTab === "closed" && assignment.closedCount > 0);
-        const matchesDate = matchesAssignedDateFilter(assignment.assignedAt, dateFilter);
+          (currentQueueTab === "under_review" && assignment.reviewCount > 0) ||
+          (currentQueueTab === "for_result_encoding" && assignment.resultEncodingCount > 0);
 
-        return matchesProgram && matchesSearch && matchesQueue && matchesDate;
+        return matchesProgram && matchesSearch && matchesQueue;
       }),
-    [bulkAssignments, bulkProgramFilter, normalizedSearchQuery, queueTab, dateFilter],
+    [bulkAssignments, bulkProgramFilter, currentQueueTab, normalizedSearchQuery],
   );
 
   const selectedBulkApplicants = useMemo(
     () =>
       selectedBulkAssignment
         ? applicants
-            .filter((applicant) => selectedBulkAssignment.submissionIds.includes(applicant.applicant_reference))
+            .filter((applicant) => applicant.assignment_group_key === selectedBulkAssignment.id)
             .sort((left, right) => left.applicant_name.localeCompare(right.applicant_name))
         : [],
     [applicants, selectedBulkAssignment],
@@ -409,7 +427,7 @@ export default function AssessmentCenterApplicantsPage() {
     () =>
       selectedBulkApplicants.filter((applicant) => {
         const normalizedBulkSearch = bulkSearch.trim().toLowerCase();
-        const matchesQueue = matchesQueueStatus(applicant.workflow_status, queueTab);
+        const matchesQueue = matchesQueueStatus(applicant.workflow_status, currentQueueTab);
         const matchesSearch =
           normalizedBulkSearch.length === 0 ||
           applicant.applicant_name.toLowerCase().includes(normalizedBulkSearch) ||
@@ -417,8 +435,10 @@ export default function AssessmentCenterApplicantsPage() {
 
         return matchesQueue && matchesSearch;
       }),
-    [bulkSearch, queueTab, selectedBulkApplicants],
+    [bulkSearch, currentQueueTab, selectedBulkApplicants],
   );
+  const selectedApplicantDetails =
+    applicants.find((applicant) => applicant.id === selectedApplicantDetailsId) ?? null;
 
   async function handleStatusUpdate(applicant: AssignedApplicant, action: StatusAction, reason = "") {
     if (updatingSubmissionId || updatingBulkAssignmentId) {
@@ -491,14 +511,14 @@ export default function AssessmentCenterApplicantsPage() {
   }
 
   const renderStatusActions = (applicant: AssignedApplicant, compact = false) => {
-    if (isClosedStatus(applicant.workflow_status)) {
+    if (isFinalizedStatus(applicant.workflow_status)) {
       return (
         <div className={`border-t border-[#e7edf4] ${compact ? "pt-2.5" : "pt-3"}`}>
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Status</p>
           <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#444653]`}>
             {getStatusDescription(applicant.workflow_status)}
           </p>
-          {applicant.workflow_status !== "completed" && applicant.latest_status_reason ? (
+          {applicant.latest_status_reason ? (
             <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#30435f]`}>
               Reason: {applicant.latest_status_reason}
             </p>
@@ -511,30 +531,34 @@ export default function AssessmentCenterApplicantsPage() {
       ? "inline-flex min-h-[40px] min-w-[112px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70"
       : "inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg px-4 text-[13px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70";
     const isUpdatingThisSubmission = updatingSubmissionId === applicant.applicant_reference;
-    const availableActions: StatusAction[] = ["complete", "reject", "cancel"];
+    const availableActions: StatusAction[] = isResultEncodingView
+      ? ["pass", "not_pass"]
+      : ["move_to_result_encoding"];
 
     return (
       <div className={compact ? "space-y-2.5" : "space-y-3"}>
         <div className={`border-t border-[#e1e9fb] ${compact ? "pt-2.5" : "pt-3"}`}>
           <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
           <p className={`${compact ? "mt-1.5 text-[12px] leading-[1.5]" : "mt-2 text-[13px] leading-[1.55]"} text-[#30435f]`}>
-            This applicant is already under review. Record the final status once the center finishes the assessment.
+            {isResultEncodingView
+              ? "Encode the applicant's final assessment result here."
+              : "Open the PDF, use the applicant details in your center workflow, then move the applicant to Result Encoding when the assessment is done."}
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
           {availableActions.map((action) => {
             const isUpdatingThisAction = isUpdatingThisSubmission && updatingAction === action;
+            const buttonClassName =
+              action === "move_to_result_encoding"
+                ? "bg-[#002576] text-white hover:bg-[#0038a8]"
+                : action === "pass"
+                  ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                  : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]";
 
             return (
               <button
                 key={action}
-                className={`${baseButtonClass} ${
-                  action === "complete"
-                    ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
-                    : action === "reject"
-                      ? "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]"
-                      : "border border-[#f1d8bf] bg-white text-[#8a5200] hover:bg-[#fff8e8]"
-                }`}
+                className={`${baseButtonClass} ${buttonClassName}`}
                 disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}
                 onClick={() => openIndividualStatusAction(applicant, action)}
                 type="button"
@@ -553,14 +577,23 @@ export default function AssessmentCenterApplicantsPage() {
       return false;
     }
 
+    if (action !== "move_to_result_encoding") {
+      setError("Bulk result encoding must be recorded per applicant.");
+      return false;
+    }
+
     const actionableApplicants = applicants.filter(
       (applicant) =>
         assignment.submissionIds.includes(applicant.applicant_reference) &&
-        isActionableCenterStatus(applicant.workflow_status),
+        matchesQueueStatus(applicant.workflow_status, currentQueueTab),
     );
 
     if (actionableApplicants.length === 0) {
-      setError("No under-review applicants remain in this batch.");
+      setError(
+        currentQueueTab === "under_review"
+          ? "No review-ready applicants remain in this batch."
+          : "No result-encoding applicants remain in this batch.",
+      );
       return;
     }
 
@@ -633,11 +666,15 @@ export default function AssessmentCenterApplicantsPage() {
     const actionableApplicants = applicants.filter(
       (applicant) =>
         assignment.submissionIds.includes(applicant.applicant_reference) &&
-        isActionableCenterStatus(applicant.workflow_status),
+        matchesQueueStatus(applicant.workflow_status, currentQueueTab),
     );
 
     if (actionableApplicants.length === 0) {
-      setError("No under-review applicants remain in this batch.");
+      setError(
+        currentQueueTab === "under_review"
+          ? "No review-ready applicants remain in this batch."
+          : "No result-encoding applicants remain in this batch.",
+      );
       return false;
     }
 
@@ -657,7 +694,7 @@ export default function AssessmentCenterApplicantsPage() {
       return;
     }
 
-    if (isReasonRequired(pendingStatusUpdate.action) && !statusReason.trim()) {
+    if (isReasonRequired() && !statusReason.trim()) {
       setError("Please provide a reason before saving this status.");
       return;
     }
@@ -702,9 +739,11 @@ export default function AssessmentCenterApplicantsPage() {
         <section className="mb-2.5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0 flex-1">
-              <h1 className="ui-page-title text-[#002576]">Reviews</h1>
+              <h1 className="ui-page-title text-[#002576]">{isResultEncodingView ? "Result Encoding" : "Reviews"}</h1>
               <p className="mt-2 max-w-3xl text-[16px] leading-[1.6] text-[#444653]">
-                Review applicant records assigned to {centerName || "your center"} and update their final statuses.
+                {isResultEncodingView
+                  ? `Review assessed applicant records handled by ${centerName || "your center"} and encode their final results.`
+                  : `Open applicant PDFs assigned to ${centerName || "your center"}, use the details for your center workflow, and move finished assessments to result encoding.`}
               </p>
             </div>
 
@@ -724,7 +763,7 @@ export default function AssessmentCenterApplicantsPage() {
 
                 <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
                   <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
-                    {individualApplicants.length.toLocaleString()}
+                    {visibleIndividualCount.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -744,7 +783,7 @@ export default function AssessmentCenterApplicantsPage() {
 
                 <div className="mt-auto flex min-h-[48px] items-center justify-center pt-3 text-center">
                   <p className="text-[28px] font-bold leading-none tracking-[-0.03em] text-[#0b1c30] tabular-nums">
-                    {bulkAssignments.length.toLocaleString()}
+                    {visibleBulkCount.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -767,7 +806,7 @@ export default function AssessmentCenterApplicantsPage() {
                   <span className="flex items-center justify-center">
                     <span>Individual</span>
                   </span>
-                  {filteredIndividualApplicants.length > 0 ? (
+                  {currentQueueTab === "under_review" && filteredIndividualApplicants.length > 0 ? (
                     <span className={tabInlineCountClass}>{filteredIndividualApplicants.length}</span>
                   ) : null}
                 </button>
@@ -783,16 +822,16 @@ export default function AssessmentCenterApplicantsPage() {
                   <span className="flex items-center justify-center">
                     <span>Bulk</span>
                   </span>
-                  {filteredBulkAssignments.length > 0 ? (
+                  {currentQueueTab === "under_review" && filteredBulkAssignments.length > 0 ? (
                     <span className={tabInlineCountClass}>{filteredBulkAssignments.length}</span>
                   ) : null}
                 </button>
             </div>
           </div>
 
-          <div className="mt-4 border-t border-[#e7edf4] px-4 py-4 sm:px-0">
+          <div className="mt-3 border-t border-[#e7edf4] px-4 pb-2 pt-3 sm:px-0">
             <div className="w-full max-w-[1120px] 2xl:max-w-[1180px]">
-              <div className="grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.5fr)_220px_220px_280px] xl:items-end">
+              <div className="grid grid-cols-1 gap-3 xl:grid-cols-[minmax(0,1.65fr)_280px] xl:items-end">
               <label className="block">
                 <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
                   Search
@@ -809,46 +848,6 @@ export default function AssessmentCenterApplicantsPage() {
                     type="text"
                     value={searchQuery}
                   />
-                </div>
-              </label>
-
-              <label className="block">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                  Queue
-                </span>
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    onChange={(event) => setQueueTab(event.target.value as QueueTab)}
-                    value={queueTab}
-                  >
-                    <option value="under_review">Under Review</option>
-                    <option value="closed">Closed</option>
-                  </select>
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                    <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
-                  </span>
-                </div>
-              </label>
-
-              <label className="block">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                  Assignment Date
-                </span>
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-12 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    onChange={(event) => setDateFilter(event.target.value as DateFilter)}
-                    value={dateFilter}
-                  >
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="this_week">This Week</option>
-                    <option value="this_month">This Month</option>
-                  </select>
-                  <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-[#747685]">
-                    <i aria-hidden="true" className="fa-solid fa-chevron-down text-[12px]" />
-                  </span>
                 </div>
               </label>
 
@@ -905,47 +904,25 @@ export default function AssessmentCenterApplicantsPage() {
                   return (
                     <article
                       key={applicant.id}
-                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_12px_24px_rgba(15,23,42,0.07)]"
+                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
                     >
                       <div className="flex flex-col gap-3">
                         <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                           <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-bold ${statusBadge.className}`}>
-                                <i aria-hidden="true" className={`${statusBadge.iconClassName} text-[11px]`} />
-                                {statusBadge.label}
-                              </span>
-                              <span className="inline-flex items-center gap-2 rounded-full border border-[#d9e3f7] bg-white px-3 py-1 text-[11px] font-bold text-[#4563a5]">
-                                <i aria-hidden="true" className="fa-solid fa-user text-[11px]" />
-                                Individual assignment
-                              </span>
-                            </div>
-                            <p className="mt-2 text-[18px] font-bold leading-[1.2] text-[#0b1c30]">{applicant.applicant_name}</p>
+                            <p className="text-[18px] font-bold leading-[1.2] text-[#0b1c30]">{applicant.applicant_name}</p>
                             <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">{applicant.qualification}</p>
-                            <p className="mt-1.5 text-[12px] leading-[1.5] text-[#747685]">
-                              Assigned {formatAssignedDate(applicant.assigned_at)}
-                            </p>
                           </div>
 
                           <div className="flex flex-wrap items-center gap-2 xl:justify-end">
-                            <a
-                              className="inline-flex min-h-[34px] min-w-[96px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                              rel="noreferrer"
-                              target="_blank"
+                            <button
+                              className={secondaryActionButtonClass}
+                              onClick={() => setSelectedApplicantDetailsId(applicant.id)}
+                              type="button"
                             >
-                              View
-                            </a>
-                            <a
-                              className="inline-flex min-h-[34px] min-w-[96px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-3 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                            >
-                              Download
-                            </a>
+                              View Details
+                            </button>
                           </div>
                         </div>
-
-                        {renderStatusActions(applicant, true)}
                       </div>
                     </article>
                   );
@@ -962,14 +939,14 @@ export default function AssessmentCenterApplicantsPage() {
                     <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
                       {individualApplicants.length === 0
                         ? "No individual applicants have been assigned yet"
-                        : queueTab === "under_review"
+                        : currentQueueTab === "under_review"
                             ? "No under-review applicants match the current search and filters"
-                            : "No closed applicants match the current search and filters"}
+                            : "No result-encoding applicants match the current search and filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {individualApplicants.length === 0
                         ? "Individual applicant assignments from the admin portal will appear here."
-                        : "Try another course, change the queue tab, or clear the search to view more applicants."}
+                        : "Try another course or clear the search to view more applicants."}
                     </p>
                   </div>
                 ) : null}
@@ -977,29 +954,16 @@ export default function AssessmentCenterApplicantsPage() {
             ) : (
               <div className="grid grid-cols-1 gap-2.5">
                 {filteredBulkAssignments.map((assignment) => {
-                  const isUpdatingThisBatch = updatingBulkAssignmentId === assignment.id;
-                  const batchActionable = assignment.underReviewCount > 0;
-                  const batchClosedCount = assignment.closedCount;
-
                   return (
                   <article
                     key={assignment.id}
-                    className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_12px_24px_rgba(15,23,42,0.07)]"
+                    className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
                   >
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                         <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex items-center gap-2 rounded-full border border-[#d9e3f7] bg-white px-3 py-1 text-[11px] font-bold text-[#4563a5]">
-                              <i aria-hidden="true" className="fa-solid fa-layer-group text-[11px]" />
-                              Bulk assignment
-                            </span>
-                          </div>
-                          <p className="mt-2 text-[18px] font-bold leading-[1.2] text-[#0b1c30]">{assignment.title}</p>
+                          <p className="text-[18px] font-bold leading-[1.2] text-[#0b1c30]">{assignment.title}</p>
                           <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">{assignment.qualification}</p>
-                          <p className="mt-1.5 text-[12px] leading-[1.5] text-[#747685]">
-                            Assigned {formatAssignedDate(assignment.assignedAt)}
-                          </p>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 xl:justify-end">
@@ -1012,58 +976,11 @@ export default function AssessmentCenterApplicantsPage() {
                             }}
                             type="button"
                           >
-                            Open
+                            View Details
                           </button>
                         </div>
 
                       </div>
-
-                      {batchActionable ? (
-                        <div className="space-y-2.5">
-                          <div className="border-t border-[#e1e9fb] pt-2.5">
-                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
-                            <p className="mt-1.5 text-[12px] leading-[1.5] text-[#30435f]">
-                              This batch is already under review. Record the final status here, then use the modal only to view or download applicant PDFs.
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                            {(["complete", "reject", "cancel"] as StatusAction[]).map((action) => {
-                              const isUpdatingThisAction = isUpdatingThisBatch && updatingAction === action;
-
-                              return (
-                                <button
-                                  key={action}
-                                  className={`inline-flex min-h-[36px] min-w-[100px] items-center justify-center rounded-lg px-3.5 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70 ${
-                                    action === "complete"
-                                      ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
-                                      : action === "reject"
-                                        ? "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]"
-                                        : "border border-[#f1d8bf] bg-white text-[#8a5200] hover:bg-[#fff8e8]"
-                                  }`}
-                                  disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    openBulkStatusAction(assignment, action);
-                                  }}
-                                  type="button"
-                                >
-                                  {isUpdatingThisAction ? "Saving..." : getActionButtonLabel(action)}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="border-t border-[#e7edf4] pt-2.5">
-                          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Status</p>
-                          <p className="mt-1.5 text-[12px] leading-[1.5] text-[#444653]">
-                            Every applicant in this batch already has a final assessment-center status.
-                          </p>
-                          <p className="mt-1.5 text-[12px] font-semibold text-[#30435f]">
-                            Closed applicants: {batchClosedCount}
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </article>
                 )})}
@@ -1079,14 +996,14 @@ export default function AssessmentCenterApplicantsPage() {
                     <p className="mt-4 text-[15px] font-semibold text-[#0b1c30]">
                       {bulkAssignments.length === 0
                         ? "No bulk assignments have been received yet"
-                        : queueTab === "under_review"
+                        : currentQueueTab === "under_review"
                             ? "No under-review batch submissions match the current search and filters"
-                            : "No closed batch submissions match the current search and filters"}
+                            : "No result-encoding batch submissions match the current search and filters"}
                     </p>
                     <p className="mt-1 text-[13px] leading-[1.55] text-[#747685]">
                       {bulkAssignments.length === 0
                         ? "Bulk assignment batches from the admin portal will appear here."
-                        : "Try another program, change the queue tab, or clear the search to view more batch assignments."}
+                        : "Try another program or clear the search to view more batch assignments."}
                     </p>
                   </div>
                 ) : null}
@@ -1109,9 +1026,11 @@ export default function AssessmentCenterApplicantsPage() {
               return (
                 <>
             <div className="border-b border-[#d9e3f7] px-6 py-5 sm:px-7">
-              <h2 className="ui-section-title text-[#0b1c30]">Confirm Review Result</h2>
+              <h2 className="ui-section-title text-[#0b1c30]">{isResultEncodingView ? "Confirm Result Encoding" : "Move to Result Encoding"}</h2>
               <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
-                Record the final review result before this applicant or batch leaves the active center queue.
+                {isResultEncodingView
+                  ? "Confirm the final encoded outcome before this applicant or batch leaves the result-encoding queue."
+                  : "Confirm that this applicant or batch is ready to leave Reviews and move into Result Encoding."}
               </p>
             </div>
 
@@ -1125,11 +1044,15 @@ export default function AssessmentCenterApplicantsPage() {
                 </div>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{pendingStatusUpdate.title}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
-                  {pendingStatusUpdate.type === "individual"
-                    ? `Mark this applicant as ${getActionButtonLabel(pendingStatusUpdate.action).toLowerCase()}.`
-                    : `Mark ${pendingStatusUpdate.count} applicants in this batch as ${getActionButtonLabel(
-                        pendingStatusUpdate.action,
-                      ).toLowerCase()}.`}
+                  {pendingStatusUpdate.action === "move_to_result_encoding"
+                    ? pendingStatusUpdate.type === "individual"
+                      ? "Move this applicant to Result Encoding."
+                      : `Move ${pendingStatusUpdate.count} applicants in this batch to Result Encoding.`
+                    : pendingStatusUpdate.type === "individual"
+                      ? `Mark this applicant as ${getActionButtonLabel(pendingStatusUpdate.action).toLowerCase()}.`
+                      : `Mark ${pendingStatusUpdate.count} applicants in this batch as ${getActionButtonLabel(
+                          pendingStatusUpdate.action,
+                        ).toLowerCase()}.`}
                 </p>
                 <p className="mt-2 text-[12px] leading-[1.5] text-[#30435f]">{actionTheme.helperText}</p>
               </div>
@@ -1137,22 +1060,22 @@ export default function AssessmentCenterApplicantsPage() {
               {shouldShowReasonField(pendingStatusUpdate.action) ? (
                 <label className="block">
                   <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                    Reason {isReasonRequired(pendingStatusUpdate.action) ? "(Required)" : "(Optional)"}
+                    Reason {isReasonRequired() ? "(Required)" : "(Optional)"}
                   </span>
                   <textarea
                     className="mt-2 min-h-[112px] w-full rounded-lg border border-[#d9e3f7] bg-white px-3 py-2.5 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                     onChange={(event) => setStatusReason(event.target.value)}
                     placeholder={
-                      isReasonRequired(pendingStatusUpdate.action)
-                        ? "Explain the rejection or cancellation reason."
-                        : "Add any helpful note for the recorded status."
+                      isReasonRequired()
+                        ? "Add the note that should be saved with this status."
+                        : "Add any helpful note for this recorded result."
                     }
-                    value={statusReason}
-                  />
+                  value={statusReason}
+                />
                 </label>
               ) : null}
 
-              {isReasonRequired(pendingStatusUpdate.action) ? (
+              {isReasonRequired() ? (
                 <div className="border-t border-[#f1d8bf] pt-4">
                   <p className="text-[12px] leading-[1.55] text-[#8a5200]">
                     This status will be shown to the applicant together with the recorded reason.
@@ -1178,13 +1101,143 @@ export default function AssessmentCenterApplicantsPage() {
                   onClick={() => void handleConfirmStatusUpdate()}
                   type="button"
                 >
-                  {updatingSubmissionId || updatingBulkAssignmentId ? "Saving..." : "Save Status"}
+                  {updatingSubmissionId || updatingBulkAssignmentId ? "Saving..." : isResultEncodingView ? "Save Result" : "Move Applicant"}
                 </button>
               </div>
             </div>
                 </>
               );
             })()}
+          </>
+        ) : null}
+      </AnimatedModal>
+
+      <AnimatedModal
+        contentClassName="max-h-[calc(100vh-32px)] w-full max-w-[680px] overflow-y-auto rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        open={Boolean(selectedApplicantDetails)}
+      >
+        {selectedApplicantDetails ? (
+          <>
+            <div className="flex items-start justify-between gap-4 border-b border-[#d9e3f7] px-5 py-4 sm:px-6">
+              <div className="min-w-0">
+                <h2 className="text-[22px] font-bold leading-[1.2] text-[#0b1c30]">{selectedApplicantDetails.applicant_name}</h2>
+                <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{selectedApplicantDetails.qualification}</p>
+              </div>
+              <button
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#5d5f5f] transition hover:bg-[#f3f6fd]"
+                onClick={() => setSelectedApplicantDetailsId(null)}
+                type="button"
+              >
+                <i aria-hidden="true" className="fa-solid fa-xmark text-[15px]" />
+              </button>
+            </div>
+
+            <div className="px-5 py-4 sm:px-6">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {formatAssignedDate(selectedApplicantDetails.assigned_at)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assessment Date</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {formatAssessmentDate(selectedApplicantDetails.assessment_date)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assessor</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedApplicantDetails.assessor ?? "Not set"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Current Status</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {getApplicationSubmissionStatusLabel(selectedApplicantDetails.workflow_status)}
+                  </p>
+                </div>
+              </div>
+
+              {selectedApplicantDetails.latest_status_reason ? (
+                <div className="mt-4 border-t border-[#eef3fb] pt-4">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Saved Note</p>
+                  <p className="mt-1 text-[13px] leading-[1.55] text-[#30435f]">{selectedApplicantDetails.latest_status_reason}</p>
+                </div>
+              ) : null}
+
+              <div className="mt-4 border-t border-[#eef3fb] pt-4">
+                {isFinalizedStatus(selectedApplicantDetails.workflow_status) ? (
+                  <div>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Recorded Status</p>
+                    <p className="mt-1.5 text-[13px] leading-[1.55] text-[#444653]">
+                      {getStatusDescription(selectedApplicantDetails.workflow_status)}
+                    </p>
+                    {selectedApplicantDetails.latest_status_reason ? (
+                      <p className="mt-2 text-[13px] leading-[1.55] text-[#30435f]">
+                        Reason: {selectedApplicantDetails.latest_status_reason}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Next Step</p>
+                      <p className="mt-1.5 text-[13px] leading-[1.55] text-[#30435f]">
+                        {isResultEncodingView
+                          ? "Encode the applicant's final assessment result here."
+                          : "Open the PDF, use the applicant details in your center workflow, then move the applicant to Result Encoding when the assessment is done."}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        {(isResultEncodingView ? (["pass", "not_pass"] as StatusAction[]) : (["move_to_result_encoding"] as StatusAction[])).map((action) => {
+                          const isUpdatingThisAction =
+                            updatingSubmissionId === selectedApplicantDetails.applicant_reference && updatingAction === action;
+                          const buttonClassName =
+                            action === "move_to_result_encoding"
+                              ? "bg-[#002576] text-white hover:bg-[#0038a8]"
+                              : action === "pass"
+                                ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                                : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]";
+
+                          return (
+                            <button
+                              key={action}
+                              className={`inline-flex min-h-[40px] min-w-[112px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70 ${buttonClassName}`}
+                              disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}
+                              onClick={() => openIndividualStatusAction(selectedApplicantDetails, action)}
+                              type="button"
+                            >
+                              {isUpdatingThisAction ? "Saving..." : getActionButtonLabel(action)}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {!isResultEncodingView ? (
+                        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap lg:justify-end">
+                          <a
+                            className="inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                            href={buildApplicationSubmissionPdfUrl(selectedApplicantDetails.applicant_reference)}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            View PDF
+                          </a>
+                          <a
+                            className="inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                            href={buildApplicationSubmissionPdfUrl(selectedApplicantDetails.applicant_reference, { download: true })}
+                          >
+                            Download
+                          </a>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </>
         ) : null}
       </AnimatedModal>
@@ -1216,6 +1269,55 @@ export default function AssessmentCenterApplicantsPage() {
             </div>
 
             <div className="ui-modal-section px-5 py-4 sm:px-6">
+              <div className="mb-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assigned</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {formatAssignedDate(selectedBulkAssignment.assignedAt)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assessment Date</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {formatAssessmentDate(selectedBulkAssignment.assessmentDate)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Assessor</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedBulkAssignment.assessor ?? "Not set"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">Applicants</p>
+                  <p className="mt-1 text-[14px] font-semibold leading-[1.45] text-[#0b1c30]">
+                    {selectedBulkApplicants.length}
+                  </p>
+                </div>
+              </div>
+
+              {currentQueueTab === "under_review" && selectedBulkApplicants.some((applicant) => isActionableCenterStatus(applicant.workflow_status)) ? (
+                <div className="mb-4 border-t border-[#eef3fb] pt-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    {(["move_to_result_encoding"] as StatusAction[]).map((action) => {
+                      const isUpdatingThisAction = updatingBulkAssignmentId === selectedBulkAssignment.id && updatingAction === action;
+
+                      return (
+                        <button
+                          key={action}
+                          className="inline-flex min-h-[40px] min-w-[176px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[12px] font-bold text-white transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:opacity-70"
+                          disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}
+                          onClick={() => openBulkStatusAction(selectedBulkAssignment, action)}
+                          type="button"
+                        >
+                          {isUpdatingThisAction ? "Saving..." : getActionButtonLabel(action)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="mb-3">
                 <div className="group relative">
                   <i
@@ -1236,34 +1338,62 @@ export default function AssessmentCenterApplicantsPage() {
                 {filteredSelectedBulkApplicants.map((applicant) => {
                   return (
                     <div
-                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:bg-[#fcfdff] hover:shadow-[0_10px_20px_rgba(15,23,42,0.06)]"
+                      className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
                       key={applicant.id}
                     >
                       <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
                         <div className="min-w-0">
                           <p className="truncate text-[16px] font-bold text-[#0b1c30]">{applicant.applicant_name}</p>
                           <p className="mt-1 truncate text-[13px] text-[#5d5f5f]">{applicant.qualification}</p>
-                          {applicant.workflow_status !== "completed" && applicant.latest_status_reason ? (
+                          <p className="mt-1 text-[12px] text-[#747685]">
+                            Assessment {formatAssessmentDate(applicant.assessment_date)} | Assessor {applicant.assessor ?? "Not set"}
+                          </p>
+                          {applicant.latest_status_reason ? (
                             <p className="mt-1 text-[12px] leading-[1.5] text-[#30435f]">Reason: {applicant.latest_status_reason}</p>
                           ) : null}
                         </div>
 
-                        <div className="flex flex-wrap gap-2 md:justify-end">
-                          <a
-                            className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            View PDF
-                          </a>
-                          <a
-                            className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                          >
-                            Download
-                          </a>
-                        </div>
+                        {!isResultEncodingView ? (
+                          <div className="flex flex-wrap gap-2 md:justify-end">
+                            <a
+                              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              View PDF
+                            </a>
+                            <a
+                              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
+                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
+                            >
+                              Download
+                            </a>
+                          </div>
+                        ) : (
+                          <div className="flex flex-wrap gap-2 md:justify-end">
+                            {(["pass", "not_pass"] as StatusAction[]).map((action) => {
+                              const isUpdatingThisAction =
+                                updatingSubmissionId === applicant.applicant_reference && updatingAction === action;
+
+                              return (
+                                <button
+                                  key={action}
+                                  className={`inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70 ${
+                                    action === "pass"
+                                      ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                                      : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]"
+                                  }`}
+                                  disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}
+                                  onClick={() => openIndividualStatusAction(applicant, action)}
+                                  type="button"
+                                >
+                                  {isUpdatingThisAction ? "Saving..." : getActionButtonLabel(action)}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -1271,7 +1401,9 @@ export default function AssessmentCenterApplicantsPage() {
 
                 {filteredSelectedBulkApplicants.length === 0 ? (
                   <div className="rounded-lg border border-[#d9e3f7] bg-white px-4 py-6 text-center text-[13px] text-[#747685]">
-                    No applicants in this batch match the current queue tab or search.
+                    {currentQueueTab === "under_review"
+                      ? "No under-review applicants in this batch match the current search."
+                      : "No result-encoding applicants in this batch match the current search."}
                   </div>
                 ) : null}
               </div>

@@ -40,6 +40,7 @@ const emptyFormState: CenterFormState = {
   password: "",
 };
 
+
 const formatCenterCreatedAt = (value?: string) => {
   if (!value) {
     return "Not available";

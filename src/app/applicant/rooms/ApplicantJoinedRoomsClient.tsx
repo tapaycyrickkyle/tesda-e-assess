@@ -58,6 +58,10 @@ function getRoomSubmissionStatusLabel(status?: ApplicationSubmissionStatus | nul
     return "Submitted to TESDA";
   }
 
+  if (status === "needs_applicant_update") {
+    return "Needs Applicant Update";
+  }
+
   if (status === "submitted_to_teacher") {
     return "Submitted to Teacher";
   }
@@ -82,11 +86,19 @@ function getRoomSubmissionStatusBadgeClass(status?: ApplicationSubmissionStatus 
     return "bg-[#e8f2ff] text-[#0038a8]";
   }
 
+  if (status === "needs_applicant_update") {
+    return "bg-[#fff8e8] text-[#8a5200]";
+  }
+
   if (status === "submitted_to_teacher") {
     return "bg-[#eefaf1] text-[#1f7a36]";
   }
 
   return "bg-[#eef3ff] text-[#093cab]";
+}
+
+function isAssessmentCenterReviewStatus(status?: ApplicationSubmissionStatus | null) {
+  return status === "assigned" || status === "under_review";
 }
 
 function getRoomSubmissionGuidance(status?: ApplicationSubmissionStatus | null, assessmentCenterName?: string | null) {
@@ -104,6 +116,10 @@ function getRoomSubmissionGuidance(status?: ApplicationSubmissionStatus | null, 
     return "TESDA has received this room submission and will assign an assessment center next.";
   }
 
+  if (status === "needs_applicant_update") {
+    return "TESDA returned this room submission for correction. Update the form and resubmit it to continue processing.";
+  }
+
   if (status === "submitted_to_teacher") {
     return "Your teacher still needs to review and forward this room submission to TESDA.";
   }
@@ -118,6 +134,10 @@ function getRoomActionLabel(status?: ApplicationSubmissionStatus | null) {
 
   if (status === "submitted_to_teacher") {
     return "Continue Application";
+  }
+
+  if (status === "needs_applicant_update") {
+    return "Update Submission";
   }
 
   return "Open Submission";
@@ -210,7 +230,7 @@ export default function ApplicantJoinedRoomsClient({
             return (
               <article
                 key={room.membershipId}
-                className="relative mx-auto w-full max-w-[340px] overflow-hidden rounded-xl border border-[#d9e3f7] bg-white px-4 pb-4 pt-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(15,23,42,0.08)]"
+                className="relative mx-auto w-full max-w-[340px] overflow-hidden rounded-xl border border-[#d9e3f7] bg-white px-4 pb-4 pt-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition"
               >
                 <div className="absolute inset-x-0 top-0 h-1 bg-[#002576]" />
 
@@ -254,11 +274,17 @@ export default function ApplicantJoinedRoomsClient({
                       <i aria-hidden="true" className="fa-regular fa-file-lines text-[14px] text-[#5d5f5f]" />
                       Status
                     </span>
-                    <span
-                      className={`rounded-full px-3 py-1 text-[13px] font-bold ${getRoomSubmissionStatusBadgeClass(room.submissionStatus)}`}
-                    >
-                      {getRoomSubmissionStatusLabel(room.submissionStatus, room.assessmentCenterName)}
-                    </span>
+                    {isAssessmentCenterReviewStatus(room.submissionStatus) ? (
+                      <span className="text-right text-[13px] font-bold text-[#0038a8]">
+                        {getRoomSubmissionStatusLabel(room.submissionStatus, room.assessmentCenterName)}
+                      </span>
+                    ) : (
+                      <span
+                        className={`rounded-full px-3 py-1 text-[13px] font-bold ${getRoomSubmissionStatusBadgeClass(room.submissionStatus)}`}
+                      >
+                        {getRoomSubmissionStatusLabel(room.submissionStatus, room.assessmentCenterName)}
+                      </span>
+                    )}
                   </div>
 
                   <div className="mt-2.5 border-t border-[#d9e3f7] pt-2.5">

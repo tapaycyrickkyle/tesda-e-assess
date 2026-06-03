@@ -10,7 +10,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase";
 import { recordSubmissionWorkflowTransition } from "@/lib/workflow-history";
 
 type UpdateAssessmentCenterSubmissionPayload = {
-  action?: "complete" | "reject" | "cancel";
+  action?: "move_to_result_encoding" | "pass" | "not_pass";
   reason?: string | null;
   submissionId?: string;
 };
@@ -73,7 +73,9 @@ export async function GET() {
 
   const { data, error } = await adminSupabase
     .from("assessment_center_applicants")
-    .select("id, applicant_name, applicant_reference, qualification, assignment_batch, assignment_title, assigned_at")
+    .select(
+      "id, applicant_name, applicant_reference, qualification, assignment_batch, assignment_group_key, assignment_group_number, assignment_title, assessment_date, assessor, assigned_at, schedule_updated_at",
+    )
     .eq("assessment_center_id", center.id)
     .order("assigned_at", { ascending: false });
 
@@ -113,7 +115,7 @@ export async function GET() {
     applicants: (data ?? []).map((applicant) => ({
       ...applicant,
       latest_status_reason: submissionById.get(applicant.applicant_reference)?.latest_status_reason ?? null,
-      workflow_status: (submissionById.get(applicant.applicant_reference)?.workflow_status ?? "under_review") as ApplicationSubmissionStatus,
+      workflow_status: (submissionById.get(applicant.applicant_reference)?.workflow_status ?? "assigned") as ApplicationSubmissionStatus,
     })),
     centerName: center.name,
     centerLinkNotice: getAssessmentCenterLinkMessage(centerResult.status),
@@ -139,13 +141,6 @@ export async function PATCH(request: Request) {
   if (!submissionId || !action) {
     return NextResponse.json(
       { success: false, message: "A submission and processing action are required." },
-      { status: 400 },
-    );
-  }
-
-  if ((action === "reject" || action === "cancel") && !reason) {
-    return NextResponse.json(
-      { success: false, message: "Please provide a reason before rejecting or cancelling this submission." },
       { status: 400 },
     );
   }
@@ -191,10 +186,6 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const nextStatus: ApplicationSubmissionStatus =
-    action === "complete" ? "completed" : action === "reject" ? "rejected" : "cancelled";
-  const normalizedReason = nextStatus === "completed" ? null : reason || null;
-
   const { data: submission, error: submissionError } = await adminSupabase
     .from("applicant_application_submissions")
     .select("id, applicant_id, applicant_email, applicant_name, qualification_title, workflow_status")
@@ -208,14 +199,55 @@ export async function PATCH(request: Request) {
     );
   }
 
-  if (submission.workflow_status !== "assigned" && submission.workflow_status !== "under_review") {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Only assigned or under-review submissions can be finalized by the assessment center.",
-      },
-      { status: 400 },
-    );
+  const currentStatus = submission.workflow_status as ApplicationSubmissionStatus;
+  const normalizedReason = reason || null;
+  let nextStatus: ApplicationSubmissionStatus;
+  let eventType: string;
+  let notificationTitle: string;
+  let notificationMessage: string;
+  let responseMessage: string;
+
+  if (action === "move_to_result_encoding") {
+    if (currentStatus !== "assigned" && currentStatus !== "under_review") {
+      return NextResponse.json(
+        { success: false, message: "Only assigned or under-review submissions can be moved to result encoding." },
+        { status: 400 },
+      );
+    }
+
+    nextStatus = "for_result_encoding";
+    eventType = "assessment_center_sent_for_result_encoding";
+    notificationTitle = "Ready for Result Encoding";
+    notificationMessage = `${center.name} finished reviewing your ${submission.qualification_title} application and moved it to result encoding.`;
+    responseMessage = "Submission moved to result encoding.";
+  } else if (action === "pass") {
+    if (currentStatus !== "for_result_encoding") {
+      return NextResponse.json(
+        { success: false, message: "Only submissions in result encoding can be marked as passed." },
+        { status: 400 },
+      );
+    }
+
+    nextStatus = "passed";
+    eventType = "assessment_center_passed";
+    notificationTitle = "Application Passed";
+    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as passed.`;
+    responseMessage = "Submission marked as passed.";
+  } else if (action === "not_pass") {
+    if (currentStatus !== "for_result_encoding") {
+      return NextResponse.json(
+        { success: false, message: "Only submissions in result encoding can be marked as not passed." },
+        { status: 400 },
+      );
+    }
+
+    nextStatus = "not_passed";
+    eventType = "assessment_center_not_passed";
+    notificationTitle = "Application Not Passed";
+    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as not passed.`;
+    responseMessage = "Submission marked as not passed.";
+  } else {
+    return NextResponse.json({ success: false, message: "Unsupported assessment-center action." }, { status: 400 });
   }
 
   const processedAt = new Date().toISOString();
@@ -239,36 +271,21 @@ export async function PATCH(request: Request) {
   try {
     await recordSubmissionWorkflowTransition({
       actor: currentUser,
-      eventType:
-        nextStatus === "completed"
-          ? "assessment_center_completed"
-          : nextStatus === "rejected"
-            ? "assessment_center_rejected"
-            : "assessment_center_cancelled",
-      fromStatus: submission.workflow_status as ApplicationSubmissionStatus,
+      eventType,
+      fromStatus: currentStatus,
       metadata: {
         assessmentCenterId: center.id,
         assessmentCenterName: center.name,
       },
       notifications: [
         {
-          message:
-            nextStatus === "completed"
-              ? `${center.name} marked your ${submission.qualification_title} application as completed.`
-              : nextStatus === "rejected"
-                ? `${center.name} rejected your ${submission.qualification_title} application.`
-                : `${center.name} cancelled your ${submission.qualification_title} application.`,
-          notificationType: nextStatus === "completed" ? "success" : nextStatus === "rejected" ? "error" : "warning",
+          message: notificationMessage,
+          notificationType: nextStatus === "passed" ? "success" : nextStatus === "not_passed" ? "warning" : "info",
           recipientEmail: submission.applicant_email,
           recipientRole: "applicant",
           recipientUserId: submission.applicant_id,
           submissionId: submission.id,
-          title:
-            nextStatus === "completed"
-              ? "Application Completed"
-              : nextStatus === "rejected"
-                ? "Application Rejected"
-                : "Application Cancelled",
+          title: notificationTitle,
         },
       ],
       reason: normalizedReason,
@@ -285,12 +302,7 @@ export async function PATCH(request: Request) {
 
   return NextResponse.json({
     success: true,
-    message:
-      nextStatus === "completed"
-        ? "Submission marked as completed."
-        : nextStatus === "rejected"
-          ? "Submission marked as rejected."
-          : "Submission marked as cancelled.",
+    message: responseMessage,
     reason: normalizedReason,
     workflowStatus: nextStatus,
   });

@@ -16,6 +16,18 @@ const assessmentCenterSidebarItems = [
     href: "/assessment-center/reviews",
   },
   {
+    key: "closed",
+    label: "Result Encoding",
+    icon: "fa-solid fa-clipboard-check",
+    href: "/assessment-center/closed",
+  },
+  {
+    key: "reports",
+    label: "Reports",
+    icon: "fa-solid fa-file-export",
+    href: "/assessment-center/reports",
+  },
+  {
     key: "inbox",
     label: "Inbox",
     icon: "fa-regular fa-bell",

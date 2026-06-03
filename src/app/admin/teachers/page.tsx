@@ -229,33 +229,33 @@ export default function AdminTeacherApprovalsPage() {
           </p>
         </section>
 
-        <section className="mb-5">
-          <div className="overflow-hidden rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] sm:px-5">
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_minmax(0,1fr)] xl:gap-3">
-              <label className="block min-w-0">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
-                  Search
-                </span>
-                <div className="group relative">
-                  <i
-                    aria-hidden="true"
-                    className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
-                  />
-                  <input
-                    className="min-h-[40px] w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Search teacher, email, institution..."
-                    type="text"
-                    value={searchQuery}
-                  />
-                </div>
-              </label>
+        <section className="mb-5 border-t border-[#e7edf4] px-4 pb-2 pt-3 sm:px-0">
+          <div className="flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center xl:justify-between xl:gap-4">
+            <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 xl:w-full xl:max-w-[520px]">
+              <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">
+                Search
+              </span>
+              <div className="group relative min-w-0 flex-1">
+                <i
+                  aria-hidden="true"
+                  className="fa-solid fa-magnifying-glass pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] text-[#747685] transition-colors group-focus-within:text-[#002576]"
+                />
+                <input
+                  className="min-h-[40px] w-full rounded-lg border border-[#d9e3f7] bg-white py-2.5 pl-10 pr-4 text-[13px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search teacher, email, institution..."
+                  type="text"
+                  value={searchQuery}
+                />
+              </div>
+            </label>
 
-              <label className="block min-w-0">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+            <div className="flex min-w-0 flex-col gap-3 md:flex-row xl:ml-auto xl:w-full xl:max-w-[620px]">
+              <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 md:flex-1">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[84px]">
                   Institution
                 </span>
-                <div className="relative">
+                <div className="relative min-w-0 flex-1">
                   <select
                     className="min-h-[40px] w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-11 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                     onChange={(event) => setActiveInstitutionFilter(event.target.value as "all" | InstitutionType)}
@@ -271,11 +271,11 @@ export default function AdminTeacherApprovalsPage() {
                 </div>
               </label>
 
-              <label className="block min-w-0 md:col-span-2 xl:col-span-1">
-                <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">
+              <label className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 md:flex-1">
+                <span className="shrink-0 text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5] sm:min-w-[64px]">
                   Status
                 </span>
-                <div className="relative">
+                <div className="relative min-w-0 flex-1">
                   <select
                     className="min-h-[40px] w-full appearance-none rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 pr-11 text-[13px] font-medium text-[#0b1c30] outline-none transition focus:border-[#002576] focus:ring-2 focus:ring-[#3056c4]/15"
                     onChange={(event) => setActiveStatusFilter(event.target.value as "all" | ApprovalStatus)}

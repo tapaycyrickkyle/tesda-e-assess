@@ -195,7 +195,6 @@ export async function POST(request: Request) {
   const applicantName = buildApplicantName(formData) || buildFallbackApplicantName(currentUser.email);
 
   const submissionSource: ApplicationSubmissionSource = isRoomSubmission ? "room" : "individual";
-  const workflowStatus: ApplicationSubmissionStatus = isRoomSubmission ? "submitted_to_teacher" : "submitted_to_admin";
 
   if (requestedSubmissionSource && requestedSubmissionSource !== submissionSource) {
     return NextResponse.json(
@@ -288,6 +287,13 @@ export async function POST(request: Request) {
     }
   }
 
+  const workflowStatus: ApplicationSubmissionStatus =
+    existingSubmission?.workflow_status === "needs_applicant_update"
+      ? "submitted_to_admin"
+      : isRoomSubmission
+        ? "submitted_to_teacher"
+        : "submitted_to_admin";
+
   const submittedAt = new Date().toISOString();
   const payload = {
     applicant_email: currentUser.email,
@@ -356,7 +362,7 @@ export async function POST(request: Request) {
   try {
     let notifications: PortalNotificationInput[] | undefined;
 
-    if (submissionSource === "room" && roomId) {
+    if (submissionSource === "room" && roomId && workflowStatus === "submitted_to_teacher") {
       const { data: roomRecord } = await supabase
         .from("rooms")
         .select("id, name, teacher_id")
@@ -386,7 +392,7 @@ export async function POST(request: Request) {
           ];
         }
       }
-    } else if (submissionSource === "individual") {
+    } else if (workflowStatus === "submitted_to_admin") {
       const { data: adminRecipients } = await supabase
         .from("profiles")
         .select("id, email")
@@ -431,13 +437,14 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     success: true,
-    message: isRoomSubmission
-      ? existingSubmission
-        ? "Application updated and sent back to your teacher for batch review."
-        : "Application submitted to your teacher for batch review."
-      : existingSubmission
-        ? "Application updated and resubmitted to TESDA successfully."
-        : "Application submitted to TESDA successfully.",
+    message:
+      workflowStatus === "submitted_to_teacher"
+        ? existingSubmission
+          ? "Application updated and sent back to your teacher for batch review."
+          : "Application submitted to your teacher for batch review."
+        : existingSubmission
+          ? "Application updated and resubmitted to TESDA successfully."
+          : "Application submitted to TESDA successfully.",
     submissionId: savedSubmission?.id ?? existingSubmission?.id ?? null,
   });
 }

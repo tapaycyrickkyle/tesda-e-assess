@@ -6,6 +6,7 @@ import {
   getApplicantSubmissionEditLock,
 } from "@/lib/application-submission-lifecycle";
 import { getCurrentAppUser } from "@/lib/current-user";
+import { loadActiveProgramTitles } from "@/lib/programs";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { loadApplicantProfileDefaults } from "@/lib/user-profile";
 
@@ -30,6 +31,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
   const isRoomApplication = Boolean(roomId?.trim());
   const supabase = createSupabaseAdminClient();
   const applicantProfile = await loadApplicantProfileDefaults(currentUser);
+  const qualificationOptions = await loadActiveProgramTitles();
 
   let room: { id: string; join_code: string; name: string; qualification: string } | null = null;
 
@@ -61,6 +63,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
         existingSubmission={null}
         isReadOnly={false}
         mode={isRoomApplication ? "room" : "individual"}
+        qualificationOptions={qualificationOptions}
         readOnlyMessage={null}
         room={room}
       />
@@ -114,6 +117,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
       existingSubmission={existingSubmission}
       isReadOnly={editLock.isLocked}
       mode={isRoomApplication ? "room" : "individual"}
+      qualificationOptions={qualificationOptions}
       readOnlyMessage={editLock.message}
       room={room}
     />
