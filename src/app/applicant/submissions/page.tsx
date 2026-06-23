@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import ApplicantSubmittedFormsClient from "@/app/applicant/submissions/ApplicantSubmittedFormsClient";
 import {
   getSubmissionAssignmentInfoByIds,
@@ -6,7 +5,7 @@ import {
   getApplicantSubmissionWithdrawalLock,
 } from "@/lib/application-submission-lifecycle";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
-import { getCurrentAppUser } from "@/lib/current-user";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type SubmissionListItem = {
@@ -235,11 +234,7 @@ function getSubmissionStatusDetails(submission: SubmissionListItem): SubmissionS
 }
 
 export default async function ApplicantSubmittedFormsPage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "applicant") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("applicant");
 
   const supabase = createSupabaseAdminClient();
   const { data: submissions } = await supabase

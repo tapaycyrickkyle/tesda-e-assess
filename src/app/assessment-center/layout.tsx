@@ -1,6 +1,5 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
-import { getCurrentAppUser } from "@/lib/current-user";
-import { requireUserRole } from "@/lib/server-auth";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 
 const assessmentCenterSidebarItems = [
   {
@@ -46,8 +45,7 @@ export default async function AssessmentCenterLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireUserRole("assessment_center");
-  const currentUser = await getCurrentAppUser();
+  const currentUser = await requireCurrentAppUserRole("assessment_center");
 
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">

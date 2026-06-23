@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { getCurrentAppUser, type CurrentAppUser } from "@/lib/current-user";
 import { createSupabaseServerClient, getUserApprovalStatusFromProfile, getUserRoleFromRoleTable } from "@/lib/supabase";
 import { getUserRoleFromMetadata, SESSION_COOKIE_NAME, type UserRole } from "@/lib/auth";
 
@@ -51,4 +52,22 @@ export async function requireUserRole(requiredRole: UserRole) {
 
     redirect("/");
   }
+}
+
+export async function requireCurrentAppUserRole(requiredRole: UserRole): Promise<CurrentAppUser> {
+  const currentUser = await getCurrentAppUser();
+
+  if (currentUser?.role === requiredRole) {
+    return currentUser;
+  }
+
+  await requireUserRole(requiredRole);
+
+  const resolvedCurrentUser = await getCurrentAppUser();
+
+  if (resolvedCurrentUser?.role === requiredRole) {
+    return resolvedCurrentUser;
+  }
+
+  redirect("/");
 }

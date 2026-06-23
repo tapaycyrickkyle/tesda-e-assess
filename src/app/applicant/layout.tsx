@@ -1,6 +1,5 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
-import { getCurrentAppUser } from "@/lib/current-user";
-import { requireUserRole } from "@/lib/server-auth";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 
 const applicantSidebarItems = [
   { key: "overview", label: "Overview", icon: "fa-solid fa-table-columns", href: "/applicant/overview" },
@@ -16,8 +15,7 @@ export default async function ApplicantLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireUserRole("applicant");
-  const currentUser = await getCurrentAppUser();
+  const currentUser = await requireCurrentAppUserRole("applicant");
 
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">

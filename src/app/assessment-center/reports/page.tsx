@@ -1,19 +1,14 @@
-import { notFound } from "next/navigation";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { formatAssessmentDate } from "@/lib/assessment-date";
 import {
   getAssessmentCenterLinkMessage,
   resolveAssessmentCenterForUser,
 } from "@/lib/assessment-centers";
-import { getCurrentAppUser } from "@/lib/current-user";
 import { loadMonthlySummaryRows } from "@/lib/monthly-summary-reports";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 
 export default async function AssessmentCenterReportsPage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "assessment_center") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("assessment_center");
 
   const centerResult = await resolveAssessmentCenterForUser<{
     center_auth_user_id: string | null;

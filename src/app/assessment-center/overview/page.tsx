@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { formatAssessmentDate } from "@/lib/assessment-date";
 import {
@@ -7,7 +6,8 @@ import {
   resolveAssessmentCenterForUser,
 } from "@/lib/assessment-centers";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
-import { getCurrentAppUser, type CurrentAppUser } from "@/lib/current-user";
+import { type CurrentAppUser } from "@/lib/current-user";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type CenterAssignment = {
@@ -117,11 +117,7 @@ function getStatusBadgeClass(status: ApplicationSubmissionStatus) {
 }
 
 export default async function AssessmentCenterDashboardPage({ searchParams }: AssessmentCenterDashboardPageProps) {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "assessment_center") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("assessment_center");
 
   const resolvedSearchParams = await searchParams;
   const dateFilter = normalizeDateFilter(resolvedSearchParams.date);
