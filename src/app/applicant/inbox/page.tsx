@@ -1,14 +1,9 @@
-import { notFound } from "next/navigation";
 import PortalNotificationsView from "@/components/PortalNotificationsView";
-import { getCurrentAppUser } from "@/lib/current-user";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { loadNotificationsForUser, markNotificationsRead } from "@/lib/workflow-history";
 
 export default async function ApplicantNotificationsPage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "applicant") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("applicant");
 
   const notifications = await loadNotificationsForUser({
     email: currentUser.email,

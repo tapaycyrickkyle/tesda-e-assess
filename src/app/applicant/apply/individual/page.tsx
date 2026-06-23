@@ -5,8 +5,8 @@ import {
   getSubmissionAssignmentInfoByIds,
   getApplicantSubmissionEditLock,
 } from "@/lib/application-submission-lifecycle";
-import { getCurrentAppUser } from "@/lib/current-user";
 import { loadActiveProgramTitles } from "@/lib/programs";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { loadApplicantProfileDefaults } from "@/lib/user-profile";
 
@@ -15,11 +15,7 @@ type IndividualApplicationPageProps = {
 };
 
 export default async function IndividualApplicationPage({ searchParams }: IndividualApplicationPageProps) {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "applicant") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("applicant");
 
   const resolvedSearchParams = await searchParams;
   const editParam = resolvedSearchParams.edit;

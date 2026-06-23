@@ -1,6 +1,5 @@
 import DashboardSidebar from "@/components/DashboardSidebar";
-import { getCurrentAppUser } from "@/lib/current-user";
-import { requireUserRole } from "@/lib/server-auth";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 
 const adminSidebarItems = [
   { key: "overview", label: "Overview", icon: "fa-solid fa-chart-pie", href: "/admin/overview" },
@@ -44,8 +43,7 @@ export default async function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await requireUserRole("admin");
-  const currentUser = await getCurrentAppUser();
+  const currentUser = await requireCurrentAppUserRole("admin");
 
   return (
     <div className="min-h-screen bg-[#f8f9ff] text-[#0b1c30] selection:bg-[#0038a8] selection:text-white">

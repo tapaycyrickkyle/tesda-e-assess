@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import TeacherRoomDetailClient from "@/app/teacher/rooms/[roomId]/TeacherRoomDetailClient";
-import { getCurrentAppUser } from "@/lib/current-user";
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import type { RoomRecord } from "@/lib/rooms";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type RouteProps = {
@@ -29,11 +29,7 @@ type RoomApplicationSubmission = {
 };
 
 export default async function TeacherRoomDetailPage({ params }: RouteProps) {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "teacher") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("teacher");
 
   const { roomId } = await params;
   const supabase = createSupabaseAdminClient();

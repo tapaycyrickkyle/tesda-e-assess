@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getSubmissionAssignmentInfoByIds } from "@/lib/application-submission-lifecycle";
-import { getCurrentAppUser } from "@/lib/current-user";
 import { loadApplicantJoinedRooms, type ApplicantJoinedRoomMembership } from "@/lib/rooms";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type DashboardSubmission = {
@@ -108,11 +107,7 @@ function getRoomActionLabel(status?: ApplicationSubmissionStatus) {
 }
 
 export default async function StudentDashboardPage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "applicant") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("applicant");
 
   const supabase = createSupabaseAdminClient();
   let dashboardNotice = "";

@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
-import { getCurrentAppUser } from "@/lib/current-user";
 import { getRoomSubmissionStatus, getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 type RoomDashboardRecord = RoomRecord & {
@@ -23,11 +22,7 @@ function getSubmissionStatusClass(status: RoomRecord["submission_status"]) {
 }
 
 export default async function TeacherDashboardPage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "teacher") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("teacher");
 
   const supabase = createSupabaseAdminClient();
   let dashboardNotice = "";

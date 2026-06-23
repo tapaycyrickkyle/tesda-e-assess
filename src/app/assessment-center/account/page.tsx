@@ -1,14 +1,9 @@
-import { notFound } from "next/navigation";
 import UserProfilePage from "@/components/UserProfilePage";
-import { getCurrentAppUser } from "@/lib/current-user";
+import { requireCurrentAppUserRole } from "@/lib/server-auth";
 import { loadUserProfileView } from "@/lib/user-profile";
 
 export default async function AssessmentCenterProfilePage() {
-  const currentUser = await getCurrentAppUser();
-
-  if (!currentUser || currentUser.role !== "assessment_center") {
-    notFound();
-  }
+  const currentUser = await requireCurrentAppUserRole("assessment_center");
 
   const profileView = await loadUserProfileView(currentUser);
 
