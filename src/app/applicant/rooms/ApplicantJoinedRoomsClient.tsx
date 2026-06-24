@@ -39,7 +39,7 @@ function getRoomSubmissionStatusLabel(status?: ApplicationSubmissionStatus | nul
   }
 
   if (status === "completed") {
-    return "Completed";
+    return "COC";
   }
 
   if (status === "rejected") {

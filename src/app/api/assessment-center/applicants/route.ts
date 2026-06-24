@@ -10,7 +10,7 @@ import { createSupabaseAdminClient } from "@/lib/supabase";
 import { recordSubmissionWorkflowTransition } from "@/lib/workflow-history";
 
 type UpdateAssessmentCenterSubmissionPayload = {
-  action?: "move_to_result_encoding" | "pass" | "not_pass";
+  action?: "move_to_result_encoding" | "pass" | "not_pass" | "coc";
   reason?: string | null;
   submissionId?: string;
 };
@@ -223,29 +223,42 @@ export async function PATCH(request: Request) {
   } else if (action === "pass") {
     if (currentStatus !== "for_result_encoding") {
       return NextResponse.json(
-        { success: false, message: "Only submissions in result encoding can be marked as passed." },
+        { success: false, message: "Only submissions in result encoding can be marked as competent." },
         { status: 400 },
       );
     }
 
     nextStatus = "passed";
     eventType = "assessment_center_passed";
-    notificationTitle = "Application Passed";
-    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as passed.`;
-    responseMessage = "Submission marked as passed.";
+    notificationTitle = "Application Competent";
+    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as competent.`;
+    responseMessage = "Submission marked as competent.";
   } else if (action === "not_pass") {
     if (currentStatus !== "for_result_encoding") {
       return NextResponse.json(
-        { success: false, message: "Only submissions in result encoding can be marked as not passed." },
+        { success: false, message: "Only submissions in result encoding can be marked as not competent." },
         { status: 400 },
       );
     }
 
     nextStatus = "not_passed";
     eventType = "assessment_center_not_passed";
-    notificationTitle = "Application Not Passed";
-    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as not passed.`;
-    responseMessage = "Submission marked as not passed.";
+    notificationTitle = "Application Not Competent";
+    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as not competent.`;
+    responseMessage = "Submission marked as not competent.";
+  } else if (action === "coc") {
+    if (currentStatus !== "for_result_encoding") {
+      return NextResponse.json(
+        { success: false, message: "Only submissions in result encoding can be marked as COC." },
+        { status: 400 },
+      );
+    }
+
+    nextStatus = "completed";
+    eventType = "assessment_center_completed";
+    notificationTitle = "Application COC";
+    notificationMessage = `${center.name} marked your ${submission.qualification_title} application as COC.`;
+    responseMessage = "Submission marked as COC.";
   } else {
     return NextResponse.json({ success: false, message: "Unsupported assessment-center action." }, { status: 400 });
   }
