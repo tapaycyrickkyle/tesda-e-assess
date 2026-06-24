@@ -4,6 +4,7 @@ import {
   getAssessmentCenterLinkMessage,
   resolveAssessmentCenterForUser,
 } from "@/lib/assessment-centers";
+import { getApplicationSubmissionStatusLabel } from "@/lib/application-form";
 import { loadMonthlySummaryRows } from "@/lib/monthly-summary-reports";
 import { requireCurrentAppUserRole } from "@/lib/server-auth";
 
@@ -128,7 +129,7 @@ export default async function AssessmentCenterReportsPage() {
                       <p className="ui-data-table-copy">{row.assessor}</p>
                     </td>
                     <td>
-                      <p className="ui-data-table-copy">{row.workflow_status === "not_passed" ? "Failed" : "Passed"}</p>
+                      <p className="ui-data-table-copy">{getApplicationSubmissionStatusLabel(row.workflow_status)}</p>
                     </td>
                   </tr>
                 ))}

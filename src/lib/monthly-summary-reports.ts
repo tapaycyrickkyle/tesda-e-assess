@@ -1,4 +1,5 @@
 import { formatAssessmentDate } from "@/lib/assessment-date";
+import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export type MonthlySummaryRow = {
@@ -8,7 +9,7 @@ export type MonthlySummaryRow = {
   assessment_date: string;
   assessor: string;
   qualification_title: string;
-  workflow_status: string;
+  workflow_status: ApplicationSubmissionStatus;
 };
 
 type MonthRange = {
@@ -171,7 +172,7 @@ export function buildMonthlySummaryExcelXml({
       row.qualification_title,
       row.assessor,
       row.assessment_center_name,
-      row.workflow_status,
+      getApplicationSubmissionStatusLabel(row.workflow_status),
     ]),
   ];
 

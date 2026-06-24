@@ -37,8 +37,9 @@ export default async function AdminReportsPage() {
 
   const totalApplicantsCount = rows.length;
   const assessmentCenterCount = centers.length;
-  const passedCount = rows.filter((row) => row.workflow_status === "passed" || row.workflow_status === "completed").length;
-  const failedCount = rows.filter((row) => row.workflow_status === "not_passed").length;
+  const competentCount = rows.filter((row) => row.workflow_status === "passed").length;
+  const notCompetentCount = rows.filter((row) => row.workflow_status === "not_passed").length;
+  const cocCount = rows.filter((row) => row.workflow_status === "completed").length;
 
   const centerSummaries = centers.map((center) => {
     const centerRows = rows.filter((row) => row.assessment_center_id === center.id);
@@ -91,9 +92,9 @@ export default async function AdminReportsPage() {
             <p className="mt-2 text-[13px] text-[#747685]">Centers included in the overall monthly report</p>
           </article>
           <article className="ui-surface p-4">
-            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Passed / Failed</p>
+            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Competent / Not Competent / COC</p>
             <p className="mt-2 text-[20px] font-bold leading-tight text-[#0b1c30]">
-              {passedCount} / {failedCount}
+              {competentCount} / {notCompetentCount} / {cocCount}
             </p>
             <p className="mt-2 text-[13px] text-[#747685]">Recorded monthly outcomes across all centers</p>
           </article>

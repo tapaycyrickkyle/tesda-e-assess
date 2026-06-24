@@ -27,6 +27,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
   const shouldRestoreFocusRef = useRef(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const [logoutError, setLogoutError] = useState<string | null>(null);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [failedAvatarUrl, setFailedAvatarUrl] = useState<string | null>(null);
   const activeItemHref =
@@ -87,12 +88,17 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
 
   const performLogout = async () => {
     setIsMobileNavOpen(false);
-    setIsLogoutConfirmOpen(false);
     setIsLoggingOut(true);
+    setLogoutError(null);
     try {
-      await fetch("/api/logout", { method: "POST" });
+      const response = await fetch("/api/logout", { method: "POST" });
+      if (!response.ok) {
+        throw new Error("Logout request failed.");
+      }
       router.replace("/");
       router.refresh();
+    } catch {
+      setLogoutError("We couldn't log you out right now. Please try again.");
     } finally {
       setIsLoggingOut(false);
     }
@@ -258,6 +264,7 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
                 disabled={isLoggingOut}
                 onClick={() => {
                   setIsMobileNavOpen(false);
+                  setLogoutError(null);
                   setIsLogoutConfirmOpen(true);
                 }}
                 type="button"
@@ -321,7 +328,10 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
           <button
             className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-[13px] font-medium text-[#d9e7ff] transition-all hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isLoggingOut}
-            onClick={() => setIsLogoutConfirmOpen(true)}
+            onClick={() => {
+              setLogoutError(null);
+              setIsLogoutConfirmOpen(true);
+            }}
             type="button"
           >
             <i aria-hidden="true" className="fa-solid fa-right-from-bracket" />
@@ -331,52 +341,57 @@ export default function DashboardSidebar({ portalLabel, items, userAvatarUrl, us
       </aside>
 
       <AnimatedModal
-        contentClassName="w-full max-w-[420px] rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
+        contentClassName="w-full max-w-[400px] rounded-xl border border-[#d9e3f7] bg-white shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
         open={isLogoutConfirmOpen}
       >
-        <div className="border-b border-[#d9e3f7] px-6 py-4">
-          <h2 className="ui-section-title text-[#0b1c30]">Confirm Logout</h2>
-          <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">
-            Are you sure you want to log out of the TESDA E-Assess portal?
-          </p>
+        <div className="border-b border-[#d9e3f7] px-6 py-5">
+          <div className="min-w-0">
+            <h2 className="ui-section-title text-[#0b1c30]">Log out?</h2>
+            <p className="mt-1 text-[13px] leading-[1.5] text-[#444653]">
+              You&apos;ll return to the sign-in page and need to log in again to continue.
+            </p>
+          </div>
         </div>
 
         <div className="ui-modal-section space-y-3 px-6 py-4">
-          <p className="text-[13px] leading-[1.6] text-[#0b1c30]">
-            You will be returned to the main login page and need to sign in again to continue.
-          </p>
+          {logoutError ? (
+            <div
+              aria-live="polite"
+              className="rounded-lg border border-[#f0b4b4] bg-[#fff1f1] px-3 py-2.5 text-[13px] leading-[1.5] text-[#8a1c1c]"
+            >
+              {logoutError}
+            </div>
+          ) : null}
 
           <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
             <button
-              className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-              onClick={() => setIsLogoutConfirmOpen(false)}
+              className="inline-flex min-w-[112px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-70"
+              disabled={isLoggingOut}
+              onClick={() => {
+                setLogoutError(null);
+                setIsLogoutConfirmOpen(false);
+              }}
               type="button"
             >
               Cancel
             </button>
             <button
-              className="inline-flex min-w-[112px] items-center justify-center rounded-lg bg-[#c62828] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_10px_24px_rgba(198,40,40,0.16)] transition hover:bg-[#b71c1c]"
+              className="inline-flex min-w-[112px] items-center justify-center gap-2 rounded-lg bg-[#0038a8] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_10px_24px_rgba(0,56,168,0.18)] transition hover:bg-[#002d86] disabled:cursor-not-allowed disabled:bg-[#6b8fd6] disabled:shadow-none"
+              disabled={isLoggingOut}
               onClick={performLogout}
               type="button"
             >
-              Log Out
+              {isLoggingOut ? (
+                <>
+                  <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[12px]" />
+                  Logging out...
+                </>
+              ) : (
+                "Log Out"
+              )}
             </button>
           </div>
         </div>
-      </AnimatedModal>
-
-      <AnimatedModal
-        contentClassName="w-full max-w-[340px] rounded-xl border border-[#d9e3f7] bg-white px-6 py-5 text-center shadow-[0_12px_30px_rgba(15,23,42,0.12)]"
-        open={isLoggingOut}
-        zIndexClassName="z-[60]"
-      >
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#eef4ff] text-[#3056c4]">
-          <i aria-hidden="true" className="fa-solid fa-spinner animate-spin text-[18px]" />
-        </div>
-        <p className="mt-3 text-[17px] font-bold text-[#0b1c30]">Logging you out</p>
-        <p className="mt-1.5 text-[13px] leading-[1.5] text-[#5d5f5f]">
-          Please wait while we securely end your session.
-        </p>
       </AnimatedModal>
     </>
   );

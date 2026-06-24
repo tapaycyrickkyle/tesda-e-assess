@@ -41,7 +41,7 @@ type BulkAssignment = {
 };
 
 type QueueTab = "for_result_encoding" | "under_review";
-type StatusAction = "move_to_result_encoding" | "not_pass" | "pass";
+type StatusAction = "move_to_result_encoding" | "not_pass" | "pass" | "coc";
 type PendingStatusUpdate =
   | {
       action: StatusAction;
@@ -114,7 +114,7 @@ function getStatusBadge(status: ApplicationSubmissionStatus) {
     return {
       className: "border border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
       iconClassName: "fa-solid fa-circle-check",
-      label: status === "passed" ? "Passed" : "Completed",
+      label: status === "passed" ? "Competent" : "COC",
     };
   }
 
@@ -122,7 +122,7 @@ function getStatusBadge(status: ApplicationSubmissionStatus) {
     return {
       className: "border border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
       iconClassName: "fa-solid fa-circle-xmark",
-      label: status === "not_passed" ? "Failed" : "Rejected",
+      label: status === "not_passed" ? "Not Competent" : "Rejected",
     };
   }
 
@@ -163,15 +163,19 @@ function getStatusDescription(status: ApplicationSubmissionStatus) {
   }
 
   if (status === "for_result_encoding") {
-    return "The assessment is finished. Record whether the applicant passed or not passed.";
+    return "The assessment is finished. Record whether the applicant is competent, not competent, or COC.";
   }
 
   if (status === "passed") {
-    return "The applicant passed the assessment and the final result is now recorded.";
+    return "The applicant was marked competent and the final result is now recorded.";
   }
 
   if (status === "not_passed") {
-    return "The applicant failed the assessment and the final result is now recorded.";
+    return "The applicant was marked not competent and the final result is now recorded.";
+  }
+
+  if (status === "completed") {
+    return "The applicant was marked as COC and the final result is now recorded.";
   }
 
   if (status === "cancelled") {
@@ -187,10 +191,14 @@ function getActionButtonLabel(action: StatusAction) {
   }
 
   if (action === "pass") {
-    return "Passed";
+    return "Competent";
   }
 
-  return "Failed";
+  if (action === "not_pass") {
+    return "Not Competent";
+  }
+
+  return "COC";
 }
 
 function isReasonRequired() {
@@ -214,14 +222,22 @@ function getActionTheme(action: StatusAction) {
     return {
       badgeClassName: "border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
       buttonClassName: "bg-[#2f8f5b] text-white hover:bg-[#27794d]",
-      helperText: "Use this when the applicant passed the assessment.",
+      helperText: "Use this when the applicant is competent for the assessment.",
+    };
+  }
+
+  if (action === "coc") {
+    return {
+      badgeClassName: "border-[#cfe0ff] bg-[#eef4ff] text-[#0038a8]",
+      buttonClassName: "bg-[#0038a8] text-white hover:bg-[#002d86]",
+      helperText: "Use this when the applicant should be recorded as COC.",
     };
   }
 
   return {
     badgeClassName: "border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
     buttonClassName: "bg-[#b42318] text-white hover:bg-[#991b1b]",
-    helperText: "Use this when the applicant did not pass the assessment. Add an optional note if your center needs one.",
+    helperText: "Use this when the applicant is not competent. Add an optional note if your center needs one.",
   };
 }
 
@@ -532,7 +548,7 @@ export default function AssessmentCenterApplicantsPage() {
       : "inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg px-4 text-[13px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70";
     const isUpdatingThisSubmission = updatingSubmissionId === applicant.applicant_reference;
     const availableActions: StatusAction[] = isResultEncodingView
-      ? ["pass", "not_pass"]
+      ? ["pass", "not_pass", "coc"]
       : ["move_to_result_encoding"];
 
     return (
@@ -553,6 +569,8 @@ export default function AssessmentCenterApplicantsPage() {
                 ? "bg-[#002576] text-white hover:bg-[#0038a8]"
                 : action === "pass"
                   ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                  : action === "coc"
+                    ? "bg-[#0038a8] text-white hover:bg-[#002d86]"
                   : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]";
 
             return (
@@ -1044,11 +1062,11 @@ export default function AssessmentCenterApplicantsPage() {
                 </div>
                 <p className="mt-3 text-[15px] font-bold text-[#0b1c30]">{pendingStatusUpdate.title}</p>
                 <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">
-                  {pendingStatusUpdate.action === "move_to_result_encoding"
-                    ? pendingStatusUpdate.type === "individual"
-                      ? "Move this applicant to Result Encoding."
-                      : `Move ${pendingStatusUpdate.count} applicants in this batch to Result Encoding.`
-                    : pendingStatusUpdate.type === "individual"
+                    {pendingStatusUpdate.action === "move_to_result_encoding"
+                      ? pendingStatusUpdate.type === "individual"
+                        ? "Move this applicant to Result Encoding."
+                        : `Move ${pendingStatusUpdate.count} applicants in this batch to Result Encoding.`
+                      : pendingStatusUpdate.type === "individual"
                       ? `Mark this applicant as ${getActionButtonLabel(pendingStatusUpdate.action).toLowerCase()}.`
                       : `Mark ${pendingStatusUpdate.count} applicants in this batch as ${getActionButtonLabel(
                           pendingStatusUpdate.action,
@@ -1192,7 +1210,10 @@ export default function AssessmentCenterApplicantsPage() {
                     </div>
                     <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
                       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                        {(isResultEncodingView ? (["pass", "not_pass"] as StatusAction[]) : (["move_to_result_encoding"] as StatusAction[])).map((action) => {
+                        {(isResultEncodingView
+                          ? (["pass", "not_pass", "coc"] as StatusAction[])
+                          : (["move_to_result_encoding"] as StatusAction[])
+                        ).map((action) => {
                           const isUpdatingThisAction =
                             updatingSubmissionId === selectedApplicantDetails.applicant_reference && updatingAction === action;
                           const buttonClassName =
@@ -1200,6 +1221,8 @@ export default function AssessmentCenterApplicantsPage() {
                               ? "bg-[#002576] text-white hover:bg-[#0038a8]"
                               : action === "pass"
                                 ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                                : action === "coc"
+                                  ? "bg-[#0038a8] text-white hover:bg-[#002d86]"
                                 : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]";
 
                           return (
@@ -1372,7 +1395,7 @@ export default function AssessmentCenterApplicantsPage() {
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-2 md:justify-end">
-                            {(["pass", "not_pass"] as StatusAction[]).map((action) => {
+                            {(["pass", "not_pass", "coc"] as StatusAction[]).map((action) => {
                               const isUpdatingThisAction =
                                 updatingSubmissionId === applicant.applicant_reference && updatingAction === action;
 
@@ -1382,6 +1405,8 @@ export default function AssessmentCenterApplicantsPage() {
                                   className={`inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-70 ${
                                     action === "pass"
                                       ? "bg-[#2f8f5b] text-white hover:bg-[#27794d]"
+                                      : action === "coc"
+                                        ? "bg-[#0038a8] text-white hover:bg-[#002d86]"
                                       : "border border-[#f3c9c9] bg-[#fff7f7] text-[#b42318] hover:bg-[#fff1f1]"
                                   }`}
                                   disabled={Boolean(updatingSubmissionId || updatingBulkAssignmentId)}

@@ -373,11 +373,11 @@ export function getApplicationSubmissionStatusLabel(status: ApplicationSubmissio
     case "for_result_encoding":
       return "Ready for Result Encoding";
     case "passed":
-      return "Passed";
+      return "Competent";
     case "not_passed":
-      return "Failed";
+      return "Not Competent";
     case "completed":
-      return "Completed";
+      return "COC";
     case "rejected":
       return "Rejected";
     case "cancelled":

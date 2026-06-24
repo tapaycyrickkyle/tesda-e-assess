@@ -308,13 +308,13 @@ export function getWorkflowEventLabel(event: Pick<SubmissionHistoryEntry, "event
     case "applicant_withdrew":
       return "Withdrawn";
     case "assessment_center_completed":
-      return "Completed";
+      return "COC";
     case "assessment_center_sent_for_result_encoding":
       return "Moved to Result Encoding";
     case "assessment_center_passed":
-      return "Passed";
+      return "Competent";
     case "assessment_center_not_passed":
-      return "Failed";
+      return "Not Competent";
     case "assessment_center_rejected":
       return "Rejected";
     case "assessment_center_cancelled":
@@ -349,13 +349,13 @@ export function getWorkflowEventDescription(event: SubmissionHistoryEntry) {
     case "applicant_withdrew":
       return "The applicant withdrew the submission before final center processing.";
     case "assessment_center_completed":
-      return "The assessment center recorded a completed outcome.";
+      return "The assessment center recorded a COC outcome.";
     case "assessment_center_sent_for_result_encoding":
       return "The assessment center finished reviewing the PDF and moved this submission to result encoding.";
     case "assessment_center_passed":
-      return "The assessment center recorded a passed outcome.";
+      return "The assessment center recorded a competent outcome.";
     case "assessment_center_not_passed":
-      return "The assessment center recorded a not-passed outcome.";
+      return "The assessment center recorded a not-competent outcome.";
     case "assessment_center_rejected":
       return "The assessment center recorded a rejected outcome.";
     case "assessment_center_cancelled":

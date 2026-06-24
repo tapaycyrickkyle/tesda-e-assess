@@ -75,7 +75,7 @@ function getStatusBadge(submission: SubmissionListItem) {
     return {
       className: "border border-[#cce9d8] bg-[#edf9f1] text-[#166534]",
       iconClassName: "fa-solid fa-circle-check",
-      label: submission.workflow_status === "passed" ? "Passed" : "Completed",
+      label: submission.workflow_status === "passed" ? "Competent" : "COC",
     };
   }
 
@@ -83,7 +83,7 @@ function getStatusBadge(submission: SubmissionListItem) {
     return {
       className: "border border-[#f2d1d1] bg-[#fff4f4] text-[#b42318]",
       iconClassName: "fa-solid fa-circle-xmark",
-      label: submission.workflow_status === "not_passed" ? "Failed" : "Rejected",
+      label: submission.workflow_status === "not_passed" ? "Not Competent" : "Rejected",
     };
   }
 
@@ -167,9 +167,9 @@ function getSubmissionStatusDetails(submission: SubmissionListItem): SubmissionS
 
   if (submission.workflow_status === "completed") {
     return {
-      currentStatus: "Completed",
+      currentStatus: "COC",
       nextStep: "No action is needed. This submission now stays here as a record.",
-      updateSummary: "Current record: Completed",
+      updateSummary: "Current record: COC",
     };
   }
 
@@ -205,9 +205,9 @@ function getSubmissionStatusDetails(submission: SubmissionListItem): SubmissionS
 
   if (submission.workflow_status === "passed") {
     return {
-      currentStatus: "Passed",
+      currentStatus: "Competent",
       nextStep: "No action is needed. Your final assessment result has been recorded.",
-      updateSummary: "Current record: Passed",
+      updateSummary: "Current record: Competent",
     };
   }
 
