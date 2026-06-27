@@ -6,8 +6,8 @@ import {
   type SagQuestionDefinition,
   type SagUnitDefinition,
 } from "@/lib/sag-form-schema";
+import { sagGeneratedLayouts } from "@/lib/sag-form-layouts.generated";
 import { getSagIdentityMetadata } from "@/lib/sag-identity-metadata";
-import { buildSagInstructionLines, resolveSagSourcePdfPath } from "@/lib/sag-pdf";
 import { sagFormTemplates } from "@/lib/sag-form-templates.generated";
 
 export { getSagFormDefinition, normalizeSagProgramTitle };
@@ -49,35 +49,118 @@ function isInstructionLikeLine(value: string) {
   );
 }
 
+function splitInstructionBodyText(value: string) {
+  const normalized = normalizeSagText(value).replace(/^(instruction|introduction)\s*:\s*/i, "").trim();
+
+  if (!normalized) {
+    return [];
+  }
+
+  const splitParts = normalized
+    .replace(/\b(place a (?:check|tick)\b)/gi, "\n$1")
+    .replace(/\b(indicate your answer\.?)$/i, "\n$1")
+    .split(/\n+/)
+    .map((part) => normalizeSagText(part))
+    .filter(Boolean);
+
+  if (splitParts.length === 0) {
+    return [normalized];
+  }
+
+  const rebuiltParts: string[] = [];
+
+  splitParts.forEach((part) => {
+    const previousPart = rebuiltParts[rebuiltParts.length - 1];
+
+    if (previousPart && /^indicate your answer\.?$/i.test(part)) {
+      rebuiltParts[rebuiltParts.length - 1] = mergeQuestionText(previousPart, part);
+      return;
+    }
+
+    rebuiltParts.push(part);
+  });
+
+  return rebuiltParts;
+}
+
 function sanitizeInstructionLines(lines: string[]) {
   const normalizedLines = lines.map(normalizeSagText).filter(Boolean);
-  const instructionLines = normalizedLines.filter((line) => line.toLowerCase() !== "s" && isInstructionLikeLine(line));
+  const instructionLines = normalizedLines
+    .filter((line) => line.toLowerCase() !== "s" && isInstructionLikeLine(line))
+    .flatMap((line) => {
+      if (/^instruction:?$/i.test(line)) {
+        return ["Instruction:"];
+      }
+
+      return splitInstructionBodyText(line);
+    });
 
   if (instructionLines.length === 0) {
     return [...DEFAULT_INSTRUCTION_LINES];
   }
 
-  const withNormalizedHeading = instructionLines.map((line, index) => {
-    if (index === 0) {
-      return /^instruction:?$/i.test(line) ? "Instruction:" : line;
-    }
+  const bodyLines = instructionLines.filter((line) => !/^instruction:?$/i.test(line));
 
-    return line;
-  });
-
-  if (!/^instruction:?$/i.test(withNormalizedHeading[0] ?? "")) {
-    return ["Instruction:", ...withNormalizedHeading];
+  if (bodyLines.length === 0) {
+    return [...DEFAULT_INSTRUCTION_LINES];
   }
 
-  return withNormalizedHeading;
+  return ["Instruction:", ...bodyLines];
 }
 
 function sanitizeQuestionText(value: string) {
-  return normalizeSagText(value)
+  return repairKnownQuestionText(normalizeSagText(value)
     .replace(/\b[A-Z0-9-]+(?:\s+[–-]\s+)?\d+(?:\s+Ver\.\s*[\d.]+)?\s+\d+\s*$/i, "")
     .replace(/\b[A-Z0-9-]+(?:\s+[–-]\s+)?\d+(?:\s+Ver\.\s*[\d.]+)?\s*$/i, "")
     .replace(/\s+/g, " ")
-    .trim();
+    .trim());
+}
+
+function repairKnownQuestionText(text: string) {
+  const replacements: Record<string, string> = {
+    "Remove side plates and knives from the table as per": "Remove side plates and knives from the table as per SOPs.",
+    "Apply safety measure in accordance with Occupational Safety and":
+      "Apply safety measure in accordance with Occupational Safety and Health Standards (OSHS).",
+    "Employ food safety practices in accordance with HACCP and":
+      "Employ food safety practices in accordance with HACCP and CGMP.",
+    "Demonstrate construction of contour for sloping areas using":
+      "Demonstrate construction of contour for sloping areas using A-frame, according to industry standard procedures*",
+    "Identify classes and characteristics of quality seeds based on":
+      "Identify classes and characteristics of quality seeds based on Philippine Laboratory Standard for Seeds Certification*",
+    "Establish location of concrete hollow block wall based on":
+      "Establish location of concrete hollow block wall based on reference building/wall lines*",
+    "Follows Safety procedures according to Occupational Safety and":
+      "Follows Safety procedures according to Occupational Safety and Health Standards.",
+    "Perform vermin and insects control according to Fertilizer and":
+      "Perform vermin and insects control according to Fertilizer and Pesticides Authority guidelines and DENR regulations.*",
+    "Perform vermin control following industry": "Perform vermin control following industry procedures.",
+    "Transfer ready-to-lay-pullets to laying house reference to":
+      "Transfer ready-to-lay-pullets to laying house reference to Animal Welfare Act and Good Animal Practices.",
+    "Transfer poultry breeder to appropriate breeder sheds following":
+      "Transfer poultry breeder to appropriate breeder sheds following GAHP.",
+    "Employ safety practices according to Occupational Safety and":
+      "Employ safety practices according to Occupational Safety and Hazard Standards.",
+    "Wear appropriate personal protective equipment (PPE) following":
+      "Wear appropriate personal protective equipment (PPE) following Occupational Safety and Health Standard (OSHS).",
+    "Provide proper temperature/micro-climate based on the minimum requirements for the welfare of pigs and the code of Good Animal":
+      "Provide proper temperature/micro-climate based on the minimum requirements for the welfare of pigs and the code of Good Animal Husbandry Practices (GAHP).",
+    "Perform castration when needed based on the minimum requirements for the welfare of pigs and the code of Good Animal":
+      "Perform castration when needed based on the minimum requirements for the welfare of pigs and the code of Good Animal Husbandry Practices (GAHP).",
+    "Monitor and provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal":
+      "Monitor and provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP).",
+    "Check and adjust height of drinkers to ensure proper functioning based on the minimum standards on the welfare of pigs and code of":
+      "Check and adjust height of drinkers to ensure proper functioning based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP).",
+    "Monitor changes in animal behavior following Animal Welfare Act and":
+      "Monitor changes in animal behavior following Animal Welfare Act and GAHP.*",
+    "Monitor changes in skin color following Animal Welfare Act and":
+      "Monitor changes in skin color following Animal Welfare Act and GAHP.*",
+    "Prepare loading facility and ramp with reference to Animal Welfare":
+      "Prepare loading facility and ramp with reference to Animal Welfare Act.",
+    "Discuss how to establish community relationship in accordance with":
+      "Discuss how to establish community relationship in accordance with Department of Health's objectives",
+  };
+
+  return replacements[text] ?? text;
 }
 
 function shouldKeepQuestion(text: string) {
@@ -150,9 +233,13 @@ function mergeQuestionContinuations(questions: SagQuestionDefinition[]) {
   return mergedQuestions;
 }
 
-function shouldMergeUnitTitleIntoPreviousQuestion(previousText: string, unitTitle: string) {
+function shouldMergeUnitTitleIntoPreviousQuestion(previousText: string, unitTitle: string, unitQuestionCount: number) {
   const previous = normalizeSagText(previousText);
   const title = normalizeSagText(unitTitle);
+
+  if (unitQuestionCount > 1) {
+    return false;
+  }
 
   if (!previous || !title || hasTerminalQuestionPunctuation(previous) || isAlphabeticSectionHeading(title)) {
     return false;
@@ -365,6 +452,173 @@ function repairSwineForm(form: SagFormDefinition): SagFormDefinition {
   };
 }
 
+function rebuildSequentialUnits(
+  sourceUnit: SagUnitDefinition,
+  slices: ReadonlyArray<{ count: number; id: string; title: string }>,
+) {
+  let cursor = 0;
+
+  return slices.map((slice) => {
+    const questions = sourceUnit.questions.slice(cursor, cursor + slice.count).map((question, questionIndex) => ({
+      ...question,
+      id: `${slice.id}-${String(questionIndex + 1).padStart(2, "0")}`,
+    }));
+    cursor += slice.count;
+
+    return {
+      id: slice.id,
+      questions,
+      title: slice.title,
+    };
+  });
+}
+
+function repairHousekeepingForm(form: SagFormDefinition): SagFormDefinition {
+  if (form.qualificationTitle !== "SAG-Housekeeping NC II (FULL)" || form.units.length !== 1) {
+    return form;
+  }
+
+  const [sourceUnit] = form.units;
+
+  if (sourceUnit.questions.length !== 85) {
+    return form;
+  }
+
+  return {
+    ...form,
+    units: rebuildSequentialUnits(sourceUnit, [
+      { count: 17, id: "provide-valet-butler-service", title: "PROVIDE VALET/BUTLER SERVICE" },
+      { count: 38, id: "provide-housekeeping-to-guests", title: "PROVIDE HOUSEKEEPING TO GUESTS" },
+      { count: 17, id: "clean-public-areas", title: "CLEAN PUBLIC AREAS" },
+      { count: 13, id: "provide-laundry-service", title: "PROVIDE LAUNDRY SERVICE" },
+    ]),
+  };
+}
+
+function repairPoultryChickenForm(form: SagFormDefinition): SagFormDefinition {
+  if (form.qualificationTitle !== "SAG-Animal Production (Poultry-Chicken) NC II" || form.units.length !== 1) {
+    return form;
+  }
+
+  const [sourceUnit] = form.units;
+
+  if (sourceUnit.questions.length !== 105) {
+    return form;
+  }
+
+  const questions = sourceUnit.questions.map((question) => ({ ...question }));
+
+  const mergeQuestionAt = (targetIndex: number, sourceIndex: number) => {
+    const targetQuestion = questions[targetIndex];
+    const sourceQuestion = questions[sourceIndex];
+
+    if (targetQuestion && sourceQuestion) {
+      targetQuestion.text = mergeQuestionText(targetQuestion.text, sourceQuestion.text);
+      questions[sourceIndex] = { ...sourceQuestion, text: "" };
+    }
+  };
+
+  mergeQuestionAt(0, 1);
+  mergeQuestionAt(2, 3);
+  mergeQuestionAt(10, 11);
+
+  const compactedQuestions = questions.filter((question) => question.text);
+
+  return {
+    ...form,
+    units: rebuildSequentialUnits(
+      {
+        ...sourceUnit,
+        questions: compactedQuestions,
+      },
+      [
+        { count: 17, id: "maintain-poultry-house", title: "Maintain poultry house" },
+        { count: 27, id: "brood-and-grow-chicks", title: "Brood and grow chicks" },
+        { count: 22, id: "perform-pre-lay-and-lay-activities", title: "Perform pre-lay and lay activities" },
+        { count: 8, id: "trim-beak", title: "Trim beak" },
+        { count: 28, id: "raise-breeders", title: "Raise breeders" },
+      ],
+    ),
+  };
+}
+
+function repairMasonryForm(form: SagFormDefinition): SagFormDefinition {
+  if (form.qualificationTitle !== "SAG-Masonry NC II" || form.units.length !== 2) {
+    return form;
+  }
+
+  const [layBlocksUnit, ruleUnit] = form.units;
+
+  if (!/^Rule 1080/i.test(ruleUnit.title) || layBlocksUnit.questions.length !== 1 || ruleUnit.questions.length !== 16) {
+    return form;
+  }
+
+  const questions = [
+    {
+      ...layBlocksUnit.questions[0],
+      text: mergeQuestionText(layBlocksUnit.questions[0].text, ruleUnit.title),
+    },
+    ...ruleUnit.questions.map((question) => ({ ...question })),
+  ];
+
+  return {
+    ...form,
+    units: [
+      {
+        id: "lay-concrete-hollow-blocks-for-structures",
+        questions: questions.slice(0, 13).map((question, questionIndex) => ({
+          ...question,
+          id: `lay-concrete-hollow-blocks-for-structures-${String(questionIndex + 1).padStart(2, "0")}`,
+        })),
+        title: "Lay Concrete Hollow Blocks for Structures",
+      },
+      {
+        id: "plaster-wall-surface",
+        questions: questions.slice(13).map((question, questionIndex) => ({
+          ...question,
+          id: `plaster-wall-surface-${String(questionIndex + 1).padStart(2, "0")}`,
+        })),
+        title: "Plaster Wall Surface",
+      },
+    ],
+  };
+}
+
+function repairTileSettingForm(form: SagFormDefinition): SagFormDefinition {
+  if (form.qualificationTitle !== "SAG-Tile Setting NC II" || form.units.length !== 7) {
+    return form;
+  }
+
+  const [plansUnit, ruleUnit, ...remainingUnits] = form.units;
+
+  if (!/^Rule 1080/i.test(ruleUnit.title) || plansUnit.questions.length !== 1) {
+    return form;
+  }
+
+  const plansQuestions = [
+    {
+      ...plansUnit.questions[0],
+      text: mergeQuestionText(plansUnit.questions[0].text, ruleUnit.title),
+    },
+    ...ruleUnit.questions.map((question) => ({ ...question })),
+  ].map((question, questionIndex) => ({
+    ...question,
+    id: `plans-and-prepares-for-work-${String(questionIndex + 1).padStart(2, "0")}`,
+  }));
+
+  return {
+    ...form,
+    units: [
+      {
+        id: "plans-and-prepares-for-work",
+        questions: plansQuestions,
+        title: "Plans and prepares for work",
+      },
+      ...remainingUnits,
+    ],
+  };
+}
+
 function repairBrokenContinuations(form: SagFormDefinition): SagFormDefinition {
   const repairedUnits: SagUnitDefinition[] = [];
 
@@ -377,7 +631,11 @@ function repairBrokenContinuations(form: SagFormDefinition): SagFormDefinition {
     const previousUnit = repairedUnits[repairedUnits.length - 1];
     const previousQuestion = previousUnit?.questions[previousUnit.questions.length - 1];
 
-    if (previousUnit && previousQuestion && shouldMergeUnitTitleIntoPreviousQuestion(previousQuestion.text, normalizedUnit.title)) {
+    if (
+      previousUnit &&
+      previousQuestion &&
+      shouldMergeUnitTitleIntoPreviousQuestion(previousQuestion.text, normalizedUnit.title, normalizedUnit.questions.length)
+    ) {
       previousQuestion.text = mergeQuestionText(previousQuestion.text, normalizedUnit.title);
 
       normalizedUnit.questions.forEach((question) => {
@@ -404,10 +662,17 @@ function repairBrokenContinuations(form: SagFormDefinition): SagFormDefinition {
 }
 
 function applyFormOverrides(form: SagFormDefinition): SagFormDefinition {
-  return [repairDomesticWorkForm, repairEccdForm, repairFoodAndBeverageServicesNcII, repairSwineForm, repairBrokenContinuations].reduce(
-    (currentForm, repair) => repair(currentForm),
-    form,
-  );
+  return [
+    repairDomesticWorkForm,
+    repairEccdForm,
+    repairFoodAndBeverageServicesNcII,
+    repairSwineForm,
+    repairHousekeepingForm,
+    repairPoultryChickenForm,
+    repairMasonryForm,
+    repairTileSettingForm,
+    repairBrokenContinuations,
+  ].reduce((currentForm, repair) => repair(currentForm), form);
 }
 
 function sanitizeSagForm(form: SagFormDefinition): SagFormDefinition {
@@ -434,25 +699,22 @@ function sanitizeSagForm(form: SagFormDefinition): SagFormDefinition {
 
 export async function loadSagFormDefinitions() {
   if (!sagFormsPromise) {
-    const nextPromise = Promise.all(
-      sagFormTemplates.map(async (template) => {
+    sagFormsPromise = Promise.all(
+      sagFormTemplates.map((template) => {
         const sanitizedForm = sanitizeSagForm(template);
-        const sourcePdfPath = await resolveSagSourcePdfPath(sanitizedForm.qualificationTitle);
-        const identityMetadata = getSagIdentityMetadata(sourcePdfPath);
-        const instructionLinesFromPdf = sourcePdfPath ? await buildSagInstructionLines(sourcePdfPath) : [];
+        const layout = sagGeneratedLayouts.find(
+          (entry) => normalizeSagProgramTitle(entry.sourceFileName) === sanitizedForm.qualificationTitle,
+        );
+        const identityMetadata = getSagIdentityMetadata(layout?.sourceFileName ?? null);
 
         return {
           ...sanitizedForm,
           candidateFieldLabel: identityMetadata.candidateFieldLabel,
-          instructionLines: instructionLinesFromPdf.length > 0 ? instructionLinesFromPdf : sanitizedForm.instructionLines,
           shouldAutofillCandidateName: identityMetadata.shouldAutofillCandidateName,
         };
       }),
     );
-    sagFormsPromise = nextPromise;
   }
 
-  return sagFormsPromise.finally(() => {
-    sagFormsPromise = null;
-  });
+  return sagFormsPromise;
 }

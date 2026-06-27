@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate:sag": "npx --yes tsx scripts/validate-sag-hardcoded-forms.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
