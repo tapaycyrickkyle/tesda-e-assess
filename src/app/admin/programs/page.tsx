@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { parseApiResponse } from "@/lib/api-response";
 
 type ProgramRecord = {
   created_at?: string;
@@ -52,7 +53,7 @@ export default function AdminProgramsPage() {
 
       try {
         const response = await fetch("/api/admin/programs", { credentials: "same-origin" });
-        const payload = (await response.json()) as ProgramsResponse;
+        const payload = await parseApiResponse<ProgramsResponse>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load programs.");
@@ -100,7 +101,7 @@ export default function AdminProgramsPage() {
         method: "POST",
       });
 
-      const payload = (await response.json()) as ProgramsResponse;
+      const payload = await parseApiResponse<ProgramsResponse>(response);
 
       if (!response.ok || !payload.success || !payload.program) {
         throw new Error(payload.message ?? "Unable to add program.");
@@ -140,7 +141,7 @@ export default function AdminProgramsPage() {
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as ProgramsResponse;
+      const payload = await parseApiResponse<ProgramsResponse>(response);
 
       if (!response.ok || !payload.success || !payload.program) {
         throw new Error(payload.message ?? "Unable to update program.");
@@ -206,7 +207,7 @@ export default function AdminProgramsPage() {
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as ProgramsResponse;
+      const payload = await parseApiResponse<ProgramsResponse>(response);
 
       if (!response.ok || !payload.success || !payload.program) {
         throw new Error(payload.message ?? "Unable to update program.");

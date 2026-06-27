@@ -1,4 +1,7 @@
+import { readdir } from "node:fs/promises";
+import path from "node:path";
 import { qualificationOptions } from "@/lib/application-form";
+import { loadSagFormDefinitions, normalizeSagProgramTitle } from "@/lib/sag-forms";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export type ProgramRecord = {
@@ -10,6 +13,7 @@ export type ProgramRecord = {
 };
 
 const fallbackProgramTitles = [...qualificationOptions];
+const SAG_FORMS_PATH = path.join(process.cwd(), "public", "forms", "sag");
 
 function normalizeProgramTitles(titles: Array<string | null | undefined>) {
   return [...new Set(titles.map((title) => title?.trim()).filter((title): title is string => Boolean(title)))];
@@ -17,6 +21,30 @@ function normalizeProgramTitles(titles: Array<string | null | undefined>) {
 
 export function getFallbackProgramTitles() {
   return [...fallbackProgramTitles];
+}
+
+export async function loadSagProgramTitles() {
+  try {
+    const sagForms = await loadSagFormDefinitions();
+    const parsedTitles = normalizeProgramTitles(sagForms.map((form) => form.qualificationTitle)).sort((left, right) =>
+      left.localeCompare(right),
+    );
+
+    if (parsedTitles.length > 0) {
+      return parsedTitles;
+    }
+
+    const entries = await readdir(SAG_FORMS_PATH, { withFileTypes: true });
+    const titles = normalizeProgramTitles(
+      entries
+        .filter((entry) => entry.isFile() && /\.pdf$/i.test(entry.name))
+        .map((entry) => normalizeSagProgramTitle(entry.name)),
+    ).sort((left, right) => left.localeCompare(right));
+
+    return titles.length > 0 ? titles : getFallbackProgramTitles();
+  } catch {
+    return getFallbackProgramTitles();
+  }
 }
 
 export async function loadActiveProgramTitles() {
@@ -38,4 +66,3 @@ export async function loadActiveProgramTitles() {
     return getFallbackProgramTitles();
   }
 }
-

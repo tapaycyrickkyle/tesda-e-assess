@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { parseApiResponse } from "@/lib/api-response";
 
 type AssessmentCenter = {
   address: string;
@@ -91,11 +92,11 @@ export default function AdminAssessmentCenterPage() {
         const response = await fetch("/api/admin/assessment-centers", {
           credentials: "same-origin",
         });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           centers?: AssessmentCenter[];
           message?: string;
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load assessment centers.");
@@ -175,11 +176,11 @@ export default function AdminAssessmentCenterPage() {
         method: "POST",
       });
 
-      const payload = (await response.json()) as {
+      const payload = await parseApiResponse<{
         center?: AssessmentCenter;
         message?: string;
         success?: boolean;
-      };
+      }>(response);
 
       if (!response.ok || !payload.success || !payload.center) {
         throw new Error(payload.message ?? "Unable to create assessment center.");
@@ -221,10 +222,10 @@ export default function AdminAssessmentCenterPage() {
         method: "DELETE",
       });
 
-      const payload = (await response.json()) as {
+      const payload = await parseApiResponse<{
         message?: string;
         success?: boolean;
-      };
+      }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to delete assessment center.");
@@ -274,11 +275,11 @@ export default function AdminAssessmentCenterPage() {
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as {
+      const payload = await parseApiResponse<{
         center?: AssessmentCenter;
         message?: string;
         success?: boolean;
-      };
+      }>(response);
 
       if (!response.ok || !payload.success || !payload.center) {
         throw new Error(payload.message ?? "Unable to update assessment center.");

@@ -42,43 +42,47 @@ function getUserAvatarUrl(user: {
 }
 
 export async function getCurrentAppUser(): Promise<CurrentAppUser | null> {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  try {
+    const cookieStore = await cookies();
+    const accessToken = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
-  if (!accessToken) {
-    return null;
-  }
-
-  const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase.auth.getUser(accessToken);
-
-  if (error || !data.user?.id || !data.user.email) {
-    return null;
-  }
-
-  const metadataRole = getUserRoleFromMetadata(data.user);
-  const role =
-    metadataRole !== "unknown"
-      ? metadataRole
-      : await getUserRoleFromRoleTable(data.user.email, accessToken);
-
-  if (role === "unknown") {
-    return null;
-  }
-
-  if (role === "teacher") {
-    const approvalStatus = await getUserApprovalStatusFromProfile(data.user.email, accessToken);
-
-    if (approvalStatus === "pending_review" || approvalStatus === "rejected") {
+    if (!accessToken) {
       return null;
     }
-  }
 
-  return {
-    accessToken,
-    avatarUrl: getUserAvatarUrl(data.user),
-    email: data.user.email,
-    id: data.user.id,
-    role,
-  };
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase.auth.getUser(accessToken);
+
+    if (error || !data.user?.id || !data.user.email) {
+      return null;
+    }
+
+    const metadataRole = getUserRoleFromMetadata(data.user);
+    const role =
+      metadataRole !== "unknown"
+        ? metadataRole
+        : await getUserRoleFromRoleTable(data.user.email, accessToken);
+
+    if (role === "unknown") {
+      return null;
+    }
+
+    if (role === "teacher") {
+      const approvalStatus = await getUserApprovalStatusFromProfile(data.user.email, accessToken);
+
+      if (approvalStatus === "pending_review" || approvalStatus === "rejected") {
+        return null;
+      }
+    }
+
+    return {
+      accessToken,
+      avatarUrl: getUserAvatarUrl(data.user),
+      email: data.user.email,
+      id: data.user.id,
+      role,
+    };
+  } catch {
+    return null;
+  }
 }

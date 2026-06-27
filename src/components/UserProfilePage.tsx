@@ -6,6 +6,7 @@ import AnimatedModal from "@/components/AnimatedModal";
 import NotificationModal from "@/components/notifications/NotificationModal";
 import type { CurrentAppUser } from "@/lib/current-user";
 import type { UserProfileView } from "@/lib/user-profile";
+import { parseApiResponse } from "@/lib/api-response";
 
 type UserProfilePageProps = {
   currentUser: CurrentAppUser;
@@ -137,7 +138,7 @@ export default function UserProfilePage({ currentUser, profileView }: UserProfil
         method: "PATCH",
       });
 
-      const result = (await response.json()) as { message?: string; success?: boolean };
+      const result = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !result.success) {
         throw new Error(result.message ?? "Unable to update your account right now.");

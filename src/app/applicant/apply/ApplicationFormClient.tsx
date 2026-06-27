@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, type ReactNode } from "react";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationModal from "@/components/notifications/NotificationModal";
+import { parseApiResponse } from "@/lib/api-response";
 import {
   assessmentTypeOptions,
   civilStatusOptions,
@@ -11,15 +12,18 @@ import {
   createEmptyApplicationFormData,
   educationalAttainmentOptions,
   employmentStatusOptions,
+  MAX_REPEATABLE_ENTRIES,
   normalizeApplicationFormData,
   sexOptions,
   type ApplicantApplicationFormData,
   type ApplicationSubmissionRecord,
   type CompetencyAssessmentItem,
   type LicensureExamItem,
+  type SagAnswerValue,
   type TrainingItem,
   type WorkExperienceItem,
 } from "@/lib/application-form";
+import { getSagFormDefinition, type SagFormDefinition, type SagQuestionDefinition, type SagUnitDefinition } from "@/lib/sag-form-schema";
 import type { ApplicantProfileDefaults } from "@/lib/user-profile";
 
 type ApplicationMode = "individual" | "room";
@@ -32,6 +36,7 @@ type ApplicantApplicationFormClientProps = {
   mode: ApplicationMode;
   qualificationOptions: string[];
   readOnlyMessage?: string | null;
+  sagForms: SagFormDefinition[];
   room:
     | {
         id: string;
@@ -54,6 +59,7 @@ type RepeaterSectionProps<T extends { [key: string]: string }> = {
   disabled?: boolean;
   fields: Array<{ key: keyof T; label: string; placeholder?: string; type?: "date" | "text" }>;
   items: T[];
+  maxEntries?: number;
   onAdd: () => void;
   onChange: (index: number, key: keyof T, value: string) => void;
   onRemove: (index: number) => void;
@@ -123,6 +129,7 @@ function mergeInitialFormData(
   applicantProfile: ApplicantProfileDefaults | null,
   existingSubmission: ApplicationSubmissionRecord | null,
   room: ApplicantApplicationFormClientProps["room"],
+  sagForms: SagFormDefinition[],
 ) {
   const emptyState = createEmptyApplicationFormData();
   const existingFormData = existingSubmission ? normalizeApplicationFormData(existingSubmission.form_data) : emptyState;
@@ -151,10 +158,61 @@ function mergeInitialFormData(
       existingFormData.competencyAssessments.length > 0
         ? existingFormData.competencyAssessments
         : [emptyCompetencyAssessmentItem()],
+    sagAnswers: normalizeSagAnswersForQualification(
+      room?.qualification || existingFormData.qualificationTitle || "",
+      existingFormData.sagAnswers,
+      sagForms,
+    ),
   } satisfies ApplicantApplicationFormData;
 }
 
-const formSteps: FormStep[] = [
+function buildFormSteps(sagForm: SagFormDefinition | null) {
+  const reviewStep = baseFormSteps[baseFormSteps.length - 1];
+  const leadingSteps = baseFormSteps.slice(0, -1);
+
+  if (!sagForm) {
+    return [...baseFormSteps];
+  }
+
+  return [
+    ...leadingSteps,
+    {
+      id: "sag",
+      title: "Self-Assessment Guide",
+      description: `${sagForm.qualificationTitle} YES / NO checklist from the SAG PDF.`,
+    },
+    reviewStep,
+  ];
+}
+
+function getSagQuestionIds(sagForm: SagFormDefinition) {
+  return sagForm.units.flatMap((unit) => unit.questions.map((question) => question.id));
+}
+
+function normalizeSagAnswersForQualification(
+  qualificationTitle: string,
+  sagAnswers: ApplicantApplicationFormData["sagAnswers"],
+  sagForms: SagFormDefinition[],
+) {
+  const sagForm = getSagFormDefinition(sagForms, qualificationTitle);
+
+  if (!sagForm) {
+    return {};
+  }
+
+  return Object.fromEntries(
+    getSagQuestionIds(sagForm).map((questionId) => {
+      const answer = sagAnswers[questionId];
+      return [questionId, answer === "yes" || answer === "no" ? answer : ""];
+    }),
+  ) as ApplicantApplicationFormData["sagAnswers"];
+}
+
+function hasIncompleteSagAnswers(sagForm: SagFormDefinition, sagAnswers: ApplicantApplicationFormData["sagAnswers"]) {
+  return getSagQuestionIds(sagForm).some((questionId) => sagAnswers[questionId] !== "yes" && sagAnswers[questionId] !== "no");
+}
+
+const baseFormSteps: FormStep[] = [
   {
     id: "assessment",
     title: "Assessment Details",
@@ -195,11 +253,12 @@ export default function ApplicantApplicationFormClient({
   mode,
   qualificationOptions,
   readOnlyMessage = null,
+  sagForms,
   room,
 }: ApplicantApplicationFormClientProps) {
   const initialFormData = useMemo(
-    () => mergeInitialFormData(applicantEmail, applicantProfile, existingSubmission, room),
-    [applicantEmail, applicantProfile, existingSubmission, room],
+    () => mergeInitialFormData(applicantEmail, applicantProfile, existingSubmission, room, sagForms),
+    [applicantEmail, applicantProfile, existingSubmission, room, sagForms],
   );
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialFormData);
@@ -207,9 +266,15 @@ export default function ApplicantApplicationFormClient({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedSubmissionId, setSavedSubmissionId] = useState(existingSubmission?.id ?? null);
   const [successMessage, setSuccessMessage] = useState("");
-  const activeStep = formSteps[currentStep];
-  const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === formSteps.length - 1;
+  const sagForm = useMemo(
+    () => getSagFormDefinition(sagForms, formData.qualificationTitle),
+    [formData.qualificationTitle, sagForms],
+  );
+  const formSteps = useMemo(() => buildFormSteps(sagForm), [sagForm]);
+  const resolvedCurrentStep = Math.min(currentStep, formSteps.length - 1);
+  const activeStep = formSteps[resolvedCurrentStep];
+  const isFirstStep = resolvedCurrentStep === 0;
+  const isLastStep = resolvedCurrentStep === formSteps.length - 1;
   const qualificationSelectOptions =
     formData.qualificationTitle &&
     !qualificationOptions.some((option) => option === formData.qualificationTitle)
@@ -226,6 +291,15 @@ export default function ApplicantApplicationFormClient({
     setFormData((current) => ({
       ...current,
       [key]: value,
+      ...(key === "qualificationTitle"
+        ? {
+            sagAnswers: normalizeSagAnswersForQualification(
+              value as ApplicantApplicationFormData["qualificationTitle"],
+              current.sagAnswers,
+              sagForms,
+            ),
+          }
+        : {}),
     }));
   }
 
@@ -235,6 +309,17 @@ export default function ApplicantApplicationFormClient({
       middleName: value,
       middleInitial: extractMiddleInitial(value),
     }));
+  }
+
+  function updateSagAnswer(questionId: string, value: SagAnswerValue) {
+    setFormData((current) => ({
+      ...current,
+      sagAnswers: {
+        ...current.sagAnswers,
+        [questionId]: value,
+      },
+    }));
+    setErrorMessage("");
   }
 
   function updateMailingAddressField(key: keyof ApplicantApplicationFormData["mailingAddress"], value: string) {
@@ -276,7 +361,7 @@ export default function ApplicantApplicationFormClient({
   ) {
     setFormData((current) => ({
       ...current,
-      [key]: [...current[key], itemFactory()],
+      [key]: current[key].length >= MAX_REPEATABLE_ENTRIES ? current[key] : [...current[key], itemFactory()],
     }));
   }
 
@@ -300,8 +385,13 @@ export default function ApplicantApplicationFormClient({
   }
 
   function jumpToStep(stepIndex: number) {
-    setCurrentStep(stepIndex);
+    setCurrentStep(Math.max(0, Math.min(stepIndex, formSteps.length - 1)));
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleStepNavigationClick(event: React.MouseEvent<HTMLButtonElement>, action: () => void) {
+    event.preventDefault();
+    action();
   }
 
   function goToNextStep() {
@@ -309,7 +399,12 @@ export default function ApplicantApplicationFormClient({
       return;
     }
 
-    jumpToStep(currentStep + 1);
+    if (activeStep.id === "sag" && sagForm && hasIncompleteSagAnswers(sagForm, formData.sagAnswers)) {
+      setErrorMessage("Please answer all YES / NO items in the Self-Assessment Guide before continuing.");
+      return;
+    }
+
+    jumpToStep(resolvedCurrentStep + 1);
   }
 
   function goToPreviousStep() {
@@ -317,11 +412,16 @@ export default function ApplicantApplicationFormClient({
       return;
     }
 
-    jumpToStep(currentStep - 1);
+    jumpToStep(resolvedCurrentStep - 1);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (sagForm && hasIncompleteSagAnswers(sagForm, formData.sagAnswers)) {
+      setErrorMessage("Please answer all YES / NO items in the Self-Assessment Guide before submitting.");
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage("");
@@ -341,7 +441,7 @@ export default function ApplicantApplicationFormClient({
         }),
       });
 
-      const payload = (await response.json()) as SubmissionResponse;
+      const payload = await parseApiResponse<SubmissionResponse>(response);
 
       if (!response.ok || !payload.success) {
         setErrorMessage(payload.message ?? "Unable to submit the application form.");
@@ -361,11 +461,8 @@ export default function ApplicantApplicationFormClient({
     switch (activeStep.id) {
       case "assessment":
         return (
-          <SectionCard
-            description="Start with the assessment title, school or training center details, and the route this form will follow."
-            title="Assessment Details"
-          >
-            <SubsectionCard description="Core application details used to route and label the PDF correctly." title="Application Info">
+          <SectionCard title="Assessment Details">
+            <SubsectionCard title="Application Info">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <TextField
                   disabled={isReadOnly}
@@ -400,7 +497,7 @@ export default function ApplicantApplicationFormClient({
               />
             </SubsectionCard>
 
-            <SubsectionCard description="Choose how this application should be classified before submission." title="Classification">
+            <SubsectionCard title="Classification">
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                 <OptionGroup
                   columnsClassName="grid-cols-1 sm:grid-cols-3"
@@ -425,11 +522,8 @@ export default function ApplicantApplicationFormClient({
         );
       case "identity":
         return (
-          <SectionCard
-            description="Fill in the applicant name block and mailing address. These fields help position the PDF output correctly."
-            title="Applicant Identity"
-          >
-            <SubsectionCard description="Keep the applicant name grouped together so it reads like one identity block." title="Full Name">
+          <SectionCard title="Applicant Identity">
+            <SubsectionCard title="Full Name">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <TextField
                   disabled={isReadOnly}
@@ -472,7 +566,7 @@ export default function ApplicantApplicationFormClient({
               </div>
             </SubsectionCard>
 
-            <SubsectionCard description="Address fields are grouped in a simple location flow from street down to region and zip code." title="Mailing Address">
+            <SubsectionCard title="Mailing Address">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 <TextField
                   disabled={isReadOnly}
@@ -529,11 +623,8 @@ export default function ApplicantApplicationFormClient({
         );
       case "personal":
         return (
-          <SectionCard
-            description="Add contact details plus the applicant profile choices from the official TESDA form."
-            title="Contact And Personal Info"
-          >
-            <SubsectionCard description="Primary ways to contact the applicant are grouped together in one place." title="Contact Details">
+          <SectionCard title="Contact And Personal Info">
+            <SubsectionCard title="Contact Details">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <TextField
                   disabled={isReadOnly}
@@ -577,7 +668,7 @@ export default function ApplicantApplicationFormClient({
               </div>
             </SubsectionCard>
 
-            <SubsectionCard description="Personal profile selections are grouped by category so they are easier to scan." title="Profile Details">
+            <SubsectionCard title="Profile Details">
               <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
                 <OptionGroup
                   columnsClassName="grid-cols-2"
@@ -625,7 +716,7 @@ export default function ApplicantApplicationFormClient({
               </div>
             </SubsectionCard>
 
-            <SubsectionCard description="Birth information stays together in one compact row for faster completion." title="Birth Information">
+            <SubsectionCard title="Birth Information">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <TextField
                   disabled={isReadOnly}
@@ -658,6 +749,7 @@ export default function ApplicantApplicationFormClient({
             <RepeaterSection
               addButtonLabel="Add Work Experience"
               disabled={isReadOnly}
+              maxEntries={MAX_REPEATABLE_ENTRIES}
               fields={[
                 { key: "companyName", label: "Company Name", placeholder: "Company or employer" },
                 { key: "position", label: "Position", placeholder: "Job title" },
@@ -678,6 +770,7 @@ export default function ApplicantApplicationFormClient({
             <RepeaterSection
               addButtonLabel="Add Training"
               disabled={isReadOnly}
+              maxEntries={MAX_REPEATABLE_ENTRIES}
               fields={[
                 { key: "title", label: "Title", placeholder: "Training or seminar title" },
                 { key: "venue", label: "Venue", placeholder: "Venue" },
@@ -699,6 +792,7 @@ export default function ApplicantApplicationFormClient({
             <RepeaterSection
               addButtonLabel="Add Licensure Exam"
               disabled={isReadOnly}
+              maxEntries={MAX_REPEATABLE_ENTRIES}
               fields={[
                 { key: "title", label: "Title", placeholder: "Licensure exam title" },
                 { key: "yearTaken", label: "Year Taken", placeholder: "Year taken" },
@@ -719,6 +813,7 @@ export default function ApplicantApplicationFormClient({
             <RepeaterSection
               addButtonLabel="Add Competency Assessment"
               disabled={isReadOnly}
+              maxEntries={MAX_REPEATABLE_ENTRIES}
               fields={[
                 { key: "title", label: "Title", placeholder: "Assessment title" },
                 { key: "qualificationLevel", label: "Qualification Level", placeholder: "Qualification level" },
@@ -737,13 +832,78 @@ export default function ApplicantApplicationFormClient({
             />
           </div>
         );
+      case "sag":
+        return sagForm ? (
+          <SectionCard title="Self-Assessment Guide">
+            <div className="mb-1 rounded-lg border border-[#c8d5ee] bg-[#f8fbff] px-4 py-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]">
+              <div className="space-y-2 text-[14px] leading-[1.7] text-[#1f2937]">
+                {sagForm.instructionLines.map((line, index) => (
+                  <p
+                    className={index === 0 ? "font-semibold text-[#002576]" : ""}
+                    key={`sag-instruction-${line}`}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {sagForm.units.map((unit) => (
+              <SubsectionCard
+                key={unit.id}
+                title={`Unit of Competency: ${formatSagDisplayText(unit.title)}`}
+              >
+                <div className="space-y-4">
+                  <div className="hidden grid-cols-[minmax(0,1fr)_72px_72px] gap-3 border-b border-[#e7edf4] pb-3 text-[12px] font-bold uppercase tracking-[0.04em] text-[#4c5e7a] sm:grid">
+                    <span>Can I?</span>
+                    <span className="text-center">Yes</span>
+                    <span className="text-center">No</span>
+                  </div>
+
+                  <div className="divide-y divide-[#e7edf4] border-t border-[#e7edf4]">
+                    {unit.questions.map((question) => (
+                      <SagQuestionRow
+                        answer={formData.sagAnswers[question.id] ?? ""}
+                        disabled={isReadOnly}
+                        key={question.id}
+                        question={question}
+                        onChange={(value) => updateSagAnswer(question.id, value)}
+                      />
+                    ))}
+                  </div>
+
+                </div>
+              </SubsectionCard>
+            ))}
+
+            <div className="border-t border-[#e7edf4] pt-4">
+              <p className="text-[13px] leading-[1.6] text-[#44506a]">{sagForm.agreementText}</p>
+              <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
+                {sagForm.candidateFieldLabel ? (
+                  <TextField
+                    disabled
+                    label={sagForm.candidateFieldLabel}
+                    onChange={() => undefined}
+                    uppercase={false}
+                    value={sagForm.shouldAutofillCandidateName ? buildApplicantDisplayName(formData) : ""}
+                  />
+                ) : null}
+                <TextField
+                  disabled
+                  label="Date"
+                  onChange={() => undefined}
+                  type="date"
+                  uppercase={false}
+                  value={formData.applicationDate}
+                />
+              </div>
+            </div>
+          </SectionCard>
+        ) : null;
       default:
         return (
           <div className="space-y-4">
-            <SectionCard
-              description="Fields are temporarily optional so you can test the generated PDF faster. Fill only what you need for the current check."
-              title="Review And Submit"
-            >
+            <SectionCard title="Review And Submit">
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
                 <ReviewPanel
                   rows={[
@@ -813,6 +973,9 @@ export default function ApplicantApplicationFormClient({
                     ["Training Entries", String(countFilledEntries(formData.trainings))],
                     ["Licensure Entries", String(countFilledEntries(formData.licensureExams))],
                     ["Competency Entries", String(countFilledEntries(formData.competencyAssessments))],
+                    ["SAG Form", sagForm ? sagForm.qualificationTitle : "Not required for this assessment"],
+                    ["SAG YES Answers", sagForm ? String(countSagAnswers(formData.sagAnswers, sagForm, "yes")) : "0"],
+                    ["SAG NO Answers", sagForm ? String(countSagAnswers(formData.sagAnswers, sagForm, "no")) : "0"],
                   ]}
                   title="PDF Coverage"
                 />
@@ -838,6 +1001,16 @@ export default function ApplicantApplicationFormClient({
                 items={buildCompetencyReviewItems(formData.competencyAssessments)}
                 title="Competency Assessment(s) Passed"
               />
+              {sagForm
+                ? sagForm.units.map((unit) => (
+                    <ReviewListPanel
+                      emptyLabel="No answers recorded yet."
+                      items={buildSagReviewItems(unit, formData.sagAnswers)}
+                      key={unit.id}
+                      title={`SAG - ${formatSagDisplayText(unit.title)}`}
+                    />
+                  ))
+                : null}
             </SectionCard>
           </div>
         );
@@ -865,8 +1038,8 @@ export default function ApplicantApplicationFormClient({
           <div className="rounded-xl border border-[#d7e3fb] bg-white px-3.5 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)]">
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               {formSteps.map((step, index) => {
-                const isActive = index === currentStep;
-                const isComplete = index < currentStep;
+                const isActive = index === resolvedCurrentStep;
+                const isComplete = index < resolvedCurrentStep;
 
                 return (
                   <button
@@ -879,7 +1052,8 @@ export default function ApplicantApplicationFormClient({
                           ? "border-[#9dbaf3] bg-[#e7f0ff] text-[#093cab] hover:bg-[#dbe8ff]"
                           : "border-[#d1dbef] bg-white text-[#5f6b85] hover:border-[#a8bde8] hover:bg-[#f8fbff]"
                     }`}
-                    onClick={() => jumpToStep(index)}
+                    onClick={(event) => handleStepNavigationClick(event, () => jumpToStep(index))}
+                    suppressHydrationWarning
                     type="button"
                   >
                     {index + 1}
@@ -912,7 +1086,8 @@ export default function ApplicantApplicationFormClient({
                 <button
                   className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff] disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={isFirstStep}
-                  onClick={goToPreviousStep}
+                  onClick={(event) => handleStepNavigationClick(event, goToPreviousStep)}
+                  suppressHydrationWarning
                   type="button"
                 >
                   Back
@@ -921,7 +1096,8 @@ export default function ApplicantApplicationFormClient({
                 {!isLastStep ? (
                   <button
                     className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8]"
-                    onClick={goToNextStep}
+                    onClick={(event) => handleStepNavigationClick(event, goToNextStep)}
+                    suppressHydrationWarning
                     type="button"
                   >
                     Next Step
@@ -930,6 +1106,7 @@ export default function ApplicantApplicationFormClient({
                   <button
                     className="inline-flex min-h-[44px] min-w-[132px] items-center justify-center rounded-lg bg-[#002576] px-4 text-[14px] font-bold text-white shadow-[0_8px_18px_rgba(15,23,42,0.08)] transition hover:bg-[#0038a8] disabled:cursor-not-allowed disabled:bg-[#9aa6c7]"
                     disabled={isReadOnly || isSubmitting}
+                    suppressHydrationWarning
                     type={isReadOnly ? "button" : "submit"}
                   >
                     {isReadOnly ? "Locked" : isSubmitting ? "Submitting..." : "Submit"}
@@ -943,7 +1120,7 @@ export default function ApplicantApplicationFormClient({
                 View submitted forms
               </Link>
               <p className="text-[12px] text-[#6b7892]">
-                Step {currentStep + 1} of {formSteps.length}
+                Step {resolvedCurrentStep + 1} of {formSteps.length}
               </p>
             </div>
           </div>
@@ -1057,6 +1234,7 @@ function TextField({
         onChange={(event) => onChange(shouldUppercase ? event.target.value.toUpperCase() : event.target.value)}
         placeholder={placeholder}
         readOnly={readOnly}
+        suppressHydrationWarning
         type={type}
         value={displayValue}
       />
@@ -1087,6 +1265,7 @@ function SelectField({
           className="min-h-[44px] w-full appearance-none rounded-lg border border-[#c8d5ee] bg-white px-3.5 py-2.5 pr-10 text-[14px] text-[#0b1c30] outline-none transition focus:border-[#002576] focus:bg-[#fbfdff] focus:ring-2 focus:ring-[#3056c4]/15 disabled:cursor-not-allowed disabled:bg-[#eef3ff] disabled:text-[#63718b]"
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
+          suppressHydrationWarning
           value={value}
         >
           <option value="">{placeholder}</option>
@@ -1137,6 +1316,7 @@ function OptionGroup({
               } disabled:cursor-not-allowed disabled:opacity-70`}
               disabled={disabled}
               onClick={() => onChange(option)}
+              suppressHydrationWarning
               type="button"
             >
               {option}
@@ -1153,14 +1333,16 @@ function RepeaterSection<T extends { [key: string]: string }>({
   disabled = false,
   fields,
   items,
+  maxEntries,
   onAdd,
   onChange,
   onRemove,
   title,
 }: RepeaterSectionProps<T>) {
+  const isAddDisabled = disabled || (typeof maxEntries === "number" && items.length >= maxEntries);
+
   return (
     <SectionCard
-      description="Add as many rows as you need. Leaving sections blank is okay while you test the generated PDF."
       title={title}
     >
       <div className="space-y-3">
@@ -1172,6 +1354,7 @@ function RepeaterSection<T extends { [key: string]: string }>({
                 className="inline-flex min-h-[36px] items-center rounded-lg border border-[#e4bcbc] bg-white px-3 text-[12px] font-bold text-[#b24c4c] transition hover:bg-[#fff4f4]"
                 disabled={disabled}
                 onClick={() => onRemove(index)}
+                suppressHydrationWarning
                 type="button"
               >
                 Remove
@@ -1197,8 +1380,9 @@ function RepeaterSection<T extends { [key: string]: string }>({
 
       <button
         className="inline-flex min-h-[40px] items-center rounded-lg border border-[#002576] px-4 text-[14px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-        disabled={disabled}
+        disabled={isAddDisabled}
         onClick={onAdd}
+        suppressHydrationWarning
         type="button"
       >
         {addButtonLabel}
@@ -1207,15 +1391,27 @@ function RepeaterSection<T extends { [key: string]: string }>({
   );
 }
 
-function ReviewPanel({ rows, title }: { rows: [string, string][]; title: string }) {
+function ReviewPanel({
+  description,
+  rows,
+  title,
+}: {
+  description?: string;
+  rows: [string, string][];
+  title: string;
+}) {
   return (
-    <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3.5">
+    <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <p className="text-[14px] font-bold text-[#002576]">{title}</p>
-      <div className="mt-2.5 space-y-2.5">
+      {description ? <p className="mt-1.5 text-[12px] leading-[1.6] text-[#5d6b84]">{description}</p> : null}
+      <div className="mt-3 space-y-2.5">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex items-start justify-between gap-3 border-b border-[#edf2fd] pb-2.5 last:border-b-0 last:pb-0">
-            <span className="text-[12px] font-semibold text-[#5d6b84]">{label}</span>
-            <span className="text-right text-[13px] font-medium text-[#0b1c30]">{value}</span>
+          <div
+            key={label}
+            className="grid grid-cols-1 gap-1.5 border-b border-[#edf2fd] pb-2.5 last:border-b-0 last:pb-0 sm:grid-cols-[minmax(0,168px)_minmax(0,1fr)] sm:items-start sm:gap-3"
+          >
+            <span className="text-[12px] font-bold uppercase tracking-[0.04em] text-[#5d6b84]">{label}</span>
+            <span className="break-words text-[14px] font-medium text-[#0b1c30] sm:text-right">{value}</span>
           </div>
         ))}
       </div>
@@ -1224,29 +1420,81 @@ function ReviewPanel({ rows, title }: { rows: [string, string][]; title: string 
 }
 
 function ReviewListPanel({
+  description,
   emptyLabel,
   items,
   title,
 }: {
+  description?: string;
   emptyLabel: string;
   items: string[];
   title: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3.5">
+    <div className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3.5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <p className="text-[14px] font-bold text-[#002576]">{title}</p>
+      {description ? <p className="mt-1.5 text-[12px] leading-[1.6] text-[#5d6b84]">{description}</p> : null}
       {items.length === 0 ? (
         <p className="mt-2.5 text-[13px] text-[#5d6b84]">{emptyLabel}</p>
       ) : (
-        <div className="mt-2.5 space-y-2.5">
+        <div className="mt-3 space-y-2.5">
           {items.map((item, index) => (
-            <div key={`${title}-${index}`} className="rounded-md border border-[#edf2fd] bg-[#fbfdff] px-3 py-2.5">
+            <div
+              key={`${title}-${index}`}
+              className="rounded-lg border border-[#e3ebfb] bg-[#fbfdff] px-3.5 py-3"
+            >
               <p className="text-[12px] font-bold uppercase tracking-[0.08em] text-[#4563a5]">Entry {index + 1}</p>
-              <p className="mt-1.5 text-[13px] leading-[1.55] text-[#0b1c30]">{item}</p>
+              <p className="mt-1.5 text-[13px] leading-[1.65] text-[#0b1c30]">{item}</p>
             </div>
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function SagQuestionRow({
+  answer,
+  disabled,
+  onChange,
+  question,
+}: {
+  answer: SagAnswerValue;
+  disabled: boolean;
+  onChange: (value: SagAnswerValue) => void;
+  question: SagQuestionDefinition;
+}) {
+  return (
+    <div className="py-3">
+      <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[minmax(0,1fr)_72px_72px] sm:items-center">
+        <p className="text-[13px] leading-[1.6] text-[#0b1c30]">{formatSagDisplayText(question.text)}</p>
+        <button
+          className={`inline-flex min-h-[38px] items-center justify-center rounded-lg border px-3 text-[13px] font-semibold transition ${
+            answer === "yes"
+              ? "border-[#002576] bg-[#002576] text-white"
+              : "border-[#c8d5ee] bg-white text-[#24364c] hover:border-[#8ea8e6] hover:bg-[#f8fbff]"
+          } disabled:cursor-not-allowed disabled:opacity-70`}
+          disabled={disabled}
+          onClick={() => onChange("yes")}
+          suppressHydrationWarning
+          type="button"
+        >
+          Yes
+        </button>
+        <button
+          className={`inline-flex min-h-[38px] items-center justify-center rounded-lg border px-3 text-[13px] font-semibold transition ${
+            answer === "no"
+              ? "border-[#b42318] bg-[#b42318] text-white"
+              : "border-[#c8d5ee] bg-white text-[#24364c] hover:border-[#e4bcbc] hover:bg-[#fff8f8]"
+          } disabled:cursor-not-allowed disabled:opacity-70`}
+          disabled={disabled}
+          onClick={() => onChange("no")}
+          suppressHydrationWarning
+          type="button"
+        >
+          No
+        </button>
+      </div>
     </div>
   );
 }
@@ -1260,12 +1508,24 @@ function formatReviewValue(value: string, fallback = "Not provided yet") {
   return trimmed || fallback;
 }
 
+function formatSagDisplayText(value: string) {
+  return value.replace(/\s*\*+\s*$/g, "").trim();
+}
+
 function hasFilledFields(item: Record<string, string>) {
   return Object.values(item).some((value) => value.trim().length > 0);
 }
 
 function joinReviewParts(parts: Array<string | false>) {
   return parts.filter(Boolean).join(" | ");
+}
+
+function buildApplicantDisplayName(formData: ApplicantApplicationFormData) {
+  return [formData.firstName, formData.middleName, formData.surname, formData.nameExtension]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function buildWorkExperienceReviewItems(items: WorkExperienceItem[]) {
@@ -1325,6 +1585,23 @@ function buildCompetencyReviewItems(items: CompetencyAssessmentItem[]) {
         item.expirationDate && `Expires: ${item.expirationDate}`,
       ]),
     );
+}
+
+function countSagAnswers(
+  sagAnswers: ApplicantApplicationFormData["sagAnswers"],
+  sagForm: SagFormDefinition,
+  value: Exclude<SagAnswerValue, "">,
+) {
+  return getSagQuestionIds(sagForm).filter((questionId) => sagAnswers[questionId] === value).length;
+}
+
+function buildSagReviewItems(
+  unit: SagUnitDefinition,
+  sagAnswers: ApplicantApplicationFormData["sagAnswers"],
+) {
+  return unit.questions
+    .filter((question) => sagAnswers[question.id] === "yes" || sagAnswers[question.id] === "no")
+    .map((question) => `${formatSagDisplayText(question.text)} | ${sagAnswers[question.id] === "yes" ? "YES" : "NO"}`);
 }
 
 function calculateAge(dateOfBirth: string) {

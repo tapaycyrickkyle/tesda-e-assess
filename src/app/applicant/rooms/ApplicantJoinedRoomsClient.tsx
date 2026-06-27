@@ -7,6 +7,7 @@ import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import type { ApplicationSubmissionStatus } from "@/lib/application-form";
+import { parseApiResponse } from "@/lib/api-response";
 
 type JoinedRoomCard = {
   assessmentCenterName: string | null;
@@ -172,7 +173,7 @@ export default function ApplicantJoinedRoomsClient({
         method: "DELETE",
       });
 
-      const payload = (await response.json()) as LeaveRoomResponse;
+      const payload = await parseApiResponse<LeaveRoomResponse>(response);
 
       if (!response.ok || !payload.success || !payload.membershipId) {
         throw new Error(payload.message ?? "Unable to leave this room right now.");

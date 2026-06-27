@@ -50,44 +50,48 @@ export async function resolveAssessmentCenterForUser<TRecord extends AssessmentC
   currentUser: Pick<CurrentAppUser, "email" | "id">,
   selectFields: string,
 ): Promise<AssessmentCenterLookupResult<TRecord>> {
-  const adminSupabase = createSupabaseAdminClient();
-  const normalizedEmail = currentUser.email.trim().toLowerCase();
+  try {
+    const adminSupabase = createSupabaseAdminClient();
+    const normalizedEmail = currentUser.email.trim().toLowerCase();
 
-  const { data: centerByAuthId, error: centerByAuthIdError } = await adminSupabase
-    .from("assessment_centers")
-    .select(selectFields)
-    .eq("center_auth_user_id", currentUser.id)
-    .maybeSingle();
+    const { data: centerByAuthId, error: centerByAuthIdError } = await adminSupabase
+      .from("assessment_centers")
+      .select(selectFields)
+      .eq("center_auth_user_id", currentUser.id)
+      .maybeSingle();
 
-  if (centerByAuthIdError) {
-    throw new Error("Unable to load the linked assessment center record.");
-  }
+    if (centerByAuthIdError) {
+      return { center: null, status: "not_found" };
+    }
 
-  const typedCenterByAuthId = coerceAssessmentCenterLookupRecord<TRecord>(centerByAuthId);
+    const typedCenterByAuthId = coerceAssessmentCenterLookupRecord<TRecord>(centerByAuthId);
 
-  if (typedCenterByAuthId) {
-    return { center: typedCenterByAuthId, status: "linked" };
-  }
+    if (typedCenterByAuthId) {
+      return { center: typedCenterByAuthId, status: "linked" };
+    }
 
-  const { data: centerByEmail, error: centerByEmailError } = await adminSupabase
-    .from("assessment_centers")
-    .select(selectFields)
-    .eq("center_email", normalizedEmail)
-    .maybeSingle();
+    const { data: centerByEmail, error: centerByEmailError } = await adminSupabase
+      .from("assessment_centers")
+      .select(selectFields)
+      .eq("center_email", normalizedEmail)
+      .maybeSingle();
 
-  if (centerByEmailError) {
-    throw new Error("Unable to load the linked assessment center record.");
-  }
+    if (centerByEmailError) {
+      return { center: null, status: "not_found" };
+    }
 
-  const typedCenterByEmail = coerceAssessmentCenterLookupRecord<TRecord>(centerByEmail);
+    const typedCenterByEmail = coerceAssessmentCenterLookupRecord<TRecord>(centerByEmail);
 
-  if (!typedCenterByEmail) {
+    if (!typedCenterByEmail) {
+      return { center: null, status: "not_found" };
+    }
+
+    if (typedCenterByEmail.center_auth_user_id && typedCenterByEmail.center_auth_user_id !== currentUser.id) {
+      return { center: null, status: "email_conflict" };
+    }
+
+    return { center: typedCenterByEmail, status: "legacy_email_match" };
+  } catch {
     return { center: null, status: "not_found" };
   }
-
-  if (typedCenterByEmail.center_auth_user_id && typedCenterByEmail.center_auth_user_id !== currentUser.id) {
-    return { center: null, status: "email_conflict" };
-  }
-
-  return { center: typedCenterByEmail, status: "legacy_email_match" };
 }

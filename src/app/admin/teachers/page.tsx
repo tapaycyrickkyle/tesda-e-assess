@@ -3,6 +3,7 @@
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { useEffect, useMemo, useState } from "react";
+import { parseApiResponse } from "@/lib/api-response";
 
 type ApprovalStatus = "approved" | "pending_review" | "rejected";
 type InstitutionType = "private" | "public";
@@ -96,11 +97,11 @@ export default function AdminTeacherApprovalsPage() {
         const response = await fetch("/api/admin/teacher-approvals", {
           credentials: "same-origin",
         });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           message?: string;
           requests?: TeacherApprovalRecord[];
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load teacher approval requests.");
@@ -198,11 +199,11 @@ export default function AdminTeacherApprovalsPage() {
         },
         method: "PATCH",
       });
-      const payload = (await response.json()) as {
+      const payload = await parseApiResponse<{
         message?: string;
         request?: TeacherApprovalRecord;
         success?: boolean;
-      };
+      }>(response);
 
       if (!response.ok || !payload.success || !payload.request) {
         throw new Error(payload.message ?? "Unable to update the teacher approval.");

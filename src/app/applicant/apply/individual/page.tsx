@@ -5,8 +5,9 @@ import {
   getSubmissionAssignmentInfoByIds,
   getApplicantSubmissionEditLock,
 } from "@/lib/application-submission-lifecycle";
-import { loadActiveProgramTitles } from "@/lib/programs";
+import { loadSagProgramTitles } from "@/lib/programs";
 import { requireCurrentAppUserRole } from "@/lib/server-auth";
+import { loadSagFormDefinitions } from "@/lib/sag-forms";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { loadApplicantProfileDefaults } from "@/lib/user-profile";
 
@@ -27,7 +28,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
   const isRoomApplication = Boolean(roomId?.trim());
   const supabase = createSupabaseAdminClient();
   const applicantProfile = await loadApplicantProfileDefaults(currentUser);
-  const qualificationOptions = await loadActiveProgramTitles();
+  const [qualificationOptions, sagForms] = await Promise.all([loadSagProgramTitles(), loadSagFormDefinitions()]);
 
   let room: { id: string; join_code: string; name: string; qualification: string } | null = null;
 
@@ -61,6 +62,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
         mode={isRoomApplication ? "room" : "individual"}
         qualificationOptions={qualificationOptions}
         readOnlyMessage={null}
+        sagForms={sagForms}
         room={room}
       />
     );
@@ -115,6 +117,7 @@ export default async function IndividualApplicationPage({ searchParams }: Indivi
       mode={isRoomApplication ? "room" : "individual"}
       qualificationOptions={qualificationOptions}
       readOnlyMessage={editLock.message}
+      sagForms={sagForms}
       room={room}
     />
   );

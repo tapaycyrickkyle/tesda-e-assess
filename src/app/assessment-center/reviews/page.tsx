@@ -2,12 +2,13 @@
 
 import { usePathname } from "next/navigation";
 import AnimatedModal from "@/components/AnimatedModal";
+import PdfActionsMenu from "@/components/PdfActionsMenu";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import { useEffect, useMemo, useState } from "react";
 import { formatAssessmentDate } from "@/lib/assessment-date";
-import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
+import { parseApiResponse } from "@/lib/api-response";
 
 type AssignedApplicant = {
   applicant_name: string;
@@ -276,12 +277,12 @@ export default function AssessmentCenterApplicantsPage() {
         const response = await fetch("/api/assessment-center/applicants", {
           credentials: "same-origin",
         });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           applicants?: AssignedApplicant[];
           centerName?: string;
           message?: string;
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load assigned applicants.");
@@ -479,12 +480,12 @@ export default function AssessmentCenterApplicantsPage() {
         }),
       });
 
-      const payload = (await response.json()) as {
+      const payload = await parseApiResponse<{
         message?: string;
         reason?: string | null;
         success?: boolean;
         workflowStatus?: ApplicationSubmissionStatus;
-      };
+      }>(response);
 
       if (!response.ok || !payload.success || !payload.workflowStatus) {
         throw new Error(payload.message ?? "Unable to update submission status.");
@@ -636,12 +637,12 @@ export default function AssessmentCenterApplicantsPage() {
           }),
         });
 
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           message?: string;
           reason?: string | null;
           success?: boolean;
           workflowStatus?: ApplicationSubmissionStatus;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success || !payload.workflowStatus) {
           throw new Error(payload.message ?? "Unable to update batch submission statuses.");
@@ -1239,21 +1240,17 @@ export default function AssessmentCenterApplicantsPage() {
                         })}
                       </div>
                       {!isResultEncodingView ? (
-                        <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap lg:justify-end">
-                          <a
-                            className="inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            href={buildApplicationSubmissionPdfUrl(selectedApplicantDetails.applicant_reference)}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            View PDF
-                          </a>
-                          <a
-                            className="inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            href={buildApplicationSubmissionPdfUrl(selectedApplicantDetails.applicant_reference, { download: true })}
-                          >
-                            Download
-                          </a>
+                        <div className="border-t border-[#eef3fb] pt-4">
+                          <div>
+                            <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#747685]">PDF Files</p>
+                            <p className="mt-1 text-[13px] leading-[1.55] text-[#44506a]">
+                              Open or download the application form and SAG form separately.
+                            </p>
+                          </div>
+
+                          <div className="mt-3 flex justify-start">
+                            <PdfActionsMenu submissionId={selectedApplicantDetails.applicant_reference} />
+                          </div>
                         </div>
                       ) : null}
                     </div>
@@ -1378,20 +1375,7 @@ export default function AssessmentCenterApplicantsPage() {
 
                         {!isResultEncodingView ? (
                           <div className="flex flex-wrap gap-2 md:justify-end">
-                            <a
-                              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                              rel="noreferrer"
-                              target="_blank"
-                            >
-                              View PDF
-                            </a>
-                            <a
-                              className="inline-flex min-h-[40px] min-w-[104px] items-center justify-center rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                              href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                            >
-                              Download
-                            </a>
+                            <PdfActionsMenu submissionId={applicant.applicant_reference} />
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-2 md:justify-end">

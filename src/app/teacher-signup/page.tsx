@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationModal from "@/components/notifications/NotificationModal";
 import { sanitizePhilippineMobileNumberAfterCountryCode } from "@/lib/registration";
+import { parseApiResponse } from "@/lib/api-response";
 
 const labelClass = "auth-label px-1 text-[#1a1c1c]";
 const fieldClass =
@@ -77,7 +78,7 @@ export default function TeacherSignUpPage() {
         body: formData,
         method: "POST",
       });
-      const result = (await response.json()) as { message?: string; success?: boolean };
+      const result = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !result.success) {
         setErrorMessage(result.message ?? "Unable to create the teacher account.");

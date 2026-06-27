@@ -1,11 +1,13 @@
 "use client";
 
 import AnimatedModal from "@/components/AnimatedModal";
+import PdfActionsMenu from "@/components/PdfActionsMenu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import NotificationModal from "@/components/notifications/NotificationModal";
 import NotificationToast from "@/components/notifications/NotificationToast";
+import { parseApiResponse } from "@/lib/api-response";
 
 type SubmissionCard = {
   assessmentBadge: {
@@ -63,6 +65,8 @@ type SubmissionCard = {
 
 const actionButtonBaseClass =
   "inline-flex min-h-[40px] min-w-[124px] items-center justify-center rounded-lg px-4 text-[12px] font-bold transition";
+const primaryActionButtonClass =
+  `${actionButtonBaseClass} bg-[#002576] text-white hover:bg-[#0038a8]`;
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {
@@ -80,11 +84,6 @@ function buildEditHref(submission: SubmissionCard["submission"]) {
   }
 
   return `/applicant/apply/individual?edit=1&submissionId=${submission.id}`;
-}
-
-function buildApplicationSubmissionPdfUrl(submissionId: string, options?: { download?: boolean }) {
-  const baseUrl = `/api/application-submissions/${submissionId}/pdf`;
-  return options?.download ? `${baseUrl}?download=1` : baseUrl;
 }
 
 function splitCorrectionNote(message: string) {
@@ -173,7 +172,7 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to withdraw the application.");
@@ -241,15 +240,18 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                           Current status: <span className="font-semibold text-[#0b1c30]">{statusDetails.currentStatus}</span>
                         </p>
                       </div>
-                      <button
-                        aria-haspopup="dialog"
-                        className="inline-flex min-h-[38px] items-center justify-center gap-2 rounded-lg border border-[#c4d1eb] bg-white px-4 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                        onClick={() => setSelectedDetailsSubmissionId(submission.id)}
-                        type="button"
-                      >
-                        <span>View Details</span>
-                        <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
-                      </button>
+                      <div className="flex items-center gap-2 self-start lg:self-center">
+                        <PdfActionsMenu submissionId={submission.id} />
+                        <button
+                          aria-haspopup="dialog"
+                          className={`${primaryActionButtonClass} min-h-[38px] gap-2`}
+                          onClick={() => setSelectedDetailsSubmissionId(submission.id)}
+                          type="button"
+                        >
+                          <span>View Details</span>
+                          <i aria-hidden="true" className="fa-solid fa-chevron-right text-[11px]" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -343,36 +345,23 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-2 border-t border-[#eef3fb] pt-4 sm:flex-row sm:flex-wrap sm:justify-end">
+              <div className="mt-4 border-t border-[#eef3fb] pt-4">
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
                 {selectedDetailsCard.editLock.isLocked ? (
                   <span className={`${actionButtonBaseClass} border border-[#d6dce9] bg-[#f7f9fc] text-[#7a879d]`}>
                     Editing Locked
                   </span>
                 ) : (
                   <Link
-                    className={`${actionButtonBaseClass} border border-[#c4d1eb] bg-[#f8fbff] text-[#002576] hover:bg-[#eff4ff]`}
+                    className={primaryActionButtonClass}
                     href={buildEditHref(selectedDetailsCard.submission)}
                   >
                     Edit Form
                   </Link>
                 )}
-                <a
-                  className={`${actionButtonBaseClass} border border-[#c4d1eb] bg-white text-[#002576] hover:bg-[#eff4ff]`}
-                  href={buildApplicationSubmissionPdfUrl(selectedDetailsCard.submission.id)}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  View PDF
-                </a>
-                <a
-                  className={`${actionButtonBaseClass} bg-[#002576] text-white hover:bg-[#0038a8]`}
-                  href={buildApplicationSubmissionPdfUrl(selectedDetailsCard.submission.id, { download: true })}
-                >
-                  Download PDF
-                </a>
                 {!selectedDetailsCard.withdrawLock.isLocked ? (
                   <button
-                    className={`${actionButtonBaseClass} border border-[#efc5c5] bg-[#fff4f4] text-[#93000a] hover:bg-[#ffeaea]`}
+                    className={primaryActionButtonClass}
                     onClick={() => {
                       setSelectedDetailsSubmissionId(null);
                       setSelectedSubmission(selectedDetailsCard.submission);
@@ -383,6 +372,7 @@ export default function ApplicantSubmittedFormsClient({ submissionCards }: { sub
                     Withdraw
                   </button>
                 ) : null}
+                </div>
               </div>
             </div>
           </div>

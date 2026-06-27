@@ -4,7 +4,7 @@ import {
   resolveAssessmentCenterForUser,
 } from "@/lib/assessment-centers";
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
-import { generateApplicationPdf } from "@/lib/application-pdf";
+import { generateApplicationPdf, generateSagPdf } from "@/lib/application-pdf";
 import { getCurrentAppUser } from "@/lib/current-user";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
@@ -185,20 +185,35 @@ export async function GET(request: Request, context: RouteContext) {
   }
 
   const roomName = lookup.submission.room_id ? await getRoomName(lookup.submission.room_id) : null;
-  const { fileName, pdfBytes } = await generateApplicationPdf(lookup.submission.form_data, {
-    applicantEmail: lookup.submission.applicant_email,
-    roomName,
-    submissionSource: lookup.submission.submission_source,
-    workflowStatus: lookup.submission.workflow_status,
-  });
+  const document = new URL(request.url).searchParams.get("document") === "sag" ? "sag" : "application";
+  const generator = document === "sag" ? generateSagPdf : generateApplicationPdf;
+  let generatedPdf: Awaited<ReturnType<typeof generateApplicationPdf>>;
+
+  try {
+    generatedPdf = await generator(lookup.submission.form_data, {
+      applicantEmail: lookup.submission.applicant_email,
+      roomName,
+      submissionSource: lookup.submission.submission_source,
+      workflowStatus: lookup.submission.workflow_status,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : `Unable to generate the ${document === "sag" ? "SAG" : "application"} PDF.`,
+      },
+      { status: 500 },
+    );
+  }
 
   const download = new URL(request.url).searchParams.get("download") === "1";
 
-  return new NextResponse(Buffer.from(pdfBytes), {
+  return new NextResponse(Buffer.from(generatedPdf.pdfBytes), {
     status: 200,
     headers: {
       "Cache-Control": "no-store",
-      "Content-Disposition": `${download ? "attachment" : "inline"}; filename=\"${fileName}\"`,
+      "Content-Disposition": `${download ? "attachment" : "inline"}; filename=\"${generatedPdf.fileName}\"`,
       "Content-Type": "application/pdf",
     },
   });

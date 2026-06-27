@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
+import { parseApiResponse } from "@/lib/api-response";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -25,23 +26,9 @@ export default function ForgotPasswordPage() {
         method: "POST",
       });
 
-      const contentType = response.headers.get("content-type") ?? "";
-      let payload: { message?: string; success?: boolean } | null = null;
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
-      if (contentType.includes("application/json")) {
-        payload = (await response.json()) as { message?: string; success?: boolean };
-      } else {
-        const fallbackText = await response.text();
-        throw new Error(
-          response.ok
-            ? "The server returned an unexpected response. Please try again."
-            : fallbackText.includes("<!DOCTYPE")
-              ? "The server encountered an unexpected error. Please try again."
-              : "Unable to send the password reset email.",
-        );
-      }
-
-      if (!payload || !response.ok || !payload.success) {
+      if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to send the password reset email.");
       }
 
