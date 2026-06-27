@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationModal from "@/components/notifications/NotificationModal";
+import { parseApiResponse } from "@/lib/api-response";
 
 export default function Home() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function Home() {
         body: JSON.stringify({ email: username, password }),
       });
 
-      const payload = (await response.json()) as { success: boolean; message?: string; redirectTo?: string };
+      const payload = await parseApiResponse<{ success: boolean; message?: string; redirectTo?: string }>(response);
 
       if (!response.ok || !payload.success) {
         setErrorMessage(payload.message ?? "Login failed. Please try again.");

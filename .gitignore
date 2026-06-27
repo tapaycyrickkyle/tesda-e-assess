@@ -23,6 +23,8 @@
 # misc
 .DS_Store
 *.pem
+/tmp/
+src/lib/sag-form-templates.generated.backup.ts
 
 # debug
 npm-debug.log*

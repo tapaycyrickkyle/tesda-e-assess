@@ -20,6 +20,7 @@ import {
 import {
   educationalAttainmentOptions,
   buildApplicantName,
+  MAX_REPEATABLE_ENTRIES,
   getApplicationSubmissionStatusLabel,
   normalizeApplicationFormData,
   type ApplicantApplicationFormData,
@@ -27,9 +28,17 @@ import {
   type ApplicationSubmissionStatus,
   type CompetencyAssessmentItem,
   type LicensureExamItem,
+  type SagAnswerValue,
   type TrainingItem,
   type WorkExperienceItem,
 } from "@/lib/application-form";
+import { sagGeneratedLayouts, type SagGeneratedLayout } from "@/lib/sag-form-layouts.generated";
+import {
+  buildSagIdentityPlacement,
+  buildSagQuestionPlacements,
+  resolveSagSourcePdfPath as resolveSagSourcePdfPathFromFiles,
+} from "@/lib/sag-pdf";
+import { getSagFormDefinition, loadSagFormDefinitions, type SagFormDefinition } from "@/lib/sag-forms";
 
 type GenerateApplicationPdfOptions = {
   applicantEmail: string;
@@ -64,6 +73,8 @@ const PDF_FIELD_FONT_SIZE = 8;
 const DATE_OF_APPLICATION_FONT_SIZE = 10;
 const CHECKBOX_MARK_SCALE = 0.54;
 const CHECKBOX_MARK_THICKNESS = 1.7;
+const SAG_CHECK_MARK_SCALE = 0.68;
+const SAG_CHECK_MARK_THICKNESS = 1.8;
 
 function formatDisplayDate(value: string) {
   if (!value) {
@@ -388,14 +399,14 @@ function appendOverflowPage(
   });
 }
 
-export function buildApplicationSubmissionPdfUrl(submissionId: string, options?: { download?: boolean }) {
-  const baseUrl = `/api/application-submissions/${submissionId}/pdf`;
-  return options?.download ? `${baseUrl}?download=1` : baseUrl;
-}
-
 export function buildApplicationPdfFileName(formData: ApplicantApplicationFormData) {
   const applicantName = buildApplicantName(formData);
   return `${formatApplicantFileName(applicantName)}-application-form.pdf`;
+}
+
+export function buildSagPdfFileName(formData: ApplicantApplicationFormData) {
+  const applicantName = buildApplicantName(formData);
+  return `${formatApplicantFileName(applicantName)}-sag-form.pdf`;
 }
 
 function configureTextFieldAppearance(
@@ -716,7 +727,7 @@ async function generateFillableApplicationPdf(
   setCheckboxField(form, "Self-Employed Checkbox", formData.employmentStatus === "Self-Employed");
   setCheckboxWidgetStates(form, "OFW Checkbox", [formData.employmentStatus === "OFW", formData.clientType === "OFW"]);
 
-  workExperiences.slice(0, 3).forEach((item, index) => {
+  workExperiences.slice(0, MAX_REPEATABLE_ENTRIES).forEach((item, index) => {
     const rowNumber = index + 1;
     setTextField(form, `Name of CompanyRow${rowNumber}`, item.companyName);
     setTextField(form, `32 PositionRow${rowNumber}`, item.position);
@@ -726,7 +737,7 @@ async function generateFillableApplicationPdf(
     setTextField(form, `No of Yrs Working ExpRow${rowNumber}`, item.yearsOfExperience);
   });
 
-  trainings.slice(0, 4).forEach((item, index) => {
+  trainings.slice(0, MAX_REPEATABLE_ENTRIES).forEach((item, index) => {
     const rowNumber = index + 1;
     setTextField(form, `41 TitleRow${rowNumber}`, item.title);
     setTextField(form, `42 VenueRow${rowNumber}`, item.venue);
@@ -735,7 +746,7 @@ async function generateFillableApplicationPdf(
     setTextField(form, `45 Conducted ByRow${rowNumber}`, item.conductedBy);
   });
 
-  licensureExams.slice(0, 3).forEach((item, index) => {
+  licensureExams.slice(0, MAX_REPEATABLE_ENTRIES).forEach((item, index) => {
     const rowNumber = index + 1;
     setTextField(form, `51 TitleRow${rowNumber}`, item.title);
     setTextField(form, `52 Year TakenRow${rowNumber}`, item.yearTaken);
@@ -745,7 +756,7 @@ async function generateFillableApplicationPdf(
     setTextField(form, `56 Expiry DateRow${rowNumber}`, formatDisplayDate(item.expiryDate));
   });
 
-  competencyAssessments.slice(0, 3).forEach((item, index) => {
+  competencyAssessments.slice(0, MAX_REPEATABLE_ENTRIES).forEach((item, index) => {
     const rowNumber = index + 1;
     setTextField(form, `61 TitleRow${rowNumber}`, item.title);
     setTextField(form, `62 Qualification LevelRow${rowNumber}`, item.qualificationLevel);
@@ -760,7 +771,10 @@ async function generateFillableApplicationPdf(
   form.flatten();
 
   const needsOverflowPage =
-    workExperiences.length > 3 || trainings.length > 4 || licensureExams.length > 3 || competencyAssessments.length > 3;
+    workExperiences.length > MAX_REPEATABLE_ENTRIES ||
+    trainings.length > MAX_REPEATABLE_ENTRIES ||
+    licensureExams.length > MAX_REPEATABLE_ENTRIES ||
+    competencyAssessments.length > MAX_REPEATABLE_ENTRIES;
 
   if (needsOverflowPage) {
     appendOverflowPage(pdfDoc, font, boldFont, formData, options);
@@ -779,7 +793,281 @@ async function generateFillableApplicationPdf(
   };
 }
 
+function fixSagMojibake(value: string) {
+  return value
+    .replace(/Ã¢â‚¬Å“|Ã¢â‚¬Â|Ã¢â‚¬Âœ|Ã¢â‚¬Â/g, '"')
+    .replace(/Ã¢â‚¬â„¢|Ã¢â‚¬Ëœ|Ã¢â‚¬â„¢|Ã¢â‚¬Ëœ/g, "'")
+    .replace(/Ã¢â‚¬â€œ|Ã¢â‚¬â€/g, "-")
+    .replace(/Ã¢â‚¬Â¦/g, "...")
+    .replace(/ÃƒÂ±/g, "n");
+}
+
+function normalizeSagLayoutText(value: string) {
+  return cleanValue(fixSagMojibake(value.replace(/\u00a0/g, " ")));
+}
+
+function createSagSourceLookupKey(value: string) {
+  return normalizeSagLayoutText(value)
+    .toLowerCase()
+    .replace(/^sag\s*-\s*/i, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/[^a-z0-9() ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function stripSagQuestionMarker(value: string) {
+  return normalizeSagLayoutText(value)
+    .replace(/^[\u2022\u25cf\u00b7\uf0b7]\s*/i, "")
+    .replace(/^\d+\.\s+/i, "")
+    .replace(/^-\s+/i, "");
+}
+
+function normalizeSagQuestionText(value: string) {
+  return stripSagQuestionMarker(value)
+    .replace(/\s+([,.;:!?*])/g, "$1")
+    .replace(/\(\s+/g, "(")
+    .replace(/\s+\)/g, ")");
+}
+
+function isSagMetadataLine(value: string) {
+  const line = normalizeSagLayoutText(value);
+
+  if (!line) {
+    return true;
+  }
+
+  return (
+    /^reference\b/i.test(line) ||
+    /^rev\.\s*no\./i.test(line) ||
+    /^tesda\b/i.test(line) ||
+    /^--\s*\d+\s+of\s+\d+\s*--$/i.test(line) ||
+    /^[A-Z0-9-]+(?:\s+ver\.\s*[\d.]+)?\s+\d+$/i.test(line) ||
+    /^[A-Z0-9-]+\s+\d+$/i.test(line)
+  );
+}
+
+function isSagQuestionHeaderText(value: string) {
+  const compactLine = normalizeSagLayoutText(value).replace(/\s+/g, "");
+  return /^(CanI\?YESNO|AmIawareYESNO)$/i.test(compactLine);
+}
+
+function isSagNonQuestionLine(value: string) {
+  const line = normalizeSagLayoutText(value);
+
+  if (!line || isSagMetadataLine(line)) {
+    return true;
+  }
+
+  return (
+    /^self[- ]assessment guide$/i.test(line) ||
+    /^qualification\b/i.test(line) ||
+    /^unit of competenc(?:y|ies)\b/i.test(line) ||
+    /^covered:?$/i.test(line) ||
+    /^instruction:?$/i.test(line) ||
+    /^read each of the questions/i.test(line) ||
+    /^place a check in the appropriate box/i.test(line) ||
+    /^answer\.?$/i.test(line) ||
+    /^i agree to undertake assessment/i.test(line) ||
+    /^(candidate['’`]?s?(?: name(?: and signature)?)?|date)\b/i.test(line) ||
+    isSagQuestionHeaderText(line)
+  );
+}
+
+function looksLikeSagHeadingOnly(value: string) {
+  const line = normalizeSagLayoutText(value);
+
+  return (
+    /^units?\s+of\s+competenc(?:y|ies)\s*:?\s*$/i.test(line) ||
+    /^covered\s*:?\s*$/i.test(line) ||
+    /^qualification(?: title)?\s*:?\s*$/i.test(line)
+  );
+}
+
+function looksLikeSagSectionTitle(value: string) {
+  const line = normalizeSagLayoutText(value);
+
+  if (!line || /[,:*?]/.test(line)) {
+    return false;
+  }
+
+  const words = line.split(/\s+/).filter(Boolean);
+
+  if (words.length === 0 || words.length > 6) {
+    return false;
+  }
+
+  return words.every((word) => /^[A-Z][A-Za-z/&()-]*$/.test(word));
+}
+
+function getSagGeneratedLayout(qualificationTitle: string, sourcePdfPath: string | null) {
+  const lookupKey = createSagSourceLookupKey(qualificationTitle);
+  const sourceFileName = sourcePdfPath ? path.basename(sourcePdfPath) : null;
+
+  return (
+    sagGeneratedLayouts.find((layout) => createSagSourceLookupKey(layout.qualificationTitle) === lookupKey) ??
+    sagGeneratedLayouts.find((layout) => sourceFileName !== null && layout.sourceFileName === sourceFileName) ??
+    null
+  ) as SagGeneratedLayout | null;
+}
+
+function drawSagAnswerMark(page: PDFPage, centerX: number, baselineY: number) {
+  const mark = drawCheckMark({
+    color: INK,
+    size: 11 * SAG_CHECK_MARK_SCALE,
+    thickness: SAG_CHECK_MARK_THICKNESS,
+    x: centerX,
+    y: baselineY + 4,
+  });
+
+  page.pushOperators(pushGraphicsState(), ...mark, popGraphicsState());
+}
+
+function drawSagIdentityText(
+  page: PDFPage,
+  font: PDFFont,
+  formData: ApplicantApplicationFormData,
+  sagForm: SagFormDefinition,
+  placement: {
+    candidateLabelRightX: number | null;
+    candidateY: number | null;
+    dateLabelRightX: number | null;
+    dateY: number | null;
+  },
+) {
+  const candidateName = sagForm.shouldAutofillCandidateName ? buildPrintedApplicantName(formData) : "";
+  const formattedDate = formatDisplayDate(formData.applicationDate);
+  const pageWidth = page.getWidth();
+
+  if (candidateName && placement.candidateLabelRightX !== null && placement.candidateY !== null) {
+    const nameX = placement.candidateLabelRightX + 12;
+    const rightBoundary = placement.dateLabelRightX !== null ? placement.dateLabelRightX - 24 : pageWidth - 48;
+    const nameWidth = Math.max(80, rightBoundary - nameX);
+
+    drawTextBox({
+      color: INK,
+      font,
+      maxLines: 1,
+      minSize: 7,
+      page,
+      size: 9,
+      text: candidateName,
+      width: nameWidth,
+      x: nameX,
+      y: placement.candidateY + 1,
+    });
+  }
+
+  if (formattedDate && placement.dateLabelRightX !== null && placement.dateY !== null) {
+    const dateX = placement.dateLabelRightX + 12;
+    const dateWidth = Math.max(72, pageWidth - dateX - 40);
+
+    drawTextBox({
+      color: INK,
+      font,
+      maxLines: 1,
+      minSize: 7,
+      page,
+      size: 9,
+      text: formattedDate,
+      width: dateWidth,
+      x: dateX,
+      y: placement.dateY + 1,
+    });
+  }
+}
+
+function buildSagPlacementMap(
+  sagForm: SagFormDefinition,
+  generatedLayout: SagGeneratedLayout | null,
+  dynamicPlacements: Record<string, { noCenterX: number; pageIndex: number; y: number; yesCenterX: number }>,
+) {
+  const generatedPlacementEntries = Object.entries(generatedLayout?.placementByQuestionId ?? {});
+  const generatedPlacementsById = generatedLayout?.placementByQuestionId ?? {};
+  const placements: Record<string, { noCenterX: number; pageIndex: number; y: number; yesCenterX: number }> = {};
+  const orderedQuestions = sagForm.units.flatMap((unit) => unit.questions);
+
+  orderedQuestions.forEach((question, questionIndex) => {
+    const exactPlacement =
+      dynamicPlacements[question.id] ?? generatedPlacementsById[question.id] ?? generatedPlacementEntries[questionIndex]?.[1];
+
+    if (exactPlacement) {
+      placements[question.id] = exactPlacement;
+    }
+  });
+
+  return placements;
+}
+
+async function generateOriginalSagPdf(
+  formData: ApplicantApplicationFormData,
+  sagForm: SagFormDefinition,
+) {
+  const sourcePdfPath = await resolveSagSourcePdfPathFromFiles(formData.qualificationTitle || sagForm.qualificationTitle);
+
+  if (!sourcePdfPath) {
+    throw new Error("No source SAG PDF file is available for this qualification.");
+  }
+
+  const [templateBytes, generatedLayout, dynamicPlacements, identityPlacement] = await Promise.all([
+    readFile(sourcePdfPath),
+    Promise.resolve(getSagGeneratedLayout(formData.qualificationTitle || sagForm.qualificationTitle, sourcePdfPath)),
+    buildSagQuestionPlacements(sourcePdfPath, sagForm),
+    buildSagIdentityPlacement(sourcePdfPath),
+  ]);
+  const pdfDoc = await PDFDocument.load(templateBytes);
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const pages = pdfDoc.getPages();
+  const placementByQuestionId = buildSagPlacementMap(sagForm, generatedLayout, dynamicPlacements);
+
+  if (Object.keys(placementByQuestionId).length > 0) {
+    Object.entries(placementByQuestionId).forEach(([questionId, placement]) => {
+      const answer = (formData.sagAnswers[questionId] ?? "") as SagAnswerValue;
+
+      if (answer !== "yes" && answer !== "no") {
+        return;
+      }
+
+      const page = pages[placement.pageIndex];
+
+      if (!page) {
+        return;
+      }
+
+      drawSagAnswerMark(page, answer === "yes" ? placement.yesCenterX : placement.noCenterX, placement.y);
+    });
+  }
+
+  if (identityPlacement) {
+    const identityPage = pages[identityPlacement.pageIndex];
+
+    if (identityPage) {
+      drawSagIdentityText(identityPage, font, formData, sagForm, identityPlacement);
+    }
+  }
+
+  const pdfBytes = await pdfDoc.save();
+
+  return {
+    fileName: buildSagPdfFileName(formData),
+    pdfBytes,
+  };
+}
+
 export async function generateApplicationPdf(rawFormData: unknown, options: GenerateApplicationPdfOptions) {
   const formData = normalizeApplicationFormData(rawFormData);
   return generateFillableApplicationPdf(formData, options);
+}
+
+export async function generateSagPdf(rawFormData: unknown, options: GenerateApplicationPdfOptions) {
+  const formData = normalizeApplicationFormData(rawFormData);
+  const sagForms = await loadSagFormDefinitions();
+  const sagForm = getSagFormDefinition(sagForms, formData.qualificationTitle);
+
+  if (!sagForm) {
+    throw new Error("No SAG form definition is available for this qualification.");
+  }
+
+  void options;
+  return generateOriginalSagPdf(formData, sagForm);
 }

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
+import { parseApiResponse } from "@/lib/api-response";
 
 type CreateRoomResponse = {
   success: boolean;
@@ -70,7 +71,7 @@ export default function TeacherRoomClient({
         }),
       });
 
-      const payload = (await response.json()) as CreateRoomResponse;
+      const payload = await parseApiResponse<CreateRoomResponse>(response);
 
       if (!response.ok || !payload.success || !payload.room) {
         setErrorMessage(payload.message ?? "Unable to create room.");

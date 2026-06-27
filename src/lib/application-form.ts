@@ -37,6 +37,8 @@ export const employmentStatusOptions = [
   "Others",
 ] as const;
 
+export const MAX_REPEATABLE_ENTRIES = 3;
+
 export type ApplicationSubmissionSource = "individual" | "room";
 export type ApplicationSubmissionStatus =
   | "draft"
@@ -88,6 +90,8 @@ export type CompetencyAssessmentItem = {
   expirationDate: string;
 };
 
+export type SagAnswerValue = "" | "no" | "yes";
+
 export type ApplicantApplicationFormData = {
   applicationDate: string;
   applicantSignatureName: string;
@@ -126,6 +130,7 @@ export type ApplicantApplicationFormData = {
   licensureExams: LicensureExamItem[];
   competencyAssessments: CompetencyAssessmentItem[];
   birthPlace: string;
+  sagAnswers: Record<string, SagAnswerValue>;
 };
 
 export type ApplicationSubmissionRecord = {
@@ -230,6 +235,7 @@ export function createEmptyApplicationFormData(): ApplicantApplicationFormData {
     licensureExams: [emptyLicensureExamItem()],
     competencyAssessments: [emptyCompetencyAssessmentItem()],
     birthPlace: "",
+    sagAnswers: {},
   };
 }
 
@@ -251,7 +257,9 @@ function normalizeArray<T>(
     .map((item) => normalizeItem(item))
     .filter((item) => Object.values(item as Record<string, string>).some(Boolean));
 
-  return normalized.length > 0 ? normalized : [createEmptyItem()];
+  const capped = normalized.slice(0, MAX_REPEATABLE_ENTRIES);
+
+  return capped.length > 0 ? capped : [createEmptyItem()];
 }
 
 export function normalizeApplicationFormData(value: unknown): ApplicantApplicationFormData {
@@ -265,6 +273,10 @@ export function normalizeApplicationFormData(value: unknown): ApplicantApplicati
   const mailingAddress =
     typeof record.mailingAddress === "object" && record.mailingAddress !== null
       ? (record.mailingAddress as Record<string, unknown>)
+      : {};
+  const sagAnswers =
+    typeof record.sagAnswers === "object" && record.sagAnswers !== null && !Array.isArray(record.sagAnswers)
+      ? (record.sagAnswers as Record<string, unknown>)
       : {};
 
   return {
@@ -336,6 +348,11 @@ export function normalizeApplicationFormData(value: unknown): ApplicantApplicati
       }),
     ),
     birthPlace: sanitizeString(record.birthPlace),
+    sagAnswers: Object.fromEntries(
+      Object.entries(sagAnswers)
+        .filter((entry): entry is [string, SagAnswerValue] => entry[1] === "yes" || entry[1] === "no")
+        .map(([key, value]) => [sanitizeString(key), value]),
+    ),
   };
 }
 

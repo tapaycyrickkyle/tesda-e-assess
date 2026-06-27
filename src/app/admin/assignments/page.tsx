@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
+import PdfActionsMenu from "@/components/PdfActionsMenu";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
 import { formatAssessmentDate } from "@/lib/assessment-date";
-import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
 import { getApplicationSubmissionStatusLabel, type ApplicationSubmissionStatus } from "@/lib/application-form";
+import { parseApiResponse } from "@/lib/api-response";
 
 type AssignedApplicant = {
   applicant_name: string;
@@ -152,11 +153,11 @@ export default function AdminAssignedApplicantsPage() {
         const response = await fetch("/api/admin/assessment-center-assignments", {
           credentials: "same-origin",
         });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           applicants?: AssignedApplicant[];
           message?: string;
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load assigned applicants.");
@@ -372,7 +373,7 @@ export default function AdminAssignedApplicantsPage() {
         method: "DELETE",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to remove assignment.");
@@ -412,7 +413,7 @@ export default function AdminAssignedApplicantsPage() {
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to update the assignment schedule.");
@@ -634,39 +635,17 @@ export default function AdminAssignedApplicantsPage() {
                       key={applicant.id}
                       className="rounded-xl border border-[#d9e3f7] bg-white px-4 py-3 shadow-[0_1px_2px_rgba(15,23,42,0.05)] transition hover:bg-[#fcfdff]"
                     >
-                      <div className="flex flex-col gap-3">
-                        <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-                          <div className="min-w-0">
+                      <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+                        <div className="min-w-0 flex-1">
                             <p className={cardTitleClass}>{applicant.applicant_name}</p>
                             <p className="mt-1 text-[13px] leading-[1.55] text-[#444653]">{applicant.qualification}</p>
                             <p className="mt-1 text-[12px] text-[#747685]">
                               Assigned {formatDateTime(applicant.assigned_at)} | Assessment {formatAssessmentDate(applicant.assessment_date)} | Assessor {applicant.assessor ?? "Not set"}
                             </p>
-                          </div>
-                          {applicant.workflow_status !== "under_review" && applicant.workflow_status !== "completed" ? (
-                            <span
-                              className={`inline-flex min-h-[34px] items-center justify-center rounded-lg px-3 text-[12px] font-bold ${getStatusBadgeClass(applicant.workflow_status)}`}
-                            >
-                              {getApplicationSubmissionStatusLabel(applicant.workflow_status)}
-                            </span>
-                          ) : null}
                         </div>
 
-                        <div className="flex flex-wrap justify-end gap-2">
-                          <a
-                            className={secondaryActionButtonClass}
-                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            View PDF
-                          </a>
-                          <a
-                            className={secondaryActionButtonClass}
-                            href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                          >
-                            Download
-                          </a>
+                        <div className="flex flex-wrap gap-2 xl:justify-end">
+                          <PdfActionsMenu submissionId={applicant.applicant_reference} />
                           {isActiveStatus(applicant.workflow_status) ? (
                             <>
                               <button
@@ -842,20 +821,7 @@ export default function AdminAssignedApplicantsPage() {
                       </div>
 
                       <div className="flex flex-wrap gap-2 md:justify-end">
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference)}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          View PDF
-                        </a>
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.applicant_reference, { download: true })}
-                        >
-                          Download
-                        </a>
+                        <PdfActionsMenu submissionId={applicant.applicant_reference} />
                       </div>
                     </div>
                   </div>

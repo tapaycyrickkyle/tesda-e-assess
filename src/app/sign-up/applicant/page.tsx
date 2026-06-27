@@ -5,6 +5,7 @@ import { useState, type FormEvent } from "react";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationModal from "@/components/notifications/NotificationModal";
 import { sanitizePhilippineMobileNumberAfterCountryCode } from "@/lib/registration";
+import { parseApiResponse } from "@/lib/api-response";
 
 const fieldClass =
   "auth-field";
@@ -45,7 +46,7 @@ export default function ApplicantSignUpPage() {
         },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as { message?: string; success?: boolean };
+      const result = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !result.success) {
         setErrorMessage(result.message ?? "Unable to create the applicant account.");

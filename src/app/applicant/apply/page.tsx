@@ -6,6 +6,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import { normalizeRoomCode, type RoomRecord } from "@/lib/rooms";
+import { parseApiResponse } from "@/lib/api-response";
 
 type ApplicationPathCardProps = {
   description: string;
@@ -130,7 +131,7 @@ export default function ApplicantApplicationsPage() {
         body: JSON.stringify({ code: normalizeRoomCode(code) }),
       });
 
-      const payload = (await response.json()) as JoinRoomResponse;
+      const payload = await parseApiResponse<JoinRoomResponse>(response);
 
       if (!response.ok || !payload.success || !payload.room) {
         setErrorMessage(payload.message ?? "Unable to join room.");

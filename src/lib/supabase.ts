@@ -3,12 +3,10 @@ import { getSupabaseEnv, getSupabaseRoleLookupConfig, normalizeUserRole, type Us
 
 function createBaseSupabaseClient(accessToken?: string) {
   const { url, anonKey } = getSupabaseEnv();
+  const resolvedUrl = url || "https://invalid.localhost";
+  const resolvedAnonKey = anonKey || "missing-supabase-anon-key";
 
-  if (!url || !anonKey) {
-    throw new Error("Supabase environment variables are not configured.");
-  }
-
-  return createClient(url, anonKey, {
+  return createClient(resolvedUrl, resolvedAnonKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -25,12 +23,10 @@ function createBaseSupabaseClient(accessToken?: string) {
 
 function createBaseSupabaseBrowserClient() {
   const { url, anonKey } = getSupabaseEnv();
+  const resolvedUrl = url || "https://invalid.localhost";
+  const resolvedAnonKey = anonKey || "missing-supabase-anon-key";
 
-  if (!url || !anonKey) {
-    throw new Error("Supabase environment variables are not configured.");
-  }
-
-  return createClient(url, anonKey, {
+  return createClient(resolvedUrl, resolvedAnonKey, {
     auth: {
       autoRefreshToken: false,
       detectSessionInUrl: false,
@@ -54,12 +50,10 @@ export function createSupabaseBrowserClient() {
 export function createSupabaseAdminClient() {
   const { url } = getSupabaseEnv();
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+  const resolvedUrl = url || "https://invalid.localhost";
+  const resolvedServiceRoleKey = serviceRoleKey || "missing-supabase-service-role-key";
 
-  if (!url || !serviceRoleKey) {
-    throw new Error("Supabase service role credentials are not configured.");
-  }
-
-  return createClient(url, serviceRoleKey, {
+  return createClient(resolvedUrl, resolvedServiceRoleKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -74,24 +68,28 @@ export async function getUserRoleFromRoleTable(email: string, accessToken?: stri
     return "unknown";
   }
 
-  const { tableName, emailColumn, roleColumn } = getSupabaseRoleLookupConfig();
-  const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from(tableName)
-    .select(roleColumn)
-    .eq(emailColumn, normalizedEmail)
-    .maybeSingle();
+  try {
+    const { tableName, emailColumn, roleColumn } = getSupabaseRoleLookupConfig();
+    const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from(tableName)
+      .select(roleColumn)
+      .eq(emailColumn, normalizedEmail)
+      .maybeSingle();
 
-  if (error || !data) {
+    if (error || !data) {
+      return "unknown";
+    }
+
+    if (typeof data !== "object" || Array.isArray(data)) {
+      return "unknown";
+    }
+
+    const rawRole = (data as Record<string, unknown>)[roleColumn];
+    return typeof rawRole === "string" ? normalizeUserRole(rawRole) : "unknown";
+  } catch {
     return "unknown";
   }
-
-  if (typeof data !== "object" || Array.isArray(data)) {
-    return "unknown";
-  }
-
-  const rawRole = (data as Record<string, unknown>)[roleColumn];
-  return typeof rawRole === "string" ? normalizeUserRole(rawRole) : "unknown";
 }
 
 export async function getUserApprovalStatusFromProfile(email: string, accessToken?: string) {
@@ -101,17 +99,21 @@ export async function getUserApprovalStatusFromProfile(email: string, accessToke
     return null;
   }
 
-  const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("approval_status")
-    .eq("email", normalizedEmail)
-    .maybeSingle();
+  try {
+    const supabase = accessToken ? createSupabaseAccessTokenClient(accessToken) : createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("approval_status")
+      .eq("email", normalizedEmail)
+      .maybeSingle();
 
-  if (error || !data || typeof data !== "object" || Array.isArray(data)) {
+    if (error || !data || typeof data !== "object" || Array.isArray(data)) {
+      return null;
+    }
+
+    const approvalStatus = (data as Record<string, unknown>).approval_status;
+    return typeof approvalStatus === "string" ? approvalStatus : null;
+  } catch {
     return null;
   }
-
-  const approvalStatus = (data as Record<string, unknown>).approval_status;
-  return typeof approvalStatus === "string" ? approvalStatus : null;
 }

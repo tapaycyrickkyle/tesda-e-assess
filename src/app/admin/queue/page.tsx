@@ -2,9 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import AnimatedModal from "@/components/AnimatedModal";
+import PdfActionsMenu from "@/components/PdfActionsMenu";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationToast from "@/components/notifications/NotificationToast";
-import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
+import { parseApiResponse } from "@/lib/api-response";
 
 type SubmittedApplicant = {
   applicant_email: string;
@@ -169,11 +170,11 @@ export default function AdminApplicantsPage() {
 
       try {
         const response = await fetch("/api/admin/assessment-centers", { credentials: "same-origin" });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           centers?: AssessmentCenterOption[];
           message?: string;
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load assessment centers.");
@@ -211,11 +212,11 @@ export default function AdminApplicantsPage() {
         const response = await fetch("/api/admin/submitted-applicants", {
           credentials: "same-origin",
         });
-        const payload = (await response.json()) as {
+        const payload = await parseApiResponse<{
           message?: string;
           submissions?: SubmittedApplicant[];
           success?: boolean;
-        };
+        }>(response);
 
         if (!response.ok || !payload.success) {
           throw new Error(payload.message ?? "Unable to load submitted applicants.");
@@ -415,7 +416,7 @@ export default function AdminApplicantsPage() {
         method: "POST",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to assign applicants.");
@@ -467,7 +468,7 @@ export default function AdminApplicantsPage() {
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as { message?: string; success?: boolean };
+      const payload = await parseApiResponse<{ message?: string; success?: boolean }>(response);
 
       if (!response.ok || !payload.success) {
         throw new Error(payload.message ?? "Unable to return the submission for applicant correction.");
@@ -650,20 +651,7 @@ export default function AdminApplicantsPage() {
                       </div>
 
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap lg:justify-end">
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.id)}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          View PDF
-                        </a>
-                        <a
-                          className={secondaryActionButtonClass}
-                          href={buildApplicationSubmissionPdfUrl(applicant.id, { download: true })}
-                        >
-                          Download
-                        </a>
+                        <PdfActionsMenu submissionId={applicant.id} />
                         <button
                           className={warningActionButtonClass}
                           onClick={() =>
@@ -864,20 +852,7 @@ export default function AdminApplicantsPage() {
                       <p className="mt-1 truncate text-[13px] text-[#5d5f5f]">{applicant.qualification_title}</p>
                     </div>
                     <div className="flex flex-wrap gap-2 md:justify-end">
-                      <a
-                        className="inline-flex min-w-[104px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                        href={buildApplicationSubmissionPdfUrl(applicant.id)}
-                        rel="noreferrer"
-                        target="_blank"
-                      >
-                        View PDF
-                      </a>
-                      <a
-                        className="inline-flex min-w-[104px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                        href={buildApplicationSubmissionPdfUrl(applicant.id, { download: true })}
-                      >
-                        Download
-                      </a>
+                      <PdfActionsMenu submissionId={applicant.id} />
                       <button
                         className={warningActionButtonClass}
                         onClick={() =>
@@ -1141,7 +1116,6 @@ export default function AdminApplicantsPage() {
     </main>
   );
 }
-
 function EmptyState({ body, icon, title }: { body: string; icon: string; title: string }) {
   return (
     <div className="px-4 py-8 text-center">

@@ -4,10 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import AnimatedModal from "@/components/AnimatedModal";
+import PdfActionsMenu from "@/components/PdfActionsMenu";
 import NotificationBanner from "@/components/notifications/NotificationBanner";
 import NotificationModal from "@/components/notifications/NotificationModal";
 import NotificationToast from "@/components/notifications/NotificationToast";
-import { buildApplicationSubmissionPdfUrl } from "@/lib/application-submission-pdf";
+import { parseApiResponse } from "@/lib/api-response";
 import { type ApplicationSubmissionStatus } from "@/lib/application-form";
 import { getRoomSubmissionStatus, getRoomSubmissionStatusLabel, type RoomRecord } from "@/lib/rooms";
 
@@ -137,7 +138,7 @@ export default function TeacherRoomDetailClient({
         body: JSON.stringify({ action }),
       });
 
-      const payload = (await response.json()) as UpdateRoomResponse;
+      const payload = await parseApiResponse<UpdateRoomResponse>(response);
 
       if (!response.ok || !payload.success) {
         setErrorMessage(payload.message ?? "Unable to update room.");
@@ -184,7 +185,7 @@ export default function TeacherRoomDetailClient({
         method: "DELETE",
       });
 
-      const payload = (await response.json()) as DeleteRoomResponse;
+      const payload = await parseApiResponse<DeleteRoomResponse>(response);
 
       if (!response.ok || !payload.success) {
         setErrorMessage(payload.message ?? "Unable to delete room.");
@@ -220,7 +221,7 @@ export default function TeacherRoomDetailClient({
         method: "PATCH",
       });
 
-      const payload = (await response.json()) as RemoveRoomMemberResponse;
+      const payload = await parseApiResponse<RemoveRoomMemberResponse>(response);
 
       if (!response.ok || !payload.success || !payload.removedMemberId) {
         setErrorMessage(payload.message ?? "Unable to remove the applicant from this room.");
@@ -367,14 +368,7 @@ export default function TeacherRoomDetailClient({
                           <span className="inline-flex min-h-[36px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-[#eef4ff] px-3.5 text-[12px] font-bold text-[#3056c4]">
                             Submitted
                           </span>
-                          <a
-                            className="inline-flex min-w-[108px] items-center justify-center rounded-lg border border-[#d9e3f7] bg-white px-4 py-2.5 text-[12px] font-bold text-[#002576] transition hover:bg-[#eff4ff]"
-                            href={buildApplicationSubmissionPdfUrl(linkedApplication.id)}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            View PDF
-                          </a>
+                          <PdfActionsMenu submissionId={linkedApplication.id} />
                           <button
                             className="inline-flex min-w-[128px] items-center justify-center rounded-lg border border-[#efc5c5] bg-[#fff4f4] px-4 py-2.5 text-[12px] font-bold text-[#93000a] transition hover:bg-[#ffeaea] disabled:cursor-not-allowed disabled:opacity-70"
                             disabled={isUpdating || !canRemoveMember}
