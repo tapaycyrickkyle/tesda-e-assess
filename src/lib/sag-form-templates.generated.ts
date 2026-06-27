@@ -9,2276 +9,6 @@ export const sagFormTemplates: SagFormDefinition[] = [
       "Place a check in the appropriate box opposite each question to indicate your",
       "answer."
     ],
-    "qualificationTitle": "SAG-Agricultural Crops Production NC II",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "perform-nursery-operations",
-        "questions": [
-          {
-            "id": "nursery-01",
-            "text": "Prepare tools and simple equipment are according work requirements."
-          },
-          {
-            "id": "nursery-02",
-            "text": "Perform basic pre-operative activities such as checking of tools and equipment in accordance with manufacturer’s manual."
-          },
-          {
-            "id": "nursery-03",
-            "text": "Segregate and treat damaged and corroded tools according to maintenance plan and procedures."
-          },
-          {
-            "id": "nursery-04",
-            "text": "Maintain nursery sanitation according to GAP standard."
-          },
-          {
-            "id": "nursery-05",
-            "text": "Perform repair and maintenance of nursery facilities"
-          },
-          {
-            "id": "nursery-06",
-            "text": "Apply preventive measures for inclement weather"
-          },
-          {
-            "id": "nursery-07",
-            "text": "Practice safety measures according to OSHS"
-          },
-          {
-            "id": "nursery-08",
-            "text": "Determine seeds/planting materials according to kinds and varieties."
-          },
-          {
-            "id": "nursery-09",
-            "text": "Select quality seeds according to prescribed characteristics"
-          },
-          {
-            "id": "nursery-10",
-            "text": "Conduct seed testing to determine the percentage germination of the seed stock in accordance with the standard procedures"
-          },
-          {
-            "id": "nursery-11",
-            "text": "Treat planting materials following standard protocol."
-          },
-          {
-            "id": "nursery-12",
-            "text": "Perform seed treatment for germination purposes based on type of crop*"
-          },
-          {
-            "id": "nursery-13",
-            "text": "Prepare growing media according to prescribed mixture*"
-          },
-          {
-            "id": "nursery-14",
-            "text": "Prepare seedbed based on crop species"
-          },
-          {
-            "id": "nursery-15",
-            "text": "Arrange and label pots or seedling trays according to varieties/species."
-          },
-          {
-            "id": "nursery-16",
-            "text": "Set-up a nursery shed according to plant requirement"
-          },
-          {
-            "id": "nursery-17",
-            "text": "Select quality seedlings based on prescribed characteristics"
-          },
-          {
-            "id": "nursery-18",
-            "text": "Perform plant propagation techniques based on recommended practices*"
-          },
-          {
-            "id": "nursery-19",
-            "text": "Maintain the plant based on recommended practices"
-          },
-          {
-            "id": "nursery-20",
-            "text": "Select quality seedlings and other propagation materials based on established criteria of the crop*"
-          }
-        ],
-        "title": "PERFORM NURSERY OPERATIONS"
-      },
-      {
-        "id": "plant-crops",
-        "questions": [
-          {
-            "id": "plant-01",
-            "text": "Prepare tools and equipment for land clearing"
-          },
-          {
-            "id": "plant-02",
-            "text": "Clear the land according to prescribed methods of land preparation*"
-          },
-          {
-            "id": "plant-03",
-            "text": "Remove and dispose farm wastes according to waste management standards"
-          },
-          {
-            "id": "plant-04",
-            "text": "Collect soil samples for analysis based on standard procedure*"
-          },
-          {
-            "id": "plant-05",
-            "text": "Conduct land preparation according to crop requirement*"
-          },
-          {
-            "id": "plant-06",
-            "text": "Apply basal fertilizer based on crop requirement"
-          },
-          {
-            "id": "plant-07",
-            "text": "Prepare tools and materials for field lay-out"
-          },
-          {
-            "id": "plant-08",
-            "text": "Lay-out the prepared land in accordance with the recommended planting system*"
-          },
-          {
-            "id": "plant-09",
-            "text": "Perform digging of holes based on crop requirement*"
-          },
-          {
-            "id": "plant-10",
-            "text": "Separate dug out soil for covering the hole for planting"
-          },
-          {
-            "id": "plant-11",
-            "text": "Perform basal fertilizer application based on recommended amount"
-          },
-          {
-            "id": "plant-12",
-            "text": "Plant the seeds according to recommended rate, distance and depth*"
-          },
-          {
-            "id": "plant-13",
-            "text": "Replant according to recommended practices for a particular crop"
-          },
-          {
-            "id": "plant-14",
-            "text": "Perform proper handling of seedlings from nursery"
-          },
-          {
-            "id": "plant-15",
-            "text": "Transplant the seedlings based on crop practices*"
-          },
-          {
-            "id": "plant-16",
-            "text": "Transplant crops intended for container growing to appropriate containers and growing media."
-          },
-          {
-            "id": "plant-17",
-            "text": "Replant the seedlings according to recommended practices for a particular crop CARE AND MAINTAIN CROPS"
-          },
-          {
-            "id": "care-01",
-            "text": "Monitor pest incidence based on prescribed procedure*"
-          },
-          {
-            "id": "care-02",
-            "text": "Prepare tools and materials according to specific pest control measure."
-          },
-          {
-            "id": "care-03",
-            "text": "Follow appropriate pest control measures based on GAP*"
-          },
-          {
-            "id": "care-04",
-            "text": "Observe and Practice Safety measures according to Occupational Safety and Health Standards (OSHS) Procedures"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-01",
-            "text": "Control weed population*"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-02",
-            "text": "Prepare Tools and materials according to prescribed user’s manual"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-03",
-            "text": "Identify kinds of Fertilizers"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-04",
-            "text": "Apply rate of Fertilizer based on crop requirement."
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-05",
-            "text": "Employs appropriate method of fertilizer application based on crop requirements.*"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-06",
-            "text": "Applies precautionary measures to avoid cross contamination based on GAP."
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-07",
-            "text": "Follows Safety procedures according to Occupational Safety and"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-08",
-            "text": "Health Standards."
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-09",
-            "text": "Determines soil moisture content based on soil field capacity"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-10",
-            "text": "Performs watering of crops following prescribed methods and schedule"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-11",
-            "text": "Observes Good Agricultural Practices"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-12",
-            "text": "Applies proper irrigation or watering of crops*"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-13",
-            "text": "Selects appropriate tools and materials for pruning."
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-14",
-            "text": "Performs pruning methods according to crops.*"
-          },
-          {
-            "id": "safety-and-health-standards-oshs-procedures-15",
-            "text": "Follows Safety procedures are followed according to Occupational Safety and Health Standards Agricultural Crop Production NC II"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-01",
-            "text": "Prepares tools and equipment for cultivation"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-02",
-            "text": "Carries out cultivation practices based on crop requirement*"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-03",
-            "text": "Performs rejuvenating activities*"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-04",
-            "text": "Performs growth training technique for different crops*"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-05",
-            "text": "Carries out mulching techniques*"
-          },
-          {
-            "id": "agricultural-crop-production-nc-ii-06",
-            "text": "Follows safety procedures according to occupational safety and health standards OPERATIONS"
-          },
-          {
-            "id": "operations-01",
-            "text": "Identify crop maturity indicator*"
-          },
-          {
-            "id": "operations-02",
-            "text": "Prepare materials, tools and equipment for harvesting and postharvest operations*"
-          },
-          {
-            "id": "operations-03",
-            "text": "Compare pest and diseases in storage to reference manual*"
-          },
-          {
-            "id": "operations-04",
-            "text": "Segregate harvested crop*"
-          },
-          {
-            "id": "operations-05",
-            "text": "Collect data on the environment (e.g. weather conditions, topography) and other relevant information (e.g. crop variety, cropping pattern/system, stage of crop)*"
-          },
-          {
-            "id": "operations-06",
-            "text": "Maintain records and provides feedback*"
-          },
-          {
-            "id": "operations-07",
-            "text": "Discuss labeling requirement for harvested produce*"
-          },
-          {
-            "id": "operations-08",
-            "text": "Follow guidelines and procedures for assessment activities, including occupational health and safety (OHS) requirements*"
-          },
-          {
-            "id": "operations-09",
-            "text": "Communicate effectively with farmers, team members and supervisor*"
-          },
-          {
-            "id": "operations-10",
-            "text": "Discuss personal hygiene, food safety, workplace sanitation"
-          },
-          {
-            "id": "operations-11",
-            "text": "Identify range of agricultural crop species/varieties"
-          },
-          {
-            "id": "operations-12",
-            "text": "Define farm planning and its principles"
-          },
-          {
-            "id": "operations-13",
-            "text": "Discuss industry standards for crops and regulating agencies"
-          },
-          {
-            "id": "operations-14",
-            "text": "Discuss postharvest treatments"
-          }
-        ],
-        "title": "PLANT CROPS"
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your"
-    ],
-    "qualificationTitle": "SAG-Agricultural Crops Production NC III",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "production",
-        "questions": [
-          {
-            "id": "production-01",
-            "text": "Prepare land for cultivation*"
-          },
-          {
-            "id": "production-02",
-            "text": "Interpret work requirements from planting plan*"
-          },
-          {
-            "id": "production-03",
-            "text": "Prepare the vehicles and equipment for site cultivation*"
-          },
-          {
-            "id": "production-04",
-            "text": "Cultivate soil*"
-          },
-          {
-            "id": "production-05",
-            "text": "Incorporate previous crop or land clearance debris*"
-          },
-          {
-            "id": "production-06",
-            "text": "Operate vehicles and equipment*"
-          },
-          {
-            "id": "production-07",
-            "text": "Prepare site for planting*"
-          },
-          {
-            "id": "production-08",
-            "text": "Apply weed and pest control measures, fertilizers, ameliorants and other pre-planting treatments*"
-          },
-          {
-            "id": "production-09",
-            "text": "Clean vehicles and equipment in accordance with manufacturer’s specifications*"
-          },
-          {
-            "id": "production-10",
-            "text": "Dispose leftover fluids, waste and debris from the cleaning and maintenance work*"
-          },
-          {
-            "id": "production-11",
-            "text": "Use and maintain Personal Protective Equipment*"
-          },
-          {
-            "id": "production-12",
-            "text": "Updates records as per organizational requirements*"
-          },
-          {
-            "id": "production-13",
-            "text": "Communicate effectively with superior and co-workers"
-          },
-          {
-            "id": "production-14",
-            "text": "Identify the methods of cultivating a range of soil types"
-          },
-          {
-            "id": "production-15",
-            "text": "Identify environmental issues of cultivating soil for planting"
-          }
-        ],
-        "title": "PRODUCTION"
-      },
-      {
-        "id": "implement-a-post-harvest-program",
-        "questions": [
-          {
-            "id": "implement-a-post-harvest-program-01",
-            "text": "Prepare materials, tools, equipment and machinery for post harvest operations*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-02",
-            "text": "Coordinate post harvest work to farm work team*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-03",
-            "text": "Select / implement post-harvest treatments*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-04",
-            "text": "Grade / label harvested produce*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-05",
-            "text": "Clean / maintain tools, equipment and machinery*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-06",
-            "text": "Collect / dispose wastes*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-07",
-            "text": "Package harvested produce as per marketing plan and industry practice*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-08",
-            "text": "Store / handle harvested produce*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-09",
-            "text": "Use and maintain Personal Protective Equipment*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-10",
-            "text": "Record packaging and storage processes*"
-          },
-          {
-            "id": "implement-a-post-harvest-program-11",
-            "text": "Communicate effectively in both oral and written with supervisor and team members"
-          },
-          {
-            "id": "implement-a-post-harvest-program-12",
-            "text": "Apply pest management principles aligned with farm policy"
-          },
-          {
-            "id": "implement-a-post-harvest-program-13",
-            "text": "Identify hygiene issues in handling and storage of produce"
-          },
-          {
-            "id": "implement-a-post-harvest-program-14",
-            "text": "Identify environmental effects of post harvest treatment and hazardous waste disposal methodologies, application and purpose"
-          },
-          {
-            "id": "implement-a-post-harvest-program-15",
-            "text": "Participate in team and contribute to achieve objectives"
-          }
-        ],
-        "title": "IMPLEMENT A POST HARVEST PROGRAM"
-      },
-      {
-        "id": "implement-a-plant-nutrition-program",
-        "questions": [
-          {
-            "id": "implement-a-plant-nutrition-program-01",
-            "text": "Identify goals and target site for the implementation of plant nutrition program including soils, plant species and varieties*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-02",
-            "text": "Analyze area and adjacent lands for soil composition / nutrients*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-03",
-            "text": "Identify materials for soil and plant treatments*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-04",
-            "text": "Monitor soil pH*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-05",
-            "text": "Assess product application methods in accordance with farm work procedures and environmental implications*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-06",
-            "text": "Identify common nutrient deficiency and toxicity problems in plants through visual inspection*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-07",
-            "text": "Apply fertilizers according to plant growing cycle and farm fertilizer calendar*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-08",
-            "text": "Handle / store fertilizers*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-09",
-            "text": "Calibrate / adjust and use tools, equipment and machinery*"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-10",
-            "text": "Apply appropriate amount of specific nutrients,"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-11",
-            "text": "Record product applications according to farm work procedures"
-          },
-          {
-            "id": "implement-a-plant-nutrition-program-12",
-            "text": "Communicate effectively with team members, supervisors, contractors and suppliers CONTROL WEEDS"
-          },
-          {
-            "id": "control-weeds-01",
-            "text": "Assess scope, density and size of weed infestation*"
-          },
-          {
-            "id": "control-weeds-02",
-            "text": "Use tools, equipment and implements"
-          },
-          {
-            "id": "control-weeds-03",
-            "text": "Use / maintain PPE*"
-          },
-          {
-            "id": "control-weeds-04",
-            "text": "Implement control measures according to IPM principles*"
-          },
-          {
-            "id": "control-weeds-05",
-            "text": "Clean and maintain safe work area*"
-          },
-          {
-            "id": "control-weeds-06",
-            "text": "Prepare land to ensure weed elimination*"
-          },
-          {
-            "id": "control-weeds-07",
-            "text": "Monitor control methods*"
-          },
-          {
-            "id": "control-weeds-08",
-            "text": "Maintain records in accordance with legislation and enterprise guidelines*"
-          },
-          {
-            "id": "control-weeds-09",
-            "text": "Identify the chemical, biological and cultural control methods and treatment available to enterprise within the parameters of IPM program"
-          },
-          {
-            "id": "control-weeds-10",
-            "text": "Identify OHS issues and legislative requirements associated with hazardous substances"
-          },
-          {
-            "id": "control-weeds-11",
-            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
-          }
-        ],
-        "title": "IMPLEMENT A PLANT NUTRITION PROGRAM"
-      },
-      {
-        "id": "prepare-and-apply-chemicals",
-        "questions": [
-          {
-            "id": "prepare-and-apply-chemicals-01",
-            "text": "Assess the requirements for chemical use*"
-          },
-          {
-            "id": "prepare-and-apply-chemicals-02",
-            "text": "Check label of chemicals to ensure chemicals meet user requirements and specifications*"
-          },
-          {
-            "id": "prepare-and-apply-chemicals-03",
-            "text": "Prepare appropriate chemicals*"
-          },
-          {
-            "id": "prepare-and-apply-chemicals-04",
-            "text": "Use / maintain PPE*"
-          },
-          {
-            "id": "prepare-and-apply-chemicals-05",
-            "text": "Prepare application equipment and tools*"
-          },
-          {
-            "id": "prepare-and-apply-chemicals-06",
-            "text": "Apply chemicals according to label and Material Safety Data Sheet (MSDS) *"
-          },
-          {
-            "id": "data-sheet-msds-01",
-            "text": "Clean / maintain application equipment and tools*"
-          },
-          {
-            "id": "data-sheet-msds-02",
-            "text": "Dispose unused chemicals, empty containers and spilled materials*"
-          },
-          {
-            "id": "data-sheet-msds-03",
-            "text": "Follow procedures for reporting chemical spills*"
-          },
-          {
-            "id": "data-sheet-msds-04",
-            "text": "Record application of chemicals, injury or poisoning associated with application of chemicals*"
-          },
-          {
-            "id": "data-sheet-msds-05",
-            "text": "Measure quantities, application rates and calibrate equipment"
-          },
-          {
-            "id": "data-sheet-msds-06",
-            "text": "Identify hazards, assessment control and emergency response"
-          },
-          {
-            "id": "data-sheet-msds-07",
-            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
-          }
-        ],
-        "title": "PREPARE AND APPLY CHEMICALS"
-      },
-      {
-        "id": "establish-agronomic-crops",
-        "questions": [
-          {
-            "id": "establish-agronomic-crops-01",
-            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
-          },
-          {
-            "id": "establish-agronomic-crops-02",
-            "text": "Select and utilize various features and controls of a range of specialized application equipment to seed and fertilize grains crop*"
-          },
-          {
-            "id": "establish-agronomic-crops-03",
-            "text": "Assess and calculate the application of fertilizer/pesticide requirements and application rates, calibrate equipment and calculate volumes, consumption and servicing requirements"
-          },
-          {
-            "id": "establish-agronomic-crops-04",
-            "text": "Apply fertilizers, herbicides, insecticides, other pesticides and hazardous substances safely"
-          },
-          {
-            "id": "establish-agronomic-crops-05",
-            "text": "Identify types of weeds and insects that are harmful and beneficial to crops"
-          },
-          {
-            "id": "establish-agronomic-crops-06",
-            "text": "Prepare, calibrate, operate and service machinery and equipment*"
-          },
-          {
-            "id": "establish-agronomic-crops-07",
-            "text": "Perform pre-and post operational and safety checks, servicing and maintenance on machinery and equipment"
-          },
-          {
-            "id": "establish-agronomic-crops-08",
-            "text": "Clean, secure and store machinery and equipment"
-          },
-          {
-            "id": "establish-agronomic-crops-09",
-            "text": "Prepare reports of machinery damage, faults or malfunctions and perform minor repairs"
-          },
-          {
-            "id": "establish-agronomic-crops-10",
-            "text": "Assess soil and weather conditions and determine appropriate seeding methods*"
-          },
-          {
-            "id": "establish-agronomic-crops-11",
-            "text": "Prepare seeds for planting, seed to plant by ensuring optimum range of depth and density*"
-          },
-          {
-            "id": "establish-agronomic-crops-12",
-            "text": "Recognize and control hazards*"
-          },
-          {
-            "id": "establish-agronomic-crops-13",
-            "text": "Observe and follow relevant environmental practices, provincial/municipal legislation, regulations and codes of practice with regards to workplace/OHS and the use and disposal of hazardous substances"
-          },
-          {
-            "id": "establish-agronomic-crops-14",
-            "text": "Evaluate seeding operations and maintain records*"
-          },
-          {
-            "id": "establish-agronomic-crops-15",
-            "text": "Interpret and apply task instructions"
-          },
-          {
-            "id": "establish-agronomic-crops-16",
-            "text": "Communicate with work teams and supervisor MAINTENANCE ACTIVITIES"
-          },
-          {
-            "id": "maintenance-activities-01",
-            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
-          },
-          {
-            "id": "maintenance-activities-02",
-            "text": "Observe and follow appropriate legislative requirements, manufacturers instructions and organization procedures/ instructions"
-          },
-          {
-            "id": "maintenance-activities-03",
-            "text": "Identify health conditions of crops and potential pests"
-          },
-          {
-            "id": "maintenance-activities-04",
-            "text": "Identify moisture and hygiene requirements for agronomic crops and equipment that comes into contact with the crop"
-          },
-          {
-            "id": "maintenance-activities-05",
-            "text": "Prepare, calibrate, operate and service machinery and equipment"
-          },
-          {
-            "id": "maintenance-activities-06",
-            "text": "Identify the types and uses of herbicides, insecticides and other pesticides and alternative pest control methods (non- chemical)"
-          },
-          {
-            "id": "maintenance-activities-07",
-            "text": "Apply fertilizers and other chemicals considering the growth cycle of the crop*"
-          },
-          {
-            "id": "maintenance-activities-08",
-            "text": "Apply water according to crop requirements"
-          },
-          {
-            "id": "maintenance-activities-09",
-            "text": "Monitor the condition and growth rate of crops"
-          },
-          {
-            "id": "maintenance-activities-10",
-            "text": "Observe and prepare reports on health and growth of crops"
-          },
-          {
-            "id": "maintenance-activities-11",
-            "text": "Identify and prepare reports on the variations in crop’s health and growth rate"
-          },
-          {
-            "id": "maintenance-activities-12",
-            "text": "Identify and apply basic knowledge in agronomy, horticulture and plant pathology ACTIVITIES"
-          },
-          {
-            "id": "activities-01",
-            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
-          },
-          {
-            "id": "activities-02",
-            "text": "Observe and follow appropriate legislative requirements, manufacturer’s instructions and organization procedures/ instructions"
-          },
-          {
-            "id": "activities-03",
-            "text": "Observe and follow pre and post operational and safety checks, servicing and maintenance procedures for tools and equipment"
-          },
-          {
-            "id": "activities-04",
-            "text": "Harvest crops safely and efficiently while maintaining the highest degree of hygiene and quality*"
-          },
-          {
-            "id": "activities-05",
-            "text": "Identify pests and signs of pest infestation in the crop"
-          },
-          {
-            "id": "activities-06",
-            "text": "Identify moisture and hygiene requirements for agronomic crops and equipment that comes into contact with the crop"
-          },
-          {
-            "id": "activities-07",
-            "text": "Observe and follow post-harvest handling and packaging procedures"
-          },
-          {
-            "id": "activities-08",
-            "text": "Utilize communication systems"
-          },
-          {
-            "id": "activities-09",
-            "text": "Handle and maneuver harvesting equipment"
-          },
-          {
-            "id": "activities-10",
-            "text": "Interpret and apply task instructions, communicate with work team and supervisor; record and report faults, workplace hazards and accidents SEED"
-          },
-          {
-            "id": "seed-01",
-            "text": "Save, prepare, and store seed in a hygienic environment to ensure successful crop the succeeding year*"
-          },
-          {
-            "id": "seed-02",
-            "text": "Identify the varieties, treatments, cleaning measures and storage techniques and requirements for seed and grain"
-          },
-          {
-            "id": "seed-03",
-            "text": "Determine the inoculation treatment and dressings used within the organization"
-          },
-          {
-            "id": "seed-04",
-            "text": "Observe and follow environmental controls and codes of practice applicable to the enterprise"
-          },
-          {
-            "id": "seed-05",
-            "text": "Observe and follow relevant legislation and regulations relating to OHS; contractor engagement, chemical use and application; vehicle and plant use; and the use, handling and sale of seed"
-          },
-          {
-            "id": "seed-06",
-            "text": "Observe and follow sound management practices and processes to minimize noise, odors and debris from sowing operations"
-          },
-          {
-            "id": "seed-07",
-            "text": "Select appropriate seed test"
-          },
-          {
-            "id": "seed-08",
-            "text": "Apply pre and post harvest treatment for seed"
-          },
-          {
-            "id": "seed-09",
-            "text": "Identify varieties from growth patterns"
-          },
-          {
-            "id": "seed-10",
-            "text": "Identify weed seeds and contaminants"
-          },
-          {
-            "id": "seed-11",
-            "text": "Identify pests in stored grain and initiate control measures"
-          },
-          {
-            "id": "seed-12",
-            "text": "Calculate volumes, capacities, areas, ratios for seed, storage and chemicals"
-          },
-          {
-            "id": "seed-13",
-            "text": "Maintain an update records relating to test results, provenance, varieties, pest control measures and other relevant information about the seed"
-          },
-          {
-            "id": "seed-14",
-            "text": "Observe, identify and respond appropriately to environmental implications and OHS hazards PROGRAM"
-          },
-          {
-            "id": "program-01",
-            "text": "Use control agents safely and apply appropriate methods to control vertebrate pests*"
-          },
-          {
-            "id": "program-02",
-            "text": "Use and handle hazardous substances safely*"
-          },
-          {
-            "id": "program-03",
-            "text": "Identify species and nature of vertebrate pest and carry out inspections to assess infestations*"
-          },
-          {
-            "id": "program-04",
-            "text": "Dispose carcasses according to established industry standard*"
-          },
-          {
-            "id": "program-05",
-            "text": "Observe and follow legislative and industry requirements for the disposal of vertebrate pests and control agents select and apply appropriate control methods and techniques"
-          },
-          {
-            "id": "program-06",
-            "text": "Observe and follow safety signage"
-          },
-          {
-            "id": "program-07",
-            "text": "Manage sustainable livestock supplies"
-          },
-          {
-            "id": "program-08",
-            "text": "Observe and follow relevant environmental guidelines including protection of native vegetation giving particular attention to potential soil degradation and destruction of flora and fauna"
-          },
-          {
-            "id": "program-09",
-            "text": "Observe and follow relevant provisions of OHS legislation and regulations"
-          },
-          {
-            "id": "program-10",
-            "text": "Select and use agricultural chemicals safely"
-          },
-          {
-            "id": "program-11",
-            "text": "Communicate with farm personnel and suppliers both verbal and written"
-          },
-          {
-            "id": "program-12",
-            "text": "Read and interpret chemical labels, MSDS and safety signage or decals"
-          },
-          {
-            "id": "program-13",
-            "text": "Calculate vertebrate pest numbers and estimate appropriate resources and materials for pest control program"
-          }
-        ],
-        "title": "ESTABLISH AGRONOMIC CROPS"
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment with the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each question and check the appropriate column to indicate your answer."
-    ],
-    "qualificationTitle": "SAG-AgroEntrepreneurship NC II",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "assess-market-opportunities",
-        "questions": [
-          {
-            "id": "assess-market-opportunities-01",
-            "text": "Describe how buyers in the local market are identified and selected"
-          },
-          {
-            "id": "assess-market-opportunities-02",
-            "text": "Identify flow of produce from farm to the selected buyer"
-          },
-          {
-            "id": "assess-market-opportunities-03",
-            "text": "Identify value adding activities to be performed based on requirements of selected buyer"
-          },
-          {
-            "id": "assess-market-opportunities-04",
-            "text": "Prepare marketing objective based on market visit"
-          },
-          {
-            "id": "assess-market-opportunities-05",
-            "text": "Identify steps in delivery of product and targeted sales/costs/marketing profit based on set objective/s"
-          },
-          {
-            "id": "assess-market-opportunities-06",
-            "text": "Prepare contingency plan based on market risks Market Produce"
-          },
-          {
-            "id": "market-produce-01",
-            "text": "Gather and record price information from buyers and trade centers"
-          },
-          {
-            "id": "market-produce-02",
-            "text": "Use collected information to increase sales and profits"
-          },
-          {
-            "id": "market-produce-03",
-            "text": "Demonstrate value adding activities based on market plan"
-          },
-          {
-            "id": "market-produce-04",
-            "text": "Describe participation in product consolidation and group marketing"
-          },
-          {
-            "id": "market-produce-05",
-            "text": "Demonstrate selling negotiation skill with buyers and/or business development service providers (ex. trucker, cold storage provider, packaging provider, etc.)"
-          },
-          {
-            "id": "market-produce-06",
-            "text": "Set terms and conditions when selling produce"
-          },
-          {
-            "id": "market-produce-07",
-            "text": "Describe how to prepare and deliver sold produce based on set terms and conditions"
-          },
-          {
-            "id": "market-produce-08",
-            "text": "Review result of marketing activities based on market plan"
-          },
-          {
-            "id": "market-produce-09",
-            "text": "Record details of marketing transaction (ex. product deliveries, sales, costs and profit)"
-          },
-          {
-            "id": "market-produce-10",
-            "text": "Demonstrate selling negotiation skill with buyers and/or business development service providers (ex. trucker, cold storage provider, packaging provider, etc)"
-          }
-        ],
-        "title": "Assess market opportunities"
-      },
-      {
-        "id": "establish-farm-production-plan",
-        "questions": [
-          {
-            "id": "establish-farm-production-plan-01",
-            "text": "Identify needed farm operation improvements using the gathered information as basis"
-          },
-          {
-            "id": "establish-farm-production-plan-02",
-            "text": "Identify farm production requirements, activities and costs"
-          },
-          {
-            "id": "establish-farm-production-plan-03",
-            "text": "Compute farm production costs, target volume of harvest and cost and return"
-          },
-          {
-            "id": "establish-farm-production-plan-04",
-            "text": "Identify alternative farm products based on market demand"
-          },
-          {
-            "id": "establish-farm-production-plan-05",
-            "text": "Describe contingency plans and corrective measures based of farm production risks"
-          },
-          {
-            "id": "establish-farm-production-plan-06",
-            "text": "Identify suppliers and providers based on preference/criteria"
-          },
-          {
-            "id": "establish-farm-production-plan-07",
-            "text": "Adjust farm production activities and costing based on identified need"
-          },
-          {
-            "id": "establish-farm-production-plan-08",
-            "text": "Adjust projected volume target based on identified need"
-          },
-          {
-            "id": "establish-farm-production-plan-09",
-            "text": "Describe needed improvements and corrective measures Handle Finances"
-          },
-          {
-            "id": "handle-finances-01",
-            "text": "Compute farm costs according to farm activities"
-          },
-          {
-            "id": "handle-finances-02",
-            "text": "Identify requirements of loan application to identified financial service providers"
-          },
-          {
-            "id": "handle-finances-03",
-            "text": "Prepare budget plan for loan application, allocation of funds for farm activities and farm expansion"
-          },
-          {
-            "id": "handle-finances-04",
-            "text": "Give examples of “terms and conditions” of a financial service provider"
-          },
-          {
-            "id": "handle-finances-05",
-            "text": "Give examples of ways that will increase the chances of settling loan"
-          },
-          {
-            "id": "handle-finances-06",
-            "text": "Identify ways to invest farm income"
-          }
-        ],
-        "title": "Establish Farm Production Plan"
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your",
-      "answer."
-    ],
-    "qualificationTitle": "SAG-Animal Production (Poultry-Chicken) NC II",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "maintain-poultry-house",
-        "questions": [
-          {
-            "id": "maintain-poultry-house-01",
-            "text": "Determine farm layout of poultry house and facilities with"
-          },
-          {
-            "id": "maintain-poultry-house-02",
-            "text": "Check poultry housing and facilities according to enterprise procedures."
-          },
-          {
-            "id": "maintain-poultry-house-03",
-            "text": "Report conditions of poultry housing and facilities to the immediate authority and in compliance with Environmental"
-          },
-          {
-            "id": "maintain-poultry-house-04",
-            "text": "Compliance Certificate."
-          },
-          {
-            "id": "maintain-poultry-house-05",
-            "text": "Prepare tools, materials and equipment according to maintenance requirements and instructions of authority.*"
-          },
-          {
-            "id": "maintain-poultry-house-06",
-            "text": "Clean and disinfect poultry housing and facilities in regular basis."
-          },
-          {
-            "id": "maintain-poultry-house-07",
-            "text": "Perform minor repairs and maintenance as per instruction of the authority and per work requirements.*"
-          },
-          {
-            "id": "maintain-poultry-house-08",
-            "text": "Report immediately major malfunctions and irregular conditions in the poultry house and facilities.*"
-          },
-          {
-            "id": "maintain-poultry-house-09",
-            "text": "Practice following OSHS procedures wearing appropriate personal protective equipment (PPE).*"
-          },
-          {
-            "id": "maintain-poultry-house-10",
-            "text": "Practice downtime (rest period) prior to succeeding loading for at least one week."
-          },
-          {
-            "id": "maintain-poultry-house-11",
-            "text": "Practice safety measures according to Occupational Safety and"
-          },
-          {
-            "id": "maintain-poultry-house-12",
-            "text": "Health Standards (OSHS)."
-          },
-          {
-            "id": "maintain-poultry-house-13",
-            "text": "Perform maintenance of farm area and vicinities according to production management and enterprise procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-14",
-            "text": "Perform vermin and insects control according to Fertilizer and"
-          },
-          {
-            "id": "maintain-poultry-house-15",
-            "text": "Pesticides Authority guidelines and DENR regulations.*"
-          },
-          {
-            "id": "maintain-poultry-house-16",
-            "text": "Conduct maintenance of farm vegetation to avoid common vermins and insects’ proliferation."
-          },
-          {
-            "id": "maintain-poultry-house-17",
-            "text": "Keep and update records for reporting and inventory purposes following enterprise procedures."
-          },
-          {
-            "id": "maintain-poultry-house-18",
-            "text": "Clean and stores tools and equipment according to manuals and enterprise procedures."
-          },
-          {
-            "id": "maintain-poultry-house-19",
-            "text": "Practice housekeeping following 5S principles and enterprise procedures."
-          },
-          {
-            "id": "maintain-poultry-house-20",
-            "text": "Manage wastes following 3Rs principles and DENR regulations."
-          },
-          {
-            "id": "maintain-poultry-house-21",
-            "text": "Apply wearing of personal protective equipment (PPE) according to OHS procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-22",
-            "text": "Clean and disinfect poultry house was according to company standard procedures."
-          },
-          {
-            "id": "maintain-poultry-house-23",
-            "text": "Prepare materials, tools and equipment according to production requirements.*"
-          },
-          {
-            "id": "maintain-poultry-house-24",
-            "text": "Install and adjust chick guard, curtains and portable heaters based on industry standards.*"
-          },
-          {
-            "id": "maintain-poultry-house-25",
-            "text": "Clean and lay-out litter materials, regularly following farm plans and schedule.*"
-          },
-          {
-            "id": "maintain-poultry-house-26",
-            "text": "Obtain broiler and layer stocks from reliable/recommended sources.*"
-          },
-          {
-            "id": "maintain-poultry-house-27",
-            "text": "Place a day-old chicks (DOC) and day-old pullets (DOP) to respective brooding houses observing Good Animal Practices and Animal Welfare Act."
-          },
-          {
-            "id": "maintain-poultry-house-28",
-            "text": "Cull chicks with abnormalities from the flock.*"
-          },
-          {
-            "id": "maintain-poultry-house-29",
-            "text": "Prepare and clean feeders and waterers regularly.*"
-          },
-          {
-            "id": "maintain-poultry-house-30",
-            "text": "Feed poultry according to company feeds and feeding guide.*"
-          },
-          {
-            "id": "maintain-poultry-house-31",
-            "text": "Practice nutrient supplementation as remedial measures according to instructions of immediate authority."
-          },
-          {
-            "id": "maintain-poultry-house-32",
-            "text": "Give water according to industry standards and bird requirements."
-          },
-          {
-            "id": "maintain-poultry-house-33",
-            "text": "Secure feed left-over properly and dispose spoiled feed properly."
-          },
-          {
-            "id": "maintain-poultry-house-34",
-            "text": "Provide lighting program based on industry standards."
-          },
-          {
-            "id": "maintain-poultry-house-35",
-            "text": "Augment ventilation during hot climatic conditions."
-          },
-          {
-            "id": "maintain-poultry-house-36",
-            "text": "Perform curtain management based on prevailing conditions.*"
-          },
-          {
-            "id": "maintain-poultry-house-37",
-            "text": "Apply bio-security measures according to industry procedures."
-          },
-          {
-            "id": "maintain-poultry-house-38",
-            "text": "Perform vermin control following industry procedures."
-          },
-          {
-            "id": "maintain-poultry-house-39",
-            "text": "Perform disposal of wastes following DENR regulations.*"
-          },
-          {
-            "id": "maintain-poultry-house-40",
-            "text": "Determine and report distress conditions of poultry to immediate authority or veterinarian.*"
-          },
-          {
-            "id": "maintain-poultry-house-41",
-            "text": "Administer preventive measures according to veterinarian recommendations and instructions.*"
-          },
-          {
-            "id": "maintain-poultry-house-42",
-            "text": "Isolate sick birds for treatment following instructions of veterinarian."
-          },
-          {
-            "id": "maintain-poultry-house-43",
-            "text": "Apply culling procedures with reference to economic considerations and according to instructions of immediate authority."
-          },
-          {
-            "id": "maintain-poultry-house-44",
-            "text": "Remove missexed from flock following industry standards."
-          },
-          {
-            "id": "maintain-poultry-house-45",
-            "text": "Perform flock selection according to company requirements and productivity standards."
-          },
-          {
-            "id": "maintain-poultry-house-46",
-            "text": "Cull out birds with poor physical condition according company requirements on a regular basis."
-          },
-          {
-            "id": "maintain-poultry-house-47",
-            "text": "Update relevant records on regular basis following enterprise protocol.*"
-          },
-          {
-            "id": "maintain-poultry-house-48",
-            "text": "Clean and disinfect laying houses according to industry procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-49",
-            "text": "Prepare tools, materials and equipment are according to work requirements.*"
-          },
-          {
-            "id": "maintain-poultry-house-50",
-            "text": "Select ready to lay-pullets for transfer to laying house.*"
-          },
-          {
-            "id": "maintain-poultry-house-51",
-            "text": "Cull pullets with abnormalities from the flock.*"
-          },
-          {
-            "id": "maintain-poultry-house-52",
-            "text": "Transfer ready-to-lay-pullets to laying house reference to"
-          },
-          {
-            "id": "maintain-poultry-house-53",
-            "text": "Animal Welfare Act and Good Animal Practices."
-          },
-          {
-            "id": "maintain-poultry-house-54",
-            "text": "Follow lighting program according to prepared schedule."
-          },
-          {
-            "id": "maintain-poultry-house-55",
-            "text": "Install lighting fixtures according to required light intensity.*"
-          },
-          {
-            "id": "maintain-poultry-house-56",
-            "text": "Perform monitoring of sexual development in accordance with breed standards."
-          },
-          {
-            "id": "maintain-poultry-house-57",
-            "text": "Prepare and clean feeders and water trough regularly."
-          },
-          {
-            "id": "maintain-poultry-house-58",
-            "text": "Feed poultry species according to industry standards."
-          },
-          {
-            "id": "maintain-poultry-house-59",
-            "text": "Apply feeding to peak and challenge feeding according to layer’s status.*"
-          },
-          {
-            "id": "maintain-poultry-house-60",
-            "text": "Properly secure feed left-over and dispose properly spoiled feed."
-          },
-          {
-            "id": "maintain-poultry-house-61",
-            "text": "Perform monitoring of productivity with reference to bird’s status."
-          },
-          {
-            "id": "maintain-poultry-house-62",
-            "text": "Perform deworming as recommended by veterinarian or authority."
-          },
-          {
-            "id": "maintain-poultry-house-63",
-            "text": "Perform booster vaccination program as recommended by veterinarian or authority."
-          },
-          {
-            "id": "maintain-poultry-house-64",
-            "text": "Perform applications of vaccines following veterinarian instructions.*"
-          },
-          {
-            "id": "maintain-poultry-house-65",
-            "text": "Give vitamins and minerals supplementations based on assessment and recommendations of veterinarian or animal nutritionist.*"
-          },
-          {
-            "id": "maintain-poultry-house-66",
-            "text": "Collect eggs on a regular basis using appropriate materials and standard collecting procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-67",
-            "text": "Classify eggs according to industry classification standards.*"
-          },
-          {
-            "id": "maintain-poultry-house-68",
-            "text": "Pack and store eggs at appropriate room temperature."
-          },
-          {
-            "id": "maintain-poultry-house-69",
-            "text": "Cull out unproductive layers according to standard industry procedures."
-          },
-          {
-            "id": "maintain-poultry-house-70",
-            "text": "Keep records following enterprise standard.*"
-          },
-          {
-            "id": "maintain-poultry-house-71",
-            "text": "Prepare materials, tools and equipment for the operation according to work requirements.*"
-          },
-          {
-            "id": "maintain-poultry-house-72",
-            "text": "Condition birds for debeaking following Good Animal Practices and Animal Welfare Act. Safety measures are practiced following Occupational Safety and Health Standards (OSHS).*"
-          },
-          {
-            "id": "maintain-poultry-house-73",
-            "text": "Trim beak in appropriate age following standard industry procedures."
-          },
-          {
-            "id": "maintain-poultry-house-74",
-            "text": "Restrain birds with net to facilitate calm capture."
-          },
-          {
-            "id": "maintain-poultry-house-75",
-            "text": "Perform task observing safety practices and following Good"
-          },
-          {
-            "id": "maintain-poultry-house-76",
-            "text": "Animal Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "maintain-poultry-house-77",
-            "text": "Retrim beaks according to standard operating procedures."
-          },
-          {
-            "id": "maintain-poultry-house-78",
-            "text": "Perform task practicing OSHS and following GAHP."
-          },
-          {
-            "id": "maintain-poultry-house-79",
-            "text": "Practice proper disposal according to environmental rules and regulations.*"
-          },
-          {
-            "id": "maintain-poultry-house-80",
-            "text": "Store tools, materials and equipment according to industry protocol."
-          },
-          {
-            "id": "maintain-poultry-house-81",
-            "text": "Collect and update records for reporting purposes (daily/weekly).*"
-          },
-          {
-            "id": "maintain-poultry-house-82",
-            "text": "Obtain poultry breeder from reliable source according to enterprise production requirement.*"
-          },
-          {
-            "id": "maintain-poultry-house-83",
-            "text": "Determine characteristics of rooster suited for breeding following enterprise protocol.*"
-          },
-          {
-            "id": "maintain-poultry-house-84",
-            "text": "Maintain breeder sheds according to established farm practices following GAHP."
-          },
-          {
-            "id": "maintain-poultry-house-85",
-            "text": "Establish nests set-up in suitable place in reference to breeding practices.*"
-          },
-          {
-            "id": "maintain-poultry-house-86",
-            "text": "Transfer poultry breeder to appropriate breeder sheds following"
-          },
-          {
-            "id": "maintain-poultry-house-87",
-            "text": "Maintain hygienic environment according to enterprise standard procedures and requirements."
-          },
-          {
-            "id": "maintain-poultry-house-88",
-            "text": "Male (rooster) is left with the females (hens) to mate following enterprise breeding schedule and plan."
-          },
-          {
-            "id": "maintain-poultry-house-89",
-            "text": "Train birds to lay in nests with minimal number of eggs on floor following recognized industry standards."
-          },
-          {
-            "id": "maintain-poultry-house-90",
-            "text": "Keep temperature of the hen shed constant and warm according to established enterprise procedures."
-          },
-          {
-            "id": "maintain-poultry-house-91",
-            "text": "Perform maintenance of breeder poultry in line with egg production objective.*"
-          },
-          {
-            "id": "maintain-poultry-house-92",
-            "text": "Prevent any drafts from entering the building according to enterprise protocol."
-          },
-          {
-            "id": "maintain-poultry-house-93",
-            "text": "Conduct in-lay activities according to enterprise protocol and production plan.*"
-          },
-          {
-            "id": "maintain-poultry-house-94",
-            "text": "Employ safety practices according to Occupational Safety and"
-          },
-          {
-            "id": "maintain-poultry-house-95",
-            "text": "Hazard Standards."
-          },
-          {
-            "id": "maintain-poultry-house-96",
-            "text": "Collect fertile eggs according to established enterprise protocol and requirement.*"
-          },
-          {
-            "id": "maintain-poultry-house-97",
-            "text": "Carry out identification and grading of egg in accordance with production requirements and breeding objectives."
-          },
-          {
-            "id": "maintain-poultry-house-98",
-            "text": "Handle livestock during egg collection is humanely handled."
-          },
-          {
-            "id": "maintain-poultry-house-99",
-            "text": "Perform eggs cleaning and sanitation following company requirements and required hygienic procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-100",
-            "text": "Maintain hygienic environment following enterprise procedures and requirement."
-          },
-          {
-            "id": "maintain-poultry-house-101",
-            "text": "Complete records of all collections to accurately monitor production.*"
-          },
-          {
-            "id": "maintain-poultry-house-102",
-            "text": "Select hatching eggs following standard enterprise protocol.*"
-          },
-          {
-            "id": "maintain-poultry-house-103",
-            "text": "Store eggs are in accordance to industry standard procedures.*"
-          },
-          {
-            "id": "maintain-poultry-house-104",
-            "text": "Take eggs that are neglected by hens for incubation purposes."
-          },
-          {
-            "id": "maintain-poultry-house-105",
-            "text": "Minimize floor egg problems following enterprise procedures."
-          }
-        ],
-        "title": "Maintain poultry house"
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your answer."
-    ],
-    "qualificationTitle": "SAG-Animal Production (Swine) NC II",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "handle-breeders",
-        "title": "Handle breeders",
-        "questions": [
-          {
-            "id": "handle-breeders-01",
-            "text": "Isolate newly arrived stocks in quarantine pens and observe for a period prescribed by veterinary."
-          },
-          {
-            "id": "handle-breeders-02",
-            "text": "Give standard vaccines and medication for animals."
-          },
-          {
-            "id": "handle-breeders-03",
-            "text": "Acclimatize animals through vaccination depending in areas of the disease outbreak.*"
-          },
-          {
-            "id": "handle-breeders-04",
-            "text": "Select suitable breed based on industry standards and choice of enterprise.*"
-          },
-          {
-            "id": "handle-breeders-05",
-            "text": "Select female stock based on industry standards and choice of enterprise."
-          },
-          {
-            "id": "handle-breeders-06",
-            "text": "Select male stock based on industry standards, breeding objective and choice of enterprise."
-          },
-          {
-            "id": "handle-breeders-07",
-            "text": "Perform boar semen evaluation based on industry standards."
-          },
-          {
-            "id": "handle-breeders-08",
-            "text": "Monitor signs of heat based on standards protocol.*"
-          },
-          {
-            "id": "handle-breeders-09",
-            "text": "Perform heat detection techniques following established protocol.*"
-          },
-          {
-            "id": "handle-breeders-10",
-            "text": "Breed sows/gilts using standard breeding procedures.*"
-          },
-          {
-            "id": "handle-breeders-11",
-            "text": "Select breeding system based on choice of enterprise."
-          },
-          {
-            "id": "handle-breeders-12",
-            "text": "Train boar to mount a female or a dummy sow."
-          },
-          {
-            "id": "handle-breeders-13",
-            "text": "Prescribe vaccines and medications given to boar."
-          },
-          {
-            "id": "handle-breeders-14",
-            "text": "Determine ideal weight and age according to industry standards."
-          },
-          {
-            "id": "handle-breeders-15",
-            "text": "Prepare and submit report on work outputs and updates to concerned person or authority according to industry practices."
-          },
-          {
-            "id": "handle-breeders-16",
-            "text": "Observe optimum boar to sow ratio following standard monitoring scheme."
-          },
-          {
-            "id": "handle-breeders-17",
-            "text": "Monitor signs of pregnancy according to standards protocol.*"
-          },
-          {
-            "id": "handle-breeders-18",
-            "text": "Perform pregnancy diagnosis according to standard procedures.*"
-          },
-          {
-            "id": "handle-breeders-19",
-            "text": "Perform periodic activities following work plan and breeding schedules.*"
-          },
-          {
-            "id": "handle-breeders-20",
-            "text": "Feed stocks based on industry standards and production cycle."
-          },
-          {
-            "id": "handle-breeders-21",
-            "text": "Prepare production plan based on choice of enterprise."
-          },
-          {
-            "id": "handle-breeders-22",
-            "text": "Select non-performing breeders for culling based on industry standards."
-          },
-          {
-            "id": "handle-breeders-23",
-            "text": "Monitor changes in animal behavior following standard procedures and GAHP."
-          },
-          {
-            "id": "handle-breeders-24",
-            "text": "Update stock inventory according to established farm recording system."
-          },
-          {
-            "id": "handle-breeders-25",
-            "text": "Monitor and record breeding schedule following work plan."
-          },
-          {
-            "id": "handle-breeders-26",
-            "text": "Record and report production performance of breeders according to enterprise protocol.*"
-          }
-        ]
-      },
-      {
-        "id": "handle-breeders-2",
-        "title": "Handle farrowing sows and sucklings",
-        "questions": [
-          {
-            "id": "handle-breeders-27",
-            "text": "Clean and disinfect farrowing stalls or pens following standard hygienic procedures."
-          },
-          {
-            "id": "handle-breeders-28",
-            "text": "Conduct bathing of sows following Good Animal Husbandry Practices (GAHP).*"
-          },
-          {
-            "id": "handle-breeders-29",
-            "text": "Transfer to farrowing stalls or pens pregnant sows and gilts according to Animal Welfare Act.*"
-          },
-          {
-            "id": "handle-breeders-30",
-            "text": "Determine feed intake on farm protocols."
-          },
-          {
-            "id": "handle-breeders-31",
-            "text": "Monitor signs of approaching farrowing.*"
-          },
-          {
-            "id": "handle-breeders-32",
-            "text": "Prepare farrowing materials and supplies based on work requirements.*"
-          },
-          {
-            "id": "handle-breeders-33",
-            "text": "Wear appropriate personal protective equipment (PPE) following"
-          },
-          {
-            "id": "handle-breeders-34",
-            "text": "Occupational Safety and Health Standard (OSHS)."
-          },
-          {
-            "id": "handle-breeders-35",
-            "text": "Monitor farrowing problems following enterprise protocol.*"
-          },
-          {
-            "id": "handle-breeders-36",
-            "text": "Adjust feed intake based on nutrient requirements of animals."
-          },
-          {
-            "id": "handle-breeders-37",
-            "text": "Assist sow and gilt manually when deemed necessary."
-          },
-          {
-            "id": "handle-breeders-38",
-            "text": "Perform newborn piglet activities according to GAHP.*"
-          },
-          {
-            "id": "handle-breeders-39",
-            "text": "Dispose placenta and dead piglets properly according to farm protocol and DENR regulations."
-          },
-          {
-            "id": "handle-breeders-40",
-            "text": "Provide proper temperature/micro-climate based on the minimum requirements for the welfare of pigs and the code of Good Animal"
-          },
-          {
-            "id": "handle-breeders-41",
-            "text": "Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "handle-breeders-42",
-            "text": "Ensure colostrums and milk intake based from GAHP."
-          },
-          {
-            "id": "handle-breeders-43",
-            "text": "Inject iron preparations based on industry standards and manufacturer’s specification."
-          },
-          {
-            "id": "handle-breeders-44",
-            "text": "Perform castration when needed based on the minimum requirements for the welfare of pigs and the code of Good Animal"
-          },
-          {
-            "id": "handle-breeders-45",
-            "text": "Feed piglets based on farm protocols."
-          },
-          {
-            "id": "handle-breeders-46",
-            "text": "Wean piglets based on industry standards."
-          },
-          {
-            "id": "handle-breeders-47",
-            "text": "Give liquid energizers to underweight sucklings immediately after birth."
-          },
-          {
-            "id": "handle-breeders-48",
-            "text": "Monitor changes in piglet behavior following enterprise protocol.*"
-          },
-          {
-            "id": "handle-breeders-49",
-            "text": "Monitor changes in fecal, odor, color and consistency of piglets according to industry standard procedures.*"
-          },
-          {
-            "id": "handle-breeders-50",
-            "text": "Monitor uniformity of litter based on enterprise requirements."
-          },
-          {
-            "id": "handle-breeders-51",
-            "text": "Monitor sow discharges following instructions of veterinarian."
-          },
-          {
-            "id": "handle-breeders-52",
-            "text": "Implement vaccination programs based on veterinary recommendation."
-          },
-          {
-            "id": "handle-breeders-53",
-            "text": "Update farrowing card following enterprise procedures."
-          },
-          {
-            "id": "handle-breeders-54",
-            "text": "Monitor farrowing schedules with reference to work plan."
-          },
-          {
-            "id": "handle-breeders-55",
-            "text": "Record and report production performance to immediate authority.*"
-          },
-          {
-            "id": "handle-breeders-56",
-            "text": "Record and report technical performance following instructions of authority."
-          }
-        ]
-      },
-      {
-        "id": "handle-breeders-3",
-        "title": "Raise weanlings",
-        "questions": [
-          {
-            "id": "handle-breeders-57",
-            "text": "Clean and disinfect pens based on farm specifications."
-          },
-          {
-            "id": "handle-breeders-58",
-            "text": "Adjust and supply materials and equipment.*"
-          },
-          {
-            "id": "handle-breeders-59",
-            "text": "Group weaners based on farm specifications."
-          },
-          {
-            "id": "handle-breeders-60",
-            "text": "Transfer weaners in compliance with the Animal Welfare Act."
-          },
-          {
-            "id": "handle-breeders-61",
-            "text": "Feed animals according to farm specifications."
-          },
-          {
-            "id": "handle-breeders-62",
-            "text": "Clean pen regularly following standard hygienic procedures."
-          },
-          {
-            "id": "handle-breeders-63",
-            "text": "Provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "handle-breeders-64",
-            "text": "Check and adjust feeders to ensure proper functioning.*"
-          },
-          {
-            "id": "handle-breeders-65",
-            "text": "Shift feed ration and gradually increased based on animal requirements.*"
-          },
-          {
-            "id": "handle-breeders-66",
-            "text": "Provide fresh and clean water at all times (adlibitum)."
-          },
-          {
-            "id": "handle-breeders-67",
-            "text": "Monitor changes in animal behavior."
-          },
-          {
-            "id": "handle-breeders-68",
-            "text": "Monitor changes in fecal, color, odor and consistency."
-          },
-          {
-            "id": "handle-breeders-69",
-            "text": "Monitor uniformity of litter following farm procedures."
-          },
-          {
-            "id": "handle-breeders-70",
-            "text": "Deworm weaners based on farm protocols."
-          },
-          {
-            "id": "handle-breeders-71",
-            "text": "Implement vaccination programs based on veterinary recommendations."
-          },
-          {
-            "id": "handle-breeders-72",
-            "text": "Update weanling records using standard enterprise."
-          },
-          {
-            "id": "handle-breeders-73",
-            "text": "Monitor weaning schedules."
-          },
-          {
-            "id": "handle-breeders-74",
-            "text": "Monitor and report production performance of weanlings according to enterprise procedures.*"
-          }
-        ]
-      },
-      {
-        "id": "handle-breeders-4",
-        "title": "Produce finishers",
-        "questions": [
-          {
-            "id": "handle-breeders-75",
-            "text": "Select suitable starters for finishing based on preference of clients."
-          },
-          {
-            "id": "handle-breeders-76",
-            "text": "Clean and disinfect finishers building."
-          },
-          {
-            "id": "handle-breeders-77",
-            "text": "Adjust and supply materials and equipment according to work requirements.*"
-          },
-          {
-            "id": "handle-breeders-78",
-            "text": "Group starters based on industry standards farm specifications."
-          },
-          {
-            "id": "handle-breeders-79",
-            "text": "Transfer starters based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "handle-breeders-80",
-            "text": "Clean pen regularly following hygienic procedures."
-          },
-          {
-            "id": "handle-breeders-81",
-            "text": "Monitor and provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal"
-          },
-          {
-            "id": "handle-breeders-82",
-            "text": "Check and adjust height of drinkers to ensure proper functioning based on the minimum standards on the welfare of pigs and code of"
-          },
-          {
-            "id": "handle-breeders-83",
-            "text": "Good Animal Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "handle-breeders-84",
-            "text": "Provide enough floor space based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
-          },
-          {
-            "id": "handle-breeders-85",
-            "text": "Isolate weak animals based on farm protocols."
-          },
-          {
-            "id": "handle-breeders-86",
-            "text": "Feed animals according to a standard feeding system.*"
-          },
-          {
-            "id": "handle-breeders-87",
-            "text": "Adjust and shift feed ration based on farm protocols."
-          },
-          {
-            "id": "handle-breeders-88",
-            "text": "Withdraw medicated feeds according to veterinarian instructions."
-          },
-          {
-            "id": "handle-breeders-89",
-            "text": "Monitor changes in animal behavior following Animal Welfare Act and"
-          },
-          {
-            "id": "handle-breeders-90",
-            "text": "GAHP.*"
-          },
-          {
-            "id": "handle-breeders-91",
-            "text": "Monitor changes in posture of animal following Animal Welfare Act and GAHP.*"
-          },
-          {
-            "id": "handle-breeders-92",
-            "text": "Monitor changes in respiration of animal following Animal Welfare Act and GAHP.*"
-          },
-          {
-            "id": "handle-breeders-93",
-            "text": "Monitor changes in skin color following Animal Welfare Act and"
-          },
-          {
-            "id": "handle-breeders-94",
-            "text": "Monitor uniformity of stocks following enterprise protocol."
-          },
-          {
-            "id": "handle-breeders-95",
-            "text": "Implement vaccination and medication programs based on veterinarian instructions."
-          },
-          {
-            "id": "handle-breeders-96",
-            "text": "Perform weight estimation using standard protocols."
-          },
-          {
-            "id": "handle-breeders-97",
-            "text": "Prepare and reserve marketable animals following marketing requirements and procedures."
-          },
-          {
-            "id": "handle-breeders-98",
-            "text": "Prepare loading facility and ramp with reference to Animal Welfare"
-          },
-          {
-            "id": "handle-breeders-99",
-            "text": "Move animals to loading facility following Animal Welfare Act."
-          },
-          {
-            "id": "handle-breeders-100",
-            "text": "Clean and disinfect transportation vehicle in line with GAHP."
-          },
-          {
-            "id": "handle-breeders-101",
-            "text": "Update finishing records following enterprise protocol."
-          },
-          {
-            "id": "handle-breeders-102",
-            "text": "Monitor production parameters for finishers with reference to production requirements.*"
-          }
-        ]
-      },
-      {
-        "id": "handle-breeders-5",
-        "title": "Maintain healthy animal environment",
-        "questions": [
-          {
-            "id": "handle-breeders-103",
-            "text": "Maintain relative humidity, curtains and blowers according to production requirements and work plan."
-          },
-          {
-            "id": "handle-breeders-104",
-            "text": "Implement monitoring of temperature as contingency procedure in accordance with production requirements.*"
-          },
-          {
-            "id": "handle-breeders-105",
-            "text": "Sustain air quality using sensory means identifying common air pollutants in accordance with DENR standards.*"
-          },
-          {
-            "id": "handle-breeders-106",
-            "text": "Observe routine testing of water for disinfection in accordance to work plan and established protocols.*"
-          },
-          {
-            "id": "handle-breeders-107",
-            "text": "Maintain ventilation management in accordance with animal requirements."
-          },
-          {
-            "id": "handle-breeders-108",
-            "text": "Dispose farm wastes properly to eliminate attracting vermin following enterprise procedures."
-          },
-          {
-            "id": "handle-breeders-109",
-            "text": "Apply appropriate chemicals to eliminate breeding grounds of mosquitoes following standard procedures and FPA guidelines.*"
-          }
-        ]
-      },
-      {
-        "id": "handle-breeders-6",
-        "title": "Apply bio-security measures",
-        "questions": [
-          {
-            "id": "handle-breeders-110",
-            "text": "Identify and immediate threats to the health of the animal based on observation.*"
-          },
-          {
-            "id": "handle-breeders-111",
-            "text": "Identify bio-security threats based on established organizational policy.*"
-          },
-          {
-            "id": "handle-breeders-112",
-            "text": "Prepare supplies and materials and apply disinfectants according to standard operating procedures.*"
-          },
-          {
-            "id": "handle-breeders-113",
-            "text": "Prepare and monitor regularly vehicle and foot vats according to standard operating practice."
-          },
-          {
-            "id": "handle-breeders-114",
-            "text": "Follow farm personnel and visitor’s hygiene and sanitation of farm, based on standard operating practice."
-          },
-          {
-            "id": "handle-breeders-115",
-            "text": "Disinfect all types of vehicles and equipment entering the farm according to standard operating procedures."
-          },
-          {
-            "id": "handle-breeders-116",
-            "text": "Quarantine and vaccinate new stocks to be introduced into the herd according to standard operating procedures.*"
-          },
-          {
-            "id": "handle-breeders-117",
-            "text": "Implement vaccination programs and health programs designed by veterinarian."
-          },
-          {
-            "id": "handle-breeders-118",
-            "text": "Collect and prepare samples for serological monitoring of notifiable diseases."
-          },
-          {
-            "id": "handle-breeders-119",
-            "text": "Follow preventive measures on notifiable diseases as declared by"
-          },
-          {
-            "id": "handle-breeders-120",
-            "text": "BAI based on industry and BAI standard."
-          },
-          {
-            "id": "handle-breeders-121",
-            "text": "Recommend medication and vaccination programs strictly by manufacturers and veterinarian."
-          },
-          {
-            "id": "handle-breeders-122",
-            "text": "Follow hygiene and sanitation of farm, farm personnel and visitors based on standard operating practice.*"
-          },
-          {
-            "id": "handle-breeders-123",
-            "text": "Cull and isolate sick and unfit stocks in accordance to Animal"
-          },
-          {
-            "id": "handle-breeders-124",
-            "text": "Welfare Act and Standard Operating Procedure.*"
-          },
-          {
-            "id": "handle-breeders-125",
-            "text": "Dispose dead stocks and by-products using proper disposal method.*"
-          },
-          {
-            "id": "handle-breeders-126",
-            "text": "Clean and disinfect tools and equipment used in sick and dead animals."
-          },
-          {
-            "id": "handle-breeders-127",
-            "text": "Communications with Supervising Veterinarian are done regularly following enterprise requirements."
-          },
-          {
-            "id": "handle-breeders-128",
-            "text": "Collate and update appropriate records regularly in accordance with organizational policy.*"
-          },
-          {
-            "id": "handle-breeders-129",
-            "text": "Carry-out reporting to veterinarian or supervisor based on records."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment with the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each question and check the appropriate column to indicate your answer."
-    ],
-    "qualificationTitle": "SAG-Barangay Health Services NC II",
-    "title": "SELF-ASSESSMENT GUIDE",
-    "units": [
-      {
-        "id": "health-and-well-being",
-        "questions": [
-          {
-            "id": "health-and-well-being-01",
-            "text": "Facilitate individuals’ understanding of health services provided by agencies through use of appropriate interpersonal communication skills*"
-          },
-          {
-            "id": "health-and-well-being-02",
-            "text": "Communicate the culture, practices/beliefs, needs, issues, feedbacks of individuals/community to service providers*"
-          },
-          {
-            "id": "health-and-well-being-03",
-            "text": "Identify support needed by individuals to access health services"
-          },
-          {
-            "id": "health-and-well-being-04",
-            "text": "Identify aftercare/follow-up support needed by individuals*"
-          },
-          {
-            "id": "health-and-well-being-05",
-            "text": "Document health activities and related information"
-          },
-          {
-            "id": "health-and-well-being-06",
-            "text": "Identify advice or health intervention to individual/family/household based on a given scenario"
-          },
-          {
-            "id": "health-and-well-being-07",
-            "text": "Give advice to seek consultation or referral to rural health units, based on identified health symptoms*"
-          },
-          {
-            "id": "health-and-well-being-08",
-            "text": "Provide culturally sensitive inputs/information as guidance in health planning/intervention, following standard operating procedure*"
-          }
-        ],
-        "title": "HEALTH AND WELL-BEING"
-      },
-      {
-        "id": "disease-prevention-and-control",
-        "questions": [
-          {
-            "id": "disease-prevention-and-control-01",
-            "text": "Identify community beneficiaries of health programs and services*"
-          },
-          {
-            "id": "disease-prevention-and-control-02",
-            "text": "Discuss how to organize network or linkages of beneficiaries to health programs/services"
-          },
-          {
-            "id": "disease-prevention-and-control-03",
-            "text": "Discuss how to establish community relationship in accordance with"
-          },
-          {
-            "id": "disease-prevention-and-control-04",
-            "text": "Department of Health’s objectives"
-          },
-          {
-            "id": "disease-prevention-and-control-05",
-            "text": "Demonstrate how to share knowledge or updates to fellow Barangay Health workers to provide updates on health programs/projects"
-          },
-          {
-            "id": "disease-prevention-and-control-06",
-            "text": "Present information on DOH programs, policies, infection control measures and practices through the guidance of rural health midwife and/or nurse*"
-          },
-          {
-            "id": "disease-prevention-and-control-07",
-            "text": "Observe culturally sensitive health strategies according to the needs of the individual/family/household*"
-          },
-          {
-            "id": "disease-prevention-and-control-08",
-            "text": "Gather feedback on needed improvement for promotional activities*"
-          }
-        ],
-        "title": "DISEASE PREVENTION AND CONTROL"
-      },
-      {
-        "id": "halth-records-in-health-station",
-        "questions": [
-          {
-            "id": "halth-records-in-health-station-01",
-            "text": "Demonstrate physical inventory of equipment and medical supplies"
-          },
-          {
-            "id": "halth-records-in-health-station-02",
-            "text": "Practice proper storage of equipment and medical supplies in designated place*"
-          },
-          {
-            "id": "halth-records-in-health-station-03",
-            "text": "Demonstrate the maintenance of cleanliness and orderliness of barangay health center catchment area"
-          },
-          {
-            "id": "halth-records-in-health-station-04",
-            "text": "Orient fellow health workers on proper use and storage of equipment"
-          },
-          {
-            "id": "halth-records-in-health-station-05",
-            "text": "Practice proper filing of records for accessibility and completeness*"
-          },
-          {
-            "id": "halth-records-in-health-station-06",
-            "text": "Practice proper disposal of damaged records according to protocol of record management systems*"
-          }
-        ],
-        "title": "HALTH RECORDS IN HEALTH STATION"
-      },
-      {
-        "id": "service-coverage",
-        "questions": [
-          {
-            "id": "service-coverage-01",
-            "text": "Identify the priority individual/family/household for consultation"
-          },
-          {
-            "id": "service-coverage-02",
-            "text": "Get health data information through interview, including vital signs and anthropometric measurements of individual/family/household*"
-          },
-          {
-            "id": "service-coverage-03",
-            "text": "Identify health and health-related information that need to be monitored*"
-          },
-          {
-            "id": "service-coverage-04",
-            "text": "Identify health facilities where symptomatic/asymptomatic individuals may be referred to*"
-          },
-          {
-            "id": "service-coverage-05",
-            "text": "Identify necessary medical documents/records required by health facilities"
-          }
-        ],
-        "title": "SERVICE COVERAGE"
-      },
-      {
-        "id": "maintain-updated-list-records-of-health-activities",
-        "questions": [
-          {
-            "id": "maintain-updated-list-records-of-health-activities-01",
-            "text": "Record and sort the socio-demographic data and health condition of individual/family/household based on standard protocol*"
-          },
-          {
-            "id": "maintain-updated-list-records-of-health-activities-02",
-            "text": "Fill-up applicable/standard forms to report collected data*"
-          },
-          {
-            "id": "maintain-updated-list-records-of-health-activities-03",
-            "text": "Identify specific cases that need to be reported to supervisor"
-          },
-          {
-            "id": "maintain-updated-list-records-of-health-activities-04",
-            "text": "Fill-up applicable/standard forms to report specific cases for the supervisor"
-          }
-        ],
-        "title": "Maintain updated list/records of health activities"
-      },
-      {
-        "id": "observes-work-environment-health-and-safety-practices",
-        "questions": [
-          {
-            "id": "observes-work-environment-health-and-safety-practices-01",
-            "text": "Explain health hazards and risks to individuals from the environment"
-          },
-          {
-            "id": "observes-work-environment-health-and-safety-practices-02",
-            "text": "Provide information on preventive health measures needed"
-          },
-          {
-            "id": "observes-work-environment-health-and-safety-practices-03",
-            "text": "Observe health and safety practices in performing tasks*"
-          }
-        ],
-        "title": "OBSERVES WORK ENVIRONMENT, HEALTH AND SAFETY PRACTICES"
-      },
-      {
-        "id": "implement-and-monitor-infection-control-policies-and-procedures",
-        "questions": [
-          {
-            "id": "implement-and-monitor-infection-control-policies-and-procedures-01",
-            "text": "Practice proper disposal of medical wastes according to standard protocol"
-          },
-          {
-            "id": "implement-and-monitor-infection-control-policies-and-procedures-02",
-            "text": "Explain infection risks and health hazards that need to be reported*"
-          }
-        ],
-        "title": "IMPLEMENT AND MONITOR INFECTION CONTROL POLICIES AND PROCEDURES"
-      },
-      {
-        "id": "respond-effectively-to-difficult-challenging-behavior",
-        "questions": [
-          {
-            "id": "respond-effectively-to-difficult-challenging-behavior-01",
-            "text": "Identify instances of difficult or challenging behavior of clients"
-          },
-          {
-            "id": "respond-effectively-to-difficult-challenging-behavior-02",
-            "text": "Identify appropriate strategies to deal with difficult or challenging behavior of clients*"
-          },
-          {
-            "id": "respond-effectively-to-difficult-challenging-behavior-03",
-            "text": "Report incidents according to proper protocol"
-          }
-        ],
-        "title": "RESPOND EFFECTIVELY TO DIFFICULT/ CHALLENGING BEHAVIOR"
-      },
-      {
-        "id": "apply-basic-first-aid",
-        "questions": [
-          {
-            "id": "apply-basic-first-aid-01",
-            "text": "Provide initial response where first aid is required*"
-          }
-        ],
-        "title": "APPLY BASIC FIRST AID"
-      }
-    ]
-  },
-  {
-    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
-    "instructionLines": [
-      "Instruction:",
-      "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your",
-      "answer."
-    ],
     "qualificationTitle": "SAG-Bartending NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
@@ -2319,8 +49,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "clean-bar-areas-09",
-            "text": "Dispose garbage properly OPERATE BAR"
-          },
+            "text": "Dispose garbage properly"
+          }
+        ],
+        "title": "CLEAN BAR AREAS"
+      },
+      {
+        "id": "operate-bar",
+        "questions": [
           {
             "id": "operate-bar-01",
             "text": "Set up the bar display and work area"
@@ -2431,8 +167,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "operate-bar-28",
-            "text": "Perform proper sanitation practices ALCOHOLIC CONCOCTIONS"
-          },
+            "text": "Perform proper sanitation practices"
+          }
+        ],
+        "title": "OPERATE BAR"
+      },
+      {
+        "id": "alcoholic-concoctions",
+        "questions": [
           {
             "id": "alcoholic-concoctions-01",
             "text": "Identify and select different types of bar tools and equipment"
@@ -2482,7 +224,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Observe sanitation, occupational health and safety practices"
           }
         ],
-        "title": "CLEAN BAR AREAS"
+        "title": "ALCOHOLIC CONCOCTIONS"
       },
       {
         "id": "provide-basic-wine-service",
@@ -2587,11 +329,11 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "perform-manicure-and-pedicure-07",
-            "text": "Prepare required documentation for tools and materials Prepare the Client in compliance with applicable laws and government regulations, spa/salon policies procedures in accordance with manufacturer’s instructions"
+            "text": "Prepare required documentation for tools and materials"
           },
           {
             "id": "perform-manicure-and-pedicure-08",
-            "text": "Ensure client’s safety and comfort throughout the service* - Assist client to be seated in a comfortable position - Advise client to remove jewelries/accessories for safety and sanitation"
+            "text": "Ensure client's safety and comfort throughout the service*"
           },
           {
             "id": "perform-manicure-and-pedicure-09",
@@ -2603,7 +345,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "perform-manicure-and-pedicure-11",
-            "text": "Assess and identify client’s nail structure, shape and condition*"
+            "text": "Assess and identify client's nail structure, shape and condition*"
           },
           {
             "id": "perform-manicure-and-pedicure-12",
@@ -2611,7 +353,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "perform-manicure-and-pedicure-13",
-            "text": "Present nail shapes, basic nail designs and available nail polish for client’s preference*"
+            "text": "Present nail shapes, basic nail designs and available nail polish for client's preference*"
           },
           {
             "id": "perform-manicure-and-pedicure-14",
@@ -2619,11 +361,11 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "perform-manicure-and-pedicure-15",
-            "text": "Cleanse and disinfect client’s nail using appropriate products*"
+            "text": "Cleanse and disinfect client's nail using appropriate products*"
           },
           {
             "id": "perform-manicure-and-pedicure-16",
-            "text": "Perform basic manicure and pedicure procedures based on client’s preference, product usage specifications and spa/salon policy*"
+            "text": "Perform basic manicure and pedicure procedures based on client's preference, product usage specifications and spa/salon policy*"
           },
           {
             "id": "perform-manicure-and-pedicure-17",
@@ -2633,22 +375,22 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "title": "Perform Manicure and Pedicure"
       },
       {
-        "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-color-s",
+        "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-colors",
         "questions": [
           {
-            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-color-s-01",
+            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-colors-01",
             "text": "Create basic nail design after performing basic manicure and pedicure procedures*"
           },
           {
-            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-color-s-02",
+            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-colors-02",
             "text": "Apply top or seal and quick dry product on each polished nail, as necessary"
           },
           {
-            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-color-s-03",
+            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-colors-03",
             "text": "Evaluate finished work based on the preferred shape, color and design*"
           },
           {
-            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-color-s-04",
+            "id": "create-basic-nail-design-in-accordance-with-client-chosen-design-and-colors-04",
             "text": "Apply necessary touch-ups as may be required following nail service procedures"
           }
         ],
@@ -2717,50 +459,46 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "perform-hand-and-foot-spa-08",
-            "text": "Prepare the client in accordance with applicable laws and government regulations, spa/salon policies and procedures"
+            "text": "Ensure client's safety and comfort throughout the service*"
           },
           {
             "id": "perform-hand-and-foot-spa-09",
-            "text": "Ensure client’s safety and comfort throughout the service* - Assist client to be seated in a comfortable position - Advise clients to remove jewelries/accessories for safety and sanitation"
-          },
-          {
-            "id": "perform-hand-and-foot-spa-10",
             "text": "Provide Personal Protective Equipment (PPE) to the client"
           },
           {
-            "id": "perform-hand-and-foot-spa-11",
+            "id": "perform-hand-and-foot-spa-10",
             "text": "Wear appropriate Personal Protective Equipment (PPE)"
           },
           {
-            "id": "perform-hand-and-foot-spa-12",
+            "id": "perform-hand-and-foot-spa-11",
             "text": "Assess and identify hand and foot skin type and condition*"
           },
           {
-            "id": "perform-hand-and-foot-spa-13",
+            "id": "perform-hand-and-foot-spa-12",
             "text": "Identify common hand and foot conditions and contraindicated disorders/diseases and refer to appropriate health care professionals as necessary*"
           },
           {
-            "id": "perform-hand-and-foot-spa-14",
+            "id": "perform-hand-and-foot-spa-13",
             "text": "Perform hand and foot spa treatments in accordance with applicable laws and government regulations, spa/salon policies and procedures"
           },
           {
-            "id": "perform-hand-and-foot-spa-15",
-            "text": "Clean and disinfect client’s hands and feet*"
+            "id": "perform-hand-and-foot-spa-14",
+            "text": "Clean and disinfect client's hands and feet*"
           },
           {
-            "id": "perform-hand-and-foot-spa-16",
+            "id": "perform-hand-and-foot-spa-15",
             "text": "Perform established hand and foot spa procedures*"
           },
           {
-            "id": "perform-hand-and-foot-spa-17",
+            "id": "perform-hand-and-foot-spa-16",
             "text": "Utilize sanitized equipment and tools*"
           },
           {
-            "id": "perform-hand-and-foot-spa-18",
+            "id": "perform-hand-and-foot-spa-17",
             "text": "Apply appropriate products*"
           },
           {
-            "id": "perform-hand-and-foot-spa-19",
+            "id": "perform-hand-and-foot-spa-18",
             "text": "Provide immediate first-aid on accidental cuts, wounds or abrasions as necessary*"
           }
         ],
@@ -2771,7 +509,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "questions": [
           {
             "id": "perform-basic-hand-and-foot-massage-01",
-            "text": "Perform basic hand and foot massage techniques using appropriate or client’s preferred product*"
+            "text": "Perform basic hand and foot massage techniques using appropriate or client's preferred product*"
           },
           {
             "id": "perform-basic-hand-and-foot-massage-02",
@@ -2780,37 +518,39 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "perform-basic-hand-and-foot-massage-03",
             "text": "Apply moisturizing product to the hands and feet*"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-04",
-            "text": "Perform post-service activities in accordance with applicable laws and government regulations, spa/salon policies and procedures"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-05",
-            "text": "Advise client proper hand and foot care maintenance*"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-06",
-            "text": "Clean, disinfect/sterilize and store equipment and tools*"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-07",
-            "text": "Replenish and store products, supplies and materials"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-08",
-            "text": "Collect waste materials following proper waste management and disposal procedures*"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-09",
-            "text": "Clean, disinfect and prepare workstation for the next activity*"
-          },
-          {
-            "id": "perform-basic-hand-and-foot-massage-10",
-            "text": "Perform proper documentation*"
           }
         ],
         "title": "Perform basic hand and foot massage"
+      },
+      {
+        "id": "perform-post-service-activities-for-hand-and-foot-massage",
+        "questions": [
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-01",
+            "text": "Advise client proper hand and foot care maintenance*"
+          },
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-02",
+            "text": "Clean, disinfect/sterilize and store equipment and tools*"
+          },
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-03",
+            "text": "Replenish and store products, supplies and materials"
+          },
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-04",
+            "text": "Collect waste materials following proper waste management and disposal procedures*"
+          },
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-05",
+            "text": "Clean, disinfect and prepare workstation for the next activity*"
+          },
+          {
+            "id": "perform-post-service-activities-for-hand-and-foot-massage-06",
+            "text": "Perform proper documentation*"
+          }
+        ],
+        "title": "Perform post-service activities in accordance with applicable laws and government regulations, spa/salon policies and procedures"
       }
     ]
   },
@@ -2818,7 +558,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
       "Instruction:",
-      "Instruction: Read each question and check the appropriate box to",
+      "Read each question and check the appropriate box to",
       "indicate your answer."
     ],
     "qualificationTitle": "SAG-Bookkeeping NC III",
@@ -3054,7 +794,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "a. Read each of the questions in the left-hand column of the chart.",
+      "b. Place a check in the appropriate box opposite each question to indicate your",
+      "answers."
     ],
     "qualificationTitle": "SAG-Caregiving NC II",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -3126,8 +869,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "provide-care-and-support-to-children-05",
-            "text": "Perform the procedures in taking vital signs Foster physical development of children"
-          },
+            "text": "Perform the procedures in taking vital signs"
+          }
+        ],
+        "title": "Provide care and support to children"
+      },
+      {
+        "id": "foster-physical-development-of-children",
+        "questions": [
           {
             "id": "foster-physical-development-of-children-01",
             "text": "Explain the physical growth and development of infant/toddler"
@@ -3149,7 +898,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Understand the social, intellectual, creative and emotional development of children"
           }
         ],
-        "title": "Provide care and support to children"
+        "title": "Foster physical development of children"
       },
       {
         "id": "foster-social-intellectual-creative-and-emotional-development-of-children",
@@ -3510,10 +1259,11 @@ export const sagFormTemplates: SagFormDefinition[] = [
     ]
   },
   {
-    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor",
+    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
       "Instruction:",
-      "Read each of the questions in the left-hand column of the chart."
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a tick in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Carpentry NC II",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -3523,24 +1273,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "questions": [
           {
             "id": "prepare-materials-and-hand-tools-01",
-            "text": "Use personal protective equipment (PPE) in accordance with"
+            "text": "Use personal protective equipment (PPE) in accordance with Rule 1080 of Occupational Safety and Health Standards"
+          },
+          {
+            "id": "prepare-materials-and-hand-tools-02",
+            "text": "Select, inspect and prepare materials and hand tools consistent with job requirements"
           }
         ],
         "title": "Prepare materials and hand tools *"
-      },
-      {
-        "id": "rule-1080-of-occupational-safety-and-health-standards",
-        "questions": [
-          {
-            "id": "rule-1080-of-occupational-safety-and-health-standards-01",
-            "text": "Select, inspect and prepare materials and hand tools consistent with job requirements"
-          },
-          {
-            "id": "rule-1080-of-occupational-safety-and-health-standards-02",
-            "text": "Select, inspect and prepare materials and tools consistent with job requirements"
-          }
-        ],
-        "title": "Rule 1080 of Occupational Safety and Health Standards"
       },
       {
         "id": "locate-offset-line-established-by-the-line-and-grade-surveyor",
@@ -3570,10 +1310,6 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "establish-required-reference-line-03",
             "text": "Place subsequent markings as required"
-          },
-          {
-            "id": "establish-required-reference-line-04",
-            "text": "Places subsequent markings as required"
           }
         ],
         "title": "Establish required reference line *"
@@ -3588,14 +1324,6 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "lay-out-and-cut-dimension-of-form-sheathings-and-stiffeners-02",
             "text": "Lay out and cut form sheathings and stiffeners according to required dimensions."
-          },
-          {
-            "id": "lay-out-and-cut-dimension-of-form-sheathings-and-stiffeners-03",
-            "text": "Measure and mark form sheathing and stiffeners according to job specifications."
-          },
-          {
-            "id": "lay-out-and-cut-dimension-of-form-sheathings-and-stiffeners-04",
-            "text": "Lay out and cut form sheathing and stiffeners according to required dimensions."
           }
         ],
         "title": "Lay-out and cut dimension of form sheathings and stiffeners *"
@@ -3631,8 +1359,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "layout-location-02",
-            "text": "Checks clearance of opening based on working drawings Fix door jamb and panels *"
-          },
+            "text": "Checks clearance of opening based on working drawings"
+          }
+        ],
+        "title": "Layout location *"
+      },
+      {
+        "id": "fix-door-jamb-and-panels",
+        "questions": [
           {
             "id": "fix-door-jamb-and-panels-01",
             "text": "Select and check assembled jamb and panels for compliance with job requirements"
@@ -3647,16 +1381,24 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "fix-door-jamb-and-panels-04",
-            "text": "Position and fix jamb and panels to openings Layout ceiling elevation, wall location and position of framing system*"
-          },
+            "text": "Position and fix jamb and panels to openings"
+          }
+        ],
+        "title": "Fix door jamb and panels *"
+      },
+      {
+        "id": "layout-ceiling-elevation-wall-location-and-position-of-framing-system",
+        "questions": [
           {
-            "id": "fix-door-jamb-and-panels-05",
+            "id": "layout-ceiling-elevation-wall-location-and-position-of-framing-system-01",
             "text": "Mark exact layout for ceiling and wall frames based on working drawings"
-          },
-          {
-            "id": "fix-door-jamb-and-panels-06",
-            "text": "Select and check door jamb assembly and panels for compliance with job requirements Fix frames and panels*"
-          },
+          }
+        ],
+        "title": "Layout ceiling elevation, wall location and position of framing system *"
+      },
+      {
+        "id": "fix-frames-and-panels",
+        "questions": [
           {
             "id": "fix-frames-and-panels-01",
             "text": "Install frames based on specifications"
@@ -3667,14 +1409,20 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "fix-frames-and-panels-03",
-            "text": "Fix panels to frames based on working drawings Layout location and stair elevation *"
-          },
+            "text": "Fix panels to frames based on working drawings"
+          }
+        ],
+        "title": "Fix frames and panels *"
+      },
+      {
+        "id": "layout-location-and-stair-elevation",
+        "questions": [
           {
             "id": "layout-location-and-stair-elevation-01",
             "text": "Mark exact location of stairs including riser and thread based on working drawings"
           }
         ],
-        "title": "Layout location *"
+        "title": "Layout location and stair elevation *"
       },
       {
         "id": "place-wooden-stringer-thread-handrails-and-baluster",
@@ -3736,57 +1484,9 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "perform-housekeeping-03",
             "text": "Cleans tools, equipment and other materials after use"
-          },
-          {
-            "id": "perform-housekeeping-04",
-            "text": "Recover and stockpile materials such as excess/un-used materials according to company rules and procedures"
-          },
-          {
-            "id": "perform-housekeeping-05",
-            "text": "Clean and clear workplace of any obstructions and hazards before, during and after work"
-          },
-          {
-            "id": "perform-housekeeping-06",
-            "text": "Clean tools, equipment and other materials after use"
           }
         ],
         "title": "Perform Housekeeping *"
-      },
-      {
-        "id": "clean-and-store-reusable-form-panels-and-components",
-        "questions": [
-          {
-            "id": "clean-and-store-reusable-form-panels-and-components-01",
-            "text": "Recover and stockpile materials such as excess/un-used materials according to company rules and procedures"
-          },
-          {
-            "id": "clean-and-store-reusable-form-panels-and-components-02",
-            "text": "Clean and clear workplace of any obstructions and hazards before, during and after work"
-          },
-          {
-            "id": "clean-and-store-reusable-form-panels-and-components-03",
-            "text": "Clean tools, equipment and other materials after use"
-          }
-        ],
-        "title": "Clean and store reusable form panels and components*"
-      },
-      {
-        "id": "place-wooden-roof-truss-assembly-and-purlins",
-        "questions": [
-          {
-            "id": "place-wooden-roof-truss-assembly-and-purlins-01",
-            "text": "Position and fix wooden roof truss assembly according to job requirements"
-          },
-          {
-            "id": "place-wooden-roof-truss-assembly-and-purlins-02",
-            "text": "Check alignment of all installed wooden roof truss assembly based on job requirements"
-          },
-          {
-            "id": "place-wooden-roof-truss-assembly-and-purlins-03",
-            "text": "Install purlins as per required spacing"
-          }
-        ],
-        "title": "Place wooden roof truss assembly and purlins *"
       }
     ]
   },
@@ -4517,6 +2217,8 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
       "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
       "answer."
     ],
     "qualificationTitle": "SAG-Domestic Work NC II Full",
@@ -4599,33 +2301,39 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "clean-furnishing-and-fixtures-04",
-            "text": "Store all cleaning materials and equipment following Standard operating procedure"
-          },
-          {
-            "id": "clean-furnishing-and-fixtures-05",
-            "text": "Carry out or arrange routine maintenance as per standard operating procedures.*"
+            "text": "Store all cleaning materials and equipment following"
           }
         ],
         "title": "Clean furnishing and fixtures*"
+      },
+      {
+        "id": "standard-operating-procedure",
+        "questions": [
+          {
+            "id": "standard-operating-procedure-01",
+            "text": "Carry out or arrange routine maintenance as per standard operating procedures.*"
+          },
+          {
+            "id": "standard-operating-procedure-02",
+            "text": "Replace soil linens and pillow cases in accordance with"
+          },
+          {
+            "id": "standard-operating-procedure-03",
+            "text": "Center and miter linens when replaced as per Standard operating procedure"
+          },
+          {
+            "id": "standard-operating-procedure-04",
+            "text": "Make-up beds and cots according to prescribed procedure.*"
+          }
+        ],
+        "title": "Standard operating procedure"
       },
       {
         "id": "make-up-beds-and-cots",
         "questions": [
           {
             "id": "make-up-beds-and-cots-01",
-            "text": "Air, freeze mattress from dust and vacuum in accordance with Standard operating procedure"
-          },
-          {
-            "id": "make-up-beds-and-cots-02",
-            "text": "Replace soil linens and pillow cases in accordance with Standard operating procedure"
-          },
-          {
-            "id": "make-up-beds-and-cots-03",
-            "text": "Center and miter linens when replaced as per Standard operating procedure"
-          },
-          {
-            "id": "make-up-beds-and-cots-04",
-            "text": "Make-up beds and cots according to prescribed procedure.*"
+            "text": "Air, freeze mattress from dust and vacuum in accordance with"
           }
         ],
         "title": "Make up beds and cots*"
@@ -4667,23 +2375,23 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "clean-bedroom-and-bathroom-09",
-            "text": "Measure and mix 100% accurately sanitizing agents in accordance with relevant safety regulations.*"
+            "text": "Sanitize rooms*"
           },
           {
             "id": "clean-bedroom-and-bathroom-10",
-            "text": "Dispose excess mixtures of sanitizing agents according to environmental requirements.*"
+            "text": "Measure and mix 100% accurately sanitizing agents in accordance with relevant safety regulations.*"
           },
           {
             "id": "clean-bedroom-and-bathroom-11",
-            "text": "Sanitize rooms in accordance with standard operating procedures.*"
+            "text": "Dispose excess mixtures of sanitizing agents according to environmental requirements.*"
           },
           {
             "id": "clean-bedroom-and-bathroom-12",
-            "text": "Clean equipment after use in accordance with manufacturer’s instructions.*"
+            "text": "Sanitize rooms in accordance with standard operating procedures.*"
           },
           {
             "id": "clean-bedroom-and-bathroom-13",
-            "text": "Store all cleaning materials and equipment in a safe place as per Standard operating procedure"
+            "text": "Clean equipment after use in accordance with manufacturer’s instructions.*"
           },
           {
             "id": "clean-bedroom-and-bathroom-14",
@@ -4927,7 +2635,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "cook-meals-and-dishes-according-to-recipes-03",
-            "text": "Cook meat and poultry dishes according to culinary method*"
+            "text": "Cook meat and poultry dishes according to culinary method"
           },
           {
             "id": "cook-meals-and-dishes-according-to-recipes-04",
@@ -5053,20 +2761,30 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "prepare-sandwiches-05",
-            "text": "Store unconsum cook food according to procedures.*"
+            "text": "Store excess food and ingredients*"
           },
           {
             "id": "prepare-sandwiches-06",
-            "text": "Store excess ingredients according to client’s requirement.*"
+            "text": "Store unconsum cook food according to procedures.*"
           },
           {
             "id": "prepare-sandwiches-07",
-            "text": "Implement proper method of refrigeration as per Standard operating procedure"
+            "text": "Store excess ingredients according to client’s requirement.*"
           },
           {
             "id": "prepare-sandwiches-08",
-            "text": "Implement proper storing of dry and wet food/ingredients in accordance with Standard operating procedure Convert unconsumed cooked food*"
+            "text": "Implement proper method of refrigeration as per Standard operating procedure"
           },
+          {
+            "id": "prepare-sandwiches-09",
+            "text": "Implement proper storing of dry and wet food/ingredients in accordance with Standard operating procedure"
+          }
+        ],
+        "title": "Prepare sandwiches*"
+      },
+      {
+        "id": "convert-unconsumed-cooked-food",
+        "questions": [
           {
             "id": "convert-unconsumed-cooked-food-01",
             "text": "Convert/transform unconsume cook food into new dishes as per Standard operating procedures"
@@ -5088,7 +2806,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Maintain uncook food at proper temperature and as per establishment standards.*"
           }
         ],
-        "title": "Prepare sandwiches*"
+        "title": "Convert unconsumed cooked food*"
       },
       {
         "id": "prepare-dining-area",
@@ -5175,51 +2893,35 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "questions": [
           {
             "id": "prepare-coffee-and-other-beverages-01",
-            "text": "Chose, prepare and inspect coffee maker and other equipment as to cleanliness and functionality according to Standard Operating Procedure."
+            "text": "Chose, prepare and inspect coffee maker and other equipment as to cleanliness and functionality according to"
           },
           {
             "id": "prepare-coffee-and-other-beverages-02",
-            "text": "Set up coffee filter according to standard procedure."
+            "text": "Standard Operating Procedure."
           },
           {
             "id": "prepare-coffee-and-other-beverages-03",
-            "text": "Measure required coffee granules and water"
+            "text": "Set up coffee filter according to standard procedure."
           },
           {
             "id": "prepare-coffee-and-other-beverages-04",
-            "text": "Operate coffee maker according to standard operating procedures"
+            "text": "Measure required coffee granules and water"
           },
           {
             "id": "prepare-coffee-and-other-beverages-05",
-            "text": "Select wine according to the menu to be serve"
+            "text": "Operate coffee maker according to standard operating procedures"
           },
           {
             "id": "prepare-coffee-and-other-beverages-06",
-            "text": "Prepare other beverages according to employer’s preference"
-          },
-          {
-            "id": "prepare-coffee-and-other-beverages-07",
-            "text": "Serve coffee/tea at the right side of the guest/employer with appropriate temperature"
-          },
-          {
-            "id": "prepare-coffee-and-other-beverages-08",
-            "text": "Operate coffee maker according to standard operating procedures"
-          },
-          {
-            "id": "prepare-coffee-and-other-beverages-09",
             "text": "Select wine according to the menu to be serve"
           },
           {
-            "id": "prepare-coffee-and-other-beverages-10",
+            "id": "prepare-coffee-and-other-beverages-07",
             "text": "Prepare other beverages according to employer’s preference"
           },
           {
-            "id": "prepare-coffee-and-other-beverages-11",
+            "id": "prepare-coffee-and-other-beverages-08",
             "text": "Serve coffee/tea at the right side of the guest/employer with appropriate temperature"
-          },
-          {
-            "id": "prepare-coffee-and-other-beverages-12",
-            "text": "Operate coffee maker according to standard operating procedures"
           }
         ],
         "title": "Prepare coffee and other beverages"
@@ -5265,7 +2967,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "serve-food-and-beverage-10",
-            "text": "Remove side plates and knives from the table as per SOPs."
+            "text": "Remove side plates and knives from the table as per"
           },
           {
             "id": "serve-food-and-beverage-11",
@@ -5293,7 +2995,8 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "instructionLines": [
       "Instruction:",
       "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your"
+      "Place a check in the appropriate box opposite each question to indicate your",
+      "answers."
     ],
     "qualificationTitle": "SAG-Dressmaking NC II",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -5417,8 +3120,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "draft-and-cut-pattern-for-ladies-casual-apparel-11",
-            "text": "Cut final pattern CUT AND SEW LADIES CASUAL APPAREL"
-          },
+            "text": "Cut final pattern"
+          }
+        ],
+        "title": "Draft and Cut Pattern for Ladies Casual Apparel"
+      },
+      {
+        "id": "cut-and-sew-ladies-casual-apparel",
+        "questions": [
           {
             "id": "cut-and-sew-ladies-casual-apparel-01",
             "text": "Interpret garment design/style*"
@@ -5492,7 +3201,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Conduct initial and final fitting with the client*"
           }
         ],
-        "title": "Draft and Cut Pattern for Ladies Casual Apparel"
+        "title": "CUT AND SEW LADIES CASUAL APPAREL"
       }
     ]
   },
@@ -5507,34 +3216,34 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "carry-out-minor-vehicle-maintenance-and-servicing",
+        "id": "drive-light-vehicle",
         "questions": [
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-01",
+            "id": "drive-light-vehicle-01",
             "text": "Perform vehicle maintenance and minor servicing"
           },
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-02",
+            "id": "drive-light-vehicle-02",
             "text": "Perform light vehicle pre-starting and warm up"
           },
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-03",
+            "id": "drive-light-vehicle-03",
             "text": "Drive light vehicle"
           },
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-04",
+            "id": "drive-light-vehicle-04",
             "text": "Obey and observe traffic rules and regulation"
           },
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-05",
+            "id": "drive-light-vehicle-05",
             "text": "Practice road courtesy"
           },
           {
-            "id": "carry-out-minor-vehicle-maintenance-and-servicing-06",
+            "id": "drive-light-vehicle-06",
             "text": "Implement and coordinate accident emergency procedures"
           }
         ],
-        "title": "CARRY OUT MINOR VEHICLE MAINTENANCE AND SERVICING"
+        "title": "DRIVE LIGHT VEHICLE"
       }
     ]
   },
@@ -5553,6 +3262,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "id": "manage-center-operations",
         "questions": [
           {
+            "id": "manage-center-operations-01",
+            "text": "A. Gather information"
+          },
+          {
             "id": "manage-center-operations-02",
             "text": "Conduct family profiling based on industry practice*"
           },
@@ -5565,8 +3278,16 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Conduct record keeping based on industry practice*"
           },
           {
+            "id": "manage-center-operations-05",
+            "text": "B. Conduct awareness-raising activity"
+          },
+          {
             "id": "manage-center-operations-06",
             "text": "Disseminate information following industry practice*"
+          },
+          {
+            "id": "manage-center-operations-07",
+            "text": "C. Manage enrollment"
           },
           {
             "id": "manage-center-operations-08",
@@ -5583,6 +3304,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "manage-center-operations-11",
             "text": "Secure documents following industry practice*"
+          },
+          {
+            "id": "manage-center-operations-12",
+            "text": "D. Prepare the Center"
           },
           {
             "id": "manage-center-operations-13",
@@ -5605,12 +3330,26 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Establish feedback mechanism for parents/parent-substitute following industry practice*"
           },
           {
-            "id": "manage-center-operations-19",
-            "text": "Prepare orientation materials according to the Parent’s Handbook*"
+            "id": "manage-center-operations-18",
+            "text": "E. Conduct parent orientation"
           },
+          {
+            "id": "manage-center-operations-19",
+            "text": "Prepare orientation materials according to the Parent’s"
+          }
+        ],
+        "title": "Manage Center Operations"
+      },
+      {
+        "id": "handbook",
+        "questions": [
           {
             "id": "handbook-01",
             "text": "Present policies and guidelines from the Parent’s Handbook following industry practice*"
+          },
+          {
+            "id": "handbook-02",
+            "text": "F. Perform activities in recognition of the center"
           },
           {
             "id": "handbook-03",
@@ -5633,11 +3372,15 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Secure document following current standards*"
           }
         ],
-        "title": "Manage Center Operations"
+        "title": "Handbook*"
       },
       {
         "id": "conduct-assessment-on-progress-and-development-of-children",
         "questions": [
+          {
+            "id": "conduct-assessment-on-progress-and-development-of-children-01",
+            "text": "G. Determine initial developmental level"
+          },
           {
             "id": "conduct-assessment-on-progress-and-development-of-children-02",
             "text": "Conduct intake interview of parents/parents-substitute following industry practice*"
@@ -5657,6 +3400,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "conduct-assessment-on-progress-and-development-of-children-06",
             "text": "Identify children’s developmental level based on available records*"
+          },
+          {
+            "id": "conduct-assessment-on-progress-and-development-of-children-07",
+            "text": "H. Conduct informal assessments"
           },
           {
             "id": "conduct-assessment-on-progress-and-development-of-children-08",
@@ -5679,6 +3426,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Make suggestions to the parent/parent – substitute based on the results of assessment*"
           },
           {
+            "id": "conduct-assessment-on-progress-and-development-of-children-13",
+            "text": "I. Conduct observation of children’s health, nutrition, safety and well-being"
+          },
+          {
             "id": "conduct-assessment-on-progress-and-development-of-children-14",
             "text": "Record progress of children’s health, nutrition, safety and well- being following industry practice*"
           },
@@ -5699,24 +3450,44 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Secure documents following industry practice*"
           },
           {
+            "id": "conduct-assessment-on-progress-and-development-of-children-19",
+            "text": "J. Conduct formal assessment"
+          },
+          {
             "id": "conduct-assessment-on-progress-and-development-of-children-20",
             "text": "Prepare assessment kits and forms following industry practice*"
           },
           {
             "id": "conduct-assessment-on-progress-and-development-of-children-21",
-            "text": "Prepare classroom following the Early Childhood Care and Development Council Guidelines*"
-          },
+            "text": "Prepare classroom following the Early Childhood Care and"
+          }
+        ],
+        "title": "Conduct Assessment on Progress and Development of Children"
+      },
+      {
+        "id": "development-council-guidelines",
+        "questions": [
           {
             "id": "development-council-guidelines-01",
             "text": "Prepare assessment schedule following industry practice*"
           },
           {
             "id": "development-council-guidelines-02",
-            "text": "Assess individual child using Early Childhood Care and Development checklist*"
-          },
+            "text": "Assess individual child using Early Childhood Care and"
+          }
+        ],
+        "title": "Development Council Guidelines*"
+      },
+      {
+        "id": "development-checklist",
+        "questions": [
           {
             "id": "development-checklist-01",
             "text": "Perform documentation following industry practice*"
+          },
+          {
+            "id": "development-checklist-02",
+            "text": "K. Manage reporting of assessment results"
           },
           {
             "id": "development-checklist-03",
@@ -5735,11 +3506,15 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Report relevant result of assessment to proper authorities based on industry practice*"
           }
         ],
-        "title": "Conduct Assessment on Progress and Development of Children"
+        "title": "Development checklist*"
       },
       {
         "id": "implement-the-early-childhood-care-and-development-curriculum",
         "questions": [
+          {
+            "id": "implement-the-early-childhood-care-and-development-curriculum-01",
+            "text": "L. Create Curriculum plan"
+          },
           {
             "id": "implement-the-early-childhood-care-and-development-curriculum-02",
             "text": "Set goals based on available records and references*"
@@ -5751,6 +3526,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "implement-the-early-childhood-care-and-development-curriculum-04",
             "text": "Organize developmentally appropriate activities based on identified themes*"
+          },
+          {
+            "id": "implement-the-early-childhood-care-and-development-curriculum-05",
+            "text": "M. Manage curriculum plan implementation"
           },
           {
             "id": "implement-the-early-childhood-care-and-development-curriculum-06",
@@ -5785,6 +3564,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Document curriculum following industry practice*"
           },
           {
+            "id": "implement-the-early-childhood-care-and-development-curriculum-14",
+            "text": "N. Review curriculum plan"
+          },
+          {
             "id": "implement-the-early-childhood-care-and-development-curriculum-15",
             "text": "Use results of assessment based on industry practice*"
           },
@@ -5799,6 +3582,10 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "implement-the-early-childhood-care-and-development-curriculum-18",
             "text": "Implement activity plans based on the revised curriculum made*"
+          },
+          {
+            "id": "implement-the-early-childhood-care-and-development-curriculum-19",
+            "text": "O. Perform culminating activities"
           },
           {
             "id": "implement-the-early-childhood-care-and-development-curriculum-20",
@@ -5824,190 +3611,166 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Electrical Installation and Maintenance NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "power-lighting-and-auxiliary-systems",
+        "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems",
         "questions": [
           {
-            "id": "power-lighting-and-auxiliary-systems-01",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-01",
             "text": "Communicate and confirm instructions for the preparation of work activity to ensure clear understanding*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-02",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-02",
             "text": "Interpret electrical plan and detailed drawing*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-03",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-03",
             "text": "Identify and check to ensure that tools, equipment and personnel protective equipment needed to electrical system*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-04",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-04",
             "text": "Identify and check auxiliary equipment, if it works correctly and are safe to use in accordance with established procedures*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-05",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-05",
             "text": "Use safety harness or PPE properly*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-06",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-06",
             "text": "Bend and install type of conduit and cable tray as per job requirement.*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-07",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-07",
             "text": "Perform correct procedures for installation of electrical auxiliary system in line with job requirements*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-08",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-08",
             "text": "Ensure work is completed in an agreed scheduled time in accordance with the quality standard.*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-09",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-09",
             "text": "Respond to unplanned events or conditions accordingly*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-10",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-10",
             "text": "Install conduit and fittings in accordance with standard*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-11",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-11",
             "text": "Perform installation qualification (IQ) activities*"
           },
           {
-            "id": "power-lighting-and-auxiliary-systems-12",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-12",
             "text": "Perform operational qualification (OQ) activities*"
-          }
-        ],
-        "title": "power, lighting and auxiliary systems"
-      },
-      {
-        "id": "lightning-protection-and-grounding-system",
-        "questions": [
-          {
-            "id": "lightning-protection-and-grounding-system-01",
-            "text": "Communicate and confirm instructions for the preparation of work activity to ensure clear understanding*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-02",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-13",
+            "text": "Install Electrical Protective devices for distribution, power, lighting, auxiliary, lightning protection and grounding system"
+          },
+          {
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-14",
             "text": "Interpret electrical plans and detailed drawing*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-03",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-15",
             "text": "Identify and check to ensure that tools, equipment and PPE needed to electrical system and by auxiliary equipment works correctly and are safe to use in accordance with established procedures*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-04",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-16",
             "text": "Follow safety procedures and the use of safety harness*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-05",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-17",
             "text": "Perform correct procedures for the installation/mounting configuration of electrical protective devices and grounding system*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-06",
-            "text": "Respond to unplanned events or conditions accordingly*"
-          },
-          {
-            "id": "lightning-protection-and-grounding-system-07",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-18",
             "text": "Select the types of lighting fixture and auxiliary outlet for the installation*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-08",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-19",
             "text": "Undertake ongoing checks of quality of work in accordance with instructions and requirements*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-09",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-20",
             "text": "Terminate/Splice conductors/wires in accordance with the existing electrical standards*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-10",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-21",
             "text": "Perform final checks to ensure that work conforms to instructions and drawing/diagram.*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-11",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-22",
             "text": "Perform the installation economically*"
           },
           {
-            "id": "lightning-protection-and-grounding-system-12",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-23",
             "text": "Perform commissioning activities*"
-          }
-        ],
-        "title": "lightning protection and grounding system"
-      },
-      {
-        "id": "and-auxiliary-outlets",
-        "questions": [
+          },
           {
-            "id": "and-auxiliary-outlets-01",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-24",
+            "text": "Install Wiring Devices of Floor and Wall Mounted Outlet Lighting Fixture/Switches and Auxiliary Outlets"
+          },
+          {
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-25",
             "text": "Read and interpret drawings in accordance with job requirements*"
           },
           {
-            "id": "and-auxiliary-outlets-02",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-26",
             "text": "Set the lay-out and dimension of electrical drawing or wiring diagram.*"
           },
           {
-            "id": "and-auxiliary-outlets-03",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-27",
             "text": "Select and identify correct rating, quantity, sizes and type of wiring devices, switches, lighting fixture and convenience outlet*"
           },
           {
-            "id": "and-auxiliary-outlets-04",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-28",
             "text": "Identify the specifications of materials, tools and equipment"
           },
           {
-            "id": "and-auxiliary-outlets-05",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-29",
             "text": "Fill up properly requisition forms according to list of materials, tools and equipment"
           },
           {
-            "id": "and-auxiliary-outlets-06",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-30",
             "text": "Follow safety procedures according to enterprise and government regulations and select the correct PPE in line with safety requirements*"
           },
           {
-            "id": "and-auxiliary-outlets-07",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-31",
             "text": "Identify defective and/or substandard electrical materials and report to immediate supervisor*"
           },
           {
-            "id": "and-auxiliary-outlets-08",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-32",
             "text": "Lay out, mount and install electrical components, wiring materials such as conduit and fittings in accordance with standards*"
           },
           {
-            "id": "and-auxiliary-outlets-09",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-33",
             "text": "Install wiring protective devices and grounding system properly*"
-          }
-        ],
-        "title": "and Auxiliary Outlets"
-      },
-      {
-        "id": "electrical-installation-and-maintenance-nc-ii",
-        "questions": [
+          },
           {
-            "id": "electrical-installation-and-maintenance-nc-ii-01",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-34",
             "text": "Install the different types of lighting fixtures/switches as per wiring diagram*"
           },
           {
-            "id": "electrical-installation-and-maintenance-nc-ii-02",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-35",
             "text": "Follow work schedule to ensure job is completed on time in accordance to a quality standard and minimum wastage"
           },
           {
-            "id": "electrical-installation-and-maintenance-nc-ii-03",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-36",
             "text": "Seek further instructions from immediate supervisor in case of unplanned events or conditions occurring*"
           },
           {
-            "id": "electrical-installation-and-maintenance-nc-ii-04",
+            "id": "performing-roughing-in-activities-wiring-and-cabling-works-for-single-phase-distribution-power-lighting-and-auxiliary-systems-37",
             "text": "Undertake with strict compliance ongoing checks of quality of the work in accordance with instructions and requirements"
-          },
-          {
-            "id": "electrical-installation-and-maintenance-nc-ii-05",
-            "text": "Perform the installation economically*"
-          },
-          {
-            "id": "electrical-installation-and-maintenance-nc-ii-06",
-            "text": "Perform commissioning activities*"
           }
         ],
-        "title": "Electrical Installation and Maintenance NC II"
+        "title": "Performing roughing-in activities, wiring and cabling works for single-phase distribution, power, lighting and auxiliary systems"
       }
     ]
   },
@@ -6022,318 +3785,96 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "title-assemble-electronics-products",
+        "id": "assemble-electronics-products",
         "questions": [
-          {
-            "id": "title-assemble-electronics-products-01",
-            "text": "Obtain and clarify work instructions"
-          },
-          {
-            "id": "title-assemble-electronics-products-02",
-            "text": "Identify, prepare and obtain parts and components needed"
-          },
-          {
-            "id": "title-assemble-electronics-products-03",
-            "text": "Prepare and check required materials, tools and equipment"
-          },
-          {
-            "id": "title-assemble-electronics-products-04",
-            "text": "Prepare electronic components for assembly*"
-          },
-          {
-            "id": "title-assemble-electronics-products-05",
-            "text": "Verify PCB layout in conformity with the schematic diagram"
-          },
-          {
-            "id": "title-assemble-electronics-products-06",
-            "text": "Prepare/Make printed circuit board modules*"
-          },
-          {
-            "id": "title-assemble-electronics-products-07",
-            "text": "Clean PCB based on standard procedures"
-          },
-          {
-            "id": "title-assemble-electronics-products-08",
-            "text": "Test and visually inspect the functionality of the PCB"
-          },
-          {
-            "id": "title-assemble-electronics-products-09",
-            "text": "Mount and solder electronic components*"
-          },
-          {
-            "id": "title-assemble-electronics-products-10",
-            "text": "Apply soldering/de-soldering techniques and procedures"
-          },
-          {
-            "id": "title-assemble-electronics-products-11",
-            "text": "Check soldered products"
-          },
-          {
-            "id": "title-assemble-electronics-products-12",
-            "text": "Assemble electronic components*"
-          },
-          {
-            "id": "title-assemble-electronics-products-13",
-            "text": "Integrate modules and accessories"
-          },
-          {
-            "id": "title-assemble-electronics-products-14",
-            "text": "Perform assembly procedures of electronic products"
-          },
-          {
-            "id": "title-assemble-electronics-products-15",
-            "text": "Test and inspect assembled electronic products*"
-          },
-          {
-            "id": "title-assemble-electronics-products-16",
-            "text": "Subject finished products to final visual/sensory inspection and testing"
-          },
-          {
-            "id": "title-assemble-electronics-products-17",
-            "text": "Apply safety rules and procedures*"
-          }
+          { "id": "assemble-electronics-products-01", "text": "Obtain and clarify work instructions" },
+          { "id": "assemble-electronics-products-02", "text": "Identify, prepare and obtain parts and components needed" },
+          { "id": "assemble-electronics-products-03", "text": "Prepare and check required materials, tools and equipment" },
+          { "id": "assemble-electronics-products-04", "text": "Prepare electronic components for assembly*" },
+          { "id": "assemble-electronics-products-05", "text": "Verify PCB layout in conformity with the schematic diagram" },
+          { "id": "assemble-electronics-products-06", "text": "Prepare/Make printed circuit board modules*" },
+          { "id": "assemble-electronics-products-07", "text": "Clean PCB based on standard procedures" },
+          { "id": "assemble-electronics-products-08", "text": "Test and visually inspect the functionality of the PCB" },
+          { "id": "assemble-electronics-products-09", "text": "Mount and solder electronic components*" },
+          { "id": "assemble-electronics-products-10", "text": "Apply soldering/de-soldering techniques and procedures" },
+          { "id": "assemble-electronics-products-11", "text": "Check soldered products" },
+          { "id": "assemble-electronics-products-12", "text": "Assemble electronic components*" },
+          { "id": "assemble-electronics-products-13", "text": "Integrate modules and accessories" },
+          { "id": "assemble-electronics-products-14", "text": "Perform assembly procedures of electronic products" },
+          { "id": "assemble-electronics-products-15", "text": "Test and inspect assembled electronic products*" },
+          { "id": "assemble-electronics-products-16", "text": "Subject finished products to final visual/sensory inspection and testing" },
+          { "id": "assemble-electronics-products-17", "text": "Apply safety rules and procedures*" }
         ],
-        "title": "Title ASSEMBLE ELECTRONICS PRODUCTS"
+        "title": "ASSEMBLE ELECTRONICS PRODUCTS"
       },
       {
-        "id": "systems",
+        "id": "service-consumer-electronics-products-and-systems",
         "questions": [
-          {
-            "id": "systems-01",
-            "text": "Prepare the unit and required materials, tools equipment and workplace properly for installation and service*"
-          },
-          {
-            "id": "systems-02",
-            "text": "Acquire manuals and service information required for installation"
-          },
-          {
-            "id": "systems-03",
-            "text": "Verify repair/maintenance history"
-          },
-          {
-            "id": "systems-04",
-            "text": "Conduct complete check-up of consumer electronic products and systems, and identifies, verifies and documents defects against customer description"
-          },
-          {
-            "id": "systems-05",
-            "text": "Test devices in accordance with standard procedures"
-          },
-          {
-            "id": "systems-06",
-            "text": "Install consumer electronic products and systems*"
-          },
-          {
-            "id": "systems-07",
-            "text": "Undertake final inspection"
-          },
-          {
-            "id": "systems-08",
-            "text": "Respond to unplanned events or conditions"
-          },
-          {
-            "id": "systems-09",
-            "text": "Clean and clear work site of all debris"
-          },
-          {
-            "id": "systems-10",
-            "text": "Prepare report on installation and testing of equipment"
-          },
-          {
-            "id": "systems-11",
-            "text": "Identify system defects/faults using appropriate tools and equipment"
-          },
-          {
-            "id": "systems-12",
-            "text": "Diagnose faults and defects*"
-          },
-          {
-            "id": "systems-13",
-            "text": "Check and isolate circuits"
-          },
-          {
-            "id": "systems-14",
-            "text": "Explain identified defects and faults"
-          },
-          {
-            "id": "systems-15",
-            "text": "Check control settings/adjustments"
-          },
-          {
-            "id": "systems-16",
-            "text": "Document accurately results of diagnosis and testing"
-          },
-          {
-            "id": "systems-17",
-            "text": "Advise/inform customers regarding the status and serviceability of the unit"
-          },
-          {
-            "id": "systems-18",
-            "text": "Replace defective parts/components with identical or recommended appropriate equivalent ratings"
-          },
-          {
-            "id": "systems-19",
-            "text": "Maintain/Repair consumer electronic products*"
-          },
-          {
-            "id": "systems-20",
-            "text": "Use personal protective equipment"
-          },
-          {
-            "id": "systems-21",
-            "text": "Perform cleaning of unit"
-          },
-          {
-            "id": "systems-22",
-            "text": "Perform repair activity within the required timeframe"
-          },
-          {
-            "id": "systems-23",
-            "text": "Observe care and extreme precaution in handling the unit/product"
-          },
-          {
-            "id": "systems-24",
-            "text": "Re-assemble and test repaired consumer electronic product*"
-          },
-          {
-            "id": "systems-25",
-            "text": "Subject reassembled units to final testing and cleaning"
-          },
-          {
-            "id": "systems-26",
-            "text": "Compile service completion procedures and documentations"
-          },
-          {
-            "id": "systems-27",
-            "text": "Dispose waste materials"
-          },
-          {
-            "id": "systems-28",
-            "text": "Apply safety rules and procedures*"
-          }
+          { "id": "service-consumer-electronics-products-and-systems-01", "text": "Prepare the unit and required materials, tools equipment and workplace properly for installation and service*" },
+          { "id": "service-consumer-electronics-products-and-systems-02", "text": "Acquire manuals and service information required for installation" },
+          { "id": "service-consumer-electronics-products-and-systems-03", "text": "Verify repair/maintenance history" },
+          { "id": "service-consumer-electronics-products-and-systems-04", "text": "Conduct complete check-up of consumer electronic products and systems, and identifies, verifies and documents defects against customer description" },
+          { "id": "service-consumer-electronics-products-and-systems-05", "text": "Test devices in accordance with standard procedures" },
+          { "id": "service-consumer-electronics-products-and-systems-06", "text": "Install consumer electronic products and systems*" },
+          { "id": "service-consumer-electronics-products-and-systems-07", "text": "Undertake final inspection" },
+          { "id": "service-consumer-electronics-products-and-systems-08", "text": "Respond to unplanned events or conditions" },
+          { "id": "service-consumer-electronics-products-and-systems-09", "text": "Clean and clear work site of all debris" },
+          { "id": "service-consumer-electronics-products-and-systems-10", "text": "Prepare report on installation and testing of equipment" },
+          { "id": "service-consumer-electronics-products-and-systems-11", "text": "Identify system defects/faults using appropriate tools and equipment" },
+          { "id": "service-consumer-electronics-products-and-systems-12", "text": "Diagnose faults and defects*" },
+          { "id": "service-consumer-electronics-products-and-systems-13", "text": "Check and isolate circuits" },
+          { "id": "service-consumer-electronics-products-and-systems-14", "text": "Explain identified defects and faults" },
+          { "id": "service-consumer-electronics-products-and-systems-15", "text": "Check control settings/adjustments" },
+          { "id": "service-consumer-electronics-products-and-systems-16", "text": "Document accurately results of diagnosis and testing" },
+          { "id": "service-consumer-electronics-products-and-systems-17", "text": "Advise/inform customers regarding the status and serviceability of the unit" },
+          { "id": "service-consumer-electronics-products-and-systems-18", "text": "Replace defective parts/components with identical or recommended appropriate equivalent ratings" },
+          { "id": "service-consumer-electronics-products-and-systems-19", "text": "Maintain/Repair consumer electronic products*" },
+          { "id": "service-consumer-electronics-products-and-systems-20", "text": "Use personal protective equipment" },
+          { "id": "service-consumer-electronics-products-and-systems-21", "text": "Perform cleaning of unit" },
+          { "id": "service-consumer-electronics-products-and-systems-22", "text": "Perform repair activity within the required timeframe" },
+          { "id": "service-consumer-electronics-products-and-systems-23", "text": "Observe care and extreme precaution in handling the unit/product" },
+          { "id": "service-consumer-electronics-products-and-systems-24", "text": "Re-assemble and test repaired consumer electronic product*" },
+          { "id": "service-consumer-electronics-products-and-systems-25", "text": "Subject reassembled units to final testing and cleaning" },
+          { "id": "service-consumer-electronics-products-and-systems-26", "text": "Compile service completion procedures and documentations" },
+          { "id": "service-consumer-electronics-products-and-systems-27", "text": "Dispose waste materials" },
+          { "id": "service-consumer-electronics-products-and-systems-28", "text": "Apply safety rules and procedures*" }
         ],
-        "title": "SYSTEMS"
+        "title": "SERVICE CONSUMER ELECTRONICS PRODUCTS AND SYSTEMS"
       },
       {
-        "id": "products-and-systems",
+        "id": "service-industrial-electronic-modules-products-and-systems",
         "questions": [
-          {
-            "id": "products-and-systems-01",
-            "text": "Prepare unit, tools and workplace for installation/servicing*"
-          },
-          {
-            "id": "products-and-systems-02",
-            "text": "Acquire manuals and service information required for installation"
-          },
-          {
-            "id": "products-and-systems-03",
-            "text": "Verify repair/maintenance history"
-          },
-          {
-            "id": "products-and-systems-04",
-            "text": "Conduct complete check-up of consumer electronic products and systems, and identifies, verifies and documents defects against customer description"
-          },
-          {
-            "id": "products-and-systems-05",
-            "text": "Test devices"
-          },
-          {
-            "id": "products-and-systems-06",
-            "text": "Install industrial electronics systems/products*"
-          },
-          {
-            "id": "products-and-systems-07",
-            "text": "Undertake final inspection"
-          },
-          {
-            "id": "products-and-systems-08",
-            "text": "Respond to unplanned events or conditions"
-          },
-          {
-            "id": "products-and-systems-09",
-            "text": "Clean and clear work site of all debris"
-          },
-          {
-            "id": "products-and-systems-10",
-            "text": "Prepare report on installation and testing of equipment"
-          },
-          {
-            "id": "products-and-systems-11",
-            "text": "Identify system defects/faults using appropriate tools and equipment"
-          },
-          {
-            "id": "products-and-systems-12",
-            "text": "Test devices in accordance with standard procedures"
-          },
-          {
-            "id": "products-and-systems-13",
-            "text": "Diagnose faults of industrial electronics systems/products*"
-          },
-          {
-            "id": "products-and-systems-14",
-            "text": "Check and isolate circuits"
-          },
-          {
-            "id": "products-and-systems-15",
-            "text": "Explain identified defects and faults"
-          },
-          {
-            "id": "products-and-systems-16",
-            "text": "Check control settings/adjustments"
-          },
-          {
-            "id": "products-and-systems-17",
-            "text": "Document accurately results of diagnosis and testing"
-          },
-          {
-            "id": "products-and-systems-18",
-            "text": "Advise/inform customers regarding the status and serviceability of the unit"
-          },
-          {
-            "id": "products-and-systems-19",
-            "text": "Replace defective parts/components with identical or recommended appropriate equivalent ratings"
-          },
-          {
-            "id": "products-and-systems-20",
-            "text": "Maintain/Repair industrial electronics products*"
-          },
-          {
-            "id": "products-and-systems-21",
-            "text": "Use personal protective equipment"
-          },
-          {
-            "id": "products-and-systems-22",
-            "text": "Perform cleaning of unit"
-          },
-          {
-            "id": "products-and-systems-23",
-            "text": "Perform repair activity within the required timeframe"
-          },
-          {
-            "id": "products-and-systems-24",
-            "text": "Observe care and extreme precaution in handling the unit/product"
-          },
-          {
-            "id": "products-and-systems-25",
-            "text": "Re-assemble and test repaired industrial electronics products*"
-          },
-          {
-            "id": "products-and-systems-26",
-            "text": "Subject reassembled units to final testing and cleaning"
-          },
-          {
-            "id": "products-and-systems-27",
-            "text": "Compile service completion procedures and documentations"
-          },
-          {
-            "id": "products-and-systems-28",
-            "text": "Dispose waste materials"
-          },
-          {
-            "id": "products-and-systems-29",
-            "text": "Apply safety rules and procedures*"
-          }
+          { "id": "service-industrial-electronic-modules-products-and-systems-01", "text": "Prepare unit, tools and workplace for installation/servicing*" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-02", "text": "Acquire manuals and service information required for installation" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-03", "text": "Verify repair/maintenance history" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-04", "text": "Conduct complete check-up of consumer electronic products and systems, and identifies, verifies and documents defects against customer description" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-05", "text": "Test devices" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-06", "text": "Install industrial electronics systems/products*" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-07", "text": "Undertake final inspection" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-08", "text": "Respond to unplanned events or conditions" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-09", "text": "Clean and clear work site of all debris" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-10", "text": "Prepare report on installation and testing of equipment" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-11", "text": "Identify system defects/faults using appropriate tools and equipment" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-12", "text": "Test devices in accordance with standard procedures" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-13", "text": "Diagnose faults of industrial electronics systems/products*" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-14", "text": "Check and isolate circuits" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-15", "text": "Explain identified defects and faults" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-16", "text": "Check control settings/adjustments" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-17", "text": "Document accurately results of diagnosis and testing" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-18", "text": "Advise/inform customers regarding the status and serviceability of the unit" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-19", "text": "Replace defective parts/components with identical or recommended appropriate equivalent ratings" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-20", "text": "Maintain/Repair industrial electronics products*" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-21", "text": "Use personal protective equipment" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-22", "text": "Perform cleaning of unit" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-23", "text": "Perform repair activity within the required timeframe" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-24", "text": "Observe care and extreme precaution in handling the unit/product" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-25", "text": "Re-assemble and test repaired industrial electronics products*" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-26", "text": "Subject reassembled units to final testing and cleaning" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-27", "text": "Compile service completion procedures and documentations" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-28", "text": "Dispose waste materials" },
+          { "id": "service-industrial-electronic-modules-products-and-systems-29", "text": "Apply safety rules and procedures*" }
         ],
-        "title": "PRODUCTS AND SYSTEMS"
+        "title": "SERVICE INDUSTRIAL ELECTRONIC MODULES, PRODUCTS AND SYSTEMS"
       }
     ]
   },
@@ -6859,362 +4400,386 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant",
+        "id": "direct-and-lead-service-team-in-the-dining-area-restaurant",
         "questions": [
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-01",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-01",
             "text": "Monitor guest reservations and ensures table assignment allocations"
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-02",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-02",
             "text": "Inspect waiter service stations for completeness in stocks and supplies."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-03",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-03",
             "text": "Recheck tables for accuracy in setting."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-04",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-04",
             "text": "Check cleanliness of the dining area/restaurant according to standards of the establishment."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-05",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-05",
             "text": "Check grooming of the personnel in accordance with the company’s standards."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-06",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-06",
             "text": "Inspect dining equipment to ensure efficient operations"
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-07",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-07",
             "text": "Conduct service briefing among service staff at the beginning of the shift"
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-08",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-08",
             "text": "Coordinate flow of service with the kitchen."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-09",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-09",
             "text": "Control and ensure quality in all service areas."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-10",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-10",
             "text": "Provide assistance in service during peak hours or busy"
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-11",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-11",
             "text": "Resolve guest’s concerns and complaints to satisfy the guest."
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-12",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-12",
             "text": "Express and monitor policies on energy and water conservation and waste disposal regularly"
           },
           {
-            "id": "organize-functions-related-to-food-and-beverage-service-at-a-hotel-or-restaurant-13",
-            "text": "Communicate policies on sexual harassments regularly Food and Beverage Services NC III"
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-13",
+            "text": "Communicate policies on sexual harassments regularly"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-01",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-14",
             "text": "Check end of shift / closing tasks of the service staff in accordance to enterprise standards"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-02",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-15",
             "text": "Record daily sales and cover count of the outlet in the absence of the supervisor."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-03",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-16",
             "text": "Conduct debriefing to discuss and solve concerns of the day"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-04",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-17",
             "text": "Check electric equipment and fixtures if turned off properly"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-05",
+            "id": "direct-and-lead-service-team-in-the-dining-area-restaurant-18",
             "text": "Segregate food and packaging wastes"
-          },
+          }
+        ],
+        "title": "Direct and lead service team in the dining area/restaurant"
+      },
+      {
+        "id": "products-for-specialized-menu-requirements",
+        "questions": [
           {
-            "id": "food-and-beverage-services-nc-iii-06",
+            "id": "products-for-specialized-menu-requirements-01",
             "text": "Describe and promote range of gueridon/ specialized menu items to guests"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-07",
+            "id": "products-for-specialized-menu-requirements-02",
             "text": "Describe procedures involved in the provision of gueridon service to guests"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-08",
+            "id": "products-for-specialized-menu-requirements-03",
             "text": "Identify and explain the ingredients used in gueridon service"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-09",
+            "id": "products-for-specialized-menu-requirements-04",
             "text": "Select and use gueridon trolleys, equipment and utensils"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-10",
+            "id": "products-for-specialized-menu-requirements-05",
             "text": "Identify and differentiate wine styles, major grape varieties used in wine production and major wine producing countries*"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-11",
+            "id": "products-for-specialized-menu-requirements-06",
             "text": "Describe steps in basic wine production and wine production techniques."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-12",
+            "id": "products-for-specialized-menu-requirements-07",
             "text": "Interpret wine labels to identify and make assessment of wine"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-13",
+            "id": "products-for-specialized-menu-requirements-08",
             "text": "Familiarize with wine storage and retrieval to ensure wine condition"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-14",
+            "id": "products-for-specialized-menu-requirements-09",
             "text": "Undertake sensory appraisal of wine, if necessary"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-15",
+            "id": "products-for-specialized-menu-requirements-10",
             "text": "Present wine lists to patrons in accordance with the enterprise standards."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-16",
+            "id": "products-for-specialized-menu-requirements-11",
             "text": "Recommend suitable wine and food combinations to meet identified needs and preferences of patrons"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-17",
+            "id": "products-for-specialized-menu-requirements-12",
             "text": "Explain countries, grape varieties, wine production techniques and associated wine industry information, trends and details to guests when necessary"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-18",
+            "id": "products-for-specialized-menu-requirements-13",
             "text": "Clean and maintain gueridon trolleys, equipment and utensils regularly"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-19",
+            "id": "products-for-specialized-menu-requirements-14",
             "text": "Prepare trolleys and service area for service with equipment, utensils and linen for efficient service."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-20",
+            "id": "products-for-specialized-menu-requirements-15",
             "text": "Select food and non-food items for service to match menu items"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-21",
+            "id": "products-for-specialized-menu-requirements-16",
             "text": "Verify the quality and condition of food and non-food items prior to use."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-22",
+            "id": "products-for-specialized-menu-requirements-17",
             "text": "Position gueridon trolleys for maximum impact on sales potential"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-23",
+            "id": "products-for-specialized-menu-requirements-18",
             "text": "Prepare and serve a range of food and beverage menu items using the gueridon."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-24",
+            "id": "products-for-specialized-menu-requirements-19",
             "text": "Carry out specialized dining room service efficiently in accordance with the standards of the establishment."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-25",
+            "id": "products-for-specialized-menu-requirements-20",
             "text": "Engage guests as part of the gueridon service experience"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-26",
+            "id": "products-for-specialized-menu-requirements-21",
             "text": "Present prepared menu items for service in a professional and attractive manner"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-27",
+            "id": "products-for-specialized-menu-requirements-22",
             "text": "Clear and clean trolleys and other gueridon equipment and utensils on completion of the provision of gueridon service."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-28",
+            "id": "products-for-specialized-menu-requirements-23",
             "text": "Take and make safety precautions all the time."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-29",
+            "id": "products-for-specialized-menu-requirements-24",
             "text": "Apply enterprise and licensing authority eligibility standards and/or requirements to be served alcohol appropriately"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-30",
+            "id": "products-for-specialized-menu-requirements-25",
             "text": "Explain restrictions for service to patrons courteously and diplomatically."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-31",
+            "id": "products-for-specialized-menu-requirements-26",
             "text": "Prepare and serve standard drinks in accordance with enterprise standards"
-          },
+          }
+        ],
+        "title": "PRODUCTS FOR SPECIALIZED MENU REQUIREMENTS"
+      },
+      {
+        "id": "hotel-or-restaurant",
+        "questions": [
           {
-            "id": "food-and-beverage-services-nc-iii-32",
+            "id": "hotel-or-restaurant-01",
             "text": "Obtain adequate supplies in accordance to event/function requirements."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-33",
+            "id": "hotel-or-restaurant-02",
             "text": "Set up tables and chairs according to event/function requirements"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-34",
+            "id": "hotel-or-restaurant-03",
             "text": "Set up serving stations/food islands in designated locations"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-35",
+            "id": "hotel-or-restaurant-04",
             "text": "Inspect tableware for damages and cleanliness"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-36",
+            "id": "hotel-or-restaurant-05",
             "text": "Prepare floor plan/ seating diagram for reference of the banquet staff"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-37",
+            "id": "hotel-or-restaurant-06",
             "text": "Set flatware according to the menu"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-38",
+            "id": "hotel-or-restaurant-07",
             "text": "Conduct meetings and briefings prior to the banquet function"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-39",
+            "id": "hotel-or-restaurant-08",
             "text": "Create contingency plans to ensure smooth delivery of service"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-40",
+            "id": "hotel-or-restaurant-09",
             "text": "Interpret and execute BEO based on the event requirement and resources"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-41",
+            "id": "hotel-or-restaurant-10",
             "text": "Check quality of the food to be served based on the guest’s request"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-42",
+            "id": "hotel-or-restaurant-11",
             "text": "Maintain contact with host, chef and kitchen staff all throughout the event"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-43",
+            "id": "hotel-or-restaurant-12",
             "text": "Ensure prompt delivery of each course to every table"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-44",
+            "id": "hotel-or-restaurant-13",
             "text": "Coordinate timing of service of each course of the meal with the kitchen, service staff and host."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-45",
+            "id": "hotel-or-restaurant-14",
             "text": "Monitor banquet staff work and pace all throughout the meal service."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-46",
+            "id": "hotel-or-restaurant-15",
             "text": "Implements the banquet service style in accordance with what is stipulated in the event order form or with special arrangement with the host."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-47",
+            "id": "hotel-or-restaurant-16",
             "text": "Control HVAC relative to ambient temperature"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-48",
+            "id": "hotel-or-restaurant-17",
             "text": "Provide coffee and tea service upon guest request"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-49",
+            "id": "hotel-or-restaurant-18",
             "text": "Supervise banquet area “break down” according to enterprise standards."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-50",
+            "id": "hotel-or-restaurant-19",
             "text": "Prepare event report after each function"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-51",
+            "id": "hotel-or-restaurant-20",
             "text": "Monitor waste disposal procedures after each function."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-52",
+            "id": "hotel-or-restaurant-21",
             "text": "Attend to guest needs and concerns promptly"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-53",
+            "id": "hotel-or-restaurant-22",
             "text": "Check professional demeanor of the staff at all times."
-          },
+          }
+        ],
+        "title": "HOTEL OR RESTAURANT"
+      },
+      {
+        "id": "process-financial-sale-transactions",
+        "questions": [
           {
-            "id": "food-and-beverage-services-nc-iii-54",
+            "id": "process-financial-sale-transactions-01",
             "text": "Prepare point of sale register/ terminal for operation in accordance with the enterprise standard."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-55",
+            "id": "process-financial-sale-transactions-02",
             "text": "Obtain and ensure cash float and supplies of change."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-56",
+            "id": "process-financial-sale-transactions-03",
             "text": "Obtain supplies of point of sale documentation at the beginning of the shift"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-57",
+            "id": "process-financial-sale-transactions-04",
             "text": "Calculate and verify amount due from customer/guest."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-58",
+            "id": "process-financial-sale-transactions-05",
             "text": "Accept and accurately count cash and non-cash payments and issues receipts"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-59",
+            "id": "process-financial-sale-transactions-06",
             "text": "Process advanced deposits payments and refunds in accordance with enterprise policy."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-60",
+            "id": "process-financial-sale-transactions-07",
             "text": "Apply customer/guest service skills in processing payments"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-61",
+            "id": "process-financial-sale-transactions-08",
             "text": "Complete end of shift documentation in accordance with the enterprise policy."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-62",
+            "id": "process-financial-sale-transactions-09",
             "text": "Determine balance between register/terminal reading and cash and non-cash totals properly"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-63",
+            "id": "process-financial-sale-transactions-10",
             "text": "Investigate and resolve discrepancies in takings in accordance with the enterprise policy"
-          },
+          }
+        ],
+        "title": "Process financial sale transactions"
+      },
+      {
+        "id": "monitor-and-maintain-stock",
+        "questions": [
           {
-            "id": "food-and-beverage-services-nc-iii-64",
+            "id": "monitor-and-maintain-stock-01",
             "text": "Check stock received against stock ordered"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-65",
+            "id": "monitor-and-maintain-stock-02",
             "text": "Identify variations between delivery and documentation and relevant documentation are followed-up"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-66",
+            "id": "monitor-and-maintain-stock-03",
             "text": "Manage excess stock within the organization to minimize wastes."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-67",
+            "id": "monitor-and-maintain-stock-04",
             "text": "Secure new stock against damage and/or theft."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-68",
+            "id": "monitor-and-maintain-stock-05",
             "text": "Move stock to the required operational area"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-69",
+            "id": "monitor-and-maintain-stock-06",
             "text": "Apply occupational health and safety skills according to the enterprise policy"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-70",
+            "id": "monitor-and-maintain-stock-07",
             "text": "Remove waste from the storage areas following standard procedures of the enterprise"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-71",
+            "id": "monitor-and-maintain-stock-08",
             "text": "Control inventory of food, equipment, small-ware and liquors in accordance with the enterprise procedures."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-72",
+            "id": "monitor-and-maintain-stock-09",
             "text": "Check slow and fast moving items in accordance with enterprise standards."
           },
           {
-            "id": "food-and-beverage-services-nc-iii-73",
+            "id": "monitor-and-maintain-stock-10",
             "text": "Request needed food items, supplies and equipment to ensure quality and timely delivery of service"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-74",
+            "id": "monitor-and-maintain-stock-11",
             "text": "Rotate stock aligning with enterprise and stock item requirements"
           },
           {
-            "id": "food-and-beverage-services-nc-iii-75",
+            "id": "monitor-and-maintain-stock-12",
             "text": "Take remedial action where stock related issues are identified"
           }
         ],
-        "title": "Organize functions related to Food and Beverage Service at a hotel or restaurant"
+        "title": "Monitor and maintain stock"
       }
     ]
   },
@@ -7693,8 +5258,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "handle-guest-arrivals-and-departure-04",
-            "text": "Escort guest to rooms and where appropriate courteously shows/explains the establishment/room features Handle Guest Luggage"
-          },
+            "text": "Escort guest to rooms and where appropriate courteously shows/explains the establishment/room features"
+          }
+        ],
+        "title": "Handle Guest Arrivals and Departure"
+      },
+      {
+        "id": "handle-guest-luggage",
+        "questions": [
           {
             "id": "handle-guest-luggage-01",
             "text": "Transport and deliver guest luggage to correct location within appropriate timeframes"
@@ -7712,7 +5283,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Place luggage within the storage system"
           }
         ],
-        "title": "Handle Guest Arrivals and Departure"
+        "title": "Handle Guest Luggage"
       },
       {
         "id": "respond-to-request-for-concierge-services",
@@ -7745,8 +5316,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "manage-intoxicated-persons-04",
-            "text": "Apply legislative requirements Process Internal Financial Transactions"
-          },
+            "text": "Apply legislative requirements"
+          }
+        ],
+        "title": "Manage Intoxicated Persons"
+      },
+      {
+        "id": "process-internal-financial-transactions",
+        "questions": [
           {
             "id": "process-internal-financial-transactions-01",
             "text": "Double check transactions to ensure that they have been posted in the property’s computerized system"
@@ -7764,7 +5341,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Suggest internal financial system and control for improvements in the property’s operation."
           }
         ],
-        "title": "Manage Intoxicated Persons"
+        "title": "Process Internal Financial Transactions"
       },
       {
         "id": "complete-routine-records-and-reports",
@@ -7956,8 +5533,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "conduct-variety-and-seed-selection-06",
-            "text": "Identify the use of warranty tags and BPI (Bureau of Plant Industry) tags in corn seeds"
-          },
+            "text": "Identify the use of warranty tags and BPI (Bureau of Plant"
+          }
+        ],
+        "title": "Conduct variety and seed selection"
+      },
+      {
+        "id": "industry-tags-in-corn-seeds",
+        "questions": [
           {
             "id": "industry-tags-in-corn-seeds-01",
             "text": "Conduct germination test using either ragdoll, seed box or seed plot methods"
@@ -7971,7 +5554,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Discuss actions to be taken if germination rate falls below standard"
           }
         ],
-        "title": "Conduct variety and seed selection"
+        "title": "Industry) tags in corn seeds"
       },
       {
         "id": "carry-out-crop-establishment",
@@ -8241,8 +5824,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "manage-crop-09",
-            "text": "Conduct Harvest and Post-Harvest Operations : Perform Land Preparation"
-          },
+            "text": "Conduct Harvest and Post-Harvest Operations"
+          }
+        ],
+        "title": "Manage crop"
+      },
+      {
+        "id": "perform-land-preparation",
+        "questions": [
           {
             "id": "perform-land-preparation-01",
             "text": "Perform land cleaning activities according to site requirements"
@@ -8276,7 +5865,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Practice safety measures according to work safety standards*"
           }
         ],
-        "title": "Manage crop"
+        "title": ": Perform Land Preparation"
       },
       {
         "id": "conduct-harvest-and-post-harvest-operations",
@@ -8341,76 +5930,78 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answers."
     ],
     "qualificationTitle": "SAG-Heavy Equipment Servicing (Mechanical) NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "systems",
+        "id": "service-engine-system",
         "questions": [
           {
-            "id": "systems-01",
+            "id": "service-engine-system-01",
             "text": "Perform checking of engine system"
           },
           {
-            "id": "systems-02",
+            "id": "service-engine-system-02",
             "text": "Perform testing and adjusting of engine system"
           },
           {
-            "id": "systems-03",
+            "id": "service-engine-system-03",
             "text": "Perform troubleshooting of engine system"
           },
           {
-            "id": "systems-04",
+            "id": "service-engine-system-04",
             "text": "Perform repair and/or replacement of engine related components and parts"
           },
           {
-            "id": "systems-05",
+            "id": "service-engine-system-05",
             "text": "Perform checking of power train system"
           },
           {
-            "id": "systems-06",
+            "id": "service-engine-system-06",
             "text": "Perform testing and adjusting of power train system"
           },
           {
-            "id": "systems-07",
+            "id": "service-engine-system-07",
             "text": "Perform troubleshooting of power train system"
           },
           {
-            "id": "systems-08",
+            "id": "service-engine-system-08",
             "text": "Perform checking of hydraulic system"
           },
           {
-            "id": "systems-09",
+            "id": "service-engine-system-09",
             "text": "Perform testing and adjusting of hydraulic system"
           },
           {
-            "id": "systems-10",
+            "id": "service-engine-system-10",
             "text": "Perform troubleshooting of hydraulic system"
           },
           {
-            "id": "systems-11",
+            "id": "service-engine-system-11",
             "text": "Perform repair and / or replacement of hydraulic system"
           },
           {
-            "id": "systems-12",
-            "text": "Perform checking of undercarriage system Heavy Equipment Servicing NC II (Mechanical)"
+            "id": "service-engine-system-12",
+            "text": "Perform checking of undercarriage system"
           },
           {
-            "id": "heavy-equipment-servicing-nc-ii-mechanical-01",
+            "id": "service-engine-system-13",
             "text": "Perform testing of undercarriage system"
           },
           {
-            "id": "heavy-equipment-servicing-nc-ii-mechanical-02",
+            "id": "service-engine-system-14",
             "text": "Perform measurement of wear of undercarriage and related components"
           },
           {
-            "id": "heavy-equipment-servicing-nc-ii-mechanical-03",
+            "id": "service-engine-system-15",
             "text": "Perform repair and / or replacement of undercarriage components / parts"
           }
         ],
-        "title": "SYSTEMS"
+        "title": "Service engine system"
       }
     ]
   },
@@ -8419,7 +6010,8 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "instructionLines": [
       "Instruction:",
       "Read each of the questions in the left-hand column of the chart.",
-      "Place a check in the appropriate box opposite each question to indicate your"
+      "Place a check in the appropriate box opposite each question to indicate your",
+      "answers."
     ],
     "qualificationTitle": "SAG-Horticulture NC III",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -8625,8 +6217,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "implement-a-plant-nutrition-program-14",
-            "text": "Communicate effectively with team members, supervisors, contractors and suppliers CONTROL WEEDS"
-          },
+            "text": "Communicate effectively with team members, supervisors, contractors and suppliers"
+          }
+        ],
+        "title": "IMPLEMENT A PLANT NUTRITION PROGRAM"
+      },
+      {
+        "id": "control-weeds",
+        "questions": [
           {
             "id": "control-weeds-01",
             "text": "Recognize a range of weeds and beneficial organisms within a particular enterprise"
@@ -8684,7 +6282,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
           }
         ],
-        "title": "IMPLEMENT A PLANT NUTRITION PROGRAM"
+        "title": "CONTROL WEEDS"
       },
       {
         "id": "prepare-and-apply-chemicals",
@@ -8715,8 +6313,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "prepare-and-apply-chemicals-07",
-            "text": "Apply chemicals according to label and Material Safety Data Sheet (MSDS) *"
-          },
+            "text": "Apply chemicals according to label and Material Safety"
+          }
+        ],
+        "title": "PREPARE AND APPLY CHEMICALS"
+      },
+      {
+        "id": "data-sheet-msds",
+        "questions": [
           {
             "id": "data-sheet-msds-01",
             "text": "Determine compatibility of chemicals*"
@@ -8762,7 +6366,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
           }
         ],
-        "title": "PREPARE AND APPLY CHEMICALS"
+        "title": "Data Sheet (MSDS) *"
       },
       {
         "id": "establish-horticultural-crops",
@@ -8833,8 +6437,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "establish-horticultural-crops-17",
-            "text": "Communicate effectively with supervisor, contractors, consultants and work team members MAINTENANCE PROGRAM"
-          },
+            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
+          }
+        ],
+        "title": "ESTABLISH HORTICULTURAL CROPS"
+      },
+      {
+        "id": "maintenance-program",
+        "questions": [
           {
             "id": "maintenance-program-01",
             "text": "Interpret site plans and crop maintenance specifications*"
@@ -8885,8 +6495,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "maintenance-program-13",
-            "text": "Communicate effectively with supervisor, contractors, consultants and work team members HARVESTING"
-          },
+            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
+          }
+        ],
+        "title": "MAINTENANCE PROGRAM"
+      },
+      {
+        "id": "harvesting",
+        "questions": [
           {
             "id": "harvesting-01",
             "text": "Identify maturity parameters for a range of crops*"
@@ -8925,8 +6541,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "harvesting-10",
-            "text": "Communicate effectively with supervisor, contractors, clients and work team members UNDERTAKE FIELD BUDDING AND GRAFTING"
-          },
+            "text": "Communicate effectively with supervisor, contractors, clients and work team members"
+          }
+        ],
+        "title": "HARVESTING"
+      },
+      {
+        "id": "undertake-field-budding-and-grafting",
+        "questions": [
           {
             "id": "undertake-field-budding-and-grafting-01",
             "text": "Identify grafting requirements*"
@@ -8972,7 +6594,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Prepare report and work procedure documentation using prescribed format*"
           }
         ],
-        "title": "ESTABLISH HORTICULTURAL CROPS"
+        "title": "UNDERTAKE FIELD BUDDING AND GRAFTING"
       },
       {
         "id": "undertake-propagation-activities",
@@ -9388,84 +7010,92 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Masonry NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "sag-masonry-nc-ii",
+        "id": "lay-concrete-hollow-blocks-for-structures",
         "questions": [
           {
-            "id": "sag-masonry-nc-ii-01",
-            "text": "Uses personal protective equipment (PPE) in accordance with Rule 1080 of Occupational Safety and Health Standards*"
-          },
+            "id": "lay-concrete-hollow-blocks-for-structures-01",
+            "text": "Uses personal protective equipment (PPE) in accordance with"
+          }
+        ],
+        "title": "Lay Concrete Hollow Blocks for Structures"
+      },
+      {
+        "id": "rule-1080-of-occupational-safety-and-health-standards",
+        "questions": [
           {
-            "id": "sag-masonry-nc-ii-02",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-01",
             "text": "Read and interpret drawings and specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-03",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-02",
             "text": "Select and prepare materials, tools and equipment consistent with the job requirements*"
           },
           {
-            "id": "sag-masonry-nc-ii-04",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-03",
             "text": "Establish location of concrete hollow block wall based on"
           },
           {
-            "id": "sag-masonry-nc-ii-05",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-04",
             "text": "Install and mark horizontal / vertical guide for hollow blocks according to specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-06",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-05",
             "text": "Install reinforcing bar / dowel according to job specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-07",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-06",
             "text": "Spread mortars on the base /edge of hollow block according to job specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-08",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-07",
             "text": "Lay hollow block on the line according to job specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-09",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-08",
             "text": "Perform constant checking of plumbness and alignment during hollow block laying"
           },
           {
-            "id": "sag-masonry-nc-ii-10",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-09",
             "text": "Scrape excess mortar on joints*"
           },
           {
-            "id": "sag-masonry-nc-ii-11",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-10",
             "text": "Clean and keep work site safe following OSHC requirements"
           },
           {
-            "id": "sag-masonry-nc-ii-12",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-11",
             "text": "Perform jointing process in accordance with job specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-13",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-12",
             "text": "Perform finishing touches according to job specifications*"
           },
           {
-            "id": "sag-masonry-nc-ii-14",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-13",
             "text": "Checks plaster thickness prior to wall surface preparation*"
           },
           {
-            "id": "sag-masonry-nc-ii-15",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-14",
             "text": "Perform wall surface preparation according to established plastering procedures"
           },
           {
-            "id": "sag-masonry-nc-ii-16",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-15",
             "text": "Performs wall plaster according to established procedures*"
           },
           {
-            "id": "sag-masonry-nc-ii-17",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-16",
             "text": "Cleans work area according to safety and environmental regulations"
           }
         ],
-        "title": "SAG-Masonry NC II"
+        "title": "Rule 1080 of Occupational Safety and Health Standards*"
       }
     ]
   },
@@ -9589,58 +7219,67 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each question and check the appropriate column to indicate your answer."
     ],
     "qualificationTitle": "SAG-Motorcycle Small Engine Servicing NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
+        "id": "service-motorcycle-small-engine-system",
+        "questions": [
+          {
+            "id": "service-motorcycle-small-engine-system-01",
+            "text": "Perform periodic maintenance on fuel system, intake and exhaust, lubrication, cooling system*"
+          },
+          {
+            "id": "service-motorcycle-small-engine-system-02",
+            "text": "Identify malfunctions of fuel intake and exhaust, lubrication, cooling, transmission and clutch system*"
+          },
+          {
+            "id": "service-motorcycle-small-engine-system-03",
+            "text": "Identify how to repair or replace defective fuel, intake and exhaust, lubrication, cooling, transmission and clutch components/ system, using appropriate measuring tools and equipment*"
+          },
+          {
+            "id": "service-motorcycle-small-engine-system-04",
+            "text": "Check functioning of repaired fuel systems, intake and exhaust, lubrication, cooling systems/ components*"
+          },
+          {
+            "id": "service-motorcycle-small-engine-system-05",
+            "text": "Observe health and safety practices at work in accordance with company’s OSH policies and/or Standard Operating Procedure*"
+          }
+        ],
+        "title": "Service Motorcycle/Small Engine System"
+      },
+      {
         "id": "service-electrical-system",
         "questions": [
           {
             "id": "service-electrical-system-01",
-            "text": "Identify electrical system/ components’ malfunction using tools and equipment *"
+            "text": "Identify electrical system/ components’ malfunction using tools and equipment*"
           },
           {
-            "id": "and-equipment-01",
+            "id": "service-electrical-system-02",
             "text": "Apply procedures on disassembling of electrical components*"
           },
           {
-            "id": "and-equipment-02",
-            "text": "Apply procedures on replacing defective electrical components"
+            "id": "service-electrical-system-03",
+            "text": "Apply procedures on replacing defective electrical components and assembling of electrical components*"
           },
           {
-            "id": "and-equipment-03",
-            "text": "Perform reconnection of external components to the engine*"
-          },
-          {
-            "id": "and-equipment-04",
-            "text": "Follow procedures on filling of new lubricants and coolants*"
-          },
-          {
-            "id": "and-equipment-05",
-            "text": "Follow procedures on starting/warming - up motorcycle/small engine according to service manual.*"
-          }
-        ],
-        "title": "Service Electrical System"
-      },
-      {
-        "id": "and-assembling-of-electrical-components",
-        "questions": [
-          {
-            "id": "and-assembling-of-electrical-components-01",
+            "id": "service-electrical-system-04",
             "text": "Check functionality of repaired electrical system*"
           },
           {
-            "id": "and-assembling-of-electrical-components-02",
+            "id": "service-electrical-system-05",
             "text": "Perform final test to ensure correction of trouble*"
           },
           {
-            "id": "and-assembling-of-electrical-components-03",
+            "id": "service-electrical-system-06",
             "text": "Observe health and safety practices at work in accordance with company’s OSH policies and/or Standard Operating Procedure*"
           }
         ],
-        "title": "and assembling of electrical components *"
+        "title": "Service Electrical System"
       },
       {
         "id": "service-chassis",
@@ -9650,11 +7289,11 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Identify steering and suspension, final drive, brake, wheels and tires parts/system malfunction according to the symptoms*"
           },
           {
-            "id": "tires-parts-system-malfunction-according-to-the-symptoms-01",
-            "text": "Check/adjust or replace defective steering and suspension, final drive, brake, wheels and tires system/parts using appropriate measuring tools and equipment *"
+            "id": "service-chassis-02",
+            "text": "Check/adjust or replace defective steering and suspension, final drive, brake, wheels and tires system/parts using appropriate measuring tools and equipment*"
           },
           {
-            "id": "measuring-tools-and-equipment-01",
+            "id": "service-chassis-03",
             "text": "Check functionality of replaced/adjusted steering and suspension, final drive, brake, wheels and tires systems/ components*"
           }
         ],
@@ -9668,24 +7307,36 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Follow standard procedures on detaching/disconnecting external components and engine-removal from the frame in accordance with service manual.*"
           },
           {
-            "id": "with-service-manual-01",
+            "id": "overhaul-motorcycle-small-engine-02",
             "text": "Follow procedures on disassembling and sequencing of engine using tools and equipment*"
           },
           {
-            "id": "using-tools-and-equipment-01",
+            "id": "overhaul-motorcycle-small-engine-03",
             "text": "Identifies defective components/ parts using measuring tools.*"
           },
           {
-            "id": "using-tools-and-equipment-02",
+            "id": "overhaul-motorcycle-small-engine-04",
             "text": "Replace defective parts using tools and materials*"
           },
           {
-            "id": "using-tools-and-equipment-03",
-            "text": "Assemble and arrange engine components using standard value of torque, clearances and service limits *"
+            "id": "overhaul-motorcycle-small-engine-05",
+            "text": "Assemble and arrange engine components using standard value of torque, clearances and service limits*"
           },
           {
-            "id": "of-torque-clearances-and-service-limits-01",
-            "text": "Follow procedures on re-installing engine to frame using tools"
+            "id": "overhaul-motorcycle-small-engine-06",
+            "text": "Follow procedures on re-installing engine to frame using tools and equipment*"
+          },
+          {
+            "id": "overhaul-motorcycle-small-engine-07",
+            "text": "Perform reconnection of external components to the engine*"
+          },
+          {
+            "id": "overhaul-motorcycle-small-engine-08",
+            "text": "Follow procedures on filling of new lubricants and coolants*"
+          },
+          {
+            "id": "overhaul-motorcycle-small-engine-09",
+            "text": "Follow procedures on starting/warming - up motorcycle/small engine according to service manual.*"
           }
         ],
         "title": "Overhaul Motorcycle/Small Engine"
@@ -9699,50 +7350,18 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "clean-up-work-area-02",
-            "text": "Clean and arrange tools and equipment and stores these following workplace procedures. *"
+            "text": "Clean and arrange tools and equipment and stores these following workplace procedures.*"
           },
           {
-            "id": "following-workplace-procedures-01",
-            "text": "Practice proper wastes segregation and disposal according to workplace and environmental procedures/rules *"
+            "id": "clean-up-work-area-03",
+            "text": "Practice proper wastes segregation and disposal according to workplace and environmental procedures/rules*"
           },
           {
-            "id": "workplace-and-environmental-procedures-rules-01",
+            "id": "clean-up-work-area-04",
             "text": "Perform good housekeeping*"
           }
         ],
         "title": "Clean-up work area"
-      },
-      {
-        "id": "service-motorcycle-small-engine-system",
-        "questions": [
-          {
-            "id": "service-motorcycle-small-engine-system-01",
-            "text": "Perform periodic maintenance on fuel system, intake and exhaust, lubrication, cooling system *"
-          },
-          {
-            "id": "exhaust-lubrication-cooling-system-01",
-            "text": "Identify malfunctions of fuel intake and exhaust, lubrication, cooling, transmission and clutch system *"
-          },
-          {
-            "id": "cooling-transmission-and-clutch-system-01",
-            "text": "Identify how to repair or replace defective fuel, intake and exhaust, lubrication, cooling, transmission and clutch components/ system, using appropriate measuring tools and equipment *"
-          },
-          {
-            "id": "equipment-01",
-            "text": "Check functioning of repaired fuel systems, intake and exhaust, lubrication, cooling systems/ components*"
-          }
-        ],
-        "title": "Service Motorcycle/Small Engine System"
-      },
-      {
-        "id": "motorcycle-small-engine-servicing-nc-ii",
-        "questions": [
-          {
-            "id": "motorcycle-small-engine-servicing-nc-ii-01",
-            "text": "Observe health and safety practices at work in accordance with company’s OSH policies and/or Standard Operating Procedure*"
-          }
-        ],
-        "title": "Motorcycle/Small Engine Servicing NC II"
       }
     ]
   },
@@ -9843,8 +7462,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "produce-organic-vegetable-07",
-            "text": "Identify different maturity indices of common vegetables in the Philippines*"
-          },
+            "text": "Identify different maturity indices of common vegetables in the"
+          }
+        ],
+        "title": "PRODUCE ORGANIC VEGETABLE"
+      },
+      {
+        "id": "philippines",
+        "questions": [
           {
             "id": "philippines-01",
             "text": "Perform plant care activities*"
@@ -9878,7 +7503,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Solve routine problems pertinent to the production of organic vegetables*"
           }
         ],
-        "title": "PRODUCE ORGANIC VEGETABLE"
+        "title": "Philippines*"
       },
       {
         "id": "produce-organic-fertilizer",
@@ -9953,8 +7578,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "produce-organic-fertilizer-18",
-            "text": "Determine requirements in the establishment of commercial organic fertilizer production PRODUCE OF ORGANIC CONCOCTIONS / EXTRACTS"
-          },
+            "text": "Determine requirements in the establishment of commercial organic fertilizer production"
+          }
+        ],
+        "title": "PRODUCE ORGANIC FERTILIZER"
+      },
+      {
+        "id": "produce-of-organic-concoctions-extracts",
+        "questions": [
           {
             "id": "produce-of-organic-concoctions-extracts-01",
             "text": "Identify and discuss kinds of concoctions used for fertilizers*"
@@ -9997,8 +7628,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "produce-of-organic-concoctions-extracts-11",
-            "text": "Solve routine problems pertinent to production of organic concoction / extracts RAISE ORGANIC HOG"
-          },
+            "text": "Solve routine problems pertinent to production of organic concoction / extracts"
+          }
+        ],
+        "title": "PRODUCE OF ORGANIC CONCOCTIONS / EXTRACTS"
+      },
+      {
+        "id": "raise-organic-hog",
+        "questions": [
           {
             "id": "raise-organic-hog-01",
             "text": "Identify traits of various breeder*"
@@ -10053,8 +7690,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "raise-organic-hog-14",
-            "text": "Follow regulatory measures (municipal ordinance, RA 10068, PNS)"
-          },
+            "text": "Follow regulatory measures (municipal ordinance, RA 10068,"
+          }
+        ],
+        "title": "RAISE ORGANIC HOG"
+      },
+      {
+        "id": "pns",
+        "questions": [
           {
             "id": "pns-01",
             "text": "Provide optimum space requirements of animal stock*"
@@ -10073,8 +7716,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "pns-05",
-            "text": "Solve routine problems pertinent to raising swine RAISE ORGANIC SMALL RUMINANTS"
-          },
+            "text": "Solve routine problems pertinent to raising swine"
+          }
+        ],
+        "title": "PNS)"
+      },
+      {
+        "id": "raise-organic-small-ruminants",
+        "questions": [
           {
             "id": "raise-organic-small-ruminants-01",
             "text": "Identify genetically superior breeds of goats and sheep*"
@@ -10148,226 +7797,248 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Apply regulatory measures pertinent to animal (movements, RA 10068, Philippine National Standards)"
           }
         ],
-        "title": "PRODUCE ORGANIC FERTILIZER"
+        "title": "RAISE ORGANIC SMALL RUMINANTS"
       }
     ]
   },
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Plumbing NC I",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
+        "id": "prepare-plumbing-layout",
+        "questions": [
+          {
+            "id": "prepare-plumbing-layout-01",
+            "text": "Identify and select tools and materials as per job requirements"
+          },
+          {
+            "id": "prepare-plumbing-layout-02",
+            "text": "Select and use appropriate PPE as per job requirements"
+          },
+          {
+            "id": "prepare-plumbing-layout-03",
+            "text": "Observe safety regulations and practices"
+          },
+          {
+            "id": "prepare-plumbing-layout-04",
+            "text": "Identify locations of pipe stub outs as per job requirements."
+          },
+          {
+            "id": "prepare-plumbing-layout-05",
+            "text": "Check pipe stub-out plumbness and alignment prior to concrete pouring."
+          },
+          {
+            "id": "prepare-plumbing-layout-06",
+            "text": "Prepare pipe sleeve openings according to job requirements"
+          },
+          {
+            "id": "prepare-plumbing-layout-07",
+            "text": "Cut pipes within tolerance / required length and according to specifications"
+          },
+          {
+            "id": "prepare-plumbing-layout-08",
+            "text": "Check and verify tools and materials to ensure if free from any damage and defects"
+          },
+          {
+            "id": "prepare-plumbing-layout-09",
+            "text": "Maintain tools in accordance with work place procedures."
+          },
+          {
+            "id": "prepare-plumbing-layout-10",
+            "text": "Demonstrate knowledge of faults and problems and common solutions"
+          },
+          {
+            "id": "prepare-plumbing-layout-11",
+            "text": "Collect and store reusable materials as per standard practice"
+          },
+          {
+            "id": "prepare-plumbing-layout-12",
+            "text": "Perform good housekeeping following safety standards"
+          },
+          {
+            "id": "prepare-plumbing-layout-13",
+            "text": "Dispose waste and scrap materials as per environmental procedure"
+          }
+        ],
+        "title": "Prepare Plumbing Layout"
+      },
+      {
+        "id": "make-piping-joints-and-connections",
+        "questions": [
+          {
+            "id": "make-piping-joints-and-connections-01",
+            "text": "Set measurements following piping lay-out / plans and specifications"
+          },
+          {
+            "id": "make-piping-joints-and-connections-02",
+            "text": "Make joints according to perpendicularly and levelness of alignment"
+          },
+          {
+            "id": "make-piping-joints-and-connections-03",
+            "text": "Select and use pipe sealant in line with job requirements"
+          },
+          {
+            "id": "make-piping-joints-and-connections-04",
+            "text": "Clean pipes and fittings following standard operating procedure"
+          },
+          {
+            "id": "make-piping-joints-and-connections-05",
+            "text": "Perform trial fitting of pipes prior to final connection following standard operating procedure"
+          },
+          {
+            "id": "make-piping-joints-and-connections-06",
+            "text": "Select and use tools, materials and equipment according to job requirements"
+          },
+          {
+            "id": "make-piping-joints-and-connections-07",
+            "text": "Apply teflon tape and / or other related materials according to job requirements"
+          },
+          {
+            "id": "make-piping-joints-and-connections-08",
+            "text": "Perform threading connections following piping table and specifications"
+          },
+          {
+            "id": "make-piping-joints-and-connections-09",
+            "text": "Pack joints firmly with oakum or hemp and fitted with molten pig lead or epoxy to a depth of not less than 25.4 mm and are aligned with each other when using bell and spigot cast iron pipes and fittings"
+          },
+          {
+            "id": "make-piping-joints-and-connections-10",
+            "text": "Install couplers to connect pipes and fittings for cast iron hubless pipes and fittings"
+          },
+          {
+            "id": "make-piping-joints-and-connections-11",
+            "text": "Select and use PPE in line with job requirement"
+          },
+          {
+            "id": "make-piping-joints-and-connections-12",
+            "text": "Perform good housekeeping"
+          }
+        ],
+        "title": "Make Piping Joints and Connections"
+      },
+      {
         "id": "perform-minor-construction-works",
         "questions": [
           {
             "id": "perform-minor-construction-works-01",
-            "text": "Identify and select tools and materials as per job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-02",
-            "text": "Select and use appropriate PPE as per job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-03",
-            "text": "Observe safety regulations and practices"
-          },
-          {
-            "id": "perform-minor-construction-works-04",
-            "text": "Identify locations of pipe stub outs as per job requirements."
-          },
-          {
-            "id": "perform-minor-construction-works-05",
-            "text": "Check pipe stub-out plumbness and alignment prior to concrete pouring."
-          },
-          {
-            "id": "perform-minor-construction-works-06",
-            "text": "Prepare pipe sleeve openings according to job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-07",
-            "text": "Cut pipes within tolerance / required length and according to specifications"
-          },
-          {
-            "id": "perform-minor-construction-works-08",
-            "text": "Check and verify tools and materials to ensure if free from any damage and defects"
-          },
-          {
-            "id": "perform-minor-construction-works-09",
-            "text": "Maintain tools in accordance with work place procedures."
-          },
-          {
-            "id": "perform-minor-construction-works-10",
-            "text": "Demonstrate knowledge of faults and problems and common solutions"
-          },
-          {
-            "id": "perform-minor-construction-works-11",
-            "text": "Collect and store reusable materials as per standard practice"
-          },
-          {
-            "id": "perform-minor-construction-works-12",
-            "text": "Perform good housekeeping following safety standards"
-          },
-          {
-            "id": "perform-minor-construction-works-13",
-            "text": "Dispose waste and scrap materials as per environmental procedure"
-          },
-          {
-            "id": "perform-minor-construction-works-14",
-            "text": "Set measurements following piping lay-out / plans and specifications"
-          },
-          {
-            "id": "perform-minor-construction-works-15",
-            "text": "Make joints according to perpendicularly and levelness of alignment"
-          },
-          {
-            "id": "perform-minor-construction-works-16",
-            "text": "Select and use pipe sealant in line with job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-17",
-            "text": "Clean pipes and fittings following standard operating procedure"
-          },
-          {
-            "id": "perform-minor-construction-works-18",
-            "text": "Perform trial fitting of pipes prior to final connection following standard operating procedure"
-          },
-          {
-            "id": "perform-minor-construction-works-19",
-            "text": "Select and use tools, materials and equipment according to job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-20",
-            "text": "Apply teflon tape and / or other related materials according to job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-21",
-            "text": "Perform threading connections following piping table and specifications"
-          },
-          {
-            "id": "perform-minor-construction-works-22",
-            "text": "Pack joints firmly with oakum or hemp and fitted with molten pig lead or epoxy to a depth of not less than 25.4 mm and are aligned with each other when using bell and spigot cast iron pipes and fittings"
-          },
-          {
-            "id": "perform-minor-construction-works-23",
-            "text": "Install couplers to connect pipes and fittings for cast iron hubless pipes and fittings"
-          },
-          {
-            "id": "perform-minor-construction-works-24",
-            "text": "Select and use PPE in line with job requirement"
-          },
-          {
-            "id": "perform-minor-construction-works-25",
-            "text": "Perform good housekeeping"
-          },
-          {
-            "id": "perform-minor-construction-works-26",
             "text": "Interpret work instructions as to job requirements"
           },
           {
-            "id": "perform-minor-construction-works-27",
+            "id": "perform-minor-construction-works-02",
             "text": "Select materials, tools and equipment in line with job requirements"
           },
           {
-            "id": "perform-minor-construction-works-28",
+            "id": "perform-minor-construction-works-03",
             "text": "Select and use PPE in line with job requirements"
           },
           {
-            "id": "perform-minor-construction-works-29",
+            "id": "perform-minor-construction-works-04",
             "text": "Perform piping lay-out and planting of pipe sleeves on walls and floors"
           },
           {
-            "id": "perform-minor-construction-works-30",
+            "id": "perform-minor-construction-works-05",
             "text": "Set out dimensions and alignment according to specified roughing-in measurements"
           },
           {
-            "id": "perform-minor-construction-works-31",
+            "id": "perform-minor-construction-works-06",
             "text": "Cut walls without causing damage to floors/walls and adjacent systems/installations"
           },
           {
-            "id": "perform-minor-construction-works-32",
+            "id": "perform-minor-construction-works-07",
             "text": "Restore cut concrete walls and floors in original condition"
           },
           {
-            "id": "perform-minor-construction-works-33",
+            "id": "perform-minor-construction-works-08",
             "text": "Perform good housekeeping"
-          },
-          {
-            "id": "perform-minor-construction-works-34",
-            "text": "Read and interpret work instructions/plans in accordance with the job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-35",
-            "text": "Select and prepare materials, tool and equipment in line with job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-36",
-            "text": "Install pipes and fittings according to plans and specifications following the Revised National Plumbing Code of the Philippines"
-          },
-          {
-            "id": "perform-minor-construction-works-37",
-            "text": "Align drainage/sewer/vent piping system with water supply and provides clean-outs as indicated in the approved plan"
-          },
-          {
-            "id": "perform-minor-construction-works-38",
-            "text": "Use approved fittings in installing drainage/sewer pipes"
-          },
-          {
-            "id": "perform-minor-construction-works-39",
-            "text": "Observe correct usage of tools and equipment according to manufacturer's instruction manual"
-          },
-          {
-            "id": "perform-minor-construction-works-40",
-            "text": "Use correct specifications of materials for hot and cold water piping according to job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-41",
-            "text": "Install hot and cold water supply system according to the approved working plan"
-          },
-          {
-            "id": "perform-minor-construction-works-42",
-            "text": "Assemble leak free water supply line, aligned with drainage/vent/waste piping system"
-          },
-          {
-            "id": "perform-minor-construction-works-43",
-            "text": "Use correct specifications for pipe insulation materials according to job requirements"
-          },
-          {
-            "id": "perform-minor-construction-works-44",
-            "text": "Install water piping at least 0.3 meter above the sewer line"
-          },
-          {
-            "id": "perform-minor-construction-works-45",
-            "text": "Install plumbing fixtures according to specified roughing-in measurements and/or manufacturer's specifications and required standard in the RNPCP"
-          },
-          {
-            "id": "perform-minor-construction-works-46",
-            "text": "Secure plumbing fixtures rigidly with strict adherence to perpendicularity and levelness"
-          },
-          {
-            "id": "perform-minor-construction-works-47",
-            "text": "Follow safety regulations and practices*"
-          },
-          {
-            "id": "perform-minor-construction-works-48",
-            "text": "Use PPE in line with job requirements*"
-          },
-          {
-            "id": "perform-minor-construction-works-49",
-            "text": "Perform good housekeeping*"
           }
         ],
         "title": "Perform Minor Construction Works"
+      },
+      {
+        "id": "install-and-assemble-single-plumbing-unit",
+        "questions": [
+          {
+            "id": "install-and-assemble-single-plumbing-unit-01",
+            "text": "Read and interpret work instructions/plans in accordance with the job requirements"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-02",
+            "text": "Select and prepare materials, tool and equipment in line with job requirements"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-03",
+            "text": "Install pipes and fittings according to plans and specifications following the Revised National Plumbing Code of the Philippines (RNPCP)"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-04",
+            "text": "Align drainage/sewer/vent piping system with water supply and provides clean-outs as indicated in the approved plan"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-05",
+            "text": "Use approved fittings in installing drainage/sewer pipes"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-06",
+            "text": "Observe correct usage of tools and equipment according to manufacturer's instruction manual"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-07",
+            "text": "Use correct specifications of materials for hot and cold water piping according to job requirements"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-08",
+            "text": "Install hot and cold water supply system according to the approved working plan"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-09",
+            "text": "Assemble leak free water supply line, aligned with drainage/vent/waste piping system"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-10",
+            "text": "Use correct specifications for pipe insulation materials according to job requirements"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-11",
+            "text": "Install water piping at least 0.3 meter above the sewer line"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-12",
+            "text": "Install plumbing fixtures according to specified roughing-in measurements and/or manufacturer's specifications and required standard in the RNPCP"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-13",
+            "text": "Secure plumbing fixtures rigidly with strict adherence to perpendicularity and levelness"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-14",
+            "text": "Follow safety regulations and practices*"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-15",
+            "text": "Use PPE in line with job requirements*"
+          },
+          {
+            "id": "install-and-assemble-single-plumbing-unit-16",
+            "text": "Perform good housekeeping*"
+          }
+        ],
+        "title": "Install and Assemble Single Plumbing Unit"
       }
     ]
   },
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a tick in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Plumbing NC II",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -10380,32 +8051,28 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Determine measurements and specification of materials indicated on plans according to job requirements and details"
           },
           {
-            "id": "on-plans-according-to-job-requirements-and-details-01",
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-02",
             "text": "Identify and interpret the plumbing legends, symbols and abbreviations"
           },
           {
-            "id": "abbreviations-01",
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-03",
             "text": "Determine / visualize plumbing layout on drawing, schematic diagram and details"
           },
           {
-            "id": "diagram-and-details-01",
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-04",
             "text": "Identify the materials, tools and equipment use in accordance in the job requirements"
           },
           {
-            "id": "the-job-requirements-01",
-            "text": "Summarize all the gathered result for the submission in"
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-05",
+            "text": "Summarize all the gathered result for the submission in accordance with the job requirements"
           },
           {
-            "id": "the-job-requirements-02",
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-06",
+            "text": "Quantify and list all materials, tools and equipment according to the job requirements"
+          },
+          {
+            "id": "prepare-estimation-of-materials-for-multiple-plumbing-unit-07",
             "text": "Present bill of materials and cost estimates to the client"
-          },
-          {
-            "id": "the-job-requirements-03",
-            "text": "Install plumbing fixtures and accessories according to specified roughing-in measurements and/or manufacturer’s instruction accordance with the job requirements"
-          },
-          {
-            "id": "accordance-with-the-job-requirements-01",
-            "text": "Quantify and list all materials, tools and equipment according to"
           }
         ],
         "title": "Prepare estimation of materials for multiple plumbing unit"
@@ -10418,67 +8085,55 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Read / interpret works instructions / plans in accordance with job requirements"
           },
           {
-            "id": "requirements-01",
-            "text": "Select and prepare of materials, tools and equipment in line with"
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-02",
+            "text": "Select and prepare of materials, tools and equipment in line with job requirements"
           },
           {
-            "id": "requirements-02",
-            "text": "Select and prepare materials, tools and equipment in line with job requirements"
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-03",
+            "text": "Install pipes and fittings as indicated in the approved working plans"
           },
           {
-            "id": "job-requirements-01",
-            "text": "Install pipes and fittings as indicated in the approved working"
-          },
-          {
-            "id": "job-requirements-02",
-            "text": "Apply leak testing after completion of roughing-ins and complete"
-          },
-          {
-            "id": "job-requirements-03",
-            "text": "Repair and / or replace defective pipes, fittings and plumbing plans"
-          },
-          {
-            "id": "plans-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-04",
             "text": "Install pipe supports and braces in accordance with approved working plan"
           },
           {
-            "id": "working-plan-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-05",
             "text": "Observe correct use of tools and equipment in accordance with manufacturer's instruction manual"
           },
           {
-            "id": "manufacturer-s-instruction-manual-01",
-            "text": "Use correct specifications of materials for hot and cold water piping according to job requirements Plumbing NC II"
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-06",
+            "text": "Use correct specifications of materials for hot and cold water piping according to job requirements"
           },
           {
-            "id": "plumbing-nc-ii-01",
-            "text": "Install hot and cold water supply according to approved plan and"
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-07",
+            "text": "Install hot and cold water supply according to approved plan and material specification"
           },
           {
-            "id": "plumbing-nc-ii-02",
-            "text": "Check and re-test replacements to ensure free from defects in material specification"
-          },
-          {
-            "id": "material-specification-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-08",
             "text": "Assemble and install leak free water supply pipelines"
           },
           {
-            "id": "material-specification-02",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-09",
             "text": "Use pipe insulation materials which are in accordance with the correct specification according to job requirements"
           },
           {
-            "id": "correct-specification-according-to-job-requirements-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-10",
             "text": "Install building drains/sewer and ventilation in accordance to the approved plan"
           },
           {
-            "id": "approved-plan-01",
-            "text": "Use correct specifications of plumbing fixtures in accordance with manual"
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-11",
+            "text": "Use correct specifications of plumbing fixtures in accordance with the job requirements"
           },
           {
-            "id": "manual-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-12",
+            "text": "Install plumbing fixtures and accessories according to specified roughing-in measurements and/or manufacturer’s instruction manual"
+          },
+          {
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-13",
             "text": "Secure plumbing fixtures and accessories rigidly with strict adherence to perpendicularity and levelness"
           },
           {
-            "id": "adherence-to-perpendicularity-and-levelness-01",
+            "id": "perform-multiple-units-of-plumbing-installation-and-assemblies-14",
             "text": "Select and use appropriate PPE in line with job requirements"
           }
         ],
@@ -10489,30 +8144,38 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "questions": [
           {
             "id": "conduct-pipe-leak-testing-01",
-            "text": "Read and interpret work instructions in accordance with the job installation of pipe supports."
+            "text": "Read and interpret work instructions in accordance with the job requirements"
           },
           {
-            "id": "installation-of-pipe-supports-01",
+            "id": "conduct-pipe-leak-testing-02",
+            "text": "Select and prepare materials, tools and equipment in line with job requirements"
+          },
+          {
+            "id": "conduct-pipe-leak-testing-03",
+            "text": "Apply leak testing after completion of roughing-ins and complete installation of pipe supports."
+          },
+          {
+            "id": "conduct-pipe-leak-testing-04",
             "text": "Set testing apparatus to specified pressure rating according to testing standards."
           },
           {
-            "id": "testing-standards-01",
+            "id": "conduct-pipe-leak-testing-05",
             "text": "Apply gravity or flood testing to sanitary, waste, vent and storm drainage"
           },
           {
-            "id": "drainage-01",
+            "id": "conduct-pipe-leak-testing-06",
             "text": "Use the tools and equipment correctly in accordance with manufacturer’s specifications"
           },
           {
-            "id": "manufacturer-s-specifications-01",
+            "id": "conduct-pipe-leak-testing-07",
             "text": "Select and use PPE in line with job requirements"
           },
           {
-            "id": "manufacturer-s-specifications-02",
+            "id": "conduct-pipe-leak-testing-08",
             "text": "Perform good housekeeping"
           }
         ],
-        "title": "Conduct pipe leak testing"
+        "title": "Conduct Pipe Leak Testing"
       },
       {
         "id": "perform-plumbing-repair-and-maintenance-works",
@@ -10522,35 +8185,43 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Select and use materials, tools, equipment and correctly in accordance with manufacturer’s specifications"
           },
           {
-            "id": "accordance-with-manufacturer-s-specifications-01",
+            "id": "perform-plumbing-repair-and-maintenance-works-02",
             "text": "Select and use PPE in line with job requirements"
           },
           {
-            "id": "accordance-with-manufacturer-s-specifications-02",
-            "text": "Identify defective pipes, fittings and plumbing fixtures in line with fixtures following standard operating procedures"
+            "id": "perform-plumbing-repair-and-maintenance-works-03",
+            "text": "Identify defective pipes, fittings and plumbing fixtures in line with job requirements"
           },
           {
-            "id": "fixtures-following-standard-operating-procedures-01",
-            "text": "Ensure all joints are tightly secured in accordance with job requirements accordance with standard specification or as required"
+            "id": "perform-plumbing-repair-and-maintenance-works-04",
+            "text": "Repair and / or replace defective pipes, fittings and plumbing fixtures following standard operating procedures"
           },
           {
-            "id": "accordance-with-standard-specification-or-as-required-01",
+            "id": "perform-plumbing-repair-and-maintenance-works-05",
+            "text": "Ensure all joints are tightly secured in accordance with job requirements"
+          },
+          {
+            "id": "perform-plumbing-repair-and-maintenance-works-06",
+            "text": "Check and re-test replacements to ensure free from defects in accordance with standard specification or as required"
+          },
+          {
+            "id": "perform-plumbing-repair-and-maintenance-works-07",
             "text": "Restore and repair damage areas in line with job requirements"
           },
           {
-            "id": "accordance-with-standard-specification-or-as-required-02",
+            "id": "perform-plumbing-repair-and-maintenance-works-08",
             "text": "Identify clogged pipes and drains in reference with the as-built plan"
           },
           {
-            "id": "plan-01",
+            "id": "perform-plumbing-repair-and-maintenance-works-09",
             "text": "Clear clogged pipes and drains following established / recommended procedures"
           },
           {
-            "id": "recommended-procedures-01",
+            "id": "perform-plumbing-repair-and-maintenance-works-10",
             "text": "Perform good housekeeping"
           }
         ],
-        "title": "Perform plumbing repair and maintenance works"
+        "title": "Perform Plumbing Repair and Maintenance Works"
       }
     ]
   },
@@ -10558,88 +8229,90 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
       "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
       "answer."
     ],
     "qualificationTitle": "SAG-PV System Servicing NC III",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "monitor-pv-system-operation",
+        "id": "perform-pv-system-diagnosis",
         "questions": [
           {
-            "id": "monitor-pv-system-operation-01",
+            "id": "perform-pv-system-diagnosis-01",
             "text": "Analyze and understand customer complaint*"
           },
           {
-            "id": "monitor-pv-system-operation-02",
+            "id": "perform-pv-system-diagnosis-02",
             "text": "Prepare tools, spare parts, manuals and procedures for monitoring, diagnosis and repair*"
           },
           {
-            "id": "monitor-pv-system-operation-03",
+            "id": "perform-pv-system-diagnosis-03",
             "text": "Select proper tools for specific applications*"
           },
           {
-            "id": "monitor-pv-system-operation-04",
+            "id": "perform-pv-system-diagnosis-04",
             "text": "Exhibit understanding of the service manual and maintenance procedure*"
           },
           {
-            "id": "monitor-pv-system-operation-05",
+            "id": "perform-pv-system-diagnosis-05",
             "text": "Show proficiency in diagnostic procedures*"
           },
           {
-            "id": "monitor-pv-system-operation-06",
+            "id": "perform-pv-system-diagnosis-06",
             "text": "Perform tasks safely and with appropriate protective equipment*"
           },
           {
-            "id": "monitor-pv-system-operation-07",
+            "id": "perform-pv-system-diagnosis-07",
             "text": "Apply PEC and other regulatory requirements*"
           },
           {
-            "id": "monitor-pv-system-operation-08",
+            "id": "perform-pv-system-diagnosis-08",
             "text": "Identify the function of each component of the system and their operating range*"
           },
           {
-            "id": "monitor-pv-system-operation-09",
+            "id": "perform-pv-system-diagnosis-09",
             "text": "Understand system operation and inter-relation of the functions of each component*"
           },
           {
-            "id": "monitor-pv-system-operation-10",
+            "id": "perform-pv-system-diagnosis-10",
             "text": "Apply appropriate procedure in identifying defective component(s)"
           },
           {
-            "id": "monitor-pv-system-operation-11",
+            "id": "perform-pv-system-diagnosis-11",
             "text": "Successfully execute selected procedure to isolate system defect*"
           },
           {
-            "id": "monitor-pv-system-operation-12",
+            "id": "perform-pv-system-diagnosis-12",
             "text": "Select proper procedure in correcting system defect"
           },
           {
-            "id": "monitor-pv-system-operation-13",
+            "id": "perform-pv-system-diagnosis-13",
             "text": "Successfully execute repair procedure*"
           },
           {
-            "id": "monitor-pv-system-operation-14",
+            "id": "perform-pv-system-diagnosis-14",
             "text": "Clearly explain to the user possible causes of system defects"
           },
           {
-            "id": "monitor-pv-system-operation-15",
-            "text": "Recommend appropriate measure to avoid recurrence of system defect PV System Servicing NC III"
+            "id": "perform-pv-system-diagnosis-15",
+            "text": "Recommend appropriate measure to avoid recurrence of system defect"
           },
           {
-            "id": "pv-system-servicing-nc-iii-01",
+            "id": "perform-pv-system-diagnosis-16",
             "text": "Properly prepare monitoring and service records/forms"
           },
           {
-            "id": "pv-system-servicing-nc-iii-02",
+            "id": "perform-pv-system-diagnosis-17",
             "text": "Perform task neatly and in organized manner"
           },
           {
-            "id": "pv-system-servicing-nc-iii-03",
+            "id": "perform-pv-system-diagnosis-18",
             "text": "Observe proper courtesy and respect towards end users*"
           }
         ],
-        "title": "Monitor PV System Operation"
+        "title": "Perform PV System Diagnosis"
       }
     ]
   },
@@ -10647,6 +8320,8 @@ export const sagFormTemplates: SagFormDefinition[] = [
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
       "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
       "answer."
     ],
     "qualificationTitle": "SAG-PV Systems Installation NC II",
@@ -10722,115 +8397,111 @@ export const sagFormTemplates: SagFormDefinition[] = [
           {
             "id": "perform-site-assessment-17",
             "text": "Respond to user’s request within the prescribed technical parameters of the installation standards*"
-          }
-        ],
-        "title": "PERFORM SITE ASSESSMENT"
-      },
-      {
-        "id": "pv-system-installation-nc-ii",
-        "questions": [
+          },
           {
-            "id": "pv-system-installation-nc-ii-01",
+            "id": "perform-site-assessment-18",
             "text": "Prepare to commission PV system*"
           },
           {
-            "id": "pv-system-installation-nc-ii-02",
+            "id": "perform-site-assessment-19",
             "text": "Conduct testing and commissioning of PV system*"
           },
           {
-            "id": "pv-system-installation-nc-ii-03",
+            "id": "perform-site-assessment-20",
             "text": "Inspect completion of work*"
           },
           {
-            "id": "pv-system-installation-nc-ii-04",
+            "id": "perform-site-assessment-21",
             "text": "Prepare and submit testing and commissioning report*"
           },
           {
-            "id": "pv-system-installation-nc-ii-05",
+            "id": "perform-site-assessment-22",
             "text": "Plan commissioning procedures*"
           },
           {
-            "id": "pv-system-installation-nc-ii-06",
+            "id": "perform-site-assessment-23",
             "text": "Identify system deficiencies and rectifies if possible*"
           },
           {
-            "id": "pv-system-installation-nc-ii-07",
+            "id": "perform-site-assessment-24",
             "text": "Apply PEC and other regulatory requirements"
           }
         ],
-        "title": "PV System Installation NC II"
+        "title": "PERFORM SITE ASSESSMENT"
       }
     ]
   },
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-SMAW NC II",
     "title": "SELF-ASSESSMENT GUIDE",
     "units": [
       {
-        "id": "sag-smaw-nc-ii",
+        "id": "weld-carbon-steel-plates-and-pipes-using-smaw",
         "questions": [
           {
-            "id": "sag-smaw-nc-ii-01",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-01",
             "text": "Perform root pass*"
           },
           {
-            "id": "sag-smaw-nc-ii-02",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-02",
             "text": "Clean root pass*"
           },
           {
-            "id": "sag-smaw-nc-ii-03",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-03",
             "text": "Weld subsequent/filling passes*"
           },
           {
-            "id": "sag-smaw-nc-ii-04",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-04",
             "text": "Perform capping*"
           },
           {
-            "id": "sag-smaw-nc-ii-05",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-05",
             "text": "Interpret drawing"
           },
           {
-            "id": "sag-smaw-nc-ii-06",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-06",
             "text": "Identify materials and consumables"
           },
           {
-            "id": "sag-smaw-nc-ii-07",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-07",
             "text": "Identify welding codes"
           },
           {
-            "id": "sag-smaw-nc-ii-08",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-08",
             "text": "Perform basic math computations and mensuration"
           },
           {
-            "id": "sag-smaw-nc-ii-09",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-09",
             "text": "Identify weld defects*"
           },
           {
-            "id": "sag-smaw-nc-ii-10",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-10",
             "text": "Rectify weld defects*"
           },
           {
-            "id": "sag-smaw-nc-ii-11",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-11",
             "text": "Apply weld techniques*"
           },
           {
-            "id": "sag-smaw-nc-ii-12",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-12",
             "text": "Handle materials, tools and equipment"
           },
           {
-            "id": "sag-smaw-nc-ii-13",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-13",
             "text": "Observe safety practices*"
           },
           {
-            "id": "sag-smaw-nc-ii-14",
+            "id": "weld-carbon-steel-plates-and-pipes-using-smaw-14",
             "text": "Pass weld visual inspection*"
           }
         ],
-        "title": "SAG-SMAW NC II"
+        "title": "Weld Carbon Steel Plates and Pipes Using SMAW"
       }
     ]
   },
@@ -10887,7 +8558,9 @@ export const sagFormTemplates: SagFormDefinition[] = [
   {
     "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
     "instructionLines": [
-      "Instruction:"
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a tick in the appropriate box opposite each question to indicate your answer."
     ],
     "qualificationTitle": "SAG-Tile Setting NC II",
     "title": "SELF-ASSESSMENT GUIDE",
@@ -10897,16 +8570,28 @@ export const sagFormTemplates: SagFormDefinition[] = [
         "questions": [
           {
             "id": "plans-and-prepares-for-work-01",
-            "text": "Use personal protective equipment (PPE) in accordance with Rule 1080 of Occupational Safety and Health Standards"
-          },
+            "text": "Use personal protective equipment (PPE) in accordance with"
+          }
+        ],
+        "title": "Plans and prepares for work"
+      },
+      {
+        "id": "rule-1080-of-occupational-safety-and-health-standards",
+        "questions": [
           {
-            "id": "plans-and-prepares-for-work-02",
+            "id": "rule-1080-of-occupational-safety-and-health-standards-01",
             "text": "Identify materials and tools in accordance with job requirements."
           },
           {
-            "id": "plans-and-prepares-for-work-03",
-            "text": "Clean and prepare tiling area Lay-out tiling area*"
-          },
+            "id": "rule-1080-of-occupational-safety-and-health-standards-02",
+            "text": "Clean and prepare tiling area"
+          }
+        ],
+        "title": "Rule 1080 of Occupational Safety and Health Standards"
+      },
+      {
+        "id": "lay-out-tiling-area",
+        "questions": [
           {
             "id": "lay-out-tiling-area-01",
             "text": "Check area(s) to be tiled in line with job requirements."
@@ -10916,7 +8601,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Lay-out tiling area in line with work instruction."
           }
         ],
-        "title": "Plans and prepares for work"
+        "title": "Lay-out tiling area*"
       },
       {
         "id": "installs-tiles",
@@ -10951,8 +8636,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "installs-tiles-08",
-            "text": "Clean and seal tiled surface and gaps 1 Cuts tiles*"
-          },
+            "text": "Clean and seal tiled surface and gaps"
+          }
+        ],
+        "title": "Installs tiles*"
+      },
+      {
+        "id": "cuts-tiles",
+        "questions": [
           {
             "id": "cuts-tiles-01",
             "text": "Prepare regular and special cut tiles in accordance with drawings and specifications."
@@ -10966,7 +8657,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Apply safety precautions in line with Occupational Safety and Health Standards."
           }
         ],
-        "title": "Installs tiles*"
+        "title": "Cuts tiles*"
       },
       {
         "id": "grouts-space-between-tiles",
@@ -11106,8 +8797,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "plan-training-session-22",
-            "text": "Document resource requirements and arrange access in accordance with the organization, procedures and appropriate staff Facilitate Training Session"
-          },
+            "text": "Document resource requirements and arrange access in accordance with the organization, procedures and appropriate staff"
+          }
+        ],
+        "title": "Plan Training Session"
+      },
+      {
+        "id": "facilitate-training-session",
+        "questions": [
           {
             "id": "facilitate-training-session-01",
             "text": "Prepare appropriate training facilities/resources based on the session requirement*"
@@ -11194,8 +8891,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "facilitate-training-session-22",
-            "text": "Make adjustments on delivery of training session based on the results of evaluation Utilize Electronic Media in Facilitating Training"
-          },
+            "text": "Make adjustments on delivery of training session based on the results of evaluation"
+          }
+        ],
+        "title": "Facilitate Training Session"
+      },
+      {
+        "id": "utilize-electronic-media-in-facilitating-training",
+        "questions": [
           {
             "id": "utilize-electronic-media-in-facilitating-training-01",
             "text": "Inspect electronic media equipment in accordance with specified checklist*"
@@ -11261,7 +8964,7 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Maintain appropriate documents and records"
           }
         ],
-        "title": "Plan Training Session"
+        "title": "Utilize Electronic Media in Facilitating Training"
       },
       {
         "id": "maintain-training-facilities",
@@ -11356,8 +9059,14 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "maintain-training-facilities-23",
-            "text": "Safe keep documents according to procedures Supervise Work-Based Learning"
-          },
+            "text": "Safe keep documents according to procedures"
+          }
+        ],
+        "title": "Maintain Training Facilities"
+      },
+      {
+        "id": "supervise-work-based-learning",
+        "questions": [
           {
             "id": "supervise-work-based-learning-01",
             "text": "Access and interpret relevant policies and guidelines to guide the development of work-based arrangements*"
@@ -11480,7 +9189,11 @@ export const sagFormTemplates: SagFormDefinition[] = [
           },
           {
             "id": "supervise-work-based-learning-31",
-            "text": "Explain legal and ethical responsibilities associated with the assessment to the candidates in line with the relevant Assessment Guidelines."
+            "text": "Explain legal and ethical responsibilities associated with the assessment to the candidates in line with the relevant"
+          },
+          {
+            "id": "supervise-work-based-learning-32",
+            "text": "Assessment Guidelines."
           },
           {
             "id": "supervise-work-based-learning-33",
@@ -11547,7 +9260,2320 @@ export const sagFormTemplates: SagFormDefinition[] = [
             "text": "Record and report promptly any assessment decision disputed by the candidate to appropriate personnel in line with organizational policy and procedures"
           }
         ],
-        "title": "Maintain Training Facilities"
+        "title": "Supervise Work-Based Learning"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
+      "answer."
+    ],
+    "qualificationTitle": "SAG-Agricultural Crops Production NC II",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "perform-nursery-operations",
+        "questions": [
+          {
+            "id": "nursery-01",
+            "text": "Prepare tools and simple equipment are according work requirements."
+          },
+          {
+            "id": "nursery-02",
+            "text": "Perform basic pre-operative activities such as checking of tools and equipment in accordance with manufacturer’s manual."
+          },
+          {
+            "id": "nursery-03",
+            "text": "Segregate and treat damaged and corroded tools according to maintenance plan and procedures."
+          },
+          {
+            "id": "nursery-04",
+            "text": "Maintain nursery sanitation according to GAP standard."
+          },
+          {
+            "id": "nursery-05",
+            "text": "Perform repair and maintenance of nursery facilities"
+          },
+          {
+            "id": "nursery-06",
+            "text": "Apply preventive measures for inclement weather"
+          },
+          {
+            "id": "nursery-07",
+            "text": "Practice safety measures according to OSHS"
+          },
+          {
+            "id": "nursery-08",
+            "text": "Determine seeds/planting materials according to kinds and varieties."
+          },
+          {
+            "id": "nursery-09",
+            "text": "Select quality seeds according to prescribed characteristics"
+          },
+          {
+            "id": "nursery-10",
+            "text": "Conduct seed testing to determine the percentage germination of the seed stock in accordance with the standard procedures"
+          },
+          {
+            "id": "nursery-11",
+            "text": "Treat planting materials following standard protocol."
+          },
+          {
+            "id": "nursery-12",
+            "text": "Perform seed treatment for germination purposes based on type of crop*"
+          },
+          {
+            "id": "nursery-13",
+            "text": "Prepare growing media according to prescribed mixture*"
+          },
+          {
+            "id": "nursery-14",
+            "text": "Prepare seedbed based on crop species"
+          },
+          {
+            "id": "nursery-15",
+            "text": "Arrange and label pots or seedling trays according to varieties/species."
+          },
+          {
+            "id": "nursery-16",
+            "text": "Set-up a nursery shed according to plant requirement"
+          },
+          {
+            "id": "nursery-17",
+            "text": "Select quality seedlings based on prescribed characteristics"
+          },
+          {
+            "id": "nursery-18",
+            "text": "Perform plant propagation techniques based on recommended practices*"
+          },
+          {
+            "id": "nursery-19",
+            "text": "Maintain the plant based on recommended practices"
+          },
+          {
+            "id": "nursery-20",
+            "text": "Select quality seedlings and other propagation materials based on established criteria of the crop*"
+          }
+        ],
+        "title": "PERFORM NURSERY OPERATIONS"
+      },
+      {
+        "id": "plant-crops",
+        "questions": [
+          {
+            "id": "plant-01",
+            "text": "Prepare tools and equipment for land clearing"
+          },
+          {
+            "id": "plant-02",
+            "text": "Clear the land according to prescribed methods of land preparation*"
+          },
+          {
+            "id": "plant-03",
+            "text": "Remove and dispose farm wastes according to waste management standards"
+          },
+          {
+            "id": "plant-04",
+            "text": "Collect soil samples for analysis based on standard procedure*"
+          },
+          {
+            "id": "plant-05",
+            "text": "Conduct land preparation according to crop requirement*"
+          },
+          {
+            "id": "plant-06",
+            "text": "Apply basal fertilizer based on crop requirement"
+          },
+          {
+            "id": "plant-07",
+            "text": "Prepare tools and materials for field lay-out"
+          },
+          {
+            "id": "plant-08",
+            "text": "Lay-out the prepared land in accordance with the recommended planting system*"
+          },
+          {
+            "id": "plant-09",
+            "text": "Perform digging of holes based on crop requirement*"
+          },
+          {
+            "id": "plant-10",
+            "text": "Separate dug out soil for covering the hole for planting"
+          },
+          {
+            "id": "plant-11",
+            "text": "Perform basal fertilizer application based on recommended amount"
+          },
+          {
+            "id": "plant-12",
+            "text": "Plant the seeds according to recommended rate, distance and depth*"
+          },
+          {
+            "id": "plant-13",
+            "text": "Replant according to recommended practices for a particular crop"
+          },
+          {
+            "id": "plant-14",
+            "text": "Perform proper handling of seedlings from nursery"
+          },
+          {
+            "id": "plant-15",
+            "text": "Transplant the seedlings based on crop practices*"
+          },
+          {
+            "id": "plant-16",
+            "text": "Transplant crops intended for container growing to appropriate containers and growing media."
+          },
+          {
+            "id": "plant-17",
+            "text": "Replant the seedlings according to recommended practices for a particular crop"
+          }
+        ],
+        "title": "PLANT CROPS"
+      },
+      {
+        "id": "care-and-maintain-crops",
+        "questions": [
+          {
+            "id": "care-01",
+            "text": "Monitor pest incidence based on prescribed procedure*"
+          },
+          {
+            "id": "care-02",
+            "text": "Prepare tools and materials according to specific pest control measure."
+          },
+          {
+            "id": "care-03",
+            "text": "Follow appropriate pest control measures based on GAP*"
+          },
+          {
+            "id": "care-04",
+            "text": "Observe and Practice Safety measures according to Occupational"
+          }
+        ],
+        "title": "CARE AND MAINTAIN CROPS"
+      },
+      {
+        "id": "safety-and-health-standards-oshs-procedures",
+        "questions": [
+          {
+            "id": "safety-and-health-standards-oshs-procedures-01",
+            "text": "Control weed population*"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-02",
+            "text": "Prepare Tools and materials according to prescribed user’s manual"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-03",
+            "text": "Identify kinds of Fertilizers"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-04",
+            "text": "Apply rate of Fertilizer based on crop requirement."
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-05",
+            "text": "Employs appropriate method of fertilizer application based on crop requirements.*"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-06",
+            "text": "Applies precautionary measures to avoid cross contamination based on GAP."
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-07",
+            "text": "Follows Safety procedures according to Occupational Safety and"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-08",
+            "text": "Health Standards."
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-09",
+            "text": "Determines soil moisture content based on soil field capacity"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-10",
+            "text": "Performs watering of crops following prescribed methods and schedule"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-11",
+            "text": "Observes Good Agricultural Practices"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-12",
+            "text": "Applies proper irrigation or watering of crops*"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-13",
+            "text": "Selects appropriate tools and materials for pruning."
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-14",
+            "text": "Performs pruning methods according to crops.*"
+          },
+          {
+            "id": "safety-and-health-standards-oshs-procedures-15",
+            "text": "Follows Safety procedures are followed according to Occupational Safety and Health Standards"
+          }
+        ],
+        "title": "Safety and Health Standards (OSHS) Procedures"
+      },
+      {
+        "id": "agricultural-crop-production-nc-ii",
+        "questions": [
+          {
+            "id": "agricultural-crop-production-nc-ii-01",
+            "text": "Prepares tools and equipment for cultivation"
+          },
+          {
+            "id": "agricultural-crop-production-nc-ii-02",
+            "text": "Carries out cultivation practices based on crop requirement*"
+          },
+          {
+            "id": "agricultural-crop-production-nc-ii-03",
+            "text": "Performs rejuvenating activities*"
+          },
+          {
+            "id": "agricultural-crop-production-nc-ii-04",
+            "text": "Performs growth training technique for different crops*"
+          },
+          {
+            "id": "agricultural-crop-production-nc-ii-05",
+            "text": "Carries out mulching techniques*"
+          },
+          {
+            "id": "agricultural-crop-production-nc-ii-06",
+            "text": "Follows safety procedures according to occupational safety and health standards"
+          }
+        ],
+        "title": "Agricultural Crop Production NC II"
+      },
+      {
+        "id": "operations",
+        "questions": [
+          {
+            "id": "operations-01",
+            "text": "Identify crop maturity indicator*"
+          },
+          {
+            "id": "operations-02",
+            "text": "Prepare materials, tools and equipment for harvesting and postharvest operations*"
+          },
+          {
+            "id": "operations-03",
+            "text": "Compare pest and diseases in storage to reference manual*"
+          },
+          {
+            "id": "operations-04",
+            "text": "Segregate harvested crop*"
+          },
+          {
+            "id": "operations-05",
+            "text": "Collect data on the environment (e.g. weather conditions, topography) and other relevant information (e.g. crop variety, cropping pattern/system, stage of crop)*"
+          },
+          {
+            "id": "operations-06",
+            "text": "Maintain records and provides feedback*"
+          },
+          {
+            "id": "operations-07",
+            "text": "Discuss labeling requirement for harvested produce*"
+          },
+          {
+            "id": "operations-08",
+            "text": "Follow guidelines and procedures for assessment activities, including occupational health and safety (OHS) requirements*"
+          },
+          {
+            "id": "operations-09",
+            "text": "Communicate effectively with farmers, team members and supervisor*"
+          },
+          {
+            "id": "operations-10",
+            "text": "Discuss personal hygiene, food safety, workplace sanitation"
+          },
+          {
+            "id": "operations-11",
+            "text": "Identify range of agricultural crop species/varieties"
+          },
+          {
+            "id": "operations-12",
+            "text": "Define farm planning and its principles"
+          },
+          {
+            "id": "operations-13",
+            "text": "Discuss industry standards for crops and regulating agencies"
+          },
+          {
+            "id": "operations-14",
+            "text": "Discuss postharvest treatments"
+          }
+        ],
+        "title": "OPERATIONS"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
+      "answers."
+    ],
+    "qualificationTitle": "SAG-Agricultural Crops Production NC III",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "production",
+        "questions": [
+          {
+            "id": "production-01",
+            "text": "Prepare land for cultivation*"
+          },
+          {
+            "id": "production-02",
+            "text": "Interpret work requirements from planting plan*"
+          },
+          {
+            "id": "production-03",
+            "text": "Prepare the vehicles and equipment for site cultivation*"
+          },
+          {
+            "id": "production-04",
+            "text": "Cultivate soil*"
+          },
+          {
+            "id": "production-05",
+            "text": "Incorporate previous crop or land clearance debris*"
+          },
+          {
+            "id": "production-06",
+            "text": "Operate vehicles and equipment*"
+          },
+          {
+            "id": "production-07",
+            "text": "Prepare site for planting*"
+          },
+          {
+            "id": "production-08",
+            "text": "Apply weed and pest control measures, fertilizers, ameliorants and other pre-planting treatments*"
+          },
+          {
+            "id": "production-09",
+            "text": "Clean vehicles and equipment in accordance with manufacturer’s specifications*"
+          },
+          {
+            "id": "production-10",
+            "text": "Dispose leftover fluids, waste and debris from the cleaning and maintenance work*"
+          },
+          {
+            "id": "production-11",
+            "text": "Use and maintain Personal Protective Equipment*"
+          },
+          {
+            "id": "production-12",
+            "text": "Updates records as per organizational requirements*"
+          },
+          {
+            "id": "production-13",
+            "text": "Communicate effectively with superior and co-workers"
+          },
+          {
+            "id": "production-14",
+            "text": "Identify the methods of cultivating a range of soil types"
+          },
+          {
+            "id": "production-15",
+            "text": "Identify environmental issues of cultivating soil for planting"
+          }
+        ],
+        "title": "PRODUCTION"
+      },
+      {
+        "id": "implement-a-post-harvest-program",
+        "questions": [
+          {
+            "id": "implement-a-post-harvest-program-01",
+            "text": "Prepare materials, tools, equipment and machinery for post harvest operations*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-02",
+            "text": "Coordinate post harvest work to farm work team*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-03",
+            "text": "Select / implement post-harvest treatments*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-04",
+            "text": "Grade / label harvested produce*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-05",
+            "text": "Clean / maintain tools, equipment and machinery*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-06",
+            "text": "Collect / dispose wastes*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-07",
+            "text": "Package harvested produce as per marketing plan and industry practice*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-08",
+            "text": "Store / handle harvested produce*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-09",
+            "text": "Use and maintain Personal Protective Equipment*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-10",
+            "text": "Record packaging and storage processes*"
+          },
+          {
+            "id": "implement-a-post-harvest-program-11",
+            "text": "Communicate effectively in both oral and written with supervisor and team members"
+          },
+          {
+            "id": "implement-a-post-harvest-program-12",
+            "text": "Apply pest management principles aligned with farm policy"
+          },
+          {
+            "id": "implement-a-post-harvest-program-13",
+            "text": "Identify hygiene issues in handling and storage of produce"
+          },
+          {
+            "id": "implement-a-post-harvest-program-14",
+            "text": "Identify environmental effects of post harvest treatment and hazardous waste disposal methodologies, application and purpose"
+          },
+          {
+            "id": "implement-a-post-harvest-program-15",
+            "text": "Participate in team and contribute to achieve objectives"
+          }
+        ],
+        "title": "IMPLEMENT A POST HARVEST PROGRAM"
+      },
+      {
+        "id": "implement-a-plant-nutrition-program",
+        "questions": [
+          {
+            "id": "implement-a-plant-nutrition-program-01",
+            "text": "Identify goals and target site for the implementation of plant nutrition program including soils, plant species and varieties*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-02",
+            "text": "Analyze area and adjacent lands for soil composition / nutrients*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-03",
+            "text": "Identify materials for soil and plant treatments*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-04",
+            "text": "Monitor soil pH*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-05",
+            "text": "Assess product application methods in accordance with farm work procedures and environmental implications*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-06",
+            "text": "Identify common nutrient deficiency and toxicity problems in plants through visual inspection*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-07",
+            "text": "Apply fertilizers according to plant growing cycle and farm fertilizer calendar*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-08",
+            "text": "Handle / store fertilizers*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-09",
+            "text": "Calibrate / adjust and use tools, equipment and machinery*"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-10",
+            "text": "Apply appropriate amount of specific nutrients,"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-11",
+            "text": "Record product applications according to farm work procedures"
+          },
+          {
+            "id": "implement-a-plant-nutrition-program-12",
+            "text": "Communicate effectively with team members, supervisors, contractors and suppliers"
+          }
+        ],
+        "title": "IMPLEMENT A PLANT NUTRITION PROGRAM"
+      },
+      {
+        "id": "control-weeds",
+        "questions": [
+          {
+            "id": "control-weeds-01",
+            "text": "Assess scope, density and size of weed infestation*"
+          },
+          {
+            "id": "control-weeds-02",
+            "text": "Use tools, equipment and implements"
+          },
+          {
+            "id": "control-weeds-03",
+            "text": "Use / maintain PPE*"
+          },
+          {
+            "id": "control-weeds-04",
+            "text": "Implement control measures according to IPM principles*"
+          },
+          {
+            "id": "control-weeds-05",
+            "text": "Clean and maintain safe work area*"
+          },
+          {
+            "id": "control-weeds-06",
+            "text": "Prepare land to ensure weed elimination*"
+          },
+          {
+            "id": "control-weeds-07",
+            "text": "Monitor control methods*"
+          },
+          {
+            "id": "control-weeds-08",
+            "text": "Maintain records in accordance with legislation and enterprise guidelines*"
+          },
+          {
+            "id": "control-weeds-09",
+            "text": "Identify the chemical, biological and cultural control methods and treatment available to enterprise within the parameters of IPM program"
+          },
+          {
+            "id": "control-weeds-10",
+            "text": "Identify OHS issues and legislative requirements associated with hazardous substances"
+          },
+          {
+            "id": "control-weeds-11",
+            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
+          }
+        ],
+        "title": "CONTROL WEEDS"
+      },
+      {
+        "id": "prepare-and-apply-chemicals",
+        "questions": [
+          {
+            "id": "prepare-and-apply-chemicals-01",
+            "text": "Assess the requirements for chemical use*"
+          },
+          {
+            "id": "prepare-and-apply-chemicals-02",
+            "text": "Check label of chemicals to ensure chemicals meet user requirements and specifications*"
+          },
+          {
+            "id": "prepare-and-apply-chemicals-03",
+            "text": "Prepare appropriate chemicals*"
+          },
+          {
+            "id": "prepare-and-apply-chemicals-04",
+            "text": "Use / maintain PPE*"
+          },
+          {
+            "id": "prepare-and-apply-chemicals-05",
+            "text": "Prepare application equipment and tools*"
+          },
+          {
+            "id": "prepare-and-apply-chemicals-06",
+            "text": "Apply chemicals according to label and Material Safety"
+          }
+        ],
+        "title": "PREPARE AND APPLY CHEMICALS"
+      },
+      {
+        "id": "data-sheet-msds",
+        "questions": [
+          {
+            "id": "data-sheet-msds-01",
+            "text": "Clean / maintain application equipment and tools*"
+          },
+          {
+            "id": "data-sheet-msds-02",
+            "text": "Dispose unused chemicals, empty containers and spilled materials*"
+          },
+          {
+            "id": "data-sheet-msds-03",
+            "text": "Follow procedures for reporting chemical spills*"
+          },
+          {
+            "id": "data-sheet-msds-04",
+            "text": "Record application of chemicals, injury or poisoning associated with application of chemicals*"
+          },
+          {
+            "id": "data-sheet-msds-05",
+            "text": "Measure quantities, application rates and calibrate equipment"
+          },
+          {
+            "id": "data-sheet-msds-06",
+            "text": "Identify hazards, assessment control and emergency response"
+          },
+          {
+            "id": "data-sheet-msds-07",
+            "text": "Communicate effectively with supervisor, contractors, consultants and work team members"
+          }
+        ],
+        "title": "Data Sheet (MSDS) *"
+      },
+      {
+        "id": "establish-agronomic-crops",
+        "questions": [
+          {
+            "id": "establish-agronomic-crops-01",
+            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
+          },
+          {
+            "id": "establish-agronomic-crops-02",
+            "text": "Select and utilize various features and controls of a range of specialized application equipment to seed and fertilize grains crop*"
+          },
+          {
+            "id": "establish-agronomic-crops-03",
+            "text": "Assess and calculate the application of fertilizer/pesticide requirements and application rates, calibrate equipment and calculate volumes, consumption and servicing requirements"
+          },
+          {
+            "id": "establish-agronomic-crops-04",
+            "text": "Apply fertilizers, herbicides, insecticides, other pesticides and hazardous substances safely"
+          },
+          {
+            "id": "establish-agronomic-crops-05",
+            "text": "Identify types of weeds and insects that are harmful and beneficial to crops"
+          },
+          {
+            "id": "establish-agronomic-crops-06",
+            "text": "Prepare, calibrate, operate and service machinery and equipment*"
+          },
+          {
+            "id": "establish-agronomic-crops-07",
+            "text": "Perform pre-and post operational and safety checks, servicing and maintenance on machinery and equipment"
+          },
+          {
+            "id": "establish-agronomic-crops-08",
+            "text": "Clean, secure and store machinery and equipment"
+          },
+          {
+            "id": "establish-agronomic-crops-09",
+            "text": "Prepare reports of machinery damage, faults or malfunctions and perform minor repairs"
+          },
+          {
+            "id": "establish-agronomic-crops-10",
+            "text": "Assess soil and weather conditions and determine appropriate seeding methods*"
+          },
+          {
+            "id": "establish-agronomic-crops-11",
+            "text": "Prepare seeds for planting, seed to plant by ensuring optimum range of depth and density*"
+          },
+          {
+            "id": "establish-agronomic-crops-12",
+            "text": "Recognize and control hazards*"
+          },
+          {
+            "id": "establish-agronomic-crops-13",
+            "text": "Observe and follow relevant environmental practices, provincial/municipal legislation, regulations and codes of practice with regards to workplace/OHS and the use and disposal of hazardous substances"
+          },
+          {
+            "id": "establish-agronomic-crops-14",
+            "text": "Evaluate seeding operations and maintain records*"
+          },
+          {
+            "id": "establish-agronomic-crops-15",
+            "text": "Interpret and apply task instructions"
+          },
+          {
+            "id": "establish-agronomic-crops-16",
+            "text": "Communicate with work teams and supervisor"
+          }
+        ],
+        "title": "ESTABLISH AGRONOMIC CROPS"
+      },
+      {
+        "id": "maintenance-activities",
+        "questions": [
+          {
+            "id": "maintenance-activities-01",
+            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
+          },
+          {
+            "id": "maintenance-activities-02",
+            "text": "Observe and follow appropriate legislative requirements, manufacturers instructions and organization procedures/ instructions"
+          },
+          {
+            "id": "maintenance-activities-03",
+            "text": "Identify health conditions of crops and potential pests"
+          },
+          {
+            "id": "maintenance-activities-04",
+            "text": "Identify moisture and hygiene requirements for agronomic crops and equipment that comes into contact with the crop"
+          },
+          {
+            "id": "maintenance-activities-05",
+            "text": "Prepare, calibrate, operate and service machinery and equipment"
+          },
+          {
+            "id": "maintenance-activities-06",
+            "text": "Identify the types and uses of herbicides, insecticides and other pesticides and alternative pest control methods (non- chemical)"
+          },
+          {
+            "id": "maintenance-activities-07",
+            "text": "Apply fertilizers and other chemicals considering the growth cycle of the crop*"
+          },
+          {
+            "id": "maintenance-activities-08",
+            "text": "Apply water according to crop requirements"
+          },
+          {
+            "id": "maintenance-activities-09",
+            "text": "Monitor the condition and growth rate of crops"
+          },
+          {
+            "id": "maintenance-activities-10",
+            "text": "Observe and prepare reports on health and growth of crops"
+          },
+          {
+            "id": "maintenance-activities-11",
+            "text": "Identify and prepare reports on the variations in crop’s health and growth rate"
+          },
+          {
+            "id": "maintenance-activities-12",
+            "text": "Identify and apply basic knowledge in agronomy, horticulture and plant pathology"
+          }
+        ],
+        "title": "MAINTENANCE ACTIVITIES"
+      },
+      {
+        "id": "activities",
+        "questions": [
+          {
+            "id": "activities-01",
+            "text": "Read and interpret manufacturer’s specifications, work and maintenance plans, and Material Safety Data Sheets (MSDS)"
+          },
+          {
+            "id": "activities-02",
+            "text": "Observe and follow appropriate legislative requirements, manufacturer’s instructions and organization procedures/ instructions"
+          },
+          {
+            "id": "activities-03",
+            "text": "Observe and follow pre and post operational and safety checks, servicing and maintenance procedures for tools and equipment"
+          },
+          {
+            "id": "activities-04",
+            "text": "Harvest crops safely and efficiently while maintaining the highest degree of hygiene and quality*"
+          },
+          {
+            "id": "activities-05",
+            "text": "Identify pests and signs of pest infestation in the crop"
+          },
+          {
+            "id": "activities-06",
+            "text": "Identify moisture and hygiene requirements for agronomic crops and equipment that comes into contact with the crop"
+          },
+          {
+            "id": "activities-07",
+            "text": "Observe and follow post-harvest handling and packaging procedures"
+          },
+          {
+            "id": "activities-08",
+            "text": "Utilize communication systems"
+          },
+          {
+            "id": "activities-09",
+            "text": "Handle and maneuver harvesting equipment"
+          },
+          {
+            "id": "activities-10",
+            "text": "Interpret and apply task instructions, communicate with work team and supervisor; record and report faults, workplace hazards and accidents"
+          }
+        ],
+        "title": "ACTIVITIES"
+      },
+      {
+        "id": "seed",
+        "questions": [
+          {
+            "id": "seed-01",
+            "text": "Save, prepare, and store seed in a hygienic environment to ensure successful crop the succeeding year*"
+          },
+          {
+            "id": "seed-02",
+            "text": "Identify the varieties, treatments, cleaning measures and storage techniques and requirements for seed and grain"
+          },
+          {
+            "id": "seed-03",
+            "text": "Determine the inoculation treatment and dressings used within the organization"
+          },
+          {
+            "id": "seed-04",
+            "text": "Observe and follow environmental controls and codes of practice applicable to the enterprise"
+          },
+          {
+            "id": "seed-05",
+            "text": "Observe and follow relevant legislation and regulations relating to OHS; contractor engagement, chemical use and application; vehicle and plant use; and the use, handling and sale of seed"
+          },
+          {
+            "id": "seed-06",
+            "text": "Observe and follow sound management practices and processes to minimize noise, odors and debris from sowing operations"
+          },
+          {
+            "id": "seed-07",
+            "text": "Select appropriate seed test"
+          },
+          {
+            "id": "seed-08",
+            "text": "Apply pre and post harvest treatment for seed"
+          },
+          {
+            "id": "seed-09",
+            "text": "Identify varieties from growth patterns"
+          },
+          {
+            "id": "seed-10",
+            "text": "Identify weed seeds and contaminants"
+          },
+          {
+            "id": "seed-11",
+            "text": "Identify pests in stored grain and initiate control measures"
+          },
+          {
+            "id": "seed-12",
+            "text": "Calculate volumes, capacities, areas, ratios for seed, storage and chemicals"
+          },
+          {
+            "id": "seed-13",
+            "text": "Maintain an update records relating to test results, provenance, varieties, pest control measures and other relevant information about the seed"
+          },
+          {
+            "id": "seed-14",
+            "text": "Observe, identify and respond appropriately to environmental implications and OHS hazards"
+          }
+        ],
+        "title": "SEED"
+      },
+      {
+        "id": "program",
+        "questions": [
+          {
+            "id": "program-01",
+            "text": "Use control agents safely and apply appropriate methods to control vertebrate pests*"
+          },
+          {
+            "id": "program-02",
+            "text": "Use and handle hazardous substances safely*"
+          },
+          {
+            "id": "program-03",
+            "text": "Identify species and nature of vertebrate pest and carry out inspections to assess infestations*"
+          },
+          {
+            "id": "program-04",
+            "text": "Dispose carcasses according to established industry standard*"
+          },
+          {
+            "id": "program-05",
+            "text": "Observe and follow legislative and industry requirements for the disposal of vertebrate pests and control agents select and apply appropriate control methods and techniques"
+          },
+          {
+            "id": "program-06",
+            "text": "Observe and follow safety signage"
+          },
+          {
+            "id": "program-07",
+            "text": "Manage sustainable livestock supplies"
+          },
+          {
+            "id": "program-08",
+            "text": "Observe and follow relevant environmental guidelines including protection of native vegetation giving particular attention to potential soil degradation and destruction of flora and fauna"
+          },
+          {
+            "id": "program-09",
+            "text": "Observe and follow relevant provisions of OHS legislation and regulations"
+          },
+          {
+            "id": "program-10",
+            "text": "Select and use agricultural chemicals safely"
+          },
+          {
+            "id": "program-11",
+            "text": "Communicate with farm personnel and suppliers both verbal and written"
+          },
+          {
+            "id": "program-12",
+            "text": "Read and interpret chemical labels, MSDS and safety signage or decals"
+          },
+          {
+            "id": "program-13",
+            "text": "Calculate vertebrate pest numbers and estimate appropriate resources and materials for pest control program"
+          }
+        ],
+        "title": "PROGRAM"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment with the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each question and check the appropriate column to indicate your answer."
+    ],
+    "qualificationTitle": "SAG-AgroEntrepreneurship NC II",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "assess-market-opportunities",
+        "questions": [
+          {
+            "id": "assess-market-opportunities-01",
+            "text": "Describe how buyers in the local market are identified and selected"
+          },
+          {
+            "id": "assess-market-opportunities-02",
+            "text": "Identify flow of produce from farm to the selected buyer"
+          },
+          {
+            "id": "assess-market-opportunities-03",
+            "text": "Identify value adding activities to be performed based on requirements of selected buyer"
+          },
+          {
+            "id": "assess-market-opportunities-04",
+            "text": "Prepare marketing objective based on market visit"
+          },
+          {
+            "id": "assess-market-opportunities-05",
+            "text": "Identify steps in delivery of product and targeted sales/costs/marketing profit based on set objective/s"
+          },
+          {
+            "id": "assess-market-opportunities-06",
+            "text": "Prepare contingency plan based on market risks"
+          }
+        ],
+        "title": "Assess market opportunities"
+      },
+      {
+        "id": "market-produce",
+        "questions": [
+          {
+            "id": "market-produce-01",
+            "text": "Gather and record price information from buyers and trade centers"
+          },
+          {
+            "id": "market-produce-02",
+            "text": "Use collected information to increase sales and profits"
+          },
+          {
+            "id": "market-produce-03",
+            "text": "Demonstrate value adding activities based on market plan"
+          },
+          {
+            "id": "market-produce-04",
+            "text": "Describe participation in product consolidation and group marketing"
+          },
+          {
+            "id": "market-produce-05",
+            "text": "Demonstrate selling negotiation skill with buyers and/or business development service providers (ex. trucker, cold storage provider, packaging provider, etc.)"
+          },
+          {
+            "id": "market-produce-06",
+            "text": "Set terms and conditions when selling produce"
+          },
+          {
+            "id": "market-produce-07",
+            "text": "Describe how to prepare and deliver sold produce based on set terms and conditions"
+          },
+          {
+            "id": "market-produce-08",
+            "text": "Review result of marketing activities based on market plan"
+          },
+          {
+            "id": "market-produce-09",
+            "text": "Record details of marketing transaction (ex. product deliveries, sales, costs and profit)"
+          },
+          {
+            "id": "market-produce-10",
+            "text": "Demonstrate selling negotiation skill with buyers and/or business development service providers (ex. trucker, cold storage provider, packaging provider, etc)"
+          }
+        ],
+        "title": "Market Produce"
+      },
+      {
+        "id": "establish-farm-production-plan",
+        "questions": [
+          {
+            "id": "establish-farm-production-plan-01",
+            "text": "Identify needed farm operation improvements using the gathered information as basis"
+          },
+          {
+            "id": "establish-farm-production-plan-02",
+            "text": "Identify farm production requirements, activities and costs"
+          },
+          {
+            "id": "establish-farm-production-plan-03",
+            "text": "Compute farm production costs, target volume of harvest and cost and return"
+          },
+          {
+            "id": "establish-farm-production-plan-04",
+            "text": "Identify alternative farm products based on market demand"
+          },
+          {
+            "id": "establish-farm-production-plan-05",
+            "text": "Describe contingency plans and corrective measures based of farm production risks"
+          },
+          {
+            "id": "establish-farm-production-plan-06",
+            "text": "Identify suppliers and providers based on preference/criteria"
+          },
+          {
+            "id": "establish-farm-production-plan-07",
+            "text": "Adjust farm production activities and costing based on identified need"
+          },
+          {
+            "id": "establish-farm-production-plan-08",
+            "text": "Adjust projected volume target based on identified need"
+          },
+          {
+            "id": "establish-farm-production-plan-09",
+            "text": "Describe needed improvements and corrective measures"
+          }
+        ],
+        "title": "Establish Farm Production Plan"
+      },
+      {
+        "id": "handle-finances",
+        "questions": [
+          {
+            "id": "handle-finances-01",
+            "text": "Compute farm costs according to farm activities"
+          },
+          {
+            "id": "handle-finances-02",
+            "text": "Identify requirements of loan application to identified financial service providers"
+          },
+          {
+            "id": "handle-finances-03",
+            "text": "Prepare budget plan for loan application, allocation of funds for farm activities and farm expansion"
+          },
+          {
+            "id": "handle-finances-04",
+            "text": "Give examples of “terms and conditions” of a financial service provider"
+          },
+          {
+            "id": "handle-finances-05",
+            "text": "Give examples of ways that will increase the chances of settling loan"
+          },
+          {
+            "id": "handle-finances-06",
+            "text": "Identify ways to invest farm income"
+          }
+        ],
+        "title": "Handle Finances"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your",
+      "answer."
+    ],
+    "qualificationTitle": "SAG-Animal Production (Poultry-Chicken) NC II",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "maintain-poultry-house",
+        "questions": [
+          {
+            "id": "maintain-poultry-house-01",
+            "text": "Determine farm layout of poultry house and facilities with"
+          },
+          {
+            "id": "maintain-poultry-house-02",
+            "text": "Check poultry housing and facilities according to enterprise procedures."
+          },
+          {
+            "id": "maintain-poultry-house-03",
+            "text": "Report conditions of poultry housing and facilities to the immediate authority and in compliance with Environmental"
+          },
+          {
+            "id": "maintain-poultry-house-04",
+            "text": "Compliance Certificate."
+          },
+          {
+            "id": "maintain-poultry-house-05",
+            "text": "Prepare tools, materials and equipment according to maintenance requirements and instructions of authority.*"
+          },
+          {
+            "id": "maintain-poultry-house-06",
+            "text": "Clean and disinfect poultry housing and facilities in regular basis."
+          },
+          {
+            "id": "maintain-poultry-house-07",
+            "text": "Perform minor repairs and maintenance as per instruction of the authority and per work requirements.*"
+          },
+          {
+            "id": "maintain-poultry-house-08",
+            "text": "Report immediately major malfunctions and irregular conditions in the poultry house and facilities.*"
+          },
+          {
+            "id": "maintain-poultry-house-09",
+            "text": "Practice following OSHS procedures wearing appropriate personal protective equipment (PPE).*"
+          },
+          {
+            "id": "maintain-poultry-house-10",
+            "text": "Practice downtime (rest period) prior to succeeding loading for at least one week."
+          },
+          {
+            "id": "maintain-poultry-house-11",
+            "text": "Practice safety measures according to Occupational Safety and"
+          },
+          {
+            "id": "maintain-poultry-house-12",
+            "text": "Health Standards (OSHS)."
+          },
+          {
+            "id": "maintain-poultry-house-13",
+            "text": "Perform maintenance of farm area and vicinities according to production management and enterprise procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-14",
+            "text": "Perform vermin and insects control according to Fertilizer and"
+          },
+          {
+            "id": "maintain-poultry-house-15",
+            "text": "Pesticides Authority guidelines and DENR regulations.*"
+          },
+          {
+            "id": "maintain-poultry-house-16",
+            "text": "Conduct maintenance of farm vegetation to avoid common vermins and insects’ proliferation."
+          },
+          {
+            "id": "maintain-poultry-house-17",
+            "text": "Keep and update records for reporting and inventory purposes following enterprise procedures."
+          },
+          {
+            "id": "maintain-poultry-house-18",
+            "text": "Clean and stores tools and equipment according to manuals and enterprise procedures."
+          },
+          {
+            "id": "maintain-poultry-house-19",
+            "text": "Practice housekeeping following 5S principles and enterprise procedures."
+          },
+          {
+            "id": "maintain-poultry-house-20",
+            "text": "Manage wastes following 3Rs principles and DENR regulations."
+          },
+          {
+            "id": "maintain-poultry-house-21",
+            "text": "Apply wearing of personal protective equipment (PPE) according to OHS procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-22",
+            "text": "Clean and disinfect poultry house was according to company standard procedures."
+          },
+          {
+            "id": "maintain-poultry-house-23",
+            "text": "Prepare materials, tools and equipment according to production requirements.*"
+          },
+          {
+            "id": "maintain-poultry-house-24",
+            "text": "Install and adjust chick guard, curtains and portable heaters based on industry standards.*"
+          },
+          {
+            "id": "maintain-poultry-house-25",
+            "text": "Clean and lay-out litter materials, regularly following farm plans and schedule.*"
+          },
+          {
+            "id": "maintain-poultry-house-26",
+            "text": "Obtain broiler and layer stocks from reliable/recommended sources.*"
+          },
+          {
+            "id": "maintain-poultry-house-27",
+            "text": "Place a day-old chicks (DOC) and day-old pullets (DOP) to respective brooding houses observing Good Animal Practices and Animal Welfare Act."
+          },
+          {
+            "id": "maintain-poultry-house-28",
+            "text": "Cull chicks with abnormalities from the flock.*"
+          },
+          {
+            "id": "maintain-poultry-house-29",
+            "text": "Prepare and clean feeders and waterers regularly.*"
+          },
+          {
+            "id": "maintain-poultry-house-30",
+            "text": "Feed poultry according to company feeds and feeding guide.*"
+          },
+          {
+            "id": "maintain-poultry-house-31",
+            "text": "Practice nutrient supplementation as remedial measures according to instructions of immediate authority."
+          },
+          {
+            "id": "maintain-poultry-house-32",
+            "text": "Give water according to industry standards and bird requirements."
+          },
+          {
+            "id": "maintain-poultry-house-33",
+            "text": "Secure feed left-over properly and dispose spoiled feed properly."
+          },
+          {
+            "id": "maintain-poultry-house-34",
+            "text": "Provide lighting program based on industry standards."
+          },
+          {
+            "id": "maintain-poultry-house-35",
+            "text": "Augment ventilation during hot climatic conditions."
+          },
+          {
+            "id": "maintain-poultry-house-36",
+            "text": "Perform curtain management based on prevailing conditions.*"
+          },
+          {
+            "id": "maintain-poultry-house-37",
+            "text": "Apply bio-security measures according to industry procedures."
+          },
+          {
+            "id": "maintain-poultry-house-38",
+            "text": "Perform vermin control following industry procedures."
+          },
+          {
+            "id": "maintain-poultry-house-39",
+            "text": "Perform disposal of wastes following DENR regulations.*"
+          },
+          {
+            "id": "maintain-poultry-house-40",
+            "text": "Determine and report distress conditions of poultry to immediate authority or veterinarian.*"
+          },
+          {
+            "id": "maintain-poultry-house-41",
+            "text": "Administer preventive measures according to veterinarian recommendations and instructions.*"
+          },
+          {
+            "id": "maintain-poultry-house-42",
+            "text": "Isolate sick birds for treatment following instructions of veterinarian."
+          },
+          {
+            "id": "maintain-poultry-house-43",
+            "text": "Apply culling procedures with reference to economic considerations and according to instructions of immediate authority."
+          },
+          {
+            "id": "maintain-poultry-house-44",
+            "text": "Remove missexed from flock following industry standards."
+          },
+          {
+            "id": "maintain-poultry-house-45",
+            "text": "Perform flock selection according to company requirements and productivity standards."
+          },
+          {
+            "id": "maintain-poultry-house-46",
+            "text": "Cull out birds with poor physical condition according company requirements on a regular basis."
+          },
+          {
+            "id": "maintain-poultry-house-47",
+            "text": "Update relevant records on regular basis following enterprise protocol.*"
+          },
+          {
+            "id": "maintain-poultry-house-48",
+            "text": "Clean and disinfect laying houses according to industry procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-49",
+            "text": "Prepare tools, materials and equipment are according to work requirements.*"
+          },
+          {
+            "id": "maintain-poultry-house-50",
+            "text": "Select ready to lay-pullets for transfer to laying house.*"
+          },
+          {
+            "id": "maintain-poultry-house-51",
+            "text": "Cull pullets with abnormalities from the flock.*"
+          },
+          {
+            "id": "maintain-poultry-house-52",
+            "text": "Transfer ready-to-lay-pullets to laying house reference to"
+          },
+          {
+            "id": "maintain-poultry-house-53",
+            "text": "Animal Welfare Act and Good Animal Practices."
+          },
+          {
+            "id": "maintain-poultry-house-54",
+            "text": "Follow lighting program according to prepared schedule."
+          },
+          {
+            "id": "maintain-poultry-house-55",
+            "text": "Install lighting fixtures according to required light intensity.*"
+          },
+          {
+            "id": "maintain-poultry-house-56",
+            "text": "Perform monitoring of sexual development in accordance with breed standards."
+          },
+          {
+            "id": "maintain-poultry-house-57",
+            "text": "Prepare and clean feeders and water trough regularly."
+          },
+          {
+            "id": "maintain-poultry-house-58",
+            "text": "Feed poultry species according to industry standards."
+          },
+          {
+            "id": "maintain-poultry-house-59",
+            "text": "Apply feeding to peak and challenge feeding according to layer’s status.*"
+          },
+          {
+            "id": "maintain-poultry-house-60",
+            "text": "Properly secure feed left-over and dispose properly spoiled feed."
+          },
+          {
+            "id": "maintain-poultry-house-61",
+            "text": "Perform monitoring of productivity with reference to bird’s status."
+          },
+          {
+            "id": "maintain-poultry-house-62",
+            "text": "Perform deworming as recommended by veterinarian or authority."
+          },
+          {
+            "id": "maintain-poultry-house-63",
+            "text": "Perform booster vaccination program as recommended by veterinarian or authority."
+          },
+          {
+            "id": "maintain-poultry-house-64",
+            "text": "Perform applications of vaccines following veterinarian instructions.*"
+          },
+          {
+            "id": "maintain-poultry-house-65",
+            "text": "Give vitamins and minerals supplementations based on assessment and recommendations of veterinarian or animal nutritionist.*"
+          },
+          {
+            "id": "maintain-poultry-house-66",
+            "text": "Collect eggs on a regular basis using appropriate materials and standard collecting procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-67",
+            "text": "Classify eggs according to industry classification standards.*"
+          },
+          {
+            "id": "maintain-poultry-house-68",
+            "text": "Pack and store eggs at appropriate room temperature."
+          },
+          {
+            "id": "maintain-poultry-house-69",
+            "text": "Cull out unproductive layers according to standard industry procedures."
+          },
+          {
+            "id": "maintain-poultry-house-70",
+            "text": "Keep records following enterprise standard.*"
+          },
+          {
+            "id": "maintain-poultry-house-71",
+            "text": "Prepare materials, tools and equipment for the operation according to work requirements.*"
+          },
+          {
+            "id": "maintain-poultry-house-72",
+            "text": "Condition birds for debeaking following Good Animal Practices and Animal Welfare Act. Safety measures are practiced following Occupational Safety and Health Standards (OSHS).*"
+          },
+          {
+            "id": "maintain-poultry-house-73",
+            "text": "Trim beak in appropriate age following standard industry procedures."
+          },
+          {
+            "id": "maintain-poultry-house-74",
+            "text": "Restrain birds with net to facilitate calm capture."
+          },
+          {
+            "id": "maintain-poultry-house-75",
+            "text": "Perform task observing safety practices and following Good"
+          },
+          {
+            "id": "maintain-poultry-house-76",
+            "text": "Animal Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "maintain-poultry-house-77",
+            "text": "Retrim beaks according to standard operating procedures."
+          },
+          {
+            "id": "maintain-poultry-house-78",
+            "text": "Perform task practicing OSHS and following GAHP."
+          },
+          {
+            "id": "maintain-poultry-house-79",
+            "text": "Practice proper disposal according to environmental rules and regulations.*"
+          },
+          {
+            "id": "maintain-poultry-house-80",
+            "text": "Store tools, materials and equipment according to industry protocol."
+          },
+          {
+            "id": "maintain-poultry-house-81",
+            "text": "Collect and update records for reporting purposes (daily/weekly).*"
+          },
+          {
+            "id": "maintain-poultry-house-82",
+            "text": "Obtain poultry breeder from reliable source according to enterprise production requirement.*"
+          },
+          {
+            "id": "maintain-poultry-house-83",
+            "text": "Determine characteristics of rooster suited for breeding following enterprise protocol.*"
+          },
+          {
+            "id": "maintain-poultry-house-84",
+            "text": "Maintain breeder sheds according to established farm practices following GAHP."
+          },
+          {
+            "id": "maintain-poultry-house-85",
+            "text": "Establish nests set-up in suitable place in reference to breeding practices.*"
+          },
+          {
+            "id": "maintain-poultry-house-86",
+            "text": "Transfer poultry breeder to appropriate breeder sheds following"
+          },
+          {
+            "id": "maintain-poultry-house-87",
+            "text": "Maintain hygienic environment according to enterprise standard procedures and requirements."
+          },
+          {
+            "id": "maintain-poultry-house-88",
+            "text": "Male (rooster) is left with the females (hens) to mate following enterprise breeding schedule and plan."
+          },
+          {
+            "id": "maintain-poultry-house-89",
+            "text": "Train birds to lay in nests with minimal number of eggs on floor following recognized industry standards."
+          },
+          {
+            "id": "maintain-poultry-house-90",
+            "text": "Keep temperature of the hen shed constant and warm according to established enterprise procedures."
+          },
+          {
+            "id": "maintain-poultry-house-91",
+            "text": "Perform maintenance of breeder poultry in line with egg production objective.*"
+          },
+          {
+            "id": "maintain-poultry-house-92",
+            "text": "Prevent any drafts from entering the building according to enterprise protocol."
+          },
+          {
+            "id": "maintain-poultry-house-93",
+            "text": "Conduct in-lay activities according to enterprise protocol and production plan.*"
+          },
+          {
+            "id": "maintain-poultry-house-94",
+            "text": "Employ safety practices according to Occupational Safety and"
+          },
+          {
+            "id": "maintain-poultry-house-95",
+            "text": "Hazard Standards."
+          },
+          {
+            "id": "maintain-poultry-house-96",
+            "text": "Collect fertile eggs according to established enterprise protocol and requirement.*"
+          },
+          {
+            "id": "maintain-poultry-house-97",
+            "text": "Carry out identification and grading of egg in accordance with production requirements and breeding objectives."
+          },
+          {
+            "id": "maintain-poultry-house-98",
+            "text": "Handle livestock during egg collection is humanely handled."
+          },
+          {
+            "id": "maintain-poultry-house-99",
+            "text": "Perform eggs cleaning and sanitation following company requirements and required hygienic procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-100",
+            "text": "Maintain hygienic environment following enterprise procedures and requirement."
+          },
+          {
+            "id": "maintain-poultry-house-101",
+            "text": "Complete records of all collections to accurately monitor production.*"
+          },
+          {
+            "id": "maintain-poultry-house-102",
+            "text": "Select hatching eggs following standard enterprise protocol.*"
+          },
+          {
+            "id": "maintain-poultry-house-103",
+            "text": "Store eggs are in accordance to industry standard procedures.*"
+          },
+          {
+            "id": "maintain-poultry-house-104",
+            "text": "Take eggs that are neglected by hens for incubation purposes."
+          },
+          {
+            "id": "maintain-poultry-house-105",
+            "text": "Minimize floor egg problems following enterprise procedures."
+          }
+        ],
+        "title": "Maintain poultry house"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment in the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each of the questions in the left-hand column of the chart.",
+      "Place a check in the appropriate box opposite each question to indicate your answer."
+    ],
+    "qualificationTitle": "SAG-Animal Production (Swine) NC II",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "handle-breeders",
+        "questions": [
+          {
+            "id": "handle-breeders-01",
+            "text": "Isolate newly arrived stocks in quarantine pens and observe for a period prescribed by veterinary."
+          },
+          {
+            "id": "handle-breeders-02",
+            "text": "Give standard vaccines and medication for animals."
+          },
+          {
+            "id": "handle-breeders-03",
+            "text": "Acclimatize animals through vaccination depending in areas of the disease outbreak.*"
+          },
+          {
+            "id": "handle-breeders-04",
+            "text": "Select suitable breed based on industry standards and choice of enterprise.*"
+          },
+          {
+            "id": "handle-breeders-05",
+            "text": "Select female stock based on industry standards and choice of enterprise."
+          },
+          {
+            "id": "handle-breeders-06",
+            "text": "Select male stock based on industry standards, breeding objective and choice of enterprise."
+          },
+          {
+            "id": "handle-breeders-07",
+            "text": "Perform boar semen evaluation based on industry standards."
+          },
+          {
+            "id": "handle-breeders-08",
+            "text": "Monitor signs of heat based on standards protocol.*"
+          },
+          {
+            "id": "handle-breeders-09",
+            "text": "Perform heat detection techniques following established protocol.*"
+          },
+          {
+            "id": "handle-breeders-10",
+            "text": "Breed sows/gilts using standard breeding procedures.*"
+          },
+          {
+            "id": "handle-breeders-11",
+            "text": "Select breeding system based on choice of enterprise."
+          },
+          {
+            "id": "handle-breeders-12",
+            "text": "Train boar to mount a female or a dummy sow."
+          },
+          {
+            "id": "handle-breeders-13",
+            "text": "Prescribe vaccines and medications given to boar."
+          },
+          {
+            "id": "handle-breeders-14",
+            "text": "Determine ideal weight and age according to industry standards."
+          },
+          {
+            "id": "handle-breeders-15",
+            "text": "Prepare and submit report on work outputs and updates to concerned person or authority according to industry practices."
+          },
+          {
+            "id": "handle-breeders-16",
+            "text": "Observe optimum boar to sow ratio following standard monitoring scheme."
+          },
+          {
+            "id": "handle-breeders-17",
+            "text": "Monitor signs of pregnancy according to standards protocol.*"
+          },
+          {
+            "id": "handle-breeders-18",
+            "text": "Perform pregnancy diagnosis according to standard procedures.*"
+          },
+          {
+            "id": "handle-breeders-19",
+            "text": "Perform periodic activities following work plan and breeding schedules.*"
+          },
+          {
+            "id": "handle-breeders-20",
+            "text": "Feed stocks based on industry standards and production cycle."
+          },
+          {
+            "id": "handle-breeders-21",
+            "text": "Prepare production plan based on choice of enterprise."
+          },
+          {
+            "id": "handle-breeders-22",
+            "text": "Select non-performing breeders for culling based on industry standards."
+          },
+          {
+            "id": "handle-breeders-23",
+            "text": "Monitor changes in animal behavior following standard procedures and GAHP."
+          },
+          {
+            "id": "handle-breeders-24",
+            "text": "Update stock inventory according to established farm recording system."
+          },
+          {
+            "id": "handle-breeders-25",
+            "text": "Monitor and record breeding schedule following work plan."
+          },
+          {
+            "id": "handle-breeders-26",
+            "text": "Record and report production performance of breeders according to enterprise protocol.*"
+          },
+          {
+            "id": "handle-breeders-27",
+            "text": "Clean and disinfect farrowing stalls or pens following standard hygienic procedures."
+          },
+          {
+            "id": "handle-breeders-28",
+            "text": "Conduct bathing of sows following Good Animal Husbandry Practices (GAHP).*"
+          },
+          {
+            "id": "handle-breeders-29",
+            "text": "Transfer to farrowing stalls or pens pregnant sows and gilts according to Animal Welfare Act.*"
+          },
+          {
+            "id": "handle-breeders-30",
+            "text": "Determine feed intake on farm protocols."
+          },
+          {
+            "id": "handle-breeders-31",
+            "text": "Monitor signs of approaching farrowing.*"
+          },
+          {
+            "id": "handle-breeders-32",
+            "text": "Prepare farrowing materials and supplies based on work requirements.*"
+          },
+          {
+            "id": "handle-breeders-33",
+            "text": "Wear appropriate personal protective equipment (PPE) following"
+          },
+          {
+            "id": "handle-breeders-34",
+            "text": "Occupational Safety and Health Standard (OSHS)."
+          },
+          {
+            "id": "handle-breeders-35",
+            "text": "Monitor farrowing problems following enterprise protocol.*"
+          },
+          {
+            "id": "handle-breeders-36",
+            "text": "Adjust feed intake based on nutrient requirements of animals."
+          },
+          {
+            "id": "handle-breeders-37",
+            "text": "Assist sow and gilt manually when deemed necessary."
+          },
+          {
+            "id": "handle-breeders-38",
+            "text": "Perform newborn piglet activities according to GAHP.*"
+          },
+          {
+            "id": "handle-breeders-39",
+            "text": "Dispose placenta and dead piglets properly according to farm protocol and DENR regulations."
+          },
+          {
+            "id": "handle-breeders-40",
+            "text": "Provide proper temperature/micro-climate based on the minimum requirements for the welfare of pigs and the code of Good Animal"
+          },
+          {
+            "id": "handle-breeders-41",
+            "text": "Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "handle-breeders-42",
+            "text": "Ensure colostrums and milk intake based from GAHP."
+          },
+          {
+            "id": "handle-breeders-43",
+            "text": "Inject iron preparations based on industry standards and manufacturer’s specification."
+          },
+          {
+            "id": "handle-breeders-44",
+            "text": "Perform castration when needed based on the minimum requirements for the welfare of pigs and the code of Good Animal"
+          },
+          {
+            "id": "handle-breeders-45",
+            "text": "Feed piglets based on farm protocols."
+          },
+          {
+            "id": "handle-breeders-46",
+            "text": "Wean piglets based on industry standards."
+          },
+          {
+            "id": "handle-breeders-47",
+            "text": "Give liquid energizers to underweight sucklings immediately after birth."
+          },
+          {
+            "id": "handle-breeders-48",
+            "text": "Monitor changes in piglet behavior following enterprise protocol.*"
+          },
+          {
+            "id": "handle-breeders-49",
+            "text": "Monitor changes in fecal, odor, color and consistency of piglets according to industry standard procedures.*"
+          },
+          {
+            "id": "handle-breeders-50",
+            "text": "Monitor uniformity of litter based on enterprise requirements."
+          },
+          {
+            "id": "handle-breeders-51",
+            "text": "Monitor sow discharges following instructions of veterinarian."
+          },
+          {
+            "id": "handle-breeders-52",
+            "text": "Implement vaccination programs based on veterinary recommendation."
+          },
+          {
+            "id": "handle-breeders-53",
+            "text": "Update farrowing card following enterprise procedures."
+          },
+          {
+            "id": "handle-breeders-54",
+            "text": "Monitor farrowing schedules with reference to work plan."
+          },
+          {
+            "id": "handle-breeders-55",
+            "text": "Record and report production performance to immediate authority.*"
+          },
+          {
+            "id": "handle-breeders-56",
+            "text": "Record and report technical performance following instructions of authority."
+          },
+          {
+            "id": "handle-breeders-57",
+            "text": "Clean and disinfect pens based on farm specifications."
+          },
+          {
+            "id": "handle-breeders-58",
+            "text": "Adjust and supply materials and equipment.*"
+          },
+          {
+            "id": "handle-breeders-59",
+            "text": "Group weaners based on farm specifications."
+          },
+          {
+            "id": "handle-breeders-60",
+            "text": "Transfer weaners in compliance with the Animal Welfare Act."
+          },
+          {
+            "id": "handle-breeders-61",
+            "text": "Feed animals according to farm specifications."
+          },
+          {
+            "id": "handle-breeders-62",
+            "text": "Clean pen regularly following standard hygienic procedures."
+          },
+          {
+            "id": "handle-breeders-63",
+            "text": "Provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "handle-breeders-64",
+            "text": "Check and adjust feeders to ensure proper functioning.*"
+          },
+          {
+            "id": "handle-breeders-65",
+            "text": "Shift feed ration and gradually increased based on animal requirements.*"
+          },
+          {
+            "id": "handle-breeders-66",
+            "text": "Provide fresh and clean water at all times (adlibitum)."
+          },
+          {
+            "id": "handle-breeders-67",
+            "text": "Monitor changes in animal behavior."
+          },
+          {
+            "id": "handle-breeders-68",
+            "text": "Monitor changes in fecal, color, odor and consistency."
+          },
+          {
+            "id": "handle-breeders-69",
+            "text": "Monitor uniformity of litter following farm procedures."
+          },
+          {
+            "id": "handle-breeders-70",
+            "text": "Deworm weaners based on farm protocols."
+          },
+          {
+            "id": "handle-breeders-71",
+            "text": "Implement vaccination programs based on veterinary recommendations."
+          },
+          {
+            "id": "handle-breeders-72",
+            "text": "Update weanling records using standard enterprise."
+          },
+          {
+            "id": "handle-breeders-73",
+            "text": "Monitor weaning schedules."
+          },
+          {
+            "id": "handle-breeders-74",
+            "text": "Monitor and report production performance of weanlings according to enterprise procedures.*"
+          },
+          {
+            "id": "handle-breeders-75",
+            "text": "Select suitable starters for finishing based on preference of clients."
+          },
+          {
+            "id": "handle-breeders-76",
+            "text": "Clean and disinfect finishers building."
+          },
+          {
+            "id": "handle-breeders-77",
+            "text": "Adjust and supply materials and equipment according to work requirements.*"
+          },
+          {
+            "id": "handle-breeders-78",
+            "text": "Group starters based on industry standards farm specifications."
+          },
+          {
+            "id": "handle-breeders-79",
+            "text": "Transfer starters based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "handle-breeders-80",
+            "text": "Clean pen regularly following hygienic procedures."
+          },
+          {
+            "id": "handle-breeders-81",
+            "text": "Monitor and provide proper temperature based on the minimum standards on the welfare of pigs and code of Good Animal"
+          },
+          {
+            "id": "handle-breeders-82",
+            "text": "Check and adjust height of drinkers to ensure proper functioning based on the minimum standards on the welfare of pigs and code of"
+          },
+          {
+            "id": "handle-breeders-83",
+            "text": "Good Animal Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "handle-breeders-84",
+            "text": "Provide enough floor space based on the minimum standards on the welfare of pigs and code of Good Animal Husbandry Practices (GAHP)."
+          },
+          {
+            "id": "handle-breeders-85",
+            "text": "Isolate weak animals based on farm protocols."
+          },
+          {
+            "id": "handle-breeders-86",
+            "text": "Feed animals according to a standard feeding system.*"
+          },
+          {
+            "id": "handle-breeders-87",
+            "text": "Adjust and shift feed ration based on farm protocols."
+          },
+          {
+            "id": "handle-breeders-88",
+            "text": "Withdraw medicated feeds according to veterinarian instructions."
+          },
+          {
+            "id": "handle-breeders-89",
+            "text": "Monitor changes in animal behavior following Animal Welfare Act and"
+          },
+          {
+            "id": "handle-breeders-90",
+            "text": "GAHP.*"
+          },
+          {
+            "id": "handle-breeders-91",
+            "text": "Monitor changes in posture of animal following Animal Welfare Act and GAHP.*"
+          },
+          {
+            "id": "handle-breeders-92",
+            "text": "Monitor changes in respiration of animal following Animal Welfare Act and GAHP.*"
+          },
+          {
+            "id": "handle-breeders-93",
+            "text": "Monitor changes in skin color following Animal Welfare Act and"
+          },
+          {
+            "id": "handle-breeders-94",
+            "text": "Monitor uniformity of stocks following enterprise protocol."
+          },
+          {
+            "id": "handle-breeders-95",
+            "text": "Implement vaccination and medication programs based on veterinarian instructions."
+          },
+          {
+            "id": "handle-breeders-96",
+            "text": "Perform weight estimation using standard protocols."
+          },
+          {
+            "id": "handle-breeders-97",
+            "text": "Prepare and reserve marketable animals following marketing requirements and procedures."
+          },
+          {
+            "id": "handle-breeders-98",
+            "text": "Prepare loading facility and ramp with reference to Animal Welfare"
+          },
+          {
+            "id": "handle-breeders-99",
+            "text": "Move animals to loading facility following Animal Welfare Act."
+          },
+          {
+            "id": "handle-breeders-100",
+            "text": "Clean and disinfect transportation vehicle in line with GAHP."
+          },
+          {
+            "id": "handle-breeders-101",
+            "text": "Update finishing records following enterprise protocol."
+          },
+          {
+            "id": "handle-breeders-102",
+            "text": "Monitor production parameters for finishers with reference to production requirements.*"
+          },
+          {
+            "id": "handle-breeders-103",
+            "text": "Maintain relative humidity, curtains and blowers according to production requirements and work plan."
+          },
+          {
+            "id": "handle-breeders-104",
+            "text": "Implement monitoring of temperature as contingency procedure in accordance with production requirements.*"
+          },
+          {
+            "id": "handle-breeders-105",
+            "text": "Sustain air quality using sensory means identifying common air pollutants in accordance with DENR standards.*"
+          },
+          {
+            "id": "handle-breeders-106",
+            "text": "Observe routine testing of water for disinfection in accordance to work plan and established protocols.*"
+          },
+          {
+            "id": "handle-breeders-107",
+            "text": "Maintain ventilation management in accordance with animal requirements."
+          },
+          {
+            "id": "handle-breeders-108",
+            "text": "Dispose farm wastes properly to eliminate attracting vermin following enterprise procedures."
+          },
+          {
+            "id": "handle-breeders-109",
+            "text": "Apply appropriate chemicals to eliminate breeding grounds of mosquitoes following standard procedures and FPA guidelines.*"
+          },
+          {
+            "id": "handle-breeders-110",
+            "text": "Identify and immediate threats to the health of the animal based on observation.*"
+          },
+          {
+            "id": "handle-breeders-111",
+            "text": "Identify bio-security threats based on established organizational policy.*"
+          },
+          {
+            "id": "handle-breeders-112",
+            "text": "Prepare supplies and materials and apply disinfectants according to standard operating procedures.*"
+          },
+          {
+            "id": "handle-breeders-113",
+            "text": "Prepare and monitor regularly vehicle and foot vats according to standard operating practice."
+          },
+          {
+            "id": "handle-breeders-114",
+            "text": "Follow farm personnel and visitor’s hygiene and sanitation of farm, based on standard operating practice."
+          },
+          {
+            "id": "handle-breeders-115",
+            "text": "Disinfect all types of vehicles and equipment entering the farm according to standard operating procedures."
+          },
+          {
+            "id": "handle-breeders-116",
+            "text": "Quarantine and vaccinate new stocks to be introduced into the herd according to standard operating procedures.*"
+          },
+          {
+            "id": "handle-breeders-117",
+            "text": "Implement vaccination programs and health programs designed by veterinarian."
+          },
+          {
+            "id": "handle-breeders-118",
+            "text": "Collect and prepare samples for serological monitoring of notifiable diseases."
+          },
+          {
+            "id": "handle-breeders-119",
+            "text": "Follow preventive measures on notifiable diseases as declared by"
+          },
+          {
+            "id": "handle-breeders-120",
+            "text": "BAI based on industry and BAI standard."
+          },
+          {
+            "id": "handle-breeders-121",
+            "text": "Recommend medication and vaccination programs strictly by manufacturers and veterinarian."
+          },
+          {
+            "id": "handle-breeders-122",
+            "text": "Follow hygiene and sanitation of farm, farm personnel and visitors based on standard operating practice.*"
+          },
+          {
+            "id": "handle-breeders-123",
+            "text": "Cull and isolate sick and unfit stocks in accordance to Animal"
+          },
+          {
+            "id": "handle-breeders-124",
+            "text": "Welfare Act and Standard Operating Procedure.*"
+          },
+          {
+            "id": "handle-breeders-125",
+            "text": "Dispose dead stocks and by-products using proper disposal method.*"
+          },
+          {
+            "id": "handle-breeders-126",
+            "text": "Clean and disinfect tools and equipment used in sick and dead animals."
+          },
+          {
+            "id": "handle-breeders-127",
+            "text": "Communications with Supervising Veterinarian are done regularly following enterprise requirements."
+          },
+          {
+            "id": "handle-breeders-128",
+            "text": "Collate and update appropriate records regularly in accordance with organizational policy.*"
+          },
+          {
+            "id": "handle-breeders-129",
+            "text": "Carry-out reporting to veterinarian or supervisor based on records."
+          }
+        ],
+        "title": "Handle breeders"
+      }
+    ]
+  },
+  {
+    "agreementText": "I agree to undertake assessment with the knowledge that information gathered will only be used for professional development purposes and can only be accessed by concerned assessment personnel and my manager/supervisor.",
+    "instructionLines": [
+      "Instruction:",
+      "Read each question and check the appropriate column to indicate your answer."
+    ],
+    "qualificationTitle": "SAG-Barangay Health Services NC II",
+    "title": "SELF-ASSESSMENT GUIDE",
+    "units": [
+      {
+        "id": "health-and-well-being",
+        "questions": [
+          {
+            "id": "health-and-well-being-01",
+            "text": "Facilitate individuals’ understanding of health services provided by agencies through use of appropriate interpersonal communication skills*"
+          },
+          {
+            "id": "health-and-well-being-02",
+            "text": "Communicate the culture, practices/beliefs, needs, issues, feedbacks of individuals/community to service providers*"
+          },
+          {
+            "id": "health-and-well-being-03",
+            "text": "Identify support needed by individuals to access health services"
+          },
+          {
+            "id": "health-and-well-being-04",
+            "text": "Identify aftercare/follow-up support needed by individuals*"
+          },
+          {
+            "id": "health-and-well-being-05",
+            "text": "Document health activities and related information"
+          },
+          {
+            "id": "health-and-well-being-06",
+            "text": "Identify advice or health intervention to individual/family/household based on a given scenario"
+          },
+          {
+            "id": "health-and-well-being-07",
+            "text": "Give advice to seek consultation or referral to rural health units, based on identified health symptoms*"
+          },
+          {
+            "id": "health-and-well-being-08",
+            "text": "Provide culturally sensitive inputs/information as guidance in health planning/intervention, following standard operating procedure*"
+          }
+        ],
+        "title": "HEALTH AND WELL-BEING"
+      },
+      {
+        "id": "disease-prevention-and-control",
+        "questions": [
+          {
+            "id": "disease-prevention-and-control-01",
+            "text": "Identify community beneficiaries of health programs and services*"
+          },
+          {
+            "id": "disease-prevention-and-control-02",
+            "text": "Discuss how to organize network or linkages of beneficiaries to health programs/services"
+          },
+          {
+            "id": "disease-prevention-and-control-03",
+            "text": "Discuss how to establish community relationship in accordance with"
+          },
+          {
+            "id": "disease-prevention-and-control-04",
+            "text": "Department of Health’s objectives"
+          },
+          {
+            "id": "disease-prevention-and-control-05",
+            "text": "Demonstrate how to share knowledge or updates to fellow Barangay Health workers to provide updates on health programs/projects"
+          },
+          {
+            "id": "disease-prevention-and-control-06",
+            "text": "Present information on DOH programs, policies, infection control measures and practices through the guidance of rural health midwife and/or nurse*"
+          },
+          {
+            "id": "disease-prevention-and-control-07",
+            "text": "Observe culturally sensitive health strategies according to the needs of the individual/family/household*"
+          },
+          {
+            "id": "disease-prevention-and-control-08",
+            "text": "Gather feedback on needed improvement for promotional activities*"
+          }
+        ],
+        "title": "DISEASE PREVENTION AND CONTROL"
+      },
+      {
+        "id": "halth-records-in-health-station",
+        "questions": [
+          {
+            "id": "halth-records-in-health-station-01",
+            "text": "Demonstrate physical inventory of equipment and medical supplies"
+          },
+          {
+            "id": "halth-records-in-health-station-02",
+            "text": "Practice proper storage of equipment and medical supplies in designated place*"
+          },
+          {
+            "id": "halth-records-in-health-station-03",
+            "text": "Demonstrate the maintenance of cleanliness and orderliness of barangay health center catchment area"
+          },
+          {
+            "id": "halth-records-in-health-station-04",
+            "text": "Orient fellow health workers on proper use and storage of equipment"
+          },
+          {
+            "id": "halth-records-in-health-station-05",
+            "text": "Practice proper filing of records for accessibility and completeness*"
+          },
+          {
+            "id": "halth-records-in-health-station-06",
+            "text": "Practice proper disposal of damaged records according to protocol of record management systems*"
+          }
+        ],
+        "title": "HALTH RECORDS IN HEALTH STATION"
+      },
+      {
+        "id": "service-coverage",
+        "questions": [
+          {
+            "id": "service-coverage-01",
+            "text": "Identify the priority individual/family/household for consultation"
+          },
+          {
+            "id": "service-coverage-02",
+            "text": "Get health data information through interview, including vital signs and anthropometric measurements of individual/family/household*"
+          },
+          {
+            "id": "service-coverage-03",
+            "text": "Identify health and health-related information that need to be monitored*"
+          },
+          {
+            "id": "service-coverage-04",
+            "text": "Identify health facilities where symptomatic/asymptomatic individuals may be referred to*"
+          },
+          {
+            "id": "service-coverage-05",
+            "text": "Identify necessary medical documents/records required by health facilities"
+          }
+        ],
+        "title": "SERVICE COVERAGE"
+      },
+      {
+        "id": "maintain-updated-list-records-of-health-activities",
+        "questions": [
+          {
+            "id": "maintain-updated-list-records-of-health-activities-01",
+            "text": "Record and sort the socio-demographic data and health condition of individual/family/household based on standard protocol*"
+          },
+          {
+            "id": "maintain-updated-list-records-of-health-activities-02",
+            "text": "Fill-up applicable/standard forms to report collected data*"
+          },
+          {
+            "id": "maintain-updated-list-records-of-health-activities-03",
+            "text": "Identify specific cases that need to be reported to supervisor"
+          },
+          {
+            "id": "maintain-updated-list-records-of-health-activities-04",
+            "text": "Fill-up applicable/standard forms to report specific cases for the supervisor"
+          }
+        ],
+        "title": "Maintain updated list/records of health activities"
+      },
+      {
+        "id": "observes-work-environment-health-and-safety-practices",
+        "questions": [
+          {
+            "id": "observes-work-environment-health-and-safety-practices-01",
+            "text": "Explain health hazards and risks to individuals from the environment"
+          },
+          {
+            "id": "observes-work-environment-health-and-safety-practices-02",
+            "text": "Provide information on preventive health measures needed"
+          },
+          {
+            "id": "observes-work-environment-health-and-safety-practices-03",
+            "text": "Observe health and safety practices in performing tasks*"
+          }
+        ],
+        "title": "OBSERVES WORK ENVIRONMENT, HEALTH AND SAFETY PRACTICES"
+      },
+      {
+        "id": "implement-and-monitor-infection-control-policies-and-procedures",
+        "questions": [
+          {
+            "id": "implement-and-monitor-infection-control-policies-and-procedures-01",
+            "text": "Practice proper disposal of medical wastes according to standard protocol"
+          },
+          {
+            "id": "implement-and-monitor-infection-control-policies-and-procedures-02",
+            "text": "Explain infection risks and health hazards that need to be reported*"
+          }
+        ],
+        "title": "IMPLEMENT AND MONITOR INFECTION CONTROL POLICIES AND PROCEDURES"
+      },
+      {
+        "id": "respond-effectively-to-difficult-challenging-behavior",
+        "questions": [
+          {
+            "id": "respond-effectively-to-difficult-challenging-behavior-01",
+            "text": "Identify instances of difficult or challenging behavior of clients"
+          },
+          {
+            "id": "respond-effectively-to-difficult-challenging-behavior-02",
+            "text": "Identify appropriate strategies to deal with difficult or challenging behavior of clients*"
+          },
+          {
+            "id": "respond-effectively-to-difficult-challenging-behavior-03",
+            "text": "Report incidents according to proper protocol"
+          }
+        ],
+        "title": "RESPOND EFFECTIVELY TO DIFFICULT/ CHALLENGING BEHAVIOR"
+      },
+      {
+        "id": "apply-basic-first-aid",
+        "questions": [
+          {
+            "id": "apply-basic-first-aid-01",
+            "text": "Provide initial response where first aid is required*"
+          }
+        ],
+        "title": "APPLY BASIC FIRST AID"
       }
     ]
   }

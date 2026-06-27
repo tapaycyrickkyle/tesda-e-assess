@@ -621,6 +621,7 @@ async function generateFillableApplicationPdf(
 ) {
   const templateBytes = await readFile(FILLABLE_TEMPLATE_PATH);
   const pdfDoc = await PDFDocument.load(templateBytes);
+  pdfDoc.setTitle("Application Form");
   const form = pdfDoc.getForm();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);

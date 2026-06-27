@@ -1,7 +1,8 @@
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { qualificationOptions } from "@/lib/application-form";
-import { loadSagFormDefinitions, normalizeSagProgramTitle } from "@/lib/sag-forms";
+import { normalizeSagProgramTitle } from "@/lib/sag-forms";
+import { sagFormTemplates } from "@/lib/sag-form-templates.generated";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 
 export type ProgramRecord = {
@@ -25,8 +26,7 @@ export function getFallbackProgramTitles() {
 
 export async function loadSagProgramTitles() {
   try {
-    const sagForms = await loadSagFormDefinitions();
-    const parsedTitles = normalizeProgramTitles(sagForms.map((form) => form.qualificationTitle)).sort((left, right) =>
+    const parsedTitles = normalizeProgramTitles(sagFormTemplates.map((form) => form.qualificationTitle)).sort((left, right) =>
       left.localeCompare(right),
     );
 

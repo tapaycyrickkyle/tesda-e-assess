@@ -817,6 +817,75 @@ export async function buildSagQuestionPlacements(sourcePdfPath: string, sagForm:
     }
   }
 
+  expectedQuestions.forEach((question) => {
+    if (placements[question.id]) {
+      return;
+    }
+
+    const expectedKey = createQuestionMatchKey(question.text);
+
+    for (let lineIndex = 0; lineIndex < questionRows.length; lineIndex += 1) {
+      const startLine = questionRows[lineIndex];
+      const startLineKey = createQuestionMatchKey(startLine.text);
+
+      if (!isQuestionStartLine(startLine.text) && (!startLineKey || !expectedKey.startsWith(startLineKey))) {
+        continue;
+      }
+
+      let combinedText = normalizeQuestionText(startLine.text);
+
+      for (let nextIndex = lineIndex; nextIndex < questionRows.length; nextIndex += 1) {
+        const currentLine = questionRows[nextIndex];
+
+        if (nextIndex > lineIndex) {
+          if (isQuestionStartLine(currentLine.text) || isChecklistHeaderLine(currentLine.text) || isAgreementStartLine(currentLine.text)) {
+            break;
+          }
+
+          combinedText = cleanText(`${combinedText} ${currentLine.text}`);
+          combinedText = normalizeQuestionText(combinedText);
+        }
+
+        const combinedKey = createQuestionMatchKey(combinedText);
+
+        if (combinedKey === expectedKey) {
+          placements[question.id] = {
+            noCenterX: startLine.header.noCenterX,
+            pageIndex: startLine.pageIndex,
+            y: startLine.y,
+            yesCenterX: startLine.header.yesCenterX,
+          };
+          return;
+        }
+
+        if (!expectedKey.startsWith(combinedKey)) {
+          break;
+        }
+      }
+    }
+  });
+
+  if (questionRows.length === expectedQuestions.length) {
+    expectedQuestions.forEach((question, questionIndex) => {
+      if (placements[question.id]) {
+        return;
+      }
+
+      const row = questionRows[questionIndex];
+
+      if (!row) {
+        return;
+      }
+
+      placements[question.id] = {
+        noCenterX: row.header.noCenterX,
+        pageIndex: row.pageIndex,
+        y: row.y,
+        yesCenterX: row.header.yesCenterX,
+      };
+    });
+  }
+
   return placements;
 }
 
@@ -828,37 +897,48 @@ export async function buildSagIdentityPlacement(sourcePdfPath: string): Promise<
   }
 
   const lastPageIndex = lines.reduce((maxPageIndex, line) => Math.max(maxPageIndex, line.pageIndex), 0);
-  const lastPageLines = lines.filter((line) => line.pageIndex === lastPageIndex);
-  const candidateLine = findBottomMostLine(lastPageLines, (line) => /^candidate/i.test(cleanText(line.text)));
-  const candidateWord = findBottomMostWord(lastPageLines, (word) => /^candidate/i.test(cleanText(word.text)));
-  const dateWord =
-    findBottomMostWord(lastPageLines, (word) => /^date:?$/i.test(cleanText(word.text)), (word) => word.width) ??
-    findBottomMostWord(
-      lastPageLines,
-      (word) => /^date\b/i.test(cleanText(word.text)) && !/^date here$/i.test(cleanText(word.text)),
-      (word) => word.width,
-    );
+  let fallbackPlacement: SagIdentityPlacement | null = null;
 
-  if (!candidateWord && !dateWord) {
-    return null;
+  for (let pageIndex = lastPageIndex; pageIndex >= 0; pageIndex -= 1) {
+    const pageLines = lines.filter((line) => line.pageIndex === pageIndex);
+    const candidateLine = findBottomMostLine(pageLines, (line) => /\bcandidate/i.test(cleanText(line.text)));
+    const candidateWord = findBottomMostWord(pageLines, (word) => /^candidate/i.test(cleanText(word.text)));
+    const dateWord =
+      findBottomMostWord(pageLines, (word) => /^date:?$/i.test(cleanText(word.text)), (word) => word.width) ??
+      findBottomMostWord(
+        pageLines,
+        (word) => /^date\b/i.test(cleanText(word.text)) && !/^date here$/i.test(cleanText(word.text)),
+        (word) => word.width,
+      );
+
+    if (!candidateWord && !dateWord) {
+      continue;
+    }
+
+    const candidateLabelRightX =
+      candidateLine && dateWord && Math.abs((candidateLine.y ?? 0) - (dateWord.y ?? 0)) <= 2
+        ? getLineRightEdgeBeforeX(candidateLine, dateWord.x) ?? getLineRightEdge(candidateLine)
+        : candidateLine
+          ? getLineRightEdge(candidateLine)
+          : candidateWord
+            ? candidateWord.x + candidateWord.width
+            : null;
+    const placement = {
+      candidateLabelRightX,
+      candidateY: candidateLine?.y ?? candidateWord?.y ?? null,
+      dateLabelRightX: dateWord ? dateWord.x + dateWord.width : null,
+      dateY: dateWord?.y ?? null,
+      pageIndex,
+    };
+
+    if ((candidateLine || candidateWord) && dateWord) {
+      return placement;
+    }
+
+    fallbackPlacement ??= placement;
   }
 
-  const candidateLabelRightX =
-    candidateLine && dateWord && Math.abs((candidateLine.y ?? 0) - (dateWord.y ?? 0)) <= 2
-      ? getLineRightEdgeBeforeX(candidateLine, dateWord.x) ?? getLineRightEdge(candidateLine)
-      : candidateLine
-        ? getLineRightEdge(candidateLine)
-        : candidateWord
-          ? candidateWord.x + candidateWord.width
-          : null;
-
-  return {
-    candidateLabelRightX,
-    candidateY: candidateLine?.y ?? candidateWord?.y ?? null,
-    dateLabelRightX: dateWord ? dateWord.x + dateWord.width : null,
-    dateY: dateWord?.y ?? null,
-    pageIndex: lastPageIndex,
-  };
+  return fallbackPlacement;
 }
 
 export async function buildSagInstructionLines(sourcePdfPath: string): Promise<string[]> {

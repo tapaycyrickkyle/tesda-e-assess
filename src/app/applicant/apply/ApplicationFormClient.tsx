@@ -834,17 +834,22 @@ export default function ApplicantApplicationFormClient({
         );
       case "sag":
         return sagForm ? (
-          <SectionCard title="Self-Assessment Guide">
+          <SectionCard
+            description={`Program Applied For: ${formData.qualificationTitle || "Not selected"}`}
+            title="Self-Assessment Guide"
+          >
             <div className="mb-1 rounded-lg border border-[#c8d5ee] bg-[#f8fbff] px-4 py-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.35)]">
-              <div className="space-y-2 text-[14px] leading-[1.7] text-[#1f2937]">
-                {sagForm.instructionLines.map((line, index) => (
-                  <p
-                    className={index === 0 ? "font-semibold text-[#002576]" : ""}
-                    key={`sag-instruction-${line}`}
-                  >
-                    {line}
-                  </p>
-                ))}
+              <div className="space-y-2">
+                <p className="text-[13px] font-semibold uppercase tracking-[0.04em] text-[#002576]">Instructions</p>
+                <ol className="list-decimal space-y-1.5 pl-5 text-[14px] leading-[1.7] text-[#1f2937]">
+                  {sagForm.instructionLines
+                    .filter((line) => !isSagInstructionHeading(line))
+                    .map((line) => (
+                      <li key={`sag-instruction-${line}`}>
+                        {line}
+                      </li>
+                    ))}
+                </ol>
               </div>
             </div>
 
@@ -1510,6 +1515,10 @@ function formatReviewValue(value: string, fallback = "Not provided yet") {
 
 function formatSagDisplayText(value: string) {
   return value.replace(/\s*\*+\s*$/g, "").trim();
+}
+
+function isSagInstructionHeading(value: string) {
+  return /^instruction:?$/i.test(value.trim());
 }
 
 function hasFilledFields(item: Record<string, string>) {
